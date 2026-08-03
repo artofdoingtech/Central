@@ -10,6 +10,18 @@
 #
 set -euo pipefail
 
+# 🪟 WINDOWS / GIT BASH — sans cette ligne, CE SCRIPT NE PEUT PAS S'EXÉCUTER.
+# MSYS (Git Bash) réécrit tout argument qui ressemble à un chemin absolu POSIX en
+# chemin Windows AVANT que le programme ne le voie : `/tests/all.php` devient
+# `C:/Program Files/Git/tests/all.php`. Le `test -f` ci-dessous échoue donc
+# toujours, et le script s'arrête sur « /tests n'est pas monté » — un diagnostic
+# FAUX, qui envoie chercher un volume manquant dans docker-compose.yml alors que
+# le montage est correct et que `wp eval-file` aurait parfaitement tourné.
+# 🚨 Conséquence en aval : `tools/git-hooks/pre-push` appelle ce script, donc sur
+# Windows AUCUN push ne passait — la porte refusait pour une raison inventée.
+# Sans effet sur Linux/macOS : la variable y est simplement ignorée.
+export MSYS_NO_PATHCONV=1
+
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 if ! docker compose ps --status running --services 2>/dev/null | grep -qx wpcli; then
