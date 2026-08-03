@@ -185,36 +185,19 @@ class AOD_CD_Dashboard {
 	/**
 	 * Regroupement de la navigation par domaine métier (coque — étape 5.3).
 	 * Chaque groupe : slug => array( libellé, array de slugs de section ordonnés ).
-	 * L'ordre et l'appartenance sont fixes ; l'affichage réel dépend des sections
-	 * visibles (capabilities) — un groupe sans section visible est masqué.
+	 * Ordre fixe ; un groupe sans section visible (capabilities) est masqué. ⚠️ Un
+	 * domaine ne porte JAMAIS le nom d'un enfant — `tests/unit/test-nav-groupes.php`.
 	 *
 	 * @return array
 	 */
 	protected function nav_groups() {
 		return array(
 			'pilotage'  => array( __( 'Pilotage', 'aod-client-dashboard' ),       array( 'home' ) ),
-			// « Ventes » ne porte plus que le tunnel de vente : la commande reçue et
-			// celle qui ne l'a pas été. `tracking` en est SORTI (voir « Expédition »).
 			'ventes'    => array( __( 'Ventes', 'aod-client-dashboard' ),         array( 'orders', 'abandoned' ) ),
 			// « landing » n'est PAS dans sections() : elle ne s'affichera donc jamais dans
 			// le menu (la boucle filtre sur les sections visibles). Sa présence ici sert
 			// au seul fil d'ariane — « Gestion › Catalogue › Page de vente ».
 			'catalogue' => array( __( 'Catalogue', 'aod-client-dashboard' ),      array( 'products', 'stock', 'categories', 'landing' ) ),
-			// 🔁 Le domaine s'appelle « Expédition » et NON « Livraison », alors qu'il
-			// contient la section « Livraison ». Ce n'est pas un caprice de vocabulaire :
-			// un intitulé de groupe identique à celui de son unique enfant affichait
-			// « Livraison » deux fois de suite dans la barre latérale. Le fil d'ariane,
-			// lui, avait déjà son rustine (`$group_label !== $page_label`, cf. le rendu
-			// plus bas) — mais elle n'avait jamais été propagée au menu, qui est
-			// pourtant l'endroit où les deux lignes se touchent. Même famille de dérive
-			// que les Phases 46 et 47 : une décision appliquée à un jumeau et pas à
-			// l'autre. Corrigé ici à la RACINE plutôt qu'une seconde fois au rendu.
-			// `tracking` le rejoint : « Suivi commande » lit les états rendus par le
-			// TRANSPORTEUR (cron 2 h) — c'est la suite de l'expédition, pas de la vente.
-			// Depuis la Phase 47 l'envoi est un geste déclenché au camion, ce qui achève
-			// de le détacher de la confirmation. Effet de bord voulu : le domaine cesse
-			// d'être un singleton, et « Ventes » cesse de mélanger deux métiers.
-			// Invariant gardé par `tests/unit/test-nav-groupes.php`.
 			'livraison' => array( __( 'Expédition', 'aod-client-dashboard' ),     array( 'shipping', 'tracking' ) ),
 			'marketing' => array( __( 'Marketing', 'aod-client-dashboard' ),      array( 'marketing', 'whatsapp' ) ),
 			'admin'     => array( __( 'Administration', 'aod-client-dashboard' ), array( 'team', 'account' ) ),
@@ -515,26 +498,14 @@ class AOD_CD_Dashboard {
 			// reprend donc le nom de la page comme dernier maillon — sans quoi il ne
 			// nommait que le domaine (« Gestion › Ventes »), et « Commandes » et
 			// « Commandes abandonnées » deviendraient indiscernables.
-			// (L'exemple d'origine opposait « Commandes » à « Suivi commande » : les
-			// deux ne partagent plus de domaine depuis que `tracking` est passé sous
-			// « Expédition ». La raison, elle, n'a pas bougé — tout domaine à plusieurs
-			// sections la reproduit.)
 			?>
 			<div class="aod-cd-topttl">
 				<nav class="aod-cd-crumb" aria-label="<?php esc_attr_e( 'Fil d’ariane', 'aod-client-dashboard' ); ?>">
 					<span class="aod-cd-crumb__root"><?php esc_html_e( 'Gestion', 'aod-client-dashboard' ); ?></span>
 					<?php
-					// Le domaine n'est affiché que s'il APPORTE quelque chose.
-					// ⚠️ Ce test a longtemps été la SEULE réponse à un vrai défaut : la
-					// section « Livraison » vivait dans un domaine « Livraison », et le fil
-					// d'ariane disait « Gestion › Livraison › Livraison ». Le menu, lui,
-					// affichait les deux lignes l'une sur l'autre sans que rien ne l'en
-					// empêche — la rustine n'avait été posée qu'ici. La cause est traitée
-					// depuis, dans `nav_groups()` (domaine renommé « Expédition »), donc ce
-					// cas ne PEUT plus se produire : ce qui reste est un garde-fou bon
-					// marché pour un futur groupe, pas le correctif. Ne pas le lire comme
-					// la preuve que le défaut est couvert — le cliquet, c'est
-					// `tests/unit/test-nav-groupes.php`.
+					// Le domaine n'est affiché que s'il APPORTE quelque chose. ⚠️ Ce test fut
+					// longtemps la seule réponse au doublon « Livraison › Livraison » — posé
+					// ici, jamais dans le menu. La cause vit dans `nav_groups()` : garde-fou.
 					if ( $group_label && $group_label !== $page_label ) :
 						?>
 						<span class="aod-cd-crumb__sep" aria-hidden="true">›</span>
