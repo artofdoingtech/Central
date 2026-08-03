@@ -1,0 +1,202 @@
+/**
+ * Pages publiques : Accueil + Contact.
+ *
+ * Trois règles de conduite, parce que ce fichier part dans TOUS les clones :
+ *
+ *  1. AUCUNE couleur de marque. Rien qui ressemble à un choix esthétique de client.
+ *     On n'utilise que `currentColor`, des gris neutres transparents (donc lisibles
+ *     sur fond clair comme sombre) et les styles de bouton du thème (`.button`).
+ *     L'habillage appartient au thème déposé par l'owner, pas à ce fichier.
+ *
+ *  2. PROPRIÉTÉS LOGIQUES uniquement (`margin-inline`, `padding-inline`, `start`/`end`),
+ *     jamais `left`/`right`. Le site bascule en RTL dès que le visiteur passe en
+ *     arabe : une seule marge en `left` et la page se déchire.
+ *
+ *  3. MOBILE D'ABORD. Le trafic DZ est mobile ; le desktop est l'exception, décrite
+ *     dans les media queries.
+ */
+
+/* ─────────────────────────────────────────────────────────── Accueil ─────── */
+
+.aod-home__hero {
+	text-align: center;
+	padding-block: clamp(2.5rem, 8vw, 5rem);
+	padding-inline: 1rem;
+}
+
+.aod-home__title {
+	margin: 0;
+	font-size: clamp(1.9rem, 6vw, 3.25rem);
+	line-height: 1.15;
+}
+
+.aod-home__tagline {
+	margin-block: 0.75rem 0;
+	margin-inline: auto;
+	max-width: 42ch;
+	font-size: clamp(1rem, 2.5vw, 1.2rem);
+	opacity: 0.75;
+}
+
+.aod-home__cta {
+	margin-block-start: 1.75rem;
+	text-align: center;
+}
+
+/* On ne redéfinit PAS l'apparence du bouton : `.button` est la classe de bouton du
+   thème, il l'habille lui-même. On ne fait qu'agrandir la zone tactile — 44 px est
+   le minimum d'une cible au doigt. */
+.aod-home__btn {
+	display: inline-block;
+	min-height: 44px;
+	padding-block: 0.75rem;
+	padding-inline: 1.75rem;
+}
+
+.aod-home__section {
+	padding-block: clamp(1.5rem, 5vw, 3rem);
+}
+
+.aod-home__h2 {
+	margin-block: 0 1.25rem;
+	text-align: center;
+	font-size: clamp(1.35rem, 4vw, 2rem);
+}
+
+/* ── Réassurance ── */
+
+.aod-home__reassure {
+	display: grid;
+	gap: 1.5rem;
+	padding-block: clamp(2rem, 6vw, 3.5rem);
+	padding-inline: 1rem;
+	/* Gris neutre translucide : se pose aussi bien sur un thème clair que sombre,
+	   sans jamais imposer une teinte. */
+	background: rgba(128, 128, 128, 0.07);
+	border-radius: 12px;
+}
+
+.aod-home__promise {
+	text-align: center;
+}
+
+.aod-home__promise h3 {
+	margin-block: 0.6rem 0.35rem;
+	font-size: 1.05rem;
+}
+
+.aod-home__promise p {
+	margin: 0;
+	font-size: 0.95rem;
+	line-height: 1.55;
+	opacity: 0.8;
+}
+
+.aod-home__ico {
+	font-size: 1.9rem;
+	line-height: 1;
+}
+
+@media (min-width: 700px) {
+	.aod-home__reassure {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+	}
+}
+
+/* ─────────────────────────────────────────────────────────── Contact ─────── */
+
+.aod-contact {
+	display: grid;
+	gap: clamp(1.75rem, 5vw, 3rem);
+	padding-block: clamp(1rem, 4vw, 2rem);
+}
+
+/* Le titre de l'Accueil est centré (c'est une vitrine) ; celui du Contact ne doit
+   pas l'être — il coiffe un bloc de texte aligné au bord. `start`, pas `left` : en
+   arabe, le bord de départ est à droite. */
+.aod-contact__details .aod-home__h2 {
+	text-align: start;
+}
+
+.aod-contact__intro {
+	margin-block: 0 1.25rem;
+	max-width: 55ch;
+	line-height: 1.6;
+	opacity: 0.85;
+}
+
+.aod-contact__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 0.75rem;
+}
+
+.aod-contact__list li {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.aod-contact__ico {
+	flex: 0 0 auto;
+	font-size: 1.15rem;
+}
+
+/* Le formulaire réutilise les champs du formulaire COD (.aod-cod) : mêmes styles,
+   même comportement RTL. On ne fait que le poser dans la grille. */
+.aod-contact__form {
+	max-width: 640px;
+}
+
+.aod-contact__form textarea {
+	width: 100%;
+	resize: vertical;
+}
+
+/* Deux colonnes en desktop : coordonnées à gauche (ou à droite en arabe — c'est la
+   grille logique qui s'en charge, aucune règle à écrire), formulaire en face. */
+@media (min-width: 900px) {
+	.aod-contact {
+		grid-template-columns: 1fr 1.15fr;
+		align-items: start;
+		gap: 3.5rem;
+	}
+}
+
+/* ── Message de retour du formulaire ── */
+
+.aod-cod__msg.is-ok,
+.aod-cod__msg.is-error {
+	margin-block-start: 0.85rem;
+	padding: 0.75rem 1rem;
+	border-radius: 8px;
+	border-inline-start: 3px solid currentColor;
+	font-weight: 600;
+}
+
+/* Vert / rouge : ce ne sont pas des couleurs de marque mais du SENS (succès, échec).
+   Un client qui change d'accent ne doit pas voir son message d'erreur virer au vert.
+   Teintes sombres et saturées : elles gardent un contraste AA sur fond clair comme
+   sur fond sombre translucide. */
+.aod-cod__msg.is-ok {
+	color: #15803d;
+	background: rgba(21, 128, 61, 0.08);
+}
+
+.aod-cod__msg.is-error {
+	color: #b91c1c;
+	background: rgba(185, 28, 28, 0.08);
+}
+
+/* Honeypot : hors écran plutôt que `display:none`. Certains robots ignorent les
+   champs masqués en display — ils ne se feraient plus prendre. */
+.aod-cod__hp {
+	position: absolute;
+	inset-inline-start: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}

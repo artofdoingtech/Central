@@ -1,0 +1,480 @@
+<?php
+/**
+ * Cliquet sur les `phpcs:ignore` — la 171ᵉ annotation ne passera pas en silence.
+ *
+ * CE QUE CE TEST REMPLACE. Les annotations `phpcs:ignore` désarment un contrôle de
+ * sécurité statique, une ligne à la fois. Le dépôt en compte beaucoup et les a
+ * auditées **à la main** (2026-07-19, puis étape 18.3) — 0 faille. Mais un audit
+ * est un instantané : rien n'empêchait la suivante d'arriver non relue. C'est la
+ * dette **D6**, et c'est la forme la plus pure du défaut que ce dépôt traque depuis
+ * la Phase 17 : un contrôle humain sans cliquet ne protège que le passé.
+ *
+ * 🚨 CE QUE L'AUDIT PASSÉ NE COUVRAIT PAS — et que la dette annonçait mal.
+ * D6 parlait de « **130** annotations toutes relues, 0 faille ». C'est exact, et
+ * c'est trompeur : **130 est le compte de la seule famille `EscapeOutput`**. Le
+ * dépôt en portait **170**. Les **40** autres — `NonceVerification` (CSRF),
+ * `ValidatedSanitizedInput` (entrée non sanitisée), `WordPress.DB` (SQL) — les
+ * familles les **plus** sensibles, n'étaient dans le périmètre d'**aucun** audit.
+ * Un chiffre qui sonne comme une couverture totale mais nomme un sous-ensemble :
+ * exactement le mode d'échec de la « règle du témoin ».
+ *
+ * LE CONTRAT, en trois règles mécaniques :
+ *
+ *   R1 · AUCUNE annotation NUE. `// phpcs:ignore` sans nom de sniff désarme **tous**
+ *        les contrôles de la ligne, pas un seul — un blanc-seing, là où on croyait
+ *        lever une exception précise. Règle ABSOLUE : zéro, aujourd'hui et demain.
+ *
+ *   R2 · Le CENSUS par famille est déclaré ici. Un ajout fait diverger le compte et
+ *        **rougir** : personne n'ajoute une suppression de contrôle CSRF sans qu'un
+ *        humain touche ce fichier.
+ *
+ *   R3 · Le stock d'annotations SANS raison (`-- …`) ne remonte pas.
+ *
+ * ⚠️ POURQUOI R3 EST UN PLANCHER ET NON UN ZÉRO. 142 des 170 annotations ne portent
+ * pas de raison. Exiger zéro imposerait un diff mécanique de 142 lignes **dans le
+ * code de production**, sans le moindre changement de comportement, pour satisfaire
+ * un test : la queue qui remue le chien, et un risque bien réel pour un gain
+ * documentaire. On fige donc le stock au lieu de le nier — la prochaine devra
+ * s'expliquer. Baisser ce plancher est un progrès libre ; le remonter, non.
+ *
+ * ⚠️ R2 n'est PAS un test de qualité, c'est un RALENTISSEUR DÉLIBÉRÉ. Si un jour
+ * quelqu'un ajuste le chiffre sans lire la ligne ajoutée, le cliquet n'aura servi à
+ * rien — mais il aura au moins exigé le geste.
+ *
+ * @package AOD_Tests
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Census attendu, par famille de sniff.
+ *
+ * ⚠️ Préfixe `aod_test_pcs_` : `tests/all.php` charge tous les fichiers par
+ * `glob()` dans le même espace global.
+ *
+ * Les familles de SÉCURITÉ sont marquées : elles désarment un contrôle qui protège
+ * l'utilisateur, pas un contrôle de style. Une hausse y est un événement.
+ *
+ * @return array<string,array{n:int,securite:bool,quoi:string}>
+ */
+function aod_test_pcs_census() {
+	return array(
+		'WordPress.Security.EscapeOutput'         => array(
+			'n'        => 155,
+			'securite' => true,
+			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
+				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
+				. '🚨 Elle avait échappé à l’audit de la 18.3 pour une raison instructive — cet audit grepait '
+				. 'PAR NOM DE SNIFF, et une annotation nue n’en porte aucun. Le scénario « 131ᵉ annotation non '
+				. 'relue » que D6 annonçait était donc DÉJÀ RÉALISÉ, dans l’angle mort de l’audit lui-même. '
+				. 'La 133ᵉ (étape 29.1, class-aod-cd-access.php) : `echo AOD_CD_Customize::css_vars()` sur la '
+				. 'page login — MÊME motif, MÊME sûreté que dashboard.php:394 (valeurs hex issues de '
+				. 'sanitize_hex_color / formatage interne, aucune donnée externe). '
+				. 'La 134ᵉ (étape 35.1, class-aod-cd-section-shipping.php, carte Panier) : '
+				. '`echo AOD_CD_Icon::svg( \'cart\' )` — catalogue fermé, sûreté démontrée une fois pour '
+				. 'tous les appels (18.3) et gardée par test-icones.php ; annotation AVEC raison (R3 stable). '
+				. 'La 135ᵉ (étape 36.3, class-aod-cod-cart.php, suggestions) : `echo $p->get_image()` — '
+				. 'markup d’image généré par le cœur Woo (wp_get_attachment_image, attributs échappés par le '
+				. 'cœur), aucune donnée externe ; annotation AVEC raison. '
+				. 'Les 136ᵉ et 137ᵉ (étape 37.2, class-aod-cod-cart.php, bouton flottant + fermeture du '
+				. 'panneau) : `echo AOD_COD_Icon::svg( … )` — MÊME motif et MÊME sûreté que la 134ᵉ, à ceci '
+				. 'près que le catalogue fermé est celui du PUBLIC (AOD_COD_Icon, jumeau de AOD_CD_Icon : les '
+				. 'deux plugins ne peuvent pas partager la classe, la dépendance ne va que du dashboard vers '
+				. 'le formulaire COD). Attributs RECONSTRUITS au rendu, contenu lu dans des fichiers du '
+				. 'dépôt, jamais d’une saisie ; un nom hors catalogue rend \'\' et crie. Gardé par '
+				. 'test-panier-peau.php (R6 : les SVG copiés sont identiques à ceux du dashboard). '
+				. 'Les 138ᵉ à 140ᵉ (étape 38.3, class-aod-cod-form.php, modes de livraison + réassurance) : '
+				. '`echo AOD_COD_Icon::svg( \'home\' | \'desk\' | \'lock\' )` — elles REMPLACENT les emojis '
+				. '🏠 🏢 🔒 par le même catalogue fermé public que les 136ᵉ/137ᵉ, MÊME motif et MÊME sûreté ; '
+				. 'un emoji était rendu par l’OS, donc invisible en tant qu’icône dessinée. Trois icônes '
+				. 'ajoutées au catalogue (house/storefront/lock), copiées verbatim de /gestion et gardées '
+				. 'octet à octet par R6. '
+				. 'La 141ᵉ (étape 39.2, class-aod-cd-section-orders.php, render_order_detail) : '
+				. '`echo $this->status_select_html( … )` rend le sélecteur de statut DANS la modale de '
+				. 'détail (statut choisissable dans le flux de conversion) — MÊME appel, MÊME sûreté que '
+				. 'render_order_row:236 (le markup est échappé à l’intérieur de status_select_html()), '
+				. 'annotation AVEC raison. '
+				. 'La 142ᵉ (étape 42.4, même fichier, render_order_detail) : `echo $this->assign_select_html( … )` '
+				. '— jumeau du sélecteur de statut ci-dessus, MÊME sûreté (markup échappé à l’intérieur de la '
+				. 'méthode), rendu GÉRANT uniquement. '
+				. 'Les 143ᵉ et 144ᵉ (étape 42.7, colonne « Assigné à » des tableaux Commandes et Suivi) : '
+				. '`echo self::assigned_confirmer_label( $order )` (class-aod-cd-section-orders.php) et son '
+				. 'jumeau `echo AOD_CD_Section_Orders::assigned_confirmer_label( $order )` '
+				. '(class-aod-cd-section-tracking.php) — MÊME motif que les 141ᵉ/142ᵉ : le markup est échappé '
+				. '(esc_html) À L’INTÉRIEUR de la méthode appelée, le sniff ne le voit simplement pas depuis '
+				. 'le site d’appel. Colonne rendue GÉRANT uniquement (même garde que 42.4). '
+				. 'Les 145ᵉ et 146ᵉ (étape 43.3, class-aod-cd-section-abandoned.php, render_row) : '
+				. '`echo AOD_CD_Roles::confirmer_label_html( … )` et `echo $this->lead_assign_select_html( … )` '
+				. '— JUMEAUX EXACTS des 142ᵉ/143ᵉ, transposés des commandes aux PROSPECTS : mêmes deux '
+				. 'appels (l’étiquette d’assignation, le sélecteur), même sûreté (esc_html/esc_attr à '
+				. 'L’INTÉRIEUR des méthodes appelées — confirmer_label_html() est d’ailleurs le code même de '
+				. 'assigned_confirmer_label(), extrait pour être partagé), même garde GÉRANT uniquement. '
+				. 'Aucun motif nouveau : deux occurrences de plus du seul et même patron « je rends du '
+				. 'markup déjà échappé par la méthode qui l’a construit ». '
+				. 'La 147ᵉ (étape 43.6, class-aod-cd-section-abandoned.php, render_row) : '
+				. '`echo self::lead_amount_html( $lead )` — TROISIÈME occurrence du même patron, '
+				. 'et la plus simple : la méthode rend soit un tiret sourd littéral, soit la sortie '
+				. 'de `wc_price()` (échappée par WooCommerce), éventuellement précédée d’un `<abbr>` '
+				. 'dont le seul contenu variable est un `esc_attr__()`. Aucune donnée de prospect '
+				. 'n’atteint le HTML : ni le nom du produit, ni la commune, ni rien de saisi — '
+				. 'seulement un NOMBRE calculé et formaté. Contrairement aux 145ᵉ/146ᵉ, cette '
+				. 'colonne n’est PAS gérant-only (un confirmateur qui rappelle doit voir le montant), '
+				. 'ce qui ne change rien à sa sûreté : il n’y a pas de surface d’injection. '
+				. 'La 148ᵉ (étape 47.1, class-aod-cd-section-orders.php, render_order_row) : '
+				. '`echo $this->carrier_select_html( $order )` — QUATRIÈME occurrence du patron des '
+				. '141ᵉ/142ᵉ/143ᵉ (« je rends du markup déjà échappé par la méthode qui l’a construit »), '
+				. 'ici pour le sélecteur de transporteur d’une commande. Aucun motif nouveau : la méthode '
+				. 'échappe TOUT à l’intérieur (esc_attr sur l’id de commande et l’id de transporteur, '
+				. 'esc_html sur les libellés), et ses seules données variables viennent du CATALOGUE '
+				. 'FERMÉ des 29 transporteurs (`AOD_Shipping::configured()`) — des libellés écrits dans '
+				. 'le dépôt, jamais une saisie du gérant ni de l’acheteur. Les deux SVG (chevron, coche) '
+				. 'sont des littéraux du fichier. ⚠️ Ce rendu n’est PAS gérant-only, contrairement aux '
+				. '142ᵉ/143ᵉ : il est ouvert au confirmateur (décision D-4 de la story 47.1) — ce qui, '
+				. 'comme pour la 147ᵉ, ne change rien à sa sûreté, l’élargissement portant sur QUI voit '
+				. 'le contrôle, pas sur ce qui entre dans le HTML. '
+				. 'Les 149ᵉ à 154ᵉ (étape 47.6, six zones de dépôt de fichier : quatre dans '
+				. 'class-aod-cd-section-products.php — photo principale, galerie, photos d’options, '
+				. 'vignettes de catégories — et deux dans class-aod-cd-section-landing.php) : '
+				. '`echo AOD_CD_Upload::limit_note()`. CINQUIÈME occurrence du patron des '
+				. '141ᵉ/142ᵉ/143ᵉ/148ᵉ, et la plus étroite de toutes : la méthode rend un `<span>` '
+				. 'dont le SEUL contenu variable est `size_format( max_bytes() )`, c’est-à-dire un '
+				. 'NOMBRE d’octets formaté par WordPress — aucune saisie, d’aucun acteur, n’y entre. '
+				. 'La chaîne entière passe par `esc_html()` À L’INTÉRIEUR de la méthode. '
+				. '⚠️ Six occurrences pour UN SEUL corps : c’est le point. Écrire l’aide six fois '
+				. 'aurait donné six chaînes à traduire et six chances de diverger de la borne qui '
+				. 'refuse réellement — le motif de dérive que la Phase 46 a passé huit étapes à fermer. '
+				. 'La 155ᵉ (2026-08-02, panneau de CHOIX du panier COD, class-aod-cod-cart.php) : '
+				. '`echo AOD_COD_Icon::svg( \'close\' )` sur le bouton de fermeture du panneau. '
+				. 'MÊME patron que les deux SVG déjà présents dans ce fichier (bouton flottant, '
+				. 'fermeture du tiroir) : `AOD_COD_Icon` est un CATALOGUE FERMÉ — le nom d’icône est '
+				. 'un littéral du dépôt, la méthode refuse tout nom hors catalogue, et aucune saisie '
+				. 'du gérant ni de l’acheteur n’atteint le markup rendu. `wp_kses_post()` y mangerait '
+				. 'les attributs SVG, ce qui est la raison d’être de la dérogation. '
+				. '⚠️ La hausse est venue AVEC son cliquet rouge : le census a refusé le panneau avant '
+				. 'sa relecture. C’est le comportement voulu — une dérogation d’échappement ne doit '
+				. 'jamais entrer sans passer par ce paragraphe.',
+		),
+		'WordPress.Security.NonceVerification'    => array(
+			'n'        => 18,
+			'securite' => true,
+			'quoi'     => 'Contrôle CSRF désarmé. Majoritairement des lectures $_GET de navigation (langue, section) sans effet de bord. '
+				. 'La 18ᵉ (étape 47.6, class-aod-cd-upload.php, handle()) : lecture de `$_FILES[ $field ]` '
+				. 'pour comparer la TAILLE du fichier à la borne, avant `media_handle_upload()`. '
+				. 'Le nonce n’est pas absent, il est vérifié PLUS TÔT : les SIX appelants de ce goulot '
+				. 'passent tous par `check_ajax_referer( \'aod_cd\' )` **et** `current_user_can( \'edit_products\' )` '
+				. '— c’est le préambule de la classe (32.2) qui l’établit, et il n’a pas changé. '
+				. 'La ligne ne lit qu’un entier (`size`) et un code d’erreur PHP (`error`) ; elle n’écrit '
+				. 'rien, ne stocke rien, et son seul effet possible est de REFUSER un téléversement — '
+				. 'la direction sûre. Revérifier le nonce ici le vérifierait deux fois par requête '
+				. 'sans fermer quoi que ce soit.',
+		),
+		'WordPress.Security.ValidatedSanitizedInput' => array(
+			'n'        => 9,
+			'securite' => true,
+			'quoi'     => 'Entrée non validée/sanitisée au sens du sniff — sanitisée autrement sur ces lignes.',
+		),
+		'WordPress.DB'                            => array(
+			'n'        => 28,
+			'securite' => false,
+			'quoi'     => 'Requêtes directes / meta_query lentes. Performance, pas sécurité — sauf PreparedSQL, surveillé à part. '
+				. 'La 13ᵉ (étape 25.1, aod-client-dashboard/uninstall.php) énumère les porteurs d’une capability : '
+				. 'aucune API WordPress ne le fait, et get_users( array( "role" => … ) ) manquerait les caps « à la carte », '
+				. 'posées par utilisateur sans le rôle. Requête unique, préparée, en contexte de désinstallation. '
+				. 'La 14ᵉ (étape 31.4, class-aod-shipping.php) reprend un verrou d’envoi PÉRIMÉ : la condition '
+				. 'd’ancienneté doit vivre DANS le WHERE pour rester atomique — un get_option() suivi d’un '
+				. 'update_option() rouvrirait exactement la fenêtre de concurrence que le verrou ferme. '
+				. 'Requête unique, préparée, cache purgé juste après. '
+				. 'La 15ᵉ (étape 32.2, class-aod-cod-leads.php) demande si un jeton de prospect existe DÉJÀ, '
+				. 'pour distinguer une création d’une simple mise à jour avant d’entamer le plafond par IP : '
+				. 'la table {prefix}aod_cod_leads est une table maison, sans API WordPress ni cache pertinent, '
+				. 'et la colonne token est indexée. Requête unique, préparée, en lecture seule. '
+				. 'Les 16ᵉ et 17ᵉ (étape 39.1, class-aod-cd-section-abandoned.php, ajax_convert_lead) lisent la '
+				. 'MÊME table maison aod_cod_leads (pas d’API WP, cache non pertinent) : la 16ᵉ récupère le '
+				. 'prospect par son id (existence + périmètre + statut), la 17ᵉ RELIT son statut sur instance '
+				. 'fraîche après le verrou d’anti-doublon (leçon 31.4 — un verrou sérialise, il n’annule pas). '
+				. 'Les deux sont préparées et bornées par un id. '
+				. 'La 18ᵉ (étape 39.6, même fichier, ajax_delete_leads) SUPPRIME une sélection de prospects '
+				. '(suppression groupée gérant-only) : DELETE … WHERE id IN (…) sur la même table maison, '
+				. 'préparé (placeholders %d générés comme where_sql), IDs bornés. Gérant only (manage_woocommerce). '
+				. 'Les 19ᵉ et 20ᵉ (étape 42.1, class-aod-cd-section-orders.php, count_active_assigned()) filtrent '
+				. 'wc_get_orders() par meta_key/meta_value sur _aod_assigned_confirmer (mesure de charge du '
+				. 'tourniquet) : pas d’API wc_get_orders dédiée à ce filtre, clé indexable, requête paginée '
+				. '(limit=1, total seul). '
+				. 'La 21ᵉ (étape 42.3, même fichier, scoped_orders()) fusionne un meta_query de périmètre '
+				. '(_aod_assigned_confirmer) avec un éventuel meta_query déjà présent (ex. non-expédiées) : '
+				. 'gouverné par capability (aod_cap_confirm_orders), clé indexable, jamais tout le catalogue. '
+				. 'Les 22ᵉ et 23ᵉ (étape 42.5, même fichier, render() et count_unassigned()) sont le jumeau '
+				. 'GÉRANT ONLY du filtre ci-dessus : « Non assignées » (rattrapage groupé), même fusion AND, '
+				. 'même clé indexable, réservé à manage_woocommerce. '
+				. 'Les 24ᵉ et 25ᵉ (étape 42.7, même fichier, unassign_confirmer()) filtrent wc_get_orders() par '
+				. 'meta_key/meta_value sur _aod_assigned_confirmer pour libérer les commandes d’un confirmateur '
+				. 'AVANT sa suppression (sans quoi wp_delete_user() laisse la méta pointer vers un compte '
+				. 'fantôme) — MÊME motif exact que les 19ᵉ/20ᵉ (count_active_assigned()), requête paginée par '
+				. 'lots de 50, bornée à CE confirmateur. '
+				. 'La 26ᵉ (étape 43.2, même fichier, render()) est le jumeau EXACT de la 21ᵉ (scoped_orders()) '
+				. 'pour le nouveau filtre par confirmateur (GÉRANT UNIQUEMENT) : fusion AND avec un éventuel '
+				. 'meta_query déjà présent, même clé indexable _aod_assigned_confirmer. '
+				. 'Les 27ᵉ et 28ᵉ (étape 43.3, class-aod-cd-section-abandoned.php, apply_lead_assignment()) '
+				. 'lisent puis écrivent la colonne assigned_confirmer sur la MÊME table maison aod_cod_leads '
+				. 'que les 15ᵉ à 18ᵉ (pas d’API WP, cache non pertinent) : la 27ᵉ vérifie l’existence du '
+				. 'prospect par son id (SELECT préparé, borné), la 28ᵉ pose l’assignation via $wpdb->update() '
+				. '(valeurs et clause WHERE préparées par l’API $wpdb elle-même). GÉRANT UNIQUEMENT, et '
+				. 'l’ID du confirmateur est validé « confiance zéro » AVANT l’écriture '
+				. '(AOD_CD_Roles::valid_confirmer()).',
+		),
+		'WordPress.WP.AlternativeFunctions'       => array(
+			'n'        => 2,
+			'securite' => false,
+			'quoi'     => 'Fonction PHP native préférée à son équivalent WordPress. La 2ᵉ (étape 37.2, '
+				. 'class-aod-cod-icon.php) : `file_get_contents()` sur un SVG du catalogue fermé, chemin '
+				. 'construit depuis AOD_COD_PATH et un nom de fichier du catalogue — ni URL, ni saisie, '
+				. 'donc aucune des raisons pour lesquelles WPCS pousse vers wp_remote_get(). Même motif '
+				. 'que la lecture d’icônes du dashboard.',
+		),
+	);
+}
+
+/**
+ * Tous les fichiers PHP des deux plugins maison.
+ *
+ * 🚨 Balayage RÉCURSIF depuis la racine des plugins, jamais une liste de fichiers.
+ * C'est la leçon de la 18.1, rejouée dans le test même censé la prévenir : une
+ * liste nommée en dur laisse hors champ le fichier créé demain, et le cliquet se
+ * déclare vert sur un périmètre qui a rétréci sans que personne le voie.
+ *
+ * @return string[]
+ */
+function aod_test_pcs_fichiers() {
+	$cod    = defined( 'AOD_COD_PATH' ) ? AOD_COD_PATH : dirname( AOD_CD_PATH ) . '/aod-cod-form/';
+	$out    = array();
+	foreach ( array( AOD_CD_PATH, $cod ) as $racine ) {
+		if ( ! is_dir( $racine ) ) {
+			continue;
+		}
+		$it = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $racine, FilesystemIterator::SKIP_DOTS ) );
+		foreach ( $it as $f ) {
+			if ( $f->isFile() && 'php' === strtolower( $f->getExtension() ) ) {
+				$out[] = $f->getPathname();
+			}
+		}
+	}
+	sort( $out );
+	return $out;
+}
+
+/**
+ * Relève chaque annotation : fichier, ligne, sniffs cités, et raison éventuelle.
+ *
+ * @return array<int,array{fichier:string,ligne:int,sniffs:string[],raison:string,brut:string}>
+ */
+function aod_test_pcs_relever() {
+	$out = array();
+	foreach ( aod_test_pcs_fichiers() as $chemin ) {
+		$lignes = file( $chemin );
+		if ( ! $lignes ) {
+			continue;
+		}
+		foreach ( $lignes as $i => $ligne ) {
+			if ( false === strpos( $ligne, 'phpcs:ignore' ) ) {
+				continue;
+			}
+			// Tout ce qui suit `phpcs:ignore` : les sniffs, puis `-- raison`.
+			$reste = substr( $ligne, strpos( $ligne, 'phpcs:ignore' ) + strlen( 'phpcs:ignore' ) );
+			$parts = explode( '--', $reste, 2 );
+			$noms  = preg_split( '/[\s,]+/', trim( $parts[0] ), -1, PREG_SPLIT_NO_EMPTY );
+
+			$out[] = array(
+				'fichier' => str_replace( dirname( dirname( AOD_CD_PATH ) ) . '/', '', $chemin ),
+				'ligne'   => $i + 1,
+				'sniffs'  => $noms ? $noms : array(),
+				'raison'  => isset( $parts[1] ) ? trim( $parts[1] ) : '',
+				'brut'    => trim( $ligne ),
+			);
+		}
+	}
+	return $out;
+}
+
+/** À quelle famille du census une annotation appartient-elle ? (préfixe le plus long) */
+function aod_test_pcs_famille( $sniffs ) {
+	$familles = array_keys( aod_test_pcs_census() );
+	// Du plus spécifique au plus général : `WordPress.Security.EscapeOutput.X`
+	// doit tomber dans `WordPress.Security.EscapeOutput`, pas ailleurs.
+	usort(
+		$familles,
+		function ( $a, $b ) {
+			return strlen( $b ) - strlen( $a );
+		}
+	);
+	foreach ( $sniffs as $s ) {
+		foreach ( $familles as $f ) {
+			if ( 0 === strpos( $s, $f ) ) {
+				return $f;
+			}
+		}
+	}
+	return '';
+}
+
+/* =========================================================================
+ * LE TEST
+ * ======================================================================= */
+
+AOD_Test::group( 'phpcs:ignore — cliquet (D6) : aucune suppression de contrôle n’arrive en silence' );
+
+$aod_pcs_all     = aod_test_pcs_relever();
+$aod_pcs_census  = aod_test_pcs_census();
+$aod_pcs_nb_fich = count( aod_test_pcs_fichiers() );
+
+// TÉMOIN (DoD §C.2) — publier le périmètre réellement balayé. Un `glob` qui ne
+// trouve rien rendrait « 0 annotation non justifiée » : vert, et vide de sens.
+AOD_Test::ok(
+	$aod_pcs_nb_fich >= 30,
+	sprintf( 'Témoin : %d fichiers PHP balayés dans les deux plugins (un balayage vide se déclarerait vert)', $aod_pcs_nb_fich )
+);
+AOD_Test::ok(
+	count( $aod_pcs_all ) >= 100,
+	sprintf( 'Témoin : %d annotations relevées', count( $aod_pcs_all ) )
+);
+
+/* --- R1 · aucune annotation NUE (règle absolue) ------------------------ */
+
+// Une annotation sans nom de sniff désarme TOUT sur sa ligne. Il y en avait une,
+// trouvée par ce test : `echo $checked; // phpcs:ignore` — le contenu était
+// inoffensif, mais la suppression, elle, était un blanc-seing. Resserrée sur
+// `EscapeOutput`.
+$aod_pcs_nues = array();
+foreach ( $aod_pcs_all as $a ) {
+	if ( ! $a['sniffs'] ) {
+		$aod_pcs_nues[] = $a['fichier'] . ':' . $a['ligne'];
+	}
+}
+AOD_Test::eq(
+	0,
+	count( $aod_pcs_nues ),
+	'R1 — aucune annotation NUE (sans nom de sniff = tous les contrôles désarmés)'
+	. ( $aod_pcs_nues ? ' — nue(s) : ' . implode( ', ', $aod_pcs_nues ) : '' )
+);
+
+/* --- R4 · aucune annotation INERTE (séparateur em-dash) ---------------- */
+
+// 🚨 Trouvée par le tri phpcs du 2026-07-21 : deux annotations écrivaient leur
+// raison après un tiret CADRATIN « — » au lieu du « -- » que phpcs exige. phpcs
+// lit alors « SNIFF — raison » comme une LISTE DE SNIFFS, ne reconnaît rien, et
+// **n'honore pas l'annotation** : la ligne reste flaguée. L'exception paraissait
+// documentée et relue ; elle ne supprimait rien. C'est l'annotation NUE de R1 un
+// cran plus loin — non pas absente, mais INERTE, ce qui se voit encore moins.
+// Ces deux-là couvraient du code sûr, donc zéro impact ; mais le format est un
+// piège qui se recopie. Règle absolue : le séparateur de raison est « -- ».
+//
+// ⚠️ On regarde les JETONS DE SNIFF (portion après `phpcs:ignore`, avant `--`),
+// PAS la ligne entière : un em-dash dans le CODE de la ligne (`$name . ' — ' .`)
+// n'a rien à voir avec l'annotation. C'est ce qu'un premier jet, qui grepait
+// `brut`, prenait à tort pour une annotation inerte (class-aod-shipping.php:429).
+$aod_pcs_inertes = array();
+foreach ( $aod_pcs_all as $a ) {
+	foreach ( $a['sniffs'] as $sniff ) {
+		if ( false !== strpos( $sniff, '—' ) ) {
+			$aod_pcs_inertes[] = $a['fichier'] . ':' . $a['ligne'];
+			break;
+		}
+	}
+}
+AOD_Test::eq(
+	0,
+	count( $aod_pcs_inertes ),
+	'R4 — aucune annotation INERTE (raison après « — » em-dash : phpcs ne l’honore pas ; séparateur = « -- »)'
+	. ( $aod_pcs_inertes ? ' — inerte(s) : ' . implode( ', ', $aod_pcs_inertes ) : '' )
+);
+
+/* --- R3 · le stock d'annotations sans raison ne remonte pas ------------ */
+
+// Plancher constaté le 2026-07-21. Le BAISSER est un progrès (documenter une
+// annotation de plus) : le test le dira, et on ajustera vers le bas. Le remonter
+// exige de venir écrire ici pourquoi — ce qui est tout l'objet du cliquet.
+// Descendu 141 → 139 → 132 le 2026-07-21. 139 : le tri phpcs a corrigé 2
+// annotations em-dash inertes (R4). 132 : la 28.2 a resserré les 7 suppressions
+// `WordPress.DB` larges (dette D14) en sniffs précis, chacune AVEC sa raison. Le
+// plancher suit la réalité : le baisser est un progrès, le remonter exige de venir
+// écrire ici pourquoi.
+$aod_pcs_plancher_sans_raison = 132;
+
+$aod_pcs_sans_raison = array();
+foreach ( $aod_pcs_all as $a ) {
+	if ( '' === $a['raison'] ) {
+		$aod_pcs_sans_raison[] = $a['fichier'] . ':' . $a['ligne'];
+	}
+}
+AOD_Test::ok(
+	count( $aod_pcs_sans_raison ) <= $aod_pcs_plancher_sans_raison,
+	sprintf(
+		'R3 — annotations sans raison : %d (plancher %d, ne doit pas remonter)',
+		count( $aod_pcs_sans_raison ),
+		$aod_pcs_plancher_sans_raison
+	)
+);
+// Un plancher qu'on oublie de descendre perd son mordant : on signale l'écart.
+AOD_Test::ok(
+	count( $aod_pcs_sans_raison ) >= $aod_pcs_plancher_sans_raison - 5,
+	sprintf(
+		'R3 — le plancher suit la réalité : %d sans raison pour un plancher à %d — descends-le',
+		count( $aod_pcs_sans_raison ),
+		$aod_pcs_plancher_sans_raison
+	)
+);
+
+/* --- R2 · census par famille ------------------------------------------- */
+
+$aod_pcs_vus = array();
+foreach ( $aod_pcs_all as $a ) {
+	$f = aod_test_pcs_famille( $a['sniffs'] );
+	if ( '' === $f ) {
+		// Famille inconnue du census : c'est précisément le cas qu'on veut voir.
+		$aod_pcs_vus['(INCONNUE) ' . implode( ',', $a['sniffs'] ) . ' @ ' . $a['fichier'] . ':' . $a['ligne'] ] = 1;
+		continue;
+	}
+	$aod_pcs_vus[ $f ] = isset( $aod_pcs_vus[ $f ] ) ? $aod_pcs_vus[ $f ] + 1 : 1;
+}
+
+foreach ( $aod_pcs_census as $famille => $attendu ) {
+	$vu = isset( $aod_pcs_vus[ $famille ] ) ? $aod_pcs_vus[ $famille ] : 0;
+	AOD_Test::eq(
+		$attendu['n'],
+		$vu,
+		sprintf(
+			'R2 — census %s : %d attendues%s',
+			$famille,
+			$attendu['n'],
+			$attendu['securite'] ? ' 🔒 FAMILLE DE SÉCURITÉ — une hausse doit être justifiée ici même' : ''
+		)
+	);
+}
+
+// Toute famille hors census (y compris « (INCONNUE) … ») est un échec nommé.
+$aod_pcs_hors = array();
+foreach ( $aod_pcs_vus as $famille => $n ) {
+	if ( ! isset( $aod_pcs_census[ $famille ] ) ) {
+		$aod_pcs_hors[] = $famille;
+	}
+}
+AOD_Test::eq(
+	0,
+	count( $aod_pcs_hors ),
+	'R2 — aucune famille de sniff hors census'
+	. ( $aod_pcs_hors ? ' — vue(s) : ' . implode( ' | ', $aod_pcs_hors ) : '' )
+);
+
+/* --- Garde-fou du cliquet lui-même ------------------------------------- */
+
+// Le total du census doit égaler le total relevé. Sans cette ligne, une famille
+// oubliée dans le census ferait passer ses annotations pour inexistantes : chaque
+// compte individuel serait juste, et le trou invisible.
+$aod_pcs_total_census = 0;
+foreach ( $aod_pcs_census as $c ) {
+	$aod_pcs_total_census += $c['n'];
+}
+AOD_Test::eq(
+	count( $aod_pcs_all ),
+	$aod_pcs_total_census,
+	'Cohérence — la somme du census couvre TOUTES les annotations relevées (sinon une famille manque au census)'
+);

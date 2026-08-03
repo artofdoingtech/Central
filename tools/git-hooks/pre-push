@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# ───────────────────────────────────────────────────────────────
+# pre-push — refuse de POUSSER si les tests unitaires échouent.
+#
+# La discipline « rejouer les tests après toute retouche » ne tient qu'à la
+# mémoire de chacun ; ce hook la rend mécanique : un `git push` qui embarque
+# une régression sur `tests/run.sh` est bloqué avant d'atteindre le dépôt.
+#
+# Activation : `git config core.hooksPath tools/git-hooks` — fait
+# automatiquement par `scripts/preflight.sh` à chaque clone (core.hooksPath
+# n'est pas versionné, il se repointe donc par clone).
+#
+# Contourner ponctuellement (push de docs, urgence) :  git push --no-verify
+# ───────────────────────────────────────────────────────────────
+set -uo pipefail
+
+# Toujours travailler depuis la racine du dépôt (le hook peut être appelé
+# depuis un sous-dossier).
+cd "$(git rev-parse --show-toplevel)" || exit 0
+
+# Vieux clone sans dispositif de test → on ne bloque rien.
+[ -f tests/run.sh ] || exit 0
+
+# Les tests s'exécutent DANS le conteneur wpcli. S'il est éteint, on ne PEUT
+# pas tester : on prévient (fort) et on laisse passer, plutôt que de bloquer
+# un push alors que la stack Docker est simplement arrêtée. Le développeur
+# reste libre de lancer la stack et de tester à la main.
+if ! docker compose ps --status running --services 2>/dev/null | grep -qx wpcli; then
+	printf '\033[33m⚠ pre-push : stack de test arrêtée (wpcli) — tests NON joués.\033[0m\n' >&2
+	printf '  Pour tester avant de pousser :  docker compose up -d && bash tests/run.sh\n' >&2
+	exit 0
+fi
+
+printf '▸ pre-push : lancement des tests unitaires…\n' >&2
+if bash tests/run.sh; then
+	exit 0
+fi
+
+printf '\n\033[31m✗ Push BLOQUÉ : des tests échouent.\033[0m\n' >&2
+printf '  Corrige-les, ou (en connaissance de cause) force avec :  git push --no-verify\n' >&2
+exit 1

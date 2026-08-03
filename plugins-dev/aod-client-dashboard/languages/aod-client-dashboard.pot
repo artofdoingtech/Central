@@ -1,0 +1,3634 @@
+# Copyright (C) 2026 Art Of Doing
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: AOD Client Dashboard 0.75.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/aod-client-dashboard\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-03T11:42:08+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: aod-client-dashboard\n"
+
+#. Plugin Name of the plugin
+#: aod-client-dashboard.php
+msgid "AOD Client Dashboard"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: aod-client-dashboard.php
+msgid "https://artofdoing.net"
+msgstr ""
+
+#. Description of the plugin
+#: aod-client-dashboard.php
+msgid "Espace de gestion front-end pour le client de la boutique : commandes, produits, livraison, stats, pixels, WhatsApp — SANS accès à wp-admin. Rôle restreint + interface marquée au thème."
+msgstr ""
+
+#. Author of the plugin
+#: aod-client-dashboard.php
+msgid "Art Of Doing"
+msgstr ""
+
+#: aod-client-dashboard.php:62
+msgid "AOD Client Dashboard est inactif : WooCommerce est requis."
+msgstr ""
+
+#: aod-client-dashboard.php:91
+msgid "AOD Client Dashboard : le plugin « AOD COD Form » est recommandé. Sans lui, les commandes « Confirmées », les tarifs de livraison par wilaya et l’envoi automatique aux transporteurs ne sont pas disponibles dans l’espace de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:38
+#: includes/class-aod-cd-account.php:66
+msgid "Accès Gérant Boutique"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:39
+msgid "Accès Gérant"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:52
+#: includes/class-aod-cd-account.php:154
+#: includes/class-aod-cd-section-abandoned.php:326
+#: includes/class-aod-cd-section-abandoned.php:687
+#: includes/class-aod-cd-section-abandoned.php:717
+#: includes/class-aod-cd-section-abandoned.php:833
+#: includes/class-aod-cd-section-account.php:162
+#: includes/class-aod-cd-section-account.php:225
+#: includes/class-aod-cd-section-landing.php:91
+#: includes/class-aod-cd-section-landing.php:666
+#: includes/class-aod-cd-section-landing.php:675
+#: includes/class-aod-cd-section-landing.php:679
+#: includes/class-aod-cd-section-landing.php:759
+#: includes/class-aod-cd-section-landing.php:771
+#: includes/class-aod-cd-section-landing.php:777
+#: includes/class-aod-cd-section-marketing.php:323
+#: includes/class-aod-cd-section-marketing.php:355
+#: includes/class-aod-cd-section-orders.php:1392
+#: includes/class-aod-cd-section-orders.php:1404
+#: includes/class-aod-cd-section-orders.php:1480
+#: includes/class-aod-cd-section-orders.php:1655
+#: includes/class-aod-cd-section-orders.php:1883
+#: includes/class-aod-cd-section-orders.php:1897
+#: includes/class-aod-cd-section-orders.php:1928
+#: includes/class-aod-cd-section-orders.php:2088
+#: includes/class-aod-cd-section-orders.php:2100
+#: includes/class-aod-cd-section-orders.php:2158
+#: includes/class-aod-cd-section-orders.php:2240
+#: includes/class-aod-cd-section-orders.php:2248
+#: includes/class-aod-cd-section-orders.php:2268
+#: includes/class-aod-cd-section-orders.php:2277
+#: includes/class-aod-cd-section-products.php:1088
+#: includes/class-aod-cd-section-products.php:1100
+#: includes/class-aod-cd-section-products.php:1104
+#: includes/class-aod-cd-section-products.php:1695
+#: includes/class-aod-cd-section-products.php:1704
+#: includes/class-aod-cd-section-products.php:1708
+#: includes/class-aod-cd-section-products.php:1749
+#: includes/class-aod-cd-section-products.php:1866
+#: includes/class-aod-cd-section-products.php:1906
+#: includes/class-aod-cd-section-shipping.php:55
+#: includes/class-aod-cd-section-shipping.php:432
+#: includes/class-aod-cd-section-shipping.php:589
+#: includes/class-aod-cd-section-shipping.php:713
+#: includes/class-aod-cd-section-stock.php:61
+#: includes/class-aod-cd-section-stock.php:70
+#: includes/class-aod-cd-section-stock.php:74
+#: includes/class-aod-cd-section-team.php:330
+#: includes/class-aod-cd-section-tracking.php:513
+#: includes/class-aod-cd-section-tracking.php:527
+#: includes/class-aod-cd-section-tracking.php:590
+#: includes/class-aod-cd-section-tracking.php:603
+#: includes/class-aod-cd-section-whatsapp.php:123
+#: includes/class-aod-cd-section-whatsapp.php:138
+msgid "Accès refusé."
+msgstr ""
+
+#. translators: %s: dashboard URL
+#: includes/class-aod-cd-account.php:71
+#, php-format
+msgid "Crée le compte que ton client utilisera pour gérer sa boutique. Il se connectera normalement puis sera dirigé vers son espace : %s — sans aucun accès au tableau de bord WordPress."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:84
+msgid "Créer un compte gérant"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:90
+#: includes/class-aod-cd-account.php:119
+msgid "Identifiant"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:90
+#: includes/class-aod-cd-account.php:102
+msgid "requis"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:94
+#: includes/class-aod-cd-section-account.php:77
+#: includes/class-aod-cd-section-team.php:249
+msgid "Nom affiché"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:98
+#: includes/class-aod-cd-section-account.php:82
+msgid "Adresse e-mail"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:102
+#: includes/class-aod-cd-section-team.php:255
+msgid "Mot de passe"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:105
+msgid "Au moins 10 caractères. Un mot de passe fort est pré-rempli ; communique-le au client."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:109
+msgid "Créer le compte gérant"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:112
+msgid "Gérants existants"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:114
+msgid "Aucun compte gérant pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:120
+msgid "Nom"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:121
+msgid "E-mail"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:122
+#: includes/class-aod-cd-section-products.php:278
+#: includes/class-aod-cd-section-products.php:297
+#: includes/class-aod-cd-section-tracking.php:346
+msgid "Actions"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:132
+#: includes/class-aod-cd-section-orders.php:2901
+#: includes/class-aod-cd-section-team.php:207
+msgid "Modifier"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:134
+msgid "Ouvrir la gestion"
+msgstr ""
+
+#: includes/class-aod-cd-account.php:163
+msgid "L’identifiant et le mot de passe sont obligatoires."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:168
+msgid "Le mot de passe doit faire au moins 10 caractères."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:171
+#: includes/class-aod-cd-section-team.php:382
+msgid "Cet identifiant existe déjà."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:174
+#: includes/class-aod-cd-section-account.php:178
+msgid "Adresse e-mail invalide."
+msgstr ""
+
+#: includes/class-aod-cd-account.php:177
+msgid "Cette adresse e-mail est déjà utilisée."
+msgstr ""
+
+#. translators: %s: login of the created manager
+#: includes/class-aod-cd-account.php:195
+#, php-format
+msgid "Compte gérant « %s » créé. Il peut se connecter et sera dirigé vers son espace de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-customize.php:98
+msgid "Espace de gestion"
+msgstr ""
+
+#: includes/class-aod-cd-customize.php:99
+msgid "Couleur d’accent de l’espace gérant (/gestion). Le logo et le nom viennent de « Identité du site »."
+msgstr ""
+
+#: includes/class-aod-cd-customize.php:118
+msgid "Couleur d’accent"
+msgstr ""
+
+#: includes/class-aod-cd-customize.php:119
+msgid "Boutons, éléments actifs, points forts de l’interface de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:47
+msgid "Accueil"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:48
+#: includes/class-aod-cd-section-orders.php:148
+#: includes/class-aod-cd-section-team.php:65
+msgid "Commandes"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:49
+#: includes/class-aod-cd-section-abandoned.php:439
+#: includes/class-aod-cd-section-team.php:50
+msgid "Commandes abandonnées"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:50
+#: includes/class-aod-cd-section-orders.php:2943
+#: includes/class-aod-cd-section-products.php:237
+msgid "Produits"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:51
+#: includes/class-aod-cd-section-products.php:276
+#: includes/class-aod-cd-section-products.php:291
+#: includes/class-aod-cd-section-stock.php:485
+#: includes/class-aod-cd-section-team.php:67
+msgid "Stock"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:52
+#: includes/class-aod-cd-section-products.php:95
+#: includes/class-aod-cd-section-products.php:490
+msgid "Catégories"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:53
+#: includes/class-aod-cd-dashboard.php:201
+#: includes/class-aod-cd-section-abandoned.php:545
+#: includes/class-aod-cd-section-abandoned.php:636
+#: includes/class-aod-cd-section-home.php:488
+#: includes/class-aod-cd-section-orders.php:2920
+#: includes/class-aod-cd-section-shipping.php:135
+msgid "Livraison"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:54
+#: includes/class-aod-cd-section-tracking.php:168
+msgid "Suivi commande"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:55
+#: includes/class-aod-cd-section-marketing.php:163
+msgid "Pixels & Tracking"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:56
+#: includes/class-aod-cd-section-abandoned.php:613
+#: includes/class-aod-cd-section-orders.php:529
+#: includes/class-aod-cd-section-orders.php:2915
+#: includes/class-aod-cd-section-whatsapp.php:61
+msgid "WhatsApp"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:57
+#: includes/class-aod-cd-section-team.php:122
+msgid "Équipe"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:58
+#: includes/class-aod-cd-section-account.php:58
+msgid "Mon compte"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:172
+#: includes/class-aod-cd-section-landing.php:112
+#: includes/class-aod-cd-section-products.php:303
+msgid "Page de vente"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:195
+msgid "Pilotage"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:196
+msgid "Ventes"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:200
+msgid "Catalogue"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:202
+msgid "Marketing"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:203
+msgid "Administration"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:241
+msgid "Vous n'avez pas accès à l'espace de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:242
+msgid "Accès refusé"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:317
+#: includes/class-aod-cd-dashboard.php:491
+#: includes/class-aod-cd-dashboard.php:504
+msgid "Gestion"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:333
+msgid "Supprimer cette catégorie ? Les produits concernés perdront ce classement."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:334
+msgid "0 produit"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:335
+msgid "Erreur réseau."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:340
+msgid "Erreur."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:341
+msgid "Supprimé"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:342
+#: includes/class-aod-cd-section-landing.php:730
+#: includes/class-aod-cd-section-landing.php:737
+msgid "Enregistré"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:343
+msgid "Envoyé"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:344
+msgid "Test en cours…"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:345
+#, php-format
+msgid "Supprimer « %s » ? (déplacé dans la corbeille)"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:346
+#, php-format
+msgid "Économie : %s"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:347
+msgid "Aucune réduction (sera ignorée)"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:349
+#: includes/class-aod-cd-dashboard.php:372
+#: includes/class-aod-cd-dashboard.php:395
+#: includes/class-aod-cd-section-orders.php:2859
+#: includes/class-aod-cd-section-products.php:722
+#: includes/class-aod-cd-section-team.php:306
+msgid "Annuler"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:350
+msgid "Colis créé"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:351
+#: includes/class-aod-cd-section-products.php:491
+#: includes/class-aod-cd-section-products.php:493
+msgid "Sélectionner des catégories"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:352
+msgid "Nouveau"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:353
+#: includes/class-aod-cd-section-products.php:630
+msgid "Retirer cette photo"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:354
+msgid "Dernière confirmation : supprimer définitivement TOUS les produits et TOUTES les commandes ? Cette action est irréversible."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:355
+msgid "Réinitialisation en cours… ne fermez pas cette page."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:356
+msgid "Boutique réinitialisée."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:357
+#, php-format
+msgid "Supprimer définitivement %d commande(s) sélectionnée(s) ? Cette action est irréversible."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:358
+#, php-format
+msgid "Supprimer définitivement %d prospect(s) sélectionné(s) ? Cette action est irréversible."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:360
+#, php-format
+msgid "(%d déjà assignée(s), ignorée(s))"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:361
+#, php-format
+msgid "%d commande(s) sélectionnée(s) sont DÉJÀ assignées à un confirmateur. Les lui retirer pour les réassigner ?"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:363
+#, php-format
+msgid "(%d ignorée(s) : déjà expédiée(s) ou hors périmètre)"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:366
+msgid "Envoi…"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:367
+msgid "Envoi au transporteur"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:368
+#, php-format
+msgid "%d commande(s) vont être envoyées au transporteur."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:369
+#, php-format
+msgid "%d commande(s) écartée(s) : déjà expédiée(s) ou rien à envoyer."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:370
+msgid "Transporteur par défaut"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:371
+#: includes/class-aod-cd-section-orders.php:900
+msgid "Envoyer"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:373
+#, php-format
+msgid "Envoi %1$d / %2$d…"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:374
+#, php-format
+msgid "%1$d envoyée(s), %2$d en échec."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:375
+msgid "Arrêter"
+msgstr ""
+
+#. translators: %d : nombre de commandes du lot qui n'ont pas été tentées après un arrêt.
+#: includes/class-aod-cd-dashboard.php:377
+#, php-format
+msgid "%d commande(s) n’ont pas été tentées (lot arrêté)."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:378
+#: includes/class-aod-cd-dashboard.php:554
+#: includes/class-aod-cd-section-team.php:236
+msgid "Fermer"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:379
+#, php-format
+msgid "Sélection trop grande : %1$d commandes pour un maximum de %2$d. Réduisez la sélection."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:380
+msgid "Aucune de ces commandes n’est à envoyer."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:382
+#, php-format
+msgid "%d commande(s) portent une note pour le livreur que le transporteur choisi ne recevra PAS."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:383
+#: includes/class-aod-cd-section-orders.php:2777
+msgid "Retirer"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:384
+#: includes/class-aod-cd-section-orders.php:2801
+#: includes/class-aod-cd-section-products.php:665
+msgid "Quantité"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:385
+msgid "Actualisation…"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:386
+msgid "Chargement du suivi…"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:387
+msgid "Supprimer ce confirmateur ? Cette action est irréversible."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:388
+msgid "Créer la commande pour ce prospect ? Vous la compléterez ensuite."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:389
+msgid "Mot de passe généré — notez-le, il ne sera plus affiché :"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:390
+msgid "Import en cours…"
+msgstr ""
+
+#. translators: %d : nombre de wilayas agrégées hors top 10.
+#: includes/class-aod-cd-dashboard.php:391
+#: includes/class-aod-cd-section-abandoned.php:544
+#: includes/class-aod-cd-section-abandoned.php:629
+#: includes/class-aod-cd-section-home.php:1726
+#: includes/class-aod-cd-section-home.php:1736
+#: includes/class-aod-cd-section-home.php:1752
+#: includes/class-aod-cd-section-orders.php:424
+#: includes/class-aod-cd-section-orders.php:534
+#: includes/class-aod-cd-section-orders.php:2696
+#: includes/class-aod-cd-section-shipping.php:181
+#: includes/class-aod-cd-section-shipping.php:212
+msgid "Wilaya"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:392
+#: includes/class-aod-cd-section-abandoned.php:637
+msgid "Domicile"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:393
+#: includes/class-aod-cd-section-abandoned.php:637
+msgid "Stop-desk"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:394
+msgid "Appliquer les wilayas cochées"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:396
+msgid "Tout cocher / décocher"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:397
+msgid "Non défini"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:398
+msgid "Aucun tarif reçu."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:399
+msgid "Appliquer les tarifs importés aux wilayas cochées ? Les tarifs actuels seront sauvegardés (restaurables)."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:400
+msgid "Restaurer les tarifs précédents ? L’import le plus récent sera annulé."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:401
+msgid "Application…"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:402
+msgid "Cochez au moins une wilaya."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:403
+msgid "Supprimer ce bloc ? Son contenu sera perdu."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:404
+#: includes/class-aod-cd-section-landing.php:444
+#: includes/class-aod-cd-section-products.php:614
+msgid "Aucune image"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:405
+#: includes/class-aod-cd-section-landing.php:524
+msgid "Aucun fichier"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:406
+msgid "Paragraphe"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:407
+msgid "Titre"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:408
+msgid "Sous-titre"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:409
+msgid "Insérer une image"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:410
+msgid "Insérer une vidéo"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:411
+msgid "Ajouter une vidéo"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:412
+msgid "Coller un lien YouTube"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:413
+msgid "Ou choisir un fichier vidéo depuis mon PC"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:414
+msgid "Le lien YouTube reste léger (rien n’est chargé avant le clic). Un fichier est hébergé sur votre site."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:415
+msgid "Lien YouTube non reconnu."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:417
+msgid "Insérer"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:419
+#: includes/class-aod-cd-section-account.php:101
+msgid "Confirmer"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:421
+#: includes/class-aod-cd-section-home.php:485
+msgid "Confirmation"
+msgstr ""
+
+#. translators: %s : poids maximal accepté, déjà formaté.
+#. translators: %s : poids maximal accepté, déjà formaté (ex. « 2 Mo »).
+#: includes/class-aod-cd-dashboard.php:427
+#: includes/class-aod-cd-upload.php:139
+#, php-format
+msgid "Fichier trop lourd : %s au maximum."
+msgstr ""
+
+#. translators: %s : poids maximal accepté, déjà formaté.
+#: includes/class-aod-cd-dashboard.php:428
+msgid "Remplacer les blocs actuels par ceux de l’autre produit ? Le travail en cours sur cette page sera perdu."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:441
+msgid "Menu"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:448
+msgid "Voir la boutique"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:484
+msgid "Déconnexion"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:503
+msgid "Fil d’ariane"
+msgstr ""
+
+#. translators: %d : nombre de produits affectés au confirmateur.
+#: includes/class-aod-cd-dashboard.php:531
+#: includes/class-aod-cd-section-team.php:189
+#, php-format
+msgid "Produits : %d"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:543
+msgid "Aucune section ne vous est attribuée pour le moment. Contactez le gérant de la boutique."
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:664
+msgid "Rechercher"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:667
+#: includes/class-aod-cd-section-abandoned.php:494
+#: includes/class-aod-cd-section-orders.php:211
+#: includes/class-aod-cd-section-tracking.php:307
+msgid "Réinitialiser"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:689
+msgid "Pagination"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:833
+#: includes/class-aod-cd-section-home.php:958
+#: includes/class-aod-cd-section-stock.php:723
+msgid "Du"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:835
+#: includes/class-aod-cd-section-home.php:962
+#: includes/class-aod-cd-section-stock.php:727
+msgid "Au"
+msgstr ""
+
+#. translators: %s : libellé du champ (ex. « Titre »).
+#: includes/class-aod-cd-dashboard.php:1019
+#, php-format
+msgid "%s — français"
+msgstr ""
+
+#. translators: %s : libellé du champ (ex. « Titre »).
+#: includes/class-aod-cd-dashboard.php:1021
+#, php-format
+msgid "%s — arabe"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:1056
+msgid "Français"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:1064
+msgid "العربية"
+msgstr ""
+
+#: includes/class-aod-cd-dashboard.php:1081
+msgid "Cette section arrive bientôt."
+msgstr ""
+
+#: includes/class-aod-cd-lang.php:123
+msgid "Choix de la langue"
+msgstr ""
+
+#: includes/class-aod-cd-roles.php:118
+msgid "Gestion Boutique"
+msgstr ""
+
+#: includes/class-aod-cd-roles.php:131
+#: includes/class-aod-cd-section-abandoned.php:483
+#: includes/class-aod-cd-section-home.php:948
+#: includes/class-aod-cd-section-home.php:2151
+#: includes/class-aod-cd-section-orders.php:200
+#: includes/class-aod-cd-section-tracking.php:295
+msgid "Confirmateur"
+msgstr ""
+
+#: includes/class-aod-cd-roles.php:327
+msgid "Admin"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:213
+msgid "Montant approché : le choix de variante n’est pas mémorisé par un panier abandonné, le supplément éventuel n’est donc pas compté."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:214
+msgid "≈"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:222
+#: includes/class-aod-cd-section-abandoned.php:286
+#: includes/class-aod-cd-section-orders.php:742
+#: includes/class-aod-cd-section-orders.php:1559
+msgid "Non assignée"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:277
+#: includes/class-aod-cd-section-abandoned.php:349
+#: includes/class-aod-cd-section-abandoned.php:690
+#: includes/class-aod-cd-section-abandoned.php:836
+msgid "Le module de commande COD n’est pas actif."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:283
+#: includes/class-aod-cd-section-abandoned.php:697
+#: includes/class-aod-cd-section-abandoned.php:702
+msgid "Prospect introuvable."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:290
+#: includes/class-aod-cd-section-orders.php:1564
+#: includes/class-aod-cd-section-orders.php:1661
+msgid "Confirmateur invalide."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:338
+#: includes/class-aod-cd-section-orders.php:1497
+msgid "Assignation mise à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:350
+msgid "Activez le plugin « AOD COD Form » pour suivre les paniers abandonnés."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:404
+msgid "Tous"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:405
+msgid "Abandonnés"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:406
+#: includes/class-aod-cd-section-abandoned.php:603
+#: includes/class-aod-cd-section-orders.php:923
+msgid "En cours"
+msgstr ""
+
+#. translators: %d = nombre de prospects devenus commandes.
+#: includes/class-aod-cd-section-abandoned.php:433
+#, php-format
+msgid "Un visiteur a rempli le formulaire sans valider. %d a déjà été récupéré en commande."
+msgid_plural "Un visiteur a rempli le formulaire sans valider. %d ont déjà été récupérés en commande."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-abandoned.php:436
+msgid "Un visiteur a rempli le formulaire de commande sans cliquer « Commander ». Rappelez-le tant qu’il est chaud."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:445
+#: includes/class-aod-cd-section-abandoned.php:492
+#: includes/class-aod-cd-section-home.php:968
+#: includes/class-aod-cd-section-orders.php:209
+#: includes/class-aod-cd-section-stock.php:733
+#: includes/class-aod-cd-section-tracking.php:305
+msgid "Filtrer"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:470
+msgid "Rechercher : nom, téléphone…"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:485
+#: includes/class-aod-cd-section-home.php:950
+#: includes/class-aod-cd-section-orders.php:202
+#: includes/class-aod-cd-section-tracking.php:297
+msgid "Tous les confirmateurs"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:502
+msgid "Aucun résultat pour cette recherche."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:502
+msgid "Aucun panier abandonné pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:528
+msgid "sélectionné(s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:531
+#: includes/class-aod-cd-section-orders.php:405
+#: includes/class-aod-cd-section-products.php:307
+#: includes/class-aod-cd-section-team.php:211
+msgid "Supprimer"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:538
+#: includes/class-aod-cd-section-orders.php:413
+msgid "Tout sélectionner"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:541
+#: includes/class-aod-cd-section-abandoned.php:599
+msgid "Quand"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:542
+#: includes/class-aod-cd-section-abandoned.php:607
+#: includes/class-aod-cd-section-orders.php:423
+#: includes/class-aod-cd-section-orders.php:500
+#: includes/class-aod-cd-section-orders.php:2908
+#: includes/class-aod-cd-section-tracking.php:192
+#: includes/class-aod-cd-section-tracking.php:334
+msgid "Client"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:543
+#: includes/class-aod-cd-section-abandoned.php:627
+#: includes/class-aod-cd-section-home.php:932
+#: includes/class-aod-cd-section-home.php:1249
+#: includes/class-aod-cd-section-products.php:274
+#: includes/class-aod-cd-section-products.php:288
+#: includes/class-aod-cd-section-stock.php:513
+#: includes/class-aod-cd-section-stock.php:837
+msgid "Produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:546
+#: includes/class-aod-cd-section-abandoned.php:640
+#: includes/class-aod-cd-section-orders.php:2945
+msgid "Qté"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:550
+#: includes/class-aod-cd-section-abandoned.php:641
+msgid "Montant"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:555
+#: includes/class-aod-cd-section-abandoned.php:656
+#: includes/class-aod-cd-section-orders.php:436
+#: includes/class-aod-cd-section-orders.php:554
+#: includes/class-aod-cd-section-tracking.php:199
+#: includes/class-aod-cd-section-tracking.php:340
+msgid "Assigné à"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:595
+msgid "Sélectionner ce prospect"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:602
+msgid "Abandonné"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:612
+#: includes/class-aod-cd-section-orders.php:528
+#: includes/class-aod-cd-section-orders.php:2914
+msgid "Appeler"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:621
+msgid "Commander"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:710
+msgid "Ce prospect n’a pas de numéro de téléphone : impossible de créer une commande."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:723
+#: includes/class-aod-cd-section-abandoned.php:742
+msgid "Ce prospect a déjà été converti en commande."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:733
+msgid "Conversion déjà en cours pour ce prospect."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:760
+msgid "La commande n’a pas pu être créée."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:767
+msgid "Commande créée. Complétez-la, puis validez le statut."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:842
+msgid "Aucun prospect sélectionné."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:853
+msgid "Aucun prospect n’a pu être supprimé."
+msgstr ""
+
+#. translators: %d: nombre de prospects supprimés.
+#: includes/class-aod-cd-section-abandoned.php:859
+#, php-format
+msgid "%d prospect supprimé."
+msgid_plural "%d prospects supprimés."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-abandoned.php:899
+msgid "Paiement à la livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:950
+msgid "Commande créée depuis un panier abandonné — à compléter, puis à confirmer."
+msgstr ""
+
+#: includes/class-aod-cd-section-abandoned.php:951
+msgid "Commande créée depuis un panier abandonné (sans produit) — articles à composer au téléphone, puis à confirmer."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:59
+msgid "Votre profil et votre mot de passe."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:67
+msgid "Profil"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:72
+#: includes/class-aod-cd-section-team.php:244
+msgid "Identifiant de connexion"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:74
+#: includes/class-aod-cd-section-team.php:246
+msgid "L’identifiant ne peut pas être modifié."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:91
+msgid "Sécurité"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:94
+msgid "Laissez ces deux champs vides pour conserver le mot de passe actuel."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:97
+msgid "Nouveau mot de passe"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:109
+#: includes/class-aod-cd-section-landing.php:217
+#: includes/class-aod-cd-section-orders.php:2858
+#: includes/class-aod-cd-section-products.php:201
+#: includes/class-aod-cd-section-products.php:721
+#: includes/class-aod-cd-section-stock.php:833
+#: includes/class-aod-cd-section-team.php:309
+#: includes/class-aod-cd-section-whatsapp.php:105
+msgid "Enregistrer"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:131
+msgid "Zone de danger"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:132
+msgid "Réinitialiser la boutique supprime définitivement TOUS les produits (avec leurs photos) et TOUTES les commandes, puis remet le compteur des numéros de commande à #1. Les pages, réglages et votre compte ne sont pas touchés. Cette action est irréversible."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:136
+msgid "Pour confirmer, recopiez exactement la phrase ci-dessous :"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:141
+msgid "Réinitialiser la boutique"
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:159
+msgid "Session expirée, reconnectez-vous."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:182
+msgid "Cette adresse e-mail est déjà utilisée par un autre compte."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:189
+msgid "Les deux mots de passe ne correspondent pas."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:192
+msgid "Le mot de passe doit faire au moins 8 caractères."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:209
+msgid "Compte mis à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-account.php:230
+msgid "La phrase de confirmation ne correspond pas. Réinitialisation annulée."
+msgstr ""
+
+#. translators: 1: nb produits, 2: nb images, 3: nb commandes.
+#: includes/class-aod-cd-section-account.php:258
+#, php-format
+msgid "Boutique réinitialisée : %1$d produit(s), %2$d image(s) et %3$d commande(s) supprimés. La prochaine commande portera le n° #1."
+msgstr ""
+
+#. translators: %d: nb de prospects (leads) supprimés.
+#: includes/class-aod-cd-section-account.php:266
+#, php-format
+msgid "%d prospect(s) du formulaire également supprimés."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:482
+msgid "Revenus"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:560
+msgid "aujourd’hui"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:563
+msgid "7 derniers jours"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:566
+msgid "30 derniers jours"
+msgstr ""
+
+#. translators: 1 : date de début, 2 : date de fin
+#: includes/class-aod-cd-section-home.php:570
+#, php-format
+msgid "du %1$s au %2$s"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:630
+msgid "Commandes en attente"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:640
+msgid "Échecs de livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:648
+msgid "Colis bloqués"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:663
+msgid "Produits à réapprovisionner"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:822
+msgid "Protection anti-robot : vérification impossible"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:823
+msgid "Le service de vérification est injoignable de façon répétée. Les commandes non vérifiées sont désormais refusées, pour éviter les fausses commandes. Vérifiez la connexion du serveur et vos clés dans Réglages → COD Anti-spam."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:826
+msgid "Protection anti-robot momentanément inactive"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:827
+msgid "Le service de vérification ne répond pas. Les commandes continuent d’être acceptées pour ne pas vous faire perdre de ventes, mais elles ne sont plus filtrées : surveillez les fausses commandes. Si cela persiste, vérifiez la connexion du serveur."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:844
+msgid "Aucune statistique ne vous est accessible pour le moment."
+msgstr ""
+
+#. translators: 1 : date du jour, 2 : période affichée (ex. « 30 derniers jours »)
+#: includes/class-aod-cd-section-home.php:864
+#, php-format
+msgid "Vue d’ensemble de la boutique — %1$s · %2$s."
+msgstr ""
+
+#. translators: 1 : date du jour, 2 : période affichée (ex. « 30 derniers jours »)
+#: includes/class-aod-cd-section-home.php:866
+#, php-format
+msgid "Vos commandes — %1$s · %2$s."
+msgstr ""
+
+#. translators: %s : prénom du gérant
+#: includes/class-aod-cd-section-home.php:870
+#, php-format
+msgid "Bonjour %s 👋"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:912
+#: includes/class-aod-cd-section-stock.php:717
+msgid "Jour"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:913
+#: includes/class-aod-cd-section-stock.php:718
+msgid "Semaine"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:934
+msgid "Tous les produits"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:992
+msgid "Onglets de statistiques"
+msgstr ""
+
+#. translators: %s : variation en points de pourcentage
+#: includes/class-aod-cd-section-home.php:1155
+#, php-format
+msgid "%s pts"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1177
+msgid "vs période préc."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1222
+msgid "Chiffre d’affaires"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1223
+msgid "Commandes encaissées"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1224
+msgid "Panier moyen"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1225
+msgid "Marge estimée"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1226
+msgid "Taux de marge"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1227
+msgid "En attente (en cours)"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1228
+#: includes/class-aod-cd-section-orders.php:105
+msgid "Annulées"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1229
+msgid "Produits en ligne"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1238
+msgid "Top produits"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1240
+#: includes/class-aod-cd-section-home.php:2274
+msgid "Aucune vente sur cette période."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1250
+msgid "Quantité vendue"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1251
+msgid "CA généré"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1252
+#: includes/class-aod-cd-section-products.php:360
+#: includes/class-aod-cd-section-shipping.php:353
+msgid "Marge"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1282
+msgid "CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée. « En attente » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1284
+msgid "Filtre produit actif : CA, marge et graphe ne comptent que les lignes de ce produit (hors livraison et hors autres produits des mêmes commandes) ; « En attente » et « Annulées » ne comptent que les commandes le contenant."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1286
+msgid "Marge = CA produits (hors livraison) − prix d’achat. Renseignez le « Prix d’achat » d’un produit pour qu’il compte dans la marge ; les produits sans prix d’achat sont ignorés (un « — » s’affiche)."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1288
+msgid "Note : certains produits vendus n’ont pas de prix d’achat renseigné — la marge affichée est donc une estimation partielle."
+msgstr ""
+
+#. translators: %s : nom du produit filtré.
+#: includes/class-aod-cd-section-home.php:1361
+#, php-format
+msgid "produit : %s"
+msgstr ""
+
+#. translators: %s : nom du confirmateur filtré.
+#: includes/class-aod-cd-section-home.php:1366
+#, php-format
+msgid "confirmateur : %s"
+msgstr ""
+
+#. translators: %s : liste des filtres actifs (produit, confirmateur).
+#: includes/class-aod-cd-section-home.php:1370
+#, php-format
+msgid "Chiffres filtrés — %s"
+msgstr ""
+
+#. translators: 1 : nombre de colis, 2 : pourcentage des expédiées.
+#: includes/class-aod-cd-section-home.php:1613
+#, php-format
+msgid "%1$s (%2$s %%)"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1624
+#: includes/class-aod-cd-section-tracking.php:54
+#: includes/class-aod-cd-section-tracking.php:593
+msgid "Le module de livraison n’est pas actif."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1624
+#: includes/class-aod-cd-section-tracking.php:54
+msgid "Activez le plugin « AOD COD Form » pour suivre l’évolution des colis."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1633
+msgid "Aucun colis expédié sur cette période (avec ces filtres)."
+msgstr ""
+
+#. translators: %s : nombre de jours (1 décimale).
+#: includes/class-aod-cd-section-home.php:1640
+#: includes/class-aod-cd-section-home.php:1943
+#, php-format
+msgid "%s jours"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1658
+msgid "Colis expédiés"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1659
+#: includes/class-aod-cd-section-home.php:1674
+msgid "Livrés"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1660
+#: includes/class-aod-cd-section-home.php:1676
+msgid "En transit"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1661
+#: includes/class-aod-cd-section-home.php:1677
+msgid "Retournés"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1662
+msgid "Échec de livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1663
+msgid "Colis annulés"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1664
+msgid "Délai moyen de livraison"
+msgstr ""
+
+#. translators: %d : nombre de jours sans événement.
+#: includes/class-aod-cd-section-home.php:1666
+#, php-format
+msgid "Bloqués (> %d jours)"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1673
+msgid "Expédiés"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1675
+msgid "Taux livré"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1678
+msgid "Échec"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1711
+msgid "Par transporteur"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1712
+#: includes/class-aod-cd-section-home.php:1718
+#: includes/class-aod-cd-section-home.php:1764
+#: includes/class-aod-cd-section-orders.php:432
+#: includes/class-aod-cd-section-orders.php:548
+#: includes/class-aod-cd-section-shipping.php:286
+#: includes/class-aod-cd-section-shipping.php:345
+#: includes/class-aod-cd-section-tracking.php:193
+#: includes/class-aod-cd-section-tracking.php:269
+#: includes/class-aod-cd-section-tracking.php:335
+#: includes/class-aod-cd-section-tracking.php:456
+msgid "Transporteur"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1725
+msgid "Par wilaya"
+msgstr ""
+
+#. translators: %d : nombre de wilayas agrégées hors top 10.
+#: includes/class-aod-cd-section-home.php:1752
+#, php-format
+msgid "Autres wilayas (%d)"
+msgstr ""
+
+#. translators: %d : nombre de jours sans événement.
+#: includes/class-aod-cd-section-home.php:1761
+#, php-format
+msgid "Colis bloqués (sans événement depuis plus de %d jours)"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1763
+#: includes/class-aod-cd-section-orders.php:422
+#: includes/class-aod-cd-section-orders.php:486
+#: includes/class-aod-cd-section-tracking.php:190
+#: includes/class-aod-cd-section-tracking.php:332
+msgid "N°"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1765
+#: includes/class-aod-cd-section-tracking.php:195
+#: includes/class-aod-cd-section-tracking.php:278
+#: includes/class-aod-cd-section-tracking.php:337
+msgid "État du colis"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1766
+msgid "Dernier événement"
+msgstr ""
+
+#. translators: %s : durée écoulée (ex. « 3 heures »).
+#. translators: %s : durée écoulée (ex. « 3 heures »)
+#: includes/class-aod-cd-section-home.php:1775
+#: includes/class-aod-cd-section-tracking.php:432
+#, php-format
+msgid "il y a %s"
+msgstr ""
+
+#. translators: %d : nombre total de colis bloqués.
+#: includes/class-aod-cd-section-home.php:1784
+#, php-format
+msgid "Seuls les 20 colis les plus anciens sont listés (%d bloqués au total). Le détail complet est dans « Suivi commande »."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1788
+msgid "Base des taux : commandes expédiées (colis créé chez un transporteur) dont la date de création tombe dans la période, quel que soit leur statut de commande. Un colis sans suivi synchronisé compte « En transit »."
+msgstr ""
+
+#. translators: %s : nombre de livraisons mesurables.
+#: includes/class-aod-cd-section-home.php:1791
+#, php-format
+msgid "Délai moyen calculé sur %s livraison(s) dont l’historique transporteur est horodaté (du premier événement du colis à sa livraison)."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1793
+msgid "Délai moyen indisponible : aucune livraison de la période n’a d’historique transporteur horodaté."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:1796
+msgid "Filtre produit actif : les taux portent sur les commandes contenant ce produit (un colis est livré ou non en entier — pas de découpage par ligne)."
+msgstr ""
+
+#. translators: %s : nombre d'heures (1 décimale).
+#: includes/class-aod-cd-section-home.php:1940
+#, php-format
+msgid "%s h"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2000
+msgid "Aucune commande reçue sur cette période (avec ces filtres)."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2058
+msgid "Commandes reçues"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2059
+msgid "Commandes reçues (boutique)"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2066
+#: includes/class-aod-cd-section-home.php:2152
+#: includes/class-aod-cd-section-orders.php:103
+msgid "Confirmées"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2067
+msgid "Délai moyen de confirmation"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2070
+msgid "Confirmées non attribuées"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2106
+msgid "Commandes assignées"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2141
+msgid "Vos chiffres : « Confirmées » et « Délai moyen » ne comptent que VOS confirmations. Le pourcentage, lui, les rapporte aux commandes reçues par la boutique sur la période — pas seulement aux vôtres."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2149
+msgid "Par confirmateur"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2153
+msgid "Part"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2154
+msgid "Délai moyen"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2172
+msgid "Non attribuées"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2179
+msgid "Reçues = commandes créées sur la période, tous statuts. Confirmées = commandes tracées par un confirmateur + « non attribuées » (statut Confirmée/Terminée sans traçabilité, antérieures au suivi d’équipe)."
+msgstr ""
+
+#. translators: %s : nombre de confirmations tracées mesurables.
+#: includes/class-aod-cd-section-home.php:2183
+#, php-format
+msgid "Délai moyen calculé sur %s confirmation(s) tracée(s) (de la création de la commande à sa première confirmation)."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2186
+msgid "Filtre produit actif : les chiffres portent sur les commandes contenant ce produit."
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2269
+msgid "Évolution du chiffre d’affaires"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2270
+#: includes/class-aod-cd-section-orders.php:425
+#: includes/class-aod-cd-section-orders.php:535
+#: includes/class-aod-cd-section-orders.php:2835
+#: includes/class-aod-cd-section-orders.php:2945
+#: includes/class-aod-cd-section-orders.php:2970
+msgid "Total"
+msgstr ""
+
+#: includes/class-aod-cd-section-home.php:2325
+msgid "Chiffre d’affaires sur la période"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:72
+#: includes/class-aod-cd-section-landing.php:663
+#: includes/class-aod-cd-section-landing.php:756
+msgid "Le plugin « AOD COD Form » est requis."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:73
+msgid "C’est lui qui affiche la page de vente sur la boutique. Sans lui, il n’y a rien à éditer."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:81
+#: includes/class-aod-cd-section-landing.php:672
+#: includes/class-aod-cd-section-landing.php:768
+#: includes/class-aod-cd-section-products.php:376
+#: includes/class-aod-cd-section-products.php:1132
+#: includes/class-aod-cd-section-products.php:1700
+#: includes/class-aod-cd-section-stock.php:67
+msgid "Produit introuvable."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:82
+msgid "Une page de vente appartient à un produit : ouvrez-la depuis la liste des produits."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:107
+msgid "Aperçu"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:109
+msgid "Retour aux produits"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:123
+msgid "Afficher la page de vente à la place de la fiche produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:126
+msgid "L’adresse du produit ne change pas. Éteint, le produit s’affiche comme avant — votre travail est conservé. Vous pouvez donc préparer la page tranquillement, puis l’allumer."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:139
+msgid "Afficher un bouton « Commander » collé en bas de l’écran (mobile)"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:142
+msgid "Il ramène au formulaire, et s’efface tout seul quand le visiteur y arrive. Il n’apparaît que si la page contient le bloc « Formulaire de commande »."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:144
+msgid "Texte du bouton"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:160
+msgid "Aucun bloc pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:161
+msgid "Ajoutez le « Héro », puis le « Formulaire de commande » : c’est le minimum d’une page qui vend."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:173
+msgid "Partir d’un modèle"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:177
+msgid "Le modèle pose la structure d’une page qui vend — héro, bénéfices, galerie, avis, questions, urgence, formulaire, garanties — avec des blocs vides : les textes restent à écrire, en français et en arabe."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:189
+msgid "Ou copier la page de vente d’un autre produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:196
+msgid "Copier"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:199
+msgid "La copie remplace les blocs actuels et arrive ÉTEINTE : ses textes parlent de l’autre produit — adaptez-les, puis allumez la page."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:206
+msgid "Ajouter un bloc"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:213
+#: includes/class-aod-cd-section-landing.php:566
+#: includes/class-aod-cd-section-orders.php:2825
+#: includes/class-aod-cd-section-products.php:117
+#: includes/class-aod-cd-section-products.php:637
+#: includes/class-aod-cd-section-team.php:308
+#: includes/class-aod-cd-section-team.php:309
+msgid "Ajouter"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:256
+msgid "Monter ce bloc"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:257
+msgid "Descendre ce bloc"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:258
+msgid "Supprimer ce bloc"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:269
+msgid "Le formulaire de commande (wilaya, commune, livraison, offres) est repris tel quel de votre fiche produit. Vous n’en réglez ici que le titre."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:275
+msgid "Les chiffres sont ceux de votre boutique : le stock est lu dans votre fiche produit, et le compte à rebours s’arrête à la fin de votre promotion. Si le stock n’est pas géré, ou si la promotion n’a pas de date de fin, le bloc ne s’affiche pas — plutôt rien qu’un chiffre inventé."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:276
+#, php-format
+msgid "Dans le message, écrivez %d à l’endroit où doit apparaître le nombre restant — par exemple : « Plus que %d pièces en stock ! ». Laissez le message vide pour utiliser le texte par défaut."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:281
+msgid "Collez un lien YouTube, ou envoyez un fichier vidéo — pas les deux : si les deux sont remplis, c’est le fichier qui est joué. La vidéo ne se charge qu’au clic du visiteur : c’est l’image de couverture qui s’affiche avant."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:452
+#: includes/class-aod-cd-section-products.php:174
+msgid "Retirer l’image"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:490
+msgid "Retirer cette image"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:494
+msgid "Ajouter des images à la galerie"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:496
+msgid "Les images choisies seront ajoutées à l’enregistrement. Pour changer votre choix, sélectionnez à nouveau vos fichiers."
+msgstr ""
+
+#. translators: %s : taille maximale d'envoi acceptée (ex. « 5 Mo »).
+#: includes/class-aod-cd-section-landing.php:538
+#, php-format
+msgid "Taille maximale acceptée : %s. Au-delà, préférez YouTube."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:542
+msgid "Retirer la vidéo"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:601
+msgid "Retirer cet élément"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:703
+msgid "Ajoutez au moins un bloc avant d’afficher la page de vente."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:708
+msgid "Ajoutez le bloc « Formulaire de commande » : sans lui, le visiteur ne peut pas commander. (Vous pouvez aussi enregistrer en laissant la page de vente éteinte.)"
+msgstr ""
+
+#. translators: %s : message d'erreur renvoyé par WordPress.
+#: includes/class-aod-cd-section-landing.php:732
+#, php-format
+msgid "Le texte est enregistré, mais le fichier n’a pas pu être envoyé : %s"
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:784
+msgid "Ce produit n’a pas de page de vente à copier."
+msgstr ""
+
+#: includes/class-aod-cd-section-landing.php:793
+msgid "Page copiée — elle est éteinte : adaptez les textes, puis allumez-la."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:123
+msgid "Meta — Facebook & Instagram"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:128
+#: includes/class-aod-cd-section-marketing.php:138
+#: includes/class-aod-cd-section-marketing.php:147
+msgid "ID du pixel"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:128
+msgid "Gestionnaire d’événements Meta → Paramètres → ID du pixel."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:129
+msgid "Vérification de domaine"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:129
+msgid "Pour confirmer que le domaine vous appartient. Collez ici la balise donnée par Meta (ou seulement son code) : elle sera ajoutée dans l’en-tête du site. Puis cliquez « Vérifier le domaine » dans Meta."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:133
+msgid "TikTok"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:138
+msgid "TikTok Ads → Outils → Événements → Pixel Web."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:142
+msgid "Snapchat"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:147
+msgid "Snapchat Ads → Gestionnaire d’événements → Pixel ID."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:151
+msgid "Google Ads"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:156
+msgid "ID de conversion"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:156
+msgid "Commence par AW-. Google Ads → Objectifs → Conversions."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:157
+msgid "Libellé de conversion"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:157
+msgid "La partie après « / » dans send_to. Sans lui, seule la balise de base est posée."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:164
+msgid "Une carte par régie : collez l’identifiant, laissez vide pour désactiver."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:168
+msgid "Le PageView est suivi sur tout le site ; l’achat est mesuré sur la page de remerciement (une fois par commande)."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:177
+#: includes/class-aod-cd-section-marketing.php:199
+#: includes/class-aod-cd-section-marketing.php:233
+#: includes/class-aod-cd-section-marketing.php:267
+#: includes/class-aod-cd-section-team.php:167
+msgid "Actif"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:178
+#: includes/class-aod-cd-section-marketing.php:200
+#: includes/class-aod-cd-section-marketing.php:234
+#: includes/class-aod-cd-section-marketing.php:268
+msgid "Inactif"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:198
+msgid "Meta — API de Conversion (CAPI)"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:203
+msgid "Envoie aussi vos achats à Meta depuis le serveur (Facebook/Instagram), en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées par iOS ou les bloqueurs de pub. La déduplication est automatique. Nécessite l’ID du pixel Meta ci-dessus."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:205
+#: includes/class-aod-cd-section-marketing.php:239
+#: includes/class-aod-cd-section-marketing.php:273
+msgid "Jeton d’accès (secret)"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:206
+#: includes/class-aod-cd-section-marketing.php:240
+#: includes/class-aod-cd-section-marketing.php:274
+msgid "•••••••• enregistré — laisser vide pour le conserver"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:207
+msgid "Gestionnaire d’événements Meta → Paramètres → Conversions API → Générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:212
+#: includes/class-aod-cd-section-marketing.php:246
+#: includes/class-aod-cd-section-marketing.php:280
+msgid "Effacer le jeton enregistré"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:216
+msgid "Code d’événement test (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:218
+msgid "Pour voir vos achats arriver dans le Gestionnaire d’événements → onglet « Test des événements ». À vider une fois validé."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:221
+#: includes/class-aod-cd-section-marketing.php:255
+#: includes/class-aod-cd-section-marketing.php:284
+#: includes/class-aod-cd-section-shipping.php:315
+msgid "Tester la connexion"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:224
+#: includes/class-aod-cd-section-marketing.php:258
+#: includes/class-aod-cd-section-marketing.php:287
+msgid "Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:232
+msgid "TikTok — API de Conversion (Events API)"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:237
+msgid "Envoie aussi vos achats à TikTok depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel TikTok ci-dessus."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:241
+msgid "TikTok Ads → Outils → Événements → gérer l’Events API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:250
+msgid "Code d’événement test (requis pour tester)"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:252
+msgid "TikTok Ads → Événements → onglet « Test ». Requis pour le bouton « Tester » ci-dessous (l’événement de test n’entre pas dans vos statistiques). À vider une fois validé."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:266
+msgid "Snapchat — API de Conversion"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:271
+msgid "Envoie aussi vos achats à Snapchat depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel Snapchat ci-dessus."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:275
+msgid "Snapchat Ads → Gestionnaire d’événements → Conversions API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:294
+msgid "Devise de reporting"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:297
+msgid "Meta refuse le dinar algérien : la valeur de vos achats n’est pas comptée dans vos publicités. Déclarez une devise reconnue et son taux pour rendre cette valeur mesurable. Laissez vide pour ne rien changer."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:299
+msgid "Devise (code à 3 lettres)"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:301
+msgid "Ex. USD, EUR — une devise que les régies reconnaissent."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:304
+msgid "Taux : 1 DZD = ?"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:306
+msgid "Combien vaut 1 dinar dans la devise choisie (ex. 0,0075 pour le dollar)."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:312
+msgid "Enregistrer les pixels"
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:344
+msgid "Pixels enregistrés."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:358
+#: includes/class-aod-cd-section-marketing.php:375
+msgid "Le module de pixels n’est pas actif."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:370
+msgid "Plateforme inconnue."
+msgstr ""
+
+#: includes/class-aod-cd-section-marketing.php:381
+msgid "Échec du test."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:101
+msgid "Toutes"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:102
+#: includes/class-aod-cd-section-orders.php:922
+msgid "En attente"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:104
+msgid "Terminées"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:149
+msgid "Suivez, confirmez et expédiez les commandes COD."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:156
+msgid "Filtrer par statut"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:183
+msgid "Rechercher : n°, nom, téléphone…"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:238
+#: includes/class-aod-cd-section-orders.php:248
+msgid "Non assignées"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:299
+msgid "Aucune commande dans cette catégorie."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:327
+msgid "sélectionnée(s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:341
+msgid "Assigner la sélection à un confirmateur"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:342
+msgid "Assigner à…"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:357
+msgid "Écraser les assignations existantes"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:360
+msgid "Assigner"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:381
+msgid "Router la sélection vers un transporteur"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:382
+msgid "Transporteur…"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:388
+msgid "Router"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:399
+msgid "Envoyer au transporteur"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:426
+#: includes/class-aod-cd-section-orders.php:537
+#: includes/class-aod-cd-section-products.php:277
+#: includes/class-aod-cd-section-products.php:293
+#: includes/class-aod-cd-section-products.php:518
+#: includes/class-aod-cd-section-shipping.php:287
+msgid "Statut"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:434
+#: includes/class-aod-cd-section-orders.php:551
+#: includes/class-aod-cd-section-orders.php:2936
+#: includes/class-aod-cd-section-team.php:66
+msgid "Suivi"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:479
+msgid "Sélectionner cette commande"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:521
+#: includes/class-aod-cd-section-tracking.php:201
+#: includes/class-aod-cd-section-tracking.php:350
+msgid "Détail"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:645
+msgid "Aucun transporteur"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:650
+#: includes/class-aod-cd-section-orders.php:657
+#: includes/class-aod-cd-section-orders.php:1864
+msgid "Non configuré"
+msgstr ""
+
+#. translators: %s : nom du transporteur réglé pour toute la boutique.
+#: includes/class-aod-cd-section-orders.php:662
+#, php-format
+msgid "Par défaut (%s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:900
+msgid "Réessayer"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:924
+msgid "Confirmée"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:925
+msgid "En pause"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:926
+msgid "Terminée"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:927
+msgid "Annulée"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:928
+msgid "Remboursée"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:929
+msgid "Échouée"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:930
+#: includes/class-aod-cd-section-products.php:294
+#: includes/class-aod-cd-section-products.php:521
+msgid "Brouillon"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1401
+#: includes/class-aod-cd-section-orders.php:1488
+#: includes/class-aod-cd-section-orders.php:1894
+#: includes/class-aod-cd-section-orders.php:2097
+#: includes/class-aod-cd-section-orders.php:2245
+#: includes/class-aod-cd-section-orders.php:2274
+#: includes/class-aod-cd-section-tracking.php:598
+msgid "Commande introuvable."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1407
+msgid "Statut invalide."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1414
+msgid "Statut modifié depuis l’espace de gestion."
+msgstr ""
+
+#. translators: %s : nom de l'utilisateur ayant confirmé la commande.
+#: includes/class-aod-cd-section-orders.php:1433
+#, php-format
+msgid "Confirmée par %s."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1455
+msgid "Statut mis à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1667
+#: includes/class-aod-cd-section-orders.php:1945
+#: includes/class-aod-cd-section-orders.php:2164
+msgid "Aucune commande sélectionnée."
+msgstr ""
+
+#. translators: %1$d: nombre assignées, %2$s: nom du confirmateur.
+#: includes/class-aod-cd-section-orders.php:1675
+#, php-format
+msgid "%1$d commande(s) assignée(s) à %2$s."
+msgstr ""
+
+#. translators: %d: nombre de commandes réassignées (elles étaient déjà assignées à quelqu'un d'autre).
+#: includes/class-aod-cd-section-orders.php:1682
+#, php-format
+msgid "%d déjà assignée(s) ont été RÉASSIGNÉE(S)."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1835
+msgid "Commande déjà expédiée : son transporteur ne peut plus changer."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1844
+#: includes/class-aod-cd-section-orders.php:1939
+msgid "Transporteur inconnu ou non configuré (Livraison → Transporteurs)."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1863
+msgid "Transporteur mis à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:1886
+#: includes/class-aod-cd-section-orders.php:1931
+#: includes/class-aod-cd-section-orders.php:2091
+#: includes/class-aod-cd-section-shipping.php:435
+#: includes/class-aod-cd-section-shipping.php:592
+#: includes/class-aod-cd-section-shipping.php:716
+msgid "Module de livraison indisponible."
+msgstr ""
+
+#. translators: %1$d : nombre de commandes routées, %2$s : nom du transporteur.
+#: includes/class-aod-cd-section-orders.php:1952
+#, php-format
+msgid "%1$d commande(s) routée(s) vers %2$s."
+msgstr ""
+
+#. translators: %s : numéro de suivi du colis.
+#: includes/class-aod-cd-section-orders.php:2141
+#, php-format
+msgid "Colis créé ✓ Suivi : %s"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2191
+msgid "Aucune commande n’a pu être supprimée."
+msgstr ""
+
+#. translators: %d: nombre de commandes supprimées.
+#: includes/class-aod-cd-section-orders.php:2196
+#, php-format
+msgid "%d commande supprimée."
+msgid_plural "%d commandes supprimées."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: nombre de commandes non supprimées.
+#: includes/class-aod-cd-section-orders.php:2202
+#, php-format
+msgid "%d commande n’a pas pu être supprimée."
+msgid_plural "%d commandes n’ont pas pu être supprimées."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-orders.php:2256
+#: includes/class-aod-cd-section-orders.php:2529
+#, php-format
+msgid "Commande #%s"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2288
+msgid "Le téléphone est obligatoire."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2297
+msgid "Wilaya invalide."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2300
+msgid "Commune invalide pour cette wilaya."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2429
+msgid "Une commande doit contenir au moins un article."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2512
+msgid "Infos client / livraison, articles et total modifiés depuis l’espace de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2514
+msgid "Infos client / livraison et articles modifiés depuis l’espace de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2516
+msgid "Infos client / livraison et total forcé manuellement depuis l’espace de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2518
+msgid "Infos client / livraison modifiées depuis l’espace de gestion."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2528
+msgid "Commande mise à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2677
+msgid "Nom du client"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2681
+msgid "Téléphone"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2683
+msgid "Type de livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2685
+#: includes/class-aod-cd-section-orders.php:2926
+msgid "À domicile"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2686
+#: includes/class-aod-cd-section-orders.php:2926
+msgid "Stop-desk (bureau)"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2690
+msgid "Adresse"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2698
+#: includes/class-aod-cd-section-orders.php:2711
+msgid "—"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2709
+msgid "Commune"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2742
+msgid "Note pour le livreur"
+msgstr ""
+
+#. translators: %d : nombre maximal de caractères.
+#: includes/class-aod-cd-section-orders.php:2749
+#, php-format
+msgid "Consigne transmise au livreur avec le colis (%d caractères maximum). Certains transporteurs ne la reçoivent pas : l’écran d’envoi vous le dira."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2765
+msgid "Articles"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2767
+msgid "Aucun article pour l’instant. Ajoutez ci-dessous les produits dictés par le client au téléphone."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2814
+msgid "Ajouter un article"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2816
+msgid "— Choisir un produit —"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2830
+msgid "Le total est recalculé automatiquement (prix de base + suppléments des variantes)."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2836
+msgid "Total à payer (livraison incluse)"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2839
+msgid "Laissez ce montant tel quel pour un calcul automatique. Modifiez-le pour forcer le total à encaisser (ex. remise accordée au téléphone)."
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2945
+msgid "Article"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2968
+msgid "Prix produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2969
+msgid "Prix livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2981
+#: includes/class-aod-cd-section-orders.php:2993
+msgid "Notes & historique"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2985
+msgid "Système"
+msgstr ""
+
+#: includes/class-aod-cd-section-orders.php:2994
+msgid "Aucune note pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:96
+msgid "Classez vos produits. Supprimer une catégorie n’efface aucun produit."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:103
+msgid "Nouvelle catégorie"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:105
+msgid "Nom de la nouvelle catégorie"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:107
+msgid "Nom en arabe (facultatif)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:107
+msgid "Nom de la nouvelle catégorie en arabe"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:110
+#: includes/class-aod-cd-section-products.php:194
+msgid "Afficher sur l’accueil"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:112
+#: includes/class-aod-cd-section-products.php:196
+msgid "Ordre d’affichage sur l’accueil"
+msgstr ""
+
+#. translators: %s: nom actuel de la catégorie.
+#: includes/class-aod-cd-section-products.php:113
+#: includes/class-aod-cd-section-products.php:183
+msgid "Catégorie parente"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:114
+#: includes/class-aod-cd-section-products.php:184
+msgid "— Catégorie principale —"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:119
+msgid "Choisissez une catégorie parente pour en faire une sous-catégorie (par exemple une gamme rattachée à une marque). Cliquez sur la vignette d’une catégorie pour lui choisir une image, affichée sur la page d’accueil."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:130
+#: includes/class-aod-cd-section-products.php:506
+msgid "Aucune catégorie pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:130
+msgid "Créez-en une ci-dessus pour commencer à classer vos produits."
+msgstr ""
+
+#. translators: %s: nom actuel de la catégorie.
+#: includes/class-aod-cd-section-products.php:176
+#, php-format
+msgid "Nom de la catégorie « %s »"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:182
+msgid "Nom en arabe"
+msgstr ""
+
+#. translators: %s: nom actuel de la catégorie.
+#: includes/class-aod-cd-section-products.php:182
+#, php-format
+msgid "Nom en arabe de la catégorie « %s »"
+msgstr ""
+
+#. translators: %d: nombre de produits
+#: includes/class-aod-cd-section-products.php:199
+#, php-format
+msgid "%d produit"
+msgid_plural "%d produits"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-products.php:202
+msgid "Supprimer la catégorie"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:238
+msgid "Votre catalogue : prix, stock et mise en ligne."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:239
+msgid "Ajouter un produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:248
+msgid "Rechercher un produit…"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:266
+msgid "Aucun produit ne correspond à cette recherche."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:267
+msgid "Aucun produit pour le moment. Cliquez sur « Ajouter un produit » pour commencer."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:275
+#: includes/class-aod-cd-section-products.php:289
+#: includes/class-aod-cd-section-products.php:341
+msgid "Prix"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:294
+#: includes/class-aod-cd-section-products.php:520
+msgid "En ligne"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:298
+msgid "Éditer"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:304
+msgid "(affichée)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:342
+msgid "Promo"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:353
+msgid "Achat"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:420
+msgid "Modifier le produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:420
+msgid "Nouveau produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:424
+msgid "Renseignez au moins un nom et un prix."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:425
+msgid "Retour à la liste"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:433
+msgid "Informations générales"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:443
+msgid "Nom du produit"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:455
+msgid "Description"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:477
+msgid "Arguments de vente (un par ligne)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:486
+msgid "Affichés en liste à puces sur la page produit. Une ligne sans traduction arabe s’affiche en français."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:510
+msgid "Cliquez pour ouvrir la liste et cochez une ou plusieurs catégories."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:514
+msgid "Nouvelle catégorie (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:515
+msgid "Crée et assigne une catégorie"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:531
+msgid "Prix & offres"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:531
+msgid "prix, promotion, lots"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:535
+#, php-format
+msgid "Prix (%s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:537
+msgid "Si vous ajoutez des variantes, ce prix sert de prix par défaut (utilisé quand une variante n’a pas son propre prix)."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:540
+msgid "Prix promo (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:546
+msgid "Période de promotion (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:549
+msgid "Début"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:551
+msgid "Début de la promotion"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:552
+#: includes/class-aod-cd-section-products.php:560
+msgid "Effacer la date"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:557
+msgid "Fin"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:559
+msgid "Fin de la promotion"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:564
+msgid "La promo s’activera et s’arrêtera automatiquement à ces dates."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:568
+#, php-format
+msgid "Prix d’achat (%s, optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:570
+msgid "Sert au calcul de la marge (non affiché au client)."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:576
+msgid "Offres"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:576
+msgid "packs « 2 produits », « 3 produits »… (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:578
+msgid "Proposez d’acheter plusieurs unités de ce produit à un prix de lot avantageux. Indiquez le NOMBRE d’unités et le PRIX TOTAL du lot (ex. : 2 → 2500, 3 → 3300). Ce total doit être inférieur au prix normal multiplié par le nombre d’unités, sinon l’offre n’apporte aucune réduction et sera ignorée. Sur la page produit, le client verra une carte « 1 produit » par défaut, puis une carte par offre ; au clic, il choisit une variante pour chaque unité."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:581
+msgid "Nombre d’unités"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:582
+#, php-format
+msgid "Prix total du lot (%s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:596
+msgid "Ajouter une offre"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:608
+msgid "Photos"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:608
+msgid "photo principale & galerie"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:611
+#: includes/class-aod-cd-section-products.php:616
+msgid "Photo principale"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:621
+msgid "Galerie (photos supplémentaires)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:631
+msgid "À retirer"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:641
+msgid "Cliquez sur « Ajouter » (ou glissez vos fichiers) pour choisir des photos. Cliquez sur ✕ pour en retirer une."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:649
+msgid "Stock & logistique"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:654
+msgid "Gérer le stock"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:666
+msgid "Alerte stock bas (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:671
+msgid "Référence / SKU (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:675
+msgid "Poids (kg, optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:676
+msgid "ex : 0.5"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:684
+msgid "Options & variantes"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:684
+msgid "Taille, Couleur, Pointure… (optionnel)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:687
+msgid "Crée une section par caractéristique (Taille, Pointure, Couleur…). Pour chaque section, ajoute les valeurs que le client pourra choisir. Une section « avec photos » affiche des pastilles cliquables (couleurs, modèles…) ; chaque valeur peut ajouter un supplément de prix. Laisse vide pour un produit simple."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:690
+msgid "Sections rapides :"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:691
+msgid "Sélectionner une taille"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:691
+msgid "Tailles S–XXL"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:692
+msgid "Sélectionner une pointure"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:692
+msgid "Pointures 35–46"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:693
+msgid "Sélectionner une couleur"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:693
+msgid "Couleur (avec photos)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:709
+msgid "Ajouter une section"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:836
+msgid "ex : Sélectionner une couleur, une taille…"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:838
+msgid "en arabe (facultatif)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:838
+msgid "Libellé de la section en arabe"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:841
+msgid "Avec photos"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:843
+msgid "Affiche cette section en menu déroulant sur le formulaire de commande (idéal quand il y a beaucoup de valeurs)."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:845
+msgid "Liste déroulante"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:847
+msgid "Supprimer cette section"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:858
+msgid "Ajouter une valeur"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:887
+msgid "Choisir une couleur"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:887
+msgid "Choisir une couleur prédéfinie"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:889
+msgid "ex : Rouge, L, 42…"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:891
+msgid "en arabe"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:891
+msgid "Nom de la valeur en arabe"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:895
+msgid "supplément"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:897
+msgid "stock"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:897
+msgid "Stock de cette variante"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:897
+msgid "Stock de cette variante. Laisser vide = stock non géré (illimité). 0 = rupture."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:897
+msgid "Le stock se gère sur un seul axe. Videz les stocks de l’autre axe pour l’activer ici."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:899
+msgid "Supprimer cette valeur"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1053
+msgid "ex : 2"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1054
+msgid "ex : 2500 (pour 2)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1055
+msgid "Supprimer cette offre"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1124
+msgid "Le nom du produit est obligatoire."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1159
+msgid "Le prix promo doit être inférieur ou égal au prix normal."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1168
+msgid "Cette référence (SKU) est déjà utilisée."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1341
+msgid "Produit mis à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1341
+msgid "Produit créé."
+msgstr ""
+
+#. translators: %d: nombre d'offres ignorées
+#: includes/class-aod-cd-section-products.php:1439
+#, php-format
+msgid "%d offre a été ignorée : le prix total du lot doit être INFÉRIEUR au prix normal multiplié par le nombre d’unités (sinon l’offre n’apporte aucune réduction)."
+msgid_plural "%d offres ont été ignorées : le prix total du lot doit être INFÉRIEUR au prix normal multiplié par le nombre d’unités (sinon l’offre n’apporte aucune réduction)."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: nombre d'images refusées, 2: motif du refus (déjà traduit).
+#: includes/class-aod-cd-section-products.php:1451
+#, php-format
+msgid "%1$d image n’a pas pu être ajoutée : %2$s"
+msgid_plural "%1$d images n’ont pas pu être ajoutées : %2$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-products.php:1711
+msgid "Produit déplacé dans la corbeille."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1754
+msgid "Le nom de la catégorie est obligatoire."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1782
+msgid "Cette catégorie existe déjà."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1831
+msgid "(échec de l’image)"
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1843
+msgid "Catégorie mise à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1843
+msgid "Catégorie créée."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1870
+msgid "Catégorie introuvable."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1874
+msgid "Suppression impossible."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1876
+msgid "Catégorie supprimée."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1909
+msgid "Aucun fichier reçu."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1941
+msgid "Image téléversée mais illisible."
+msgstr ""
+
+#: includes/class-aod-cd-section-products.php:1973
+msgid "Vidéo téléversée mais illisible."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:58
+msgid "Réglage du panier enregistré."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:93
+msgid "Le module de livraison (AOD COD Form) n’est pas actif."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:136
+msgid "Vos tarifs par wilaya, vos transporteurs et l’import de leurs grilles."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:144
+msgid "Tarifs par wilaya"
+msgstr ""
+
+#. translators: 1 : nombre de wilayas livrées, 2 : nombre total de wilayas.
+#: includes/class-aod-cd-section-shipping.php:153
+#, php-format
+msgid "Wilayas livrées : %1$s / %2$s"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:164
+msgid "Offrir la livraison à partir d’un certain montant de produits"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:168
+#, php-format
+msgid "Seuil de livraison gratuite (%s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:173
+msgid "Grille des tarifs"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:174
+msgid "Laissez une wilaya vide pour la rendre non livrable. Domicile = livraison à l’adresse ; Stop-desk = retrait au bureau du livreur."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:176
+msgid "Rechercher une wilaya…"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:182
+#: includes/class-aod-cd-section-shipping.php:193
+#, php-format
+msgid "Domicile (%s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:183
+#: includes/class-aod-cd-section-shipping.php:194
+#, php-format
+msgid "Stop-desk (%s)"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:187
+#: includes/class-aod-cd-section-shipping.php:195
+msgid "Livraison gratuite"
+msgstr ""
+
+#. translators: 1: libellé de colonne (ex. « Domicile (DZD) »), 2: wilaya.
+#: includes/class-aod-cd-section-shipping.php:206
+#: includes/class-aod-cd-section-shipping.php:207
+#: includes/class-aod-cd-section-shipping.php:208
+#, php-format
+msgid "%1$s — %2$s"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:234
+msgid "Transporteurs"
+msgstr ""
+
+#. translators: 1 : nombre de transporteurs connectés, 2 : nombre total.
+#: includes/class-aod-cd-section-shipping.php:239
+#, php-format
+msgid "Transporteurs connectés : %1$s / %2$s"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:267
+msgid "Transporteur par défaut de la boutique"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:271
+msgid "(non configuré)"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:278
+msgid "Connexion aux transporteurs"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:279
+msgid "Cliquez sur un transporteur pour saisir vos identifiants API et le connecter."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:281
+msgid "Rechercher un transporteur…"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:304
+msgid "Connecté"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:305
+msgid "Non connecté"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:337
+#: includes/class-aod-cd-section-shipping.php:376
+msgid "Importer les tarifs du transporteur"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:338
+msgid "récupère la grille officielle via l’API"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:342
+msgid "Récupérez les tarifs directement depuis l’API de votre transporteur, prévisualisez-les (avec une marge éventuelle), puis choisissez les wilayas à appliquer. Rien n’est enregistré tant que vous n’avez pas cliqué sur « Appliquer »."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:355
+msgid "Aucune"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:356
+msgid "Fixe (DZD)"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:357
+msgid "Pourcentage (%)"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:361
+msgid "Valeur de la marge"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:365
+msgid "Arrondi"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:367
+msgid "Aucun"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:377
+msgid "Restaurer les tarifs précédents"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:387
+msgid "Enregistrer la livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:404
+msgid "Panier"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:405
+msgid "activé"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:405
+msgid "désactivé"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:411
+msgid "Autoriser les clients à commander plusieurs produits en une seule commande (panier COD)"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:414
+msgid "Désactivé : chaque produit se commande directement depuis sa page (comportement par défaut). Dans les deux cas, le paiement reste à la livraison, sans compte client."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:418
+msgid "Enregistrer le panier"
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:491
+msgid "Réglages de livraison enregistrés."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:601
+msgid "Aucune sauvegarde à restaurer."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:605
+msgid "Tarifs précédents restaurés."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:612
+msgid "Module transporteurs indisponible."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:617
+#: includes/class-aod-cd-section-shipping.php:722
+msgid "Transporteur inconnu."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:621
+msgid "Ce transporteur ne propose pas l’import de tarifs."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:624
+msgid "Renseignez d’abord les identifiants de ce transporteur."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:632
+msgid "Aucun tarif reçu du transporteur."
+msgstr ""
+
+#: includes/class-aod-cd-section-shipping.php:646
+msgid "Cochez au moins une wilaya à importer."
+msgstr ""
+
+#. translators: %d: nombre de wilayas mises à jour.
+#: includes/class-aod-cd-section-shipping.php:655
+#, php-format
+msgid "%d wilaya mise à jour."
+msgid_plural "%d wilayas mises à jour."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-shipping.php:731
+msgid "Renseignez les identifiants de ce transporteur avant de tester."
+msgstr ""
+
+#. translators: 1: nom du transporteur, 2: message d'erreur renvoyé par l'API.
+#: includes/class-aod-cd-section-shipping.php:737
+#, php-format
+msgid "Échec de la connexion à %1$s : %2$s"
+msgstr ""
+
+#. translators: %s: nom du transporteur.
+#: includes/class-aod-cd-section-shipping.php:743
+#, php-format
+msgid "Connexion réussie à %s."
+msgstr ""
+
+#. translators: %s: nom du transporteur.
+#: includes/class-aod-cd-section-shipping.php:749
+#, php-format
+msgid "%s : identifiants enregistrés. La validité sera confirmée au premier envoi (ce transporteur ne propose pas de test en direct)."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:80
+msgid "Stock géré par variante : modifiez-le dans Produits."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:83
+msgid "Ce produit ne gère pas de stock."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:109
+msgid "Stock mis à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:487
+msgid "Couverture et alertes de stock (lecture seule)."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:488
+msgid "Surveillez la couverture, ajustez les quantités et les seuils d’alerte."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:495
+msgid "Aucun produit publié à suivre pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:514
+#: includes/class-aod-cd-section-stock.php:838
+msgid "Stock actuel"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:515
+#: includes/class-aod-cd-section-stock.php:839
+msgid "Seuil d’alerte"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:516
+#: includes/class-aod-cd-section-stock.php:840
+msgid "Vendus sur la période"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:517
+#: includes/class-aod-cd-section-stock.php:841
+msgid "Vitesse (ventes/jour)"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:518
+#: includes/class-aod-cd-section-stock.php:842
+msgid "Couverture (jours)"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:519
+#: includes/class-aod-cd-section-stock.php:843
+msgid "État"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:529
+msgid "Vendus = quantités des commandes en cours, confirmées et terminées créées sur la période. Couverture = stock ÷ vitesse ; « ∞ » = aucune vente sur la période. « Stock bas » dès que le stock atteint le seuil d’alerte (seuil du produit, sinon seuil global WooCommerce)."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:530
+msgid "Les produits sans gestion de stock WooCommerce sont listés « non suivi » (activez « Gérer le stock ? » sur la fiche produit pour les suivre)."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:532
+msgid "Après un ajustement, le classement du tableau se met à jour au rechargement de la page."
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:572
+msgid "Ruptures"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:573
+#: includes/class-aod-cd-section-stock.php:700
+msgid "Stock bas"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:574
+msgid "Valeur du stock"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:575
+msgid "Produits suivis"
+msgstr ""
+
+#. translators: %d : nombre de produits sans prix d'achat renseigné.
+#: includes/class-aod-cd-section-stock.php:581
+#, php-format
+msgid "Valeur du stock calculée au prix d’achat : %d produit sans prix d’achat renseigné est exclu du total."
+msgid_plural "Valeur du stock calculée au prix d’achat : %d produits sans prix d’achat renseigné sont exclus du total."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d : nombre de produits non listés dans l'encart d'alertes.
+#: includes/class-aod-cd-section-stock.php:615
+#, php-format
+msgid "… et %d autres"
+msgstr ""
+
+#. translators: %d : nombre de produits en rupture de stock.
+#: includes/class-aod-cd-section-stock.php:626
+#, php-format
+msgid "%d produit en rupture"
+msgid_plural "%d produits en rupture"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d : nombre de produits sous leur seuil d'alerte.
+#: includes/class-aod-cd-section-stock.php:635
+#, php-format
+msgid "%d produit en stock bas"
+msgid_plural "%d produits en stock bas"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-stock.php:699
+msgid "Rupture"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:701
+msgid "OK"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:760
+#: includes/class-aod-cd-section-stock.php:807
+msgid "non suivi"
+msgstr ""
+
+#. translators: 1 : nom du composant, 2 : quantité par pack, 3 : stock du composant.
+#: includes/class-aod-cd-section-stock.php:762
+#, php-format
+msgid "%1$s ×%2$d → %3$s"
+msgstr ""
+
+#. translators: %s : liste des composants du pack avec leur stock.
+#: includes/class-aod-cd-section-stock.php:765
+#, php-format
+msgid "Composants : %s"
+msgstr ""
+
+#. translators: %s : nombre de packs assemblables avec le stock des composants.
+#: includes/class-aod-cd-section-stock.php:768
+#, php-format
+msgid "%s pack(s) assemblable(s)"
+msgstr ""
+
+#. translators: 1 : nom de la variante, 2 : stock de la variante.
+#: includes/class-aod-cd-section-stock.php:778
+#, php-format
+msgid "%1$s → %2$s"
+msgstr ""
+
+#. translators: %s : liste des variantes avec leur stock.
+#: includes/class-aod-cd-section-stock.php:781
+#, php-format
+msgid "Variantes : %s"
+msgstr ""
+
+#. translators: %s: nom du produit.
+#: includes/class-aod-cd-section-stock.php:799
+#, php-format
+msgid "Stock — %s"
+msgstr ""
+
+#. translators: %s: nom du produit.
+#: includes/class-aod-cd-section-stock.php:801
+#, php-format
+msgid "Seuil d’alerte stock bas — %s"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:813
+msgid "géré par variante"
+msgstr ""
+
+#. translators: %s: nom du produit.
+#: includes/class-aod-cd-section-stock.php:831
+#, php-format
+msgid "Note d’inventaire — %s"
+msgstr ""
+
+#: includes/class-aod-cd-section-stock.php:832
+msgid "Note d’inventaire (facultative)"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:44
+msgid "Confirmation de commandes"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:45
+msgid "Suivi de commande"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:46
+msgid "Gestion de stock"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:47
+msgid "Personnalisation des tarifs de livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:48
+msgid "Statistiques de confirmation"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:49
+msgid "Statistiques de livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:68
+msgid "Tarifs"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:69
+msgid "Stats confirmation"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:70
+msgid "Stats livraison"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:71
+msgid "Abandonnées"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:123
+msgid "Vos confirmateurs, leurs permissions et leur périmètre produits."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:124
+#: includes/class-aod-cd-section-team.php:234
+#: includes/class-aod-cd-section-team.php:235
+msgid "Ajouter un confirmateur"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:130
+msgid "Aucun confirmateur pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:131
+msgid "Créez un compte pour déléguer la confirmation des commandes, sans donner accès à toute la boutique."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:148
+msgid "jamais connecté"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:168
+msgid "Désactivé"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:177
+msgid "Aucune permission"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:194
+msgid "Périmètre vide : tous les produits"
+msgstr ""
+
+#. translators: %s : date de dernière connexion, ou « jamais connecté ».
+#: includes/class-aod-cd-section-team.php:203
+#, php-format
+msgid "Dernier accès : %s"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:209
+msgid "Désactiver"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:209
+msgid "Activer"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:235
+msgid "Modifier le confirmateur"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:257
+msgid "10 caractères minimum. Laissez vide à la création pour en générer un automatiquement — il ne sera affiché qu’une seule fois, notez-le. Laissez vide en modification pour conserver le mot de passe actuel."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:260
+msgid "Permissions"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:261
+msgid "Un confirmateur ne voit que ce que vous cochez ici."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:271
+msgid "Périmètre produits"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:275
+msgid "Limiter à certains produits"
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:280
+msgid "Cochez les produits auxquels ce confirmateur est limité. Aucun produit coché = tous les produits."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:282
+msgid "Aucun produit publié pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:337
+#: includes/class-aod-cd-section-team.php:469
+msgid "Compte introuvable ou protégé."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:355
+msgid "Compte désactivé : l’accès à l’espace de gestion est refusé."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:358
+msgid "Compte réactivé."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:370
+msgid "Mot de passe trop court : 10 caractères minimum."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:379
+msgid "Identifiant invalide."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:444
+msgid "Confirmateur mis à jour."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:444
+msgid "Confirmateur créé."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:476
+msgid "La suppression a échoué."
+msgstr ""
+
+#: includes/class-aod-cd-section-team.php:479
+msgid "Confirmateur supprimé."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:166
+msgid "Actualiser tout"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:169
+msgid "Évolution des colis expédiés, récupérée automatiquement depuis le compte du transporteur."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:179
+msgid "Aucun colis ne correspond à ces filtres."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:179
+msgid "Modifiez le transporteur ou l’état, ou réinitialisez les filtres."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:180
+msgid "Réinitialiser les filtres"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:182
+msgid "Aucun colis expédié pour le moment."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:182
+msgid "Le suivi apparaîtra ici dès qu’une commande sera envoyée à un transporteur."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:191
+#: includes/class-aod-cd-section-tracking.php:333
+msgid "Date"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:194
+#: includes/class-aod-cd-section-tracking.php:336
+#: includes/class-aod-cd-section-tracking.php:458
+msgid "N° de suivi"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:196
+#: includes/class-aod-cd-section-tracking.php:338
+msgid "Dernière MAJ"
+msgstr ""
+
+#. translators: %d : nombre de jours sans nouvel événement de suivi
+#: includes/class-aod-cd-section-tracking.php:245
+#, php-format
+msgid "Bloqués (plus de %d jours)"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:271
+msgid "Tous les transporteurs"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:280
+msgid "Tous les états"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:347
+msgid "Voir le suivi"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:354
+msgid "Actualiser cette commande"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:429
+msgid "Jamais"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:460
+msgid "État actuel"
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:466
+msgid "Ce transporteur ne fournit pas de suivi détaillé. Consultez son espace pour le détail."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:467
+msgid "Aucun événement de suivi pour l’instant. Réessayez après la prochaine synchronisation."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:516
+msgid "Le module de suivi n’est pas actif."
+msgstr ""
+
+#: includes/class-aod-cd-section-tracking.php:535
+msgid "Suivi mis à jour."
+msgstr ""
+
+#. translators: %d : nombre de commandes synchronisées
+#: includes/class-aod-cd-section-tracking.php:573
+#, php-format
+msgid "%d commande synchronisée."
+msgid_plural "%d commandes synchronisées."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d : nombre de colis dont le transporteur n'a pas répondu
+#: includes/class-aod-cd-section-tracking.php:576
+#, php-format
+msgid "%d colis n’a pas répondu — nouvel essai au prochain passage automatique."
+msgid_plural "%d colis n’ont pas répondu — nouvel essai au prochain passage automatique."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-aod-cd-section-tracking.php:611
+#, php-format
+msgid "Suivi — commande #%s"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:62
+msgid "Recevez un message instantané à chaque nouvelle commande."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:69
+msgid "Notifications WhatsApp"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:72
+msgid "Service gratuit via CallMeBot."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:75
+msgid "Mise en route (une seule fois) :"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:77
+#, php-format
+msgid "Enregistrez le numéro %s dans vos contacts (nom : CallMeBot)."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:78
+#, php-format
+msgid "Sur WhatsApp, envoyez-lui : %s"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:79
+msgid "Vous recevez votre clé API (apikey). Collez-la ci-dessous."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:86
+msgid "Envoyer un WhatsApp à chaque commande"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:91
+msgid "Votre numéro WhatsApp"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:93
+msgid "Avec l’indicatif pays, sans « + » ni espaces. Algérie = 213. Ex : 213550123456."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:97
+msgid "Clé API (apikey)"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:99
+msgid "Fournie par CallMeBot dans sa réponse WhatsApp."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:111
+msgid "Envoyer un message test"
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:131
+msgid "Réglages WhatsApp enregistrés."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:142
+msgid "Cochez l’envoi, renseignez le numéro et la clé, puis enregistrez avant de tester."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:148
+msgid "✅ Test : la notification WhatsApp de votre boutique fonctionne."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:174
+msgid "Échec de l’envoi : "
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:178
+msgid "Message test envoyé. Vérifiez votre WhatsApp."
+msgstr ""
+
+#: includes/class-aod-cd-section-whatsapp.php:187
+#, php-format
+msgid "Réponse inattendue (HTTP %d). Vérifiez votre numéro et votre clé."
+msgstr ""
+
+#. translators: %s : poids maximal accepté, déjà formaté (ex. « 2 Mo »).
+#: includes/class-aod-cd-upload.php:163
+#, php-format
+msgid "Poids maximal : %s par fichier."
+msgstr ""

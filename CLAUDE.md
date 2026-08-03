@@ -1,0 +1,67 @@
+# CLAUDE.md
+
+> Ce dépôt est un **template e-commerce réutilisable** (WordPress + WooCommerce,
+> COD / paiement à la livraison, Algérie), **cloné** pour chaque nouveau client.
+> Le guide détaillé est dans **`TEMPLATE.md`** (importé ci-dessous) — **lis-le en
+> entier avant de toucher au code.**
+
+@TEMPLATE.md
+
+---
+
+## Règles non-négociables (rappel — détail dans TEMPLATE.md)
+
+1. **Template générique.** Rien de spécifique à un seul client en dur (nom,
+   couleurs, clés API) — tout se configure depuis l'interface. Minimal, pas de
+   fonctionnalité superflue.
+2. **Côté public = exactement 3 pages :** Accueil · Boutique · Contact. La nav ne
+   montre que ces 3 entrées. *(La fiche produit n'a jamais été l'une des 3 : c'est
+   pourquoi la **page de vente** (Phase 6, **livrée**) — qui remplace le rendu de
+   `/produit/<slug>`, même URL, sans créer de page — ne contredit pas cette règle.
+   Cf. TEMPLATE.md §5 et `docs/LANDING-PRODUIT.md`.)*
+3. **JAMAIS de panier ni de compte** côté acheteur. L'achat passe **uniquement**
+   par le formulaire COD (`aod-cod-form`) sur la page produit. *(Le **panier
+   COD** togglable (Phase 35, **livrée**) ne contredit pas cette règle : ce
+   n'est PAS le panier Woo — le tunnel `/cart`/`/checkout`/`/my-account` reste
+   mort, zéro compte — mais un panneau `localStorage`, **éteint par défaut**,
+   dont la seule sortie est CE MÊME formulaire COD. Cf. TEMPLATE.md §5-6.)*
+4. **FR ⇄ AR + RTL** sur tout le visible. Après toute chaîne UI, lancer
+   `plugins-dev/aod-client-dashboard/bin/make-translations.sh` et traduire l'AR
+   (manuel — pas d'internet sortant). Cf. TEMPLATE.md §7.
+   ⚠️ `gettext` ne traduit **que le code** : le **contenu saisi par le gérant**
+   (titre produit, arguments de vente, blocs d'une page de vente) ne passe pas par
+   les `.po`. Il porte son propre couple **`{ fr, ar }`** en base — ne jamais
+   l'ajouter en chaîne unique. Cf. `docs/LANDING-PRODUIT.md` §2.3.
+5. **Mobile d'abord.** Tester en responsive avant de dire « fini ».
+6. **Isolation Docker.** Chaque clone a SA stack. Avant toute installation :
+   `pwd` (bon dossier), `PROJECT_SLUG`/ports **uniques** dans `.env`, puis lancer
+   **`bash scripts/preflight.sh`** (garde-fou : bloque si mal isolé) AVANT
+   `docker compose up`. Toujours piloter via `docker compose exec <service>`
+   depuis le dossier du clone — **jamais** `docker exec wp_cli_c1 …`. Cf. TEMPLATE.md §3.
+7. **Thème du projet :** l'owner dépose le thème choisi dans `library/themes/`
+   (installé auto par `setup.sh`). Tu bâtis les 3 pages à partir de CE thème —
+   voir TEMPLATE.md §4. Si rien n'est fourni, demande-le avant de commencer.
+
+---
+
+## Méthode de travail — BMAD
+
+Ce projet utilise la méthode **BMAD** (dossier `_bmad/`, skills `bmad-*` dans
+`.claude/skills/`). Sortie des documents en **français**
+(`document_output_language = "French"`).
+
+**Construire / refondre les 3 pages d'un nouveau client = flux BMAD planifié**, pas
+du code à l'arrache :
+
+1. `bmad-agent-analyst` — cerner le besoin et le **secteur d'activité** du client.
+2. `bmad-agent-ux-designer` — partir du **thème fourni dans `library/themes/`** (TEMPLATE.md §4)
+   + définir l'UX des 3 pages.
+3. `bmad-agent-architect` — plan d'intégration (thème de base + Elementor, child
+   theme, branding via Personnalisateur, RTL).
+4. `bmad-create-story` → `bmad-dev-story` — découper puis implémenter.
+
+**Petites retouches** (un bug, un libellé, un ajustement CSS) : édition directe ou
+`bmad-quick-dev`, sans dérouler tout le flux.
+
+Quoi qu'il arrive, le flux BMAD **ne dispense pas** des règles non-négociables
+ci-dessus : elles priment sur toute proposition d'un agent BMAD.

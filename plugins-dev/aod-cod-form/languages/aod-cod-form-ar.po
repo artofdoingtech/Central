@@ -1,0 +1,2110 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: AOD COD Form 1.19.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/aod-cod-form\n"
+"POT-Creation-Date: 2026-08-03T11:42:07+00:00\n"
+"PO-Revision-Date: 2026-07-07T12:00:00+00:00\n"
+"Last-Translator: Art Of Doing\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+#. Plugin Name of the plugin
+#: aod-cod-form.php
+msgid "AOD COD Form"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: aod-cod-form.php
+msgid "https://artofdoing.net"
+msgstr ""
+
+#. Description of the plugin
+#: aod-cod-form.php
+msgid ""
+"Formulaire de commande COD (paiement à la livraison) pour l'Algérie : 58 "
+"wilayas + 1541 communes, frais de livraison par wilaya, commande directe sur "
+"la page produit. RTL/FR/AR."
+msgstr ""
+"استمارة طلب بالدفع عند الاستلام (COD) للجزائر: 58 ولاية و1541 بلدية، رسوم "
+"توصيل حسب الولاية، وطلب مباشر من صفحة المنتج. RTL/FR/AR."
+
+#. Author of the plugin
+#: aod-cod-form.php
+msgid "Art Of Doing"
+msgstr ""
+
+#: aod-cod-form.php:63
+msgid "AOD COD Form nécessite WooCommerce actif."
+msgstr "يتطلب AOD COD Form تفعيل WooCommerce."
+
+#: aod-cod-form.php:64
+msgid "Dépendance manquante"
+msgstr "مكوّن مطلوب مفقود"
+
+#: aod-cod-form.php:101
+msgid "AOD COD Form est inactif : WooCommerce est requis."
+msgstr "AOD COD Form غير نشط: WooCommerce مطلوب."
+
+#: includes/class-aod-carrier-ecotrack.php:121
+msgid "Domaine EcoTrack"
+msgstr "نطاق EcoTrack"
+
+#: includes/class-aod-carrier-ecotrack.php:123
+msgid "Le sous-domaine fourni par votre transporteur EcoTrack (sans https://)."
+msgstr "النطاق الفرعي المقدَّم من شركة التوصيل EcoTrack (بدون ‎https://‎)."
+
+#: includes/class-aod-carrier-ecotrack.php:127
+msgid "Plateforme"
+msgstr "المنصة"
+
+#: includes/class-aod-carrier-ecotrack.php:129
+msgid "Connecté via EcoTrack. Il vous suffit de coller votre token API."
+msgstr "متصل عبر EcoTrack. يكفي أن تلصق رمز API الخاص بك."
+
+#: includes/class-aod-carrier-ecotrack.php:133
+#: includes/class-aod-carrier-noest.php:66
+#: includes/class-aod-carrier-yalidine.php:75
+msgid "API Token"
+msgstr "رمز API (Token)"
+
+#: includes/class-aod-carrier-ecotrack.php:137
+#: includes/class-aod-carrier-noest.php:75
+msgid "Poids par défaut (kg)"
+msgstr "الوزن الافتراضي (كغ)"
+
+#: includes/class-aod-carrier-ecotrack.php:141
+msgid "Plafond COD (DZD)"
+msgstr "سقف الدفع عند الاستلام (دج)"
+
+#: includes/class-aod-carrier-ecotrack.php:143
+msgid ""
+"Montant maximum à encaisser accepté par le transporteur. Au-delà, l’envoi "
+"est bloqué avec un message clair (0 = aucune limite)."
+msgstr ""
+"أقصى مبلغ تحصيل تقبله شركة التوصيل. فوق هذا المبلغ يُمنع الإرسال مع رسالة "
+"واضحة (0 = بلا حد)."
+
+#: includes/class-aod-carrier-ecotrack.php:146
+#: includes/class-aod-carrier-maystro.php:68
+#: includes/class-aod-carrier-noest.php:79
+#: includes/class-aod-carrier-yalidine.php:101
+msgid "Options"
+msgstr "خيارات"
+
+#: includes/class-aod-carrier-ecotrack.php:148
+msgid "Colis fragile par défaut"
+msgstr "طرد قابل للكسر افتراضيًا"
+
+#: includes/class-aod-carrier-ecotrack.php:149
+msgid "Valider automatiquement le colis après création"
+msgstr "تأكيد الطرد تلقائيًا بعد إنشائه"
+
+#: includes/class-aod-carrier-ecotrack.php:388
+#: includes/class-aod-carrier-ecotrack.php:493
+#: includes/class-aod-carrier-ecotrack.php:552
+msgid "Domaine ou token EcoTrack manquant."
+msgstr "نطاق أو رمز EcoTrack مفقود."
+
+#: includes/class-aod-carrier-ecotrack.php:392
+#: includes/class-aod-carrier-maystro.php:198
+#: includes/class-aod-carrier-noest.php:134
+#: includes/class-aod-carrier-procolis.php:399
+msgid "Wilaya de la commande manquante."
+msgstr "ولاية الطلب مفقودة."
+
+#. translators: %s : nom de la commune
+#: includes/class-aod-carrier-ecotrack.php:409
+#, php-format
+msgid ""
+"La commune « %s » ne dispose pas de point relais (stop-desk) EcoTrack. "
+"Choisissez la livraison à domicile."
+msgstr ""
+"البلدية «%s» لا تتوفر على مكتب توصيل (stop-desk) لدى EcoTrack. اختر التوصيل "
+"إلى المنزل."
+
+#: includes/class-aod-carrier-ecotrack.php:424
+msgid "EcoTrack a refusé le colis."
+msgstr "رفضت EcoTrack الطرد."
+
+#: includes/class-aod-carrier-ecotrack.php:528
+msgid "Aucun tarif n’a pu être récupéré chez EcoTrack."
+msgstr "تعذّر جلب أي سعر من EcoTrack."
+
+#: includes/class-aod-carrier-ecotrack.php:556
+#: includes/class-aod-carrier-maystro.php:282
+#: includes/class-aod-carrier-noest.php:199
+#: includes/class-aod-carrier-procolis.php:549
+#: includes/class-aod-carrier-yalidine.php:409
+msgid "Numéro de suivi manquant."
+msgstr "رقم التتبع مفقود."
+
+#: includes/class-aod-carrier-maystro.php:63
+msgid "API Token (clé du magasin)"
+msgstr "رمز API (مفتاح المتجر)"
+
+#: includes/class-aod-carrier-maystro.php:65
+msgid "Espace Maystro → Paramètres → API (Store Key)."
+msgstr "فضاء Maystro ← الإعدادات ← API ‏(Store Key)."
+
+#: includes/class-aod-carrier-maystro.php:70
+msgid "Livraison express (tarif différent)"
+msgstr "توصيل سريع (تسعيرة مختلفة)"
+
+#. translators: %s: nom de la commune
+#: includes/class-aod-carrier-maystro.php:142
+#, php-format
+msgid "Commune « %s » introuvable chez Maystro. Vérifiez l’orthographe."
+msgstr "البلدية «%s» غير موجودة لدى Maystro. تحقق من الكتابة."
+
+#: includes/class-aod-carrier-maystro.php:194
+#: includes/class-aod-carrier-maystro.php:278
+msgid "Token API Maystro manquant."
+msgstr "رمز API لـ Maystro مفقود."
+
+#: includes/class-aod-carrier-maystro.php:228
+msgid "Maystro n’a pas renvoyé de numéro de suivi."
+msgstr "لم تُرجع Maystro رقم تتبع."
+
+#. translators: %s : code de statut numérique renvoyé par Maystro
+#: includes/class-aod-carrier-maystro.php:333
+#, php-format
+msgid "Statut %s"
+msgstr "الحالة %s"
+
+#: includes/class-aod-carrier-noest.php:70
+msgid "GUID utilisateur"
+msgstr "معرّف المستخدم (GUID)"
+
+#: includes/class-aod-carrier-noest.php:72
+msgid "API Token + GUID : espace Noest → Paramètres → API."
+msgstr "رمز API + GUID: فضاء Noest ← الإعدادات ← API."
+
+#: includes/class-aod-carrier-noest.php:81
+msgid "Autoriser l’ouverture du colis à la livraison"
+msgstr "السماح بفتح الطرد عند التسليم"
+
+#: includes/class-aod-carrier-noest.php:82
+msgid "Valider automatiquement le colis après création (prêt à expédier)"
+msgstr "تأكيد الطرد تلقائيًا بعد إنشائه (جاهز للشحن)"
+
+#: includes/class-aod-carrier-noest.php:131
+#: includes/class-aod-carrier-noest.php:195
+msgid "Clés API Noest manquantes."
+msgstr "مفاتيح API لـ Noest مفقودة."
+
+#: includes/class-aod-carrier-noest.php:137
+msgid "Stop-desk : code de station requis avant l’envoi."
+msgstr "مكتب التوصيل: رمز المحطة مطلوب قبل الإرسال."
+
+#: includes/class-aod-carrier-noest.php:146
+msgid "Noest a refusé le colis."
+msgstr "رفضت Noest الطرد."
+
+#: includes/class-aod-carrier-procolis.php:81
+msgid "KEY"
+msgstr "KEY"
+
+#: includes/class-aod-carrier-procolis.php:85
+msgid "Token"
+msgstr "Token"
+
+#: includes/class-aod-carrier-procolis.php:87
+msgid "ecom-dz.com → Identifiants API (KEY = clé fixe, Token = régénérable)."
+msgstr ""
+"ecom-dz.com ← معرّفات API ‏(KEY = مفتاح ثابت، Token = قابل لإعادة التوليد)."
+
+#: includes/class-aod-carrier-procolis.php:125
+msgid "Identifiants refusés (KEY / Token)."
+msgstr "تم رفض المعرّفات (KEY / Token)."
+
+#: includes/class-aod-carrier-procolis.php:167
+#: includes/class-aod-carrier-procolis.php:396
+#: includes/class-aod-carrier-procolis.php:545
+#: includes/class-aod-carrier-procolis.php:673
+msgid "Identifiants E-com Delivery manquants (KEY / Token)."
+msgstr "معرّفات E-com Delivery مفقودة (KEY / Token)."
+
+#: includes/class-aod-carrier-procolis.php:200
+msgid "Aucun tarif n’a pu être récupéré chez E-com Delivery."
+msgstr "تعذّر جلب أي سعر من E-com Delivery."
+
+#: includes/class-aod-carrier-procolis.php:406
+msgid ""
+"Aucun bureau stop-desk disponible pour cette wilaya. Choisissez la livraison "
+"à domicile."
+msgstr ""
+"لا يوجد مكتب توصيل (stop-desk) متاح في هذه الولاية. اختر التوصيل إلى المنزل."
+
+#: includes/class-aod-carrier-procolis.php:420
+msgid "E-com Delivery a refusé le colis."
+msgstr "رفضت E-com Delivery الطرد."
+
+#. translators: %s : numéro de suivi.
+#: includes/class-aod-carrier-procolis.php:726
+#, php-format
+msgid "Colis %s introuvable chez E-com Delivery."
+msgstr "الطرد %s غير موجود لدى E-com Delivery."
+
+#: includes/class-aod-carrier-yalidine.php:71
+msgid "API ID"
+msgstr "API ID"
+
+#: includes/class-aod-carrier-yalidine.php:79
+msgid "Wilaya d’expédition"
+msgstr "ولاية الإرسال"
+
+#: includes/class-aod-carrier-yalidine.php:82
+#: includes/class-aod-cod-form.php:732
+msgid "— Choisir —"
+msgstr "— اختر —"
+
+#: includes/class-aod-carrier-yalidine.php:87
+msgid "Obligatoire pour Yalidine."
+msgstr "إلزامي بالنسبة لـ Yalidine."
+
+#: includes/class-aod-carrier-yalidine.php:91
+msgid "Poids / dimensions"
+msgstr "الوزن / الأبعاد"
+
+#: includes/class-aod-carrier-yalidine.php:93
+msgid "Poids (kg)"
+msgstr "الوزن (كغ)"
+
+#: includes/class-aod-carrier-yalidine.php:103
+msgid "Livraison « gratuite » côté Yalidine (le client paie pile le total)"
+msgstr "توصيل «مجاني» من جهة Yalidine (يدفع الزبون المجموع بالضبط)"
+
+#: includes/class-aod-carrier-yalidine.php:104
+msgid "Assurer le colis"
+msgstr "تأمين الطرد"
+
+#: includes/class-aod-carrier-yalidine.php:138
+#: includes/class-aod-carrier-yalidine.php:181
+msgid "Clés API Yalidine manquantes."
+msgstr "مفاتيح API لـ Yalidine مفقودة."
+
+#: includes/class-aod-carrier-yalidine.php:186
+#: includes/class-aod-carrier-yalidine.php:349
+msgid "Wilaya d’expédition non définie (Réglages Yalidine)."
+msgstr "ولاية الإرسال غير محددة (إعدادات Yalidine)."
+
+#: includes/class-aod-carrier-yalidine.php:215
+msgid "Aucun tarif n’a pu être récupéré chez Yalidine."
+msgstr "تعذّر جلب أي سعر من Yalidine."
+
+#: includes/class-aod-carrier-yalidine.php:352
+msgid "Stop-desk : choisissez un centre avant l’envoi."
+msgstr "مكتب التوصيل: اختر مركزًا قبل الإرسال."
+
+#: includes/class-aod-carrier-yalidine.php:362
+msgid "Yalidine a refusé le colis."
+msgstr "رفضت Yalidine الطرد."
+
+#: includes/class-aod-carrier.php:316
+msgid "Identifiants du transporteur manquants."
+msgstr "معرّفات شركة التوصيل مفقودة."
+
+#. translators: %s : nom du livreur
+#: includes/class-aod-carrier.php:355 includes/class-aod-ship-tracking.php:358
+#, php-format
+msgid "Le suivi détaillé n’est pas disponible pour %s."
+msgstr "التتبع التفصيلي غير متوفر لدى %s."
+
+#. translators: %s : nom du livreur
+#: includes/class-aod-carrier.php:431
+#, php-format
+msgid "L’import automatique des tarifs n’est pas disponible pour %s."
+msgstr "استيراد الأسعار تلقائيًا غير متاح لـ %s."
+
+#: includes/class-aod-carrier.php:497
+msgid "Colis créé"
+msgstr "تم إنشاء الطرد"
+
+#: includes/class-aod-carrier.php:498
+msgid "En transit"
+msgstr "قيد النقل"
+
+#: includes/class-aod-carrier.php:499
+msgid "En cours de livraison"
+msgstr "قيد التوصيل"
+
+#: includes/class-aod-carrier.php:500
+msgid "Livré"
+msgstr "تم التسليم"
+
+#: includes/class-aod-carrier.php:501
+msgid "Retourné"
+msgstr "مُرتجع"
+
+#: includes/class-aod-carrier.php:502
+msgid "Tentative échouée"
+msgstr "محاولة فاشلة"
+
+#: includes/class-aod-carrier.php:503
+msgid "Annulé"
+msgstr "ملغى"
+
+#: includes/class-aod-carrier.php:504
+msgid "Statut inconnu"
+msgstr "حالة غير معروفة"
+
+#: includes/class-aod-carrier.php:708
+#, php-format
+msgid "Erreur API %1$s (HTTP %2$d)."
+msgstr "خطأ API ‏%1$s ‏(HTTP %2$d)."
+
+#. translators: 1: montant de la commande, 2: plafond du livreur, 3: nom du livreur
+#: includes/class-aod-carrier.php:875
+#, php-format
+msgid ""
+"Montant trop élevé : %1$s DZD dépasse le plafond COD de %2$s DZD accepté par "
+"%3$s. Réduisez la commande, choisissez un autre livreur, ou envoyez le colis "
+"manuellement."
+msgstr ""
+"المبلغ مرتفع جدًا: %1$s دج يتجاوز سقف الدفع عند الاستلام البالغ %2$s دج الذي "
+"تقبله %3$s. قلّص الطلب، أو اختر شركة توصيل أخرى، أو أرسل الطرد يدويًا."
+
+#: includes/class-aod-cod-admin.php:32
+msgid "Livraison COD (wilayas)"
+msgstr "توصيل الدفع عند الاستلام (الولايات)"
+
+#: includes/class-aod-cod-admin.php:33
+msgid "Livraison COD"
+msgstr "توصيل الدفع عند الاستلام"
+
+#: includes/class-aod-cod-admin.php:74
+msgid "Tarifs de livraison enregistrés."
+msgstr "تم حفظ تعريفات التوصيل."
+
+#: includes/class-aod-cod-admin.php:83
+msgid "Tarifs de livraison par wilaya (COD)"
+msgstr "تعريفات التوصيل حسب الولاية (COD)"
+
+#: includes/class-aod-cod-admin.php:88
+msgid "Livraison gratuite"
+msgstr "توصيل مجاني"
+
+#: includes/class-aod-cod-admin.php:91 includes/class-aod-cod-whatsapp.php:346
+msgid "Activer"
+msgstr "تفعيل"
+
+#: includes/class-aod-cod-admin.php:95
+msgid "Offrir la livraison à partir d’un certain montant"
+msgstr "إهداء التوصيل ابتداءً من مبلغ معيّن"
+
+#: includes/class-aod-cod-admin.php:100
+msgid "Seuil (sous-total produits)"
+msgstr "العتبة (المجموع الفرعي للمنتجات)"
+
+#: includes/class-aod-cod-admin.php:103
+msgid ""
+"Au-delà de ce montant de produits, les frais de livraison (domicile et stop-"
+"desk) passent à 0. Laissez vide ou décochez pour désactiver."
+msgstr ""
+"فوق هذا المبلغ من المنتجات تصبح رسوم التوصيل (المنزل ومكتب التوصيل) 0. اترك "
+"الحقل فارغًا أو ألغِ التحديد للتعطيل."
+
+#: includes/class-aod-cod-admin.php:108
+msgid "Tarifs par wilaya"
+msgstr "التعريفات حسب الولاية"
+
+#: includes/class-aod-cod-admin.php:109
+msgid "Laissez vide une wilaya pour la rendre non livrable (frais à 0)."
+msgstr "اترك ولاية فارغة لجعلها غير قابلة للتوصيل (الرسوم 0)."
+
+#: includes/class-aod-cod-admin.php:113 includes/class-aod-cod-form.php:1121
+#: includes/class-aod-shipping.php:1021
+msgid "Wilaya"
+msgstr "الولاية"
+
+#: includes/class-aod-cod-admin.php:114
+#, php-format
+msgid "Domicile (%s)"
+msgstr "المنزل (%s)"
+
+#: includes/class-aod-cod-admin.php:115
+#, php-format
+msgid "Stop-desk (%s)"
+msgstr "مكتب التوصيل (%s)"
+
+#: includes/class-aod-cod-admin.php:129
+msgid "Enregistrer les tarifs"
+msgstr "حفظ التعريفات"
+
+#: includes/class-aod-cod-block.php:75
+msgid ""
+"Formulaire COD : indiquez un ID de produit dans les réglages du bloc, ou "
+"placez-le sur une page produit."
+msgstr "استمارة COD: أدخل معرّف منتج في إعدادات المكوّن، أو ضعه في صفحة منتج."
+
+#: includes/class-aod-cod-block.php:83
+msgid "Produit introuvable ou non disponible à la vente."
+msgstr "المنتج غير موجود أو غير متوفر للبيع."
+
+#: includes/class-aod-cod-cart.php:101 includes/class-aod-cod-cart.php:286
+#: includes/class-aod-cod-cart.php:288
+msgid "Votre panier"
+msgstr "سلتك"
+
+#: includes/class-aod-cod-cart.php:102 includes/class-aod-cod-cart.php:260
+msgid "Ouvrir le panier"
+msgstr "فتح السلة"
+
+#: includes/class-aod-cod-cart.php:103 includes/class-aod-cod-cart.php:289
+msgid "Fermer le panier"
+msgstr "إغلاق السلة"
+
+#: includes/class-aod-cod-cart.php:104
+msgid "Votre panier est vide."
+msgstr "سلتك فارغة."
+
+#: includes/class-aod-cod-cart.php:105 includes/class-aod-cod-form.php:237
+msgid "Retirer cet article"
+msgstr "إزالة هذا المنتج"
+
+#: includes/class-aod-cod-cart.php:106
+msgid "Augmenter la quantité"
+msgstr "زيادة الكمية"
+
+#: includes/class-aod-cod-cart.php:107
+msgid "Diminuer la quantité"
+msgstr "إنقاص الكمية"
+
+#: includes/class-aod-cod-cart.php:108 includes/class-aod-cod-cart.php:300
+msgid "Total estimé"
+msgstr "المجموع التقديري"
+
+#: includes/class-aod-cod-cart.php:109 includes/class-aod-cod-cart.php:301
+msgid "Livraison calculée à la commande, selon la wilaya."
+msgstr "تُحسب تكلفة التوصيل عند الطلب حسب الولاية."
+
+#: includes/class-aod-cod-cart.php:110 includes/class-aod-cod-cart.php:313
+#: includes/class-aod-cod-no-tunnel.php:130
+msgid "Commander"
+msgstr "اطلب الآن"
+
+#: includes/class-aod-cod-cart.php:111 includes/class-aod-cod-cart.php:336
+#: includes/class-aod-cod-cart.php:341 includes/class-aod-cod-cart.php:347
+#: includes/class-aod-cod-cart.php:389 includes/class-aod-cod-cart.php:524
+#: includes/class-aod-cod-form.php:1318 includes/class-aod-cod-form.php:1586
+#: includes/class-aod-cod-form.php:1594 includes/class-aod-cod-form.php:1765
+msgid "Produit indisponible."
+msgstr "المنتج غير متوفر."
+
+#: includes/class-aod-cod-cart.php:112 includes/class-aod-cod-form.php:247
+msgid "Article ajouté au panier."
+msgstr "تمت إضافة المنتج إلى السلة."
+
+#: includes/class-aod-cod-cart.php:113 includes/class-aod-cod-form.php:246
+msgid "Erreur réseau. Vérifiez votre connexion et réessayez."
+msgstr "خطأ في الشبكة. تحقّق من اتصالك وحاول مجدّدًا."
+
+#: includes/class-aod-cod-cart.php:114 includes/class-aod-cod-cart.php:283
+#: includes/class-aod-cod-form.php:1084 includes/class-aod-cod-form.php:1186
+msgid "Ajouter au panier"
+msgstr "أضف إلى السلة"
+
+#: includes/class-aod-cod-cart.php:115
+msgid "Ajouté ✓"
+msgstr "تمت الإضافة ✓"
+
+#: includes/class-aod-cod-cart.php:117 includes/class-aod-cod-cart.php:275
+msgid "Choisir les options"
+msgstr "اختر الخيارات"
+
+#: includes/class-aod-cod-cart.php:118 includes/class-aod-cod-form.php:223
+msgid "Veuillez sélectionner toutes les options."
+msgstr "يرجى تحديد جميع الخيارات."
+
+#. translators: %d = nombre maximum de lignes distinctes dans le panier.
+#: includes/class-aod-cod-cart.php:126
+#, php-format
+msgid ""
+"Votre panier est limité à %d articles différents. Retirez-en un pour en "
+"ajouter un autre."
+msgstr "سلتك محدودة بـ %d منتجات مختلفة. احذف منتجًا لإضافة آخر."
+
+#. translators: %d = nombre maximum de lignes distinctes dans le panier.
+#: includes/class-aod-cod-cart.php:128
+#, php-format
+msgid ""
+"Seuls les %d premiers articles sont pris en compte : les suivants ne seront "
+"pas commandés."
+msgstr "لا تُحتسب سوى أول %d منتجات: أما ما بعدها فلن يُطلب."
+
+#: includes/class-aod-cod-cart.php:226 includes/class-aod-cod-cart.php:227
+msgid "Complétez votre commande"
+msgstr "أكمل طلبك"
+
+#: includes/class-aod-cod-cart.php:276
+msgid "Fermer"
+msgstr "إغلاق"
+
+#: includes/class-aod-cod-cart.php:523
+msgid "Quantité non disponible en stock."
+msgstr "الكمية غير متوفرة في المخزون."
+
+#: includes/class-aod-cod-contact.php:59 includes/class-aod-cod-form.php:224
+#: includes/class-aod-shipping.php:1271
+msgid "Envoi en cours…"
+msgstr "جاري الإرسال…"
+
+#: includes/class-aod-cod-contact.php:60 includes/class-aod-cod-contact.php:197
+#: includes/class-aod-cod-form.php:245 includes/class-aod-cod-form.php:1228
+msgid "Une erreur est survenue. Veuillez réessayer."
+msgstr "حدث خطأ. يرجى المحاولة مرة أخرى."
+
+#: includes/class-aod-cod-contact.php:123
+msgid "Nous contacter"
+msgstr "تواصل معنا"
+
+#: includes/class-aod-cod-contact.php:125
+msgid ""
+"Une question sur un produit, une commande ou une livraison ? Écrivez-nous, "
+"nous répondons rapidement."
+msgstr "سؤال حول منتج أو طلب أو توصيل؟ راسلنا، نرد عليك بسرعة."
+
+#: includes/class-aod-cod-contact.php:146 includes/class-aod-cod-form.php:1105
+msgid "Nom complet"
+msgstr "الاسم الكامل"
+
+#: includes/class-aod-cod-contact.php:151
+msgid "E-mail"
+msgstr "البريد الإلكتروني"
+
+#: includes/class-aod-cod-contact.php:156
+msgid "Téléphone (facultatif)"
+msgstr "الهاتف (اختياري)"
+
+#: includes/class-aod-cod-contact.php:161
+#: includes/class-aod-cod-landing.php:193
+msgid "Message"
+msgstr "الرسالة"
+
+#: includes/class-aod-cod-contact.php:170
+msgid "Ne pas remplir"
+msgstr "لا تملأ هذا الحقل"
+
+#: includes/class-aod-cod-contact.php:177
+msgid "Envoyer le message"
+msgstr "إرسال الرسالة"
+
+#: includes/class-aod-cod-contact.php:224
+msgid "Trop de messages envoyés depuis votre connexion. Réessayez plus tard."
+msgstr "تم إرسال عدد كبير من الرسائل من اتصالك. يرجى المحاولة لاحقًا."
+
+#: includes/class-aod-cod-contact.php:238 includes/class-aod-cod-form.php:1261
+msgid "Vérification anti-robot échouée. Rechargez la page et réessayez."
+msgstr "فشل التحقّق من أنك لست روبوتًا. أعد تحميل الصفحة وحاول مجدّدًا."
+
+#: includes/class-aod-cod-contact.php:253
+msgid "Veuillez indiquer votre nom."
+msgstr "يرجى إدخال اسمك."
+
+#: includes/class-aod-cod-contact.php:256
+msgid "Veuillez indiquer un e-mail valide."
+msgstr "يرجى إدخال بريد إلكتروني صالح."
+
+#: includes/class-aod-cod-contact.php:259
+msgid "Veuillez écrire votre message."
+msgstr "يرجى كتابة رسالتك."
+
+#. translators: %s: nom du visiteur
+#: includes/class-aod-cod-contact.php:272
+#, php-format
+msgid "Message de %s depuis le site"
+msgstr "رسالة من %s عبر الموقع"
+
+#: includes/class-aod-cod-contact.php:275
+msgid "Nom :"
+msgstr "الاسم:"
+
+#: includes/class-aod-cod-contact.php:276
+msgid "E-mail :"
+msgstr "البريد الإلكتروني:"
+
+#: includes/class-aod-cod-contact.php:279
+msgid "Téléphone :"
+msgstr "الهاتف:"
+
+#: includes/class-aod-cod-contact.php:295
+msgid "L’envoi a échoué. Réessayez ou écrivez-nous directement par e-mail."
+msgstr "فشل الإرسال. أعد المحاولة أو راسلنا مباشرة عبر البريد الإلكتروني."
+
+#: includes/class-aod-cod-contact.php:301
+msgid ""
+"Merci ! Votre message a bien été envoyé, nous vous répondrons rapidement."
+msgstr "شكرًا لك! تم إرسال رسالتك بنجاح، وسنرد عليك قريبًا."
+
+#: includes/class-aod-cod-desc-video.php:160
+#: includes/class-aod-cod-landing.php:120
+#: includes/class-aod-cod-landing.php:952
+msgid "Vidéo"
+msgstr "فيديو"
+
+#: includes/class-aod-cod-desc-video.php:162
+#: includes/class-aod-cod-landing.php:969
+msgid "Lire la vidéo"
+msgstr "تشغيل الفيديو"
+
+#: includes/class-aod-cod-desc-video.php:164
+#: includes/class-aod-cod-landing.php:978
+msgid "Voir la vidéo sur YouTube"
+msgstr "شاهد الفيديو على يوتيوب"
+
+#: includes/class-aod-cod-elementor-widget.php:21
+msgid "Formulaire COD (AOD)"
+msgstr "استمارة الدفع عند الاستلام (AOD)"
+
+#: includes/class-aod-cod-elementor-widget.php:39 assets/js/block.js:26
+msgid "Réglages du formulaire COD"
+msgstr "إعدادات استمارة COD"
+
+#: includes/class-aod-cod-elementor-widget.php:45 assets/js/block.js:28
+msgid "ID du produit"
+msgstr "معرّف المنتج"
+
+#: includes/class-aod-cod-elementor-widget.php:49 assets/js/block.js:29
+msgid "Laissez 0 pour utiliser le produit de la page courante."
+msgstr "اترك 0 لاستخدام منتج الصفحة الحالية."
+
+#: includes/class-aod-cod-elementor-widget.php:66
+msgid ""
+"Formulaire COD : indiquez un ID de produit, ou placez le widget sur une page "
+"produit."
+msgstr "استمارة COD: أدخل معرّف منتج، أو ضع الودجت في صفحة منتج."
+
+#: includes/class-aod-cod-form.php:220 includes/class-aod-cod-form.php:1114
+msgid "Choisir une wilaya"
+msgstr "اختر الولاية"
+
+#: includes/class-aod-cod-form.php:221 includes/class-aod-cod-form.php:1125
+msgid "Choisir une commune"
+msgstr "اختر البلدية"
+
+#: includes/class-aod-cod-form.php:222
+msgid "Veuillez choisir une couleur."
+msgstr "يرجى اختيار لون."
+
+#: includes/class-aod-cod-form.php:225 includes/class-aod-cod-form.php:1163
+#: includes/class-aod-cod-form.php:1390 includes/class-aod-cod-leads.php:444
+#: includes/class-aod-shipping.php:504 includes/class-aod-shipping.php:508
+#: includes/class-aod-shipping.php:1038 includes/class-aod-shipping.php:1099
+msgid "Livraison"
+msgstr "التوصيل"
+
+#: includes/class-aod-cod-form.php:226 includes/class-aod-cod-form.php:1164
+#: includes/class-aod-shipping.php:1077
+msgid "Total"
+msgstr "المجموع"
+
+#: includes/class-aod-cod-form.php:227 includes/class-aod-shipping.php:1098
+msgid "Offerte"
+msgstr "مجانية"
+
+#. translators: %s: montant restant à ajouter
+#: includes/class-aod-cod-form.php:229
+#, php-format
+msgid "Plus que %s pour la livraison gratuite !"
+msgstr "بقي %s فقط للحصول على التوصيل المجاني!"
+
+#: includes/class-aod-cod-form.php:230
+msgid "🎉 Livraison gratuite débloquée !"
+msgstr "🎉 حصلت على التوصيل المجاني!"
+
+#: includes/class-aod-cod-form.php:231
+msgid "Numéro de téléphone invalide (ex : 0550 12 34 56)."
+msgstr "رقم الهاتف غير صحيح (مثال: 0550 12 34 56)."
+
+#: includes/class-aod-cod-form.php:232
+msgid "Veuillez remplir tous les champs obligatoires."
+msgstr "يرجى ملء جميع الحقول الإلزامية."
+
+#: includes/class-aod-cod-form.php:233
+msgid "Image précédente"
+msgstr "الصورة السابقة"
+
+#: includes/class-aod-cod-form.php:234
+msgid "Image suivante"
+msgstr "الصورة التالية"
+
+#: includes/class-aod-cod-form.php:235
+msgid "Article"
+msgstr "منتج"
+
+#: includes/class-aod-cod-form.php:236
+msgid "Ajouter un article"
+msgstr "إضافة منتج"
+
+#: includes/class-aod-cod-form.php:238 includes/class-aod-cod-form.php:1330
+msgid "Veuillez ajouter au moins un article."
+msgstr "يرجى إضافة منتج واحد على الأقل."
+
+#: includes/class-aod-cod-form.php:239 includes/class-aod-cod-form.php:1439
+msgid "Merci ! Votre commande est bien enregistrée."
+msgstr "شكرًا! تم تسجيل طلبك بنجاح."
+
+#: includes/class-aod-cod-form.php:240
+msgid "Commande N°"
+msgstr "رقم الطلب"
+
+#: includes/class-aod-cod-form.php:241
+msgid "Nous vous appellerons bientôt pour confirmer la livraison."
+msgstr "سنتصل بك قريبًا لتأكيد التوصيل."
+
+#: includes/class-aod-cod-form.php:738
+msgid "(Rupture de stock)"
+msgstr "(نفاد المخزون)"
+
+#: includes/class-aod-cod-form.php:778
+msgid "Rupture de stock"
+msgstr "نفاد المخزون"
+
+#: includes/class-aod-cod-form.php:896
+msgid "Choisissez votre offre"
+msgstr "اختر عرضك"
+
+#. translators: %d: nombre d'unités
+#: includes/class-aod-cod-form.php:924
+#, php-format
+msgid "%d produit"
+msgid_plural "%d produits"
+msgstr[0] "%d منتج"
+msgstr[1] "%d منتج"
+msgstr[2] "منتجان"
+msgstr[3] "%d منتجات"
+msgstr[4] "%d منتجًا"
+msgstr[5] "%d منتج"
+
+#: includes/class-aod-cod-form.php:929
+#, php-format
+msgid "Économisez %s"
+msgstr "وفّر %s"
+
+#: includes/class-aod-cod-form.php:952
+#, php-format
+msgid "Article %d"
+msgstr "المنتج %d"
+
+#: includes/class-aod-cod-form.php:1039
+msgid "Commander maintenant — Paiement à la livraison"
+msgstr "اطلب الآن — الدفع عند الاستلام"
+
+#: includes/class-aod-cod-form.php:1049
+msgid "Ce pack contient :"
+msgstr "يحتوي هذا الطقم على:"
+
+#. translators: %s : libellé exact du bouton d'ajout au panier.
+#: includes/class-aod-cod-form.php:1083
+#, php-format
+msgid "Choisissez vos options, puis « %s »."
+msgstr "اختر خياراتك، ثم اضغط «%s»."
+
+#: includes/class-aod-cod-form.php:1100
+msgid "Ne pas remplir ce champ"
+msgstr "لا تملأ هذا الحقل"
+
+#: includes/class-aod-cod-form.php:1109 includes/class-aod-cod-leads.php:441
+#: includes/class-aod-shipping.php:1001
+msgid "Téléphone"
+msgstr "رقم الهاتف"
+
+#: includes/class-aod-cod-form.php:1127 includes/class-aod-shipping.php:1028
+msgid "Commune"
+msgstr "البلدية"
+
+#: includes/class-aod-cod-form.php:1131
+msgid "Mode de livraison"
+msgstr "طريقة التوصيل"
+
+#: includes/class-aod-cod-form.php:1138 includes/class-aod-cod-whatsapp.php:225
+msgid "À domicile"
+msgstr "إلى المنزل"
+
+#: includes/class-aod-cod-form.php:1148 includes/class-aod-cod-whatsapp.php:224
+msgid "Stop-desk (bureau)"
+msgstr "مكتب التوصيل (ستوب ديسك)"
+
+#: includes/class-aod-cod-form.php:1158 includes/class-aod-shipping.php:1031
+msgid "Adresse"
+msgstr "العنوان"
+
+#: includes/class-aod-cod-form.php:1162
+msgid "Sous-total"
+msgstr "المجموع الفرعي"
+
+#: includes/class-aod-cod-form.php:1170
+msgid "Confirmer la commande"
+msgstr "تأكيد الطلب"
+
+#: includes/class-aod-cod-form.php:1191
+msgid ""
+"Paiement à la livraison — vous payez à la réception, aucun versement à "
+"l’avance."
+msgstr "الدفع عند الاستلام — تدفع عند استلام طلبك، دون أي دفع مسبق."
+
+#: includes/class-aod-cod-form.php:1246
+msgid ""
+"Trop de commandes depuis votre connexion. Réessayez plus tard ou contactez-"
+"nous."
+msgstr "عدد كبير من الطلبات من اتصالك. يرجى المحاولة لاحقًا أو التواصل معنا."
+
+#: includes/class-aod-cod-form.php:1303
+msgid "Numéro de téléphone invalide."
+msgstr "رقم الهاتف غير صحيح."
+
+#: includes/class-aod-cod-form.php:1307
+msgid ""
+"Une commande a déjà été enregistrée avec ce numéro. Réessayez dans 24 h ou "
+"contactez-nous."
+msgstr ""
+"تم تسجيل طلب بهذا الرقم من قبل. يرجى المحاولة بعد 24 ساعة أو التواصل معنا."
+
+#: includes/class-aod-cod-form.php:1310
+msgid "Wilaya invalide."
+msgstr "الولاية غير صحيحة."
+
+#: includes/class-aod-cod-form.php:1313
+msgid "Commune invalide."
+msgstr "البلدية غير صحيحة."
+
+#: includes/class-aod-cod-form.php:1378 includes/class-aod-cod-leads.php:498
+msgid "Stop-desk"
+msgstr "مكتب التوصيل"
+
+#: includes/class-aod-cod-form.php:1379 includes/class-aod-cod-leads.php:498
+#: includes/class-aod-shipping.php:1011
+msgid "Domicile"
+msgstr "المنزل"
+
+#: includes/class-aod-cod-form.php:1384
+msgid "Livraison offerte"
+msgstr "توصيل مجاني"
+
+#: includes/class-aod-cod-form.php:1397 includes/class-aod-cod-pages.php:326
+msgid "Paiement à la livraison"
+msgstr "الدفع عند الاستلام"
+
+#: includes/class-aod-cod-form.php:1411
+msgid "Commande COD via le formulaire AOD."
+msgstr "طلب بالدفع عند الاستلام عبر استمارة AOD."
+
+#: includes/class-aod-cod-form.php:1459
+msgid "Erreur lors de la création de la commande."
+msgstr "حدث خطأ أثناء إنشاء الطلب."
+
+#. translators: 1: numéro de l'article, 2: quantité maximale autorisée.
+#: includes/class-aod-cod-form.php:1612
+#, php-format
+msgid "Article %1$d : quantité limitée à %2$d par article."
+msgstr "المنتج %1$d: الكمية محدودة بـ %2$d لكل منتج."
+
+#. translators: 1: numéro de l'article, 2: nom du produit.
+#: includes/class-aod-cod-form.php:1626
+#, php-format
+msgid "Article %1$d : « %2$s » n’est pas disponible dans cette quantité."
+msgstr "المنتج %1$d: «%2$s» غير متوفر بهذه الكمية."
+
+#. translators: 1: numéro de l'article, 2: nom de la section (Taille, Couleur…)
+#: includes/class-aod-cod-form.php:1656
+#, php-format
+msgid "Article %1$d : veuillez choisir « %2$s »."
+msgstr "المنتج %1$d: يرجى اختيار «%2$s»."
+
+#. translators: 1: numéro de l'article, 2: nom de la variante.
+#: includes/class-aod-cod-form.php:1667
+#, php-format
+msgid "Article %1$d : « %2$s » est en rupture de stock."
+msgstr "المنتج %1$d: «%2$s» نافد من المخزون."
+
+#: includes/class-aod-cod-landing.php:89
+msgid "Héro"
+msgstr "القسم الرئيسي"
+
+#: includes/class-aod-cod-landing.php:91
+msgid "Image de fond"
+msgstr "صورة الخلفية"
+
+#: includes/class-aod-cod-landing.php:92 includes/class-aod-cod-landing.php:106
+msgid "Titre"
+msgstr "العنوان"
+
+#: includes/class-aod-cod-landing.php:93
+msgid "Accroche"
+msgstr "الجملة التشويقية"
+
+#: includes/class-aod-cod-landing.php:94
+msgid "Libellé du bouton"
+msgstr "نص الزر"
+
+#: includes/class-aod-cod-landing.php:98 includes/class-aod-cod-landing.php:103
+msgid "Bénéfices"
+msgstr "المزايا"
+
+#: includes/class-aod-cod-landing.php:100
+#: includes/class-aod-cod-landing.php:115
+#: includes/class-aod-cod-landing.php:122
+#: includes/class-aod-cod-landing.php:131
+#: includes/class-aod-cod-landing.php:138
+#: includes/class-aod-cod-landing.php:154
+#: includes/class-aod-cod-landing.php:171
+#: includes/class-aod-cod-landing.php:200
+msgid "Titre de la section"
+msgstr "عنوان القسم"
+
+#: includes/class-aod-cod-landing.php:105
+#: includes/class-aod-cod-landing.php:210
+msgid "Icône (emoji)"
+msgstr "أيقونة (إيموجي)"
+
+#: includes/class-aod-cod-landing.php:107
+#: includes/class-aod-cod-landing.php:129
+#: includes/class-aod-cod-landing.php:132
+#: includes/class-aod-cod-landing.php:211
+msgid "Texte"
+msgstr "النص"
+
+#: includes/class-aod-cod-landing.php:113
+msgid "Galerie"
+msgstr "معرض الصور"
+
+#: includes/class-aod-cod-landing.php:116
+msgid "Images"
+msgstr "صور"
+
+#: includes/class-aod-cod-landing.php:123
+msgid "Lien YouTube"
+msgstr "رابط يوتيوب"
+
+#: includes/class-aod-cod-landing.php:124
+msgid "Ou fichier vidéo (MP4)"
+msgstr "أو ملف فيديو (MP4)"
+
+#: includes/class-aod-cod-landing.php:125
+msgid "Image de couverture"
+msgstr "صورة الغلاف"
+
+#: includes/class-aod-cod-landing.php:136
+msgid "Comparatif"
+msgstr "مقارنة"
+
+#: includes/class-aod-cod-landing.php:139
+msgid "Titre de la colonne 1"
+msgstr "عنوان العمود 1"
+
+#: includes/class-aod-cod-landing.php:140
+msgid "Titre de la colonne 2"
+msgstr "عنوان العمود 2"
+
+#: includes/class-aod-cod-landing.php:143
+msgid "Lignes du comparatif"
+msgstr "أسطر المقارنة"
+
+#: includes/class-aod-cod-landing.php:145
+msgid "Colonne 1"
+msgstr "العمود 1"
+
+#: includes/class-aod-cod-landing.php:146
+msgid "Colonne 2"
+msgstr "العمود 2"
+
+#: includes/class-aod-cod-landing.php:152
+msgid "Avis clients"
+msgstr "آراء العملاء"
+
+#: includes/class-aod-cod-landing.php:157
+#: includes/class-aod-cod-landing.php:162
+msgid "Avis"
+msgstr "الرأي"
+
+#: includes/class-aod-cod-landing.php:160
+msgid "Prénom"
+msgstr "الاسم"
+
+#: includes/class-aod-cod-landing.php:161
+msgid "Note (sur 5)"
+msgstr "التقييم (من 5)"
+
+#: includes/class-aod-cod-landing.php:163
+msgid "Photo (facultative)"
+msgstr "صورة (اختيارية)"
+
+#: includes/class-aod-cod-landing.php:169
+msgid "Questions fréquentes"
+msgstr "الأسئلة الشائعة"
+
+#: includes/class-aod-cod-landing.php:174
+msgid "Questions"
+msgstr "الأسئلة"
+
+#: includes/class-aod-cod-landing.php:176
+msgid "Question"
+msgstr "السؤال"
+
+#: includes/class-aod-cod-landing.php:177
+msgid "Réponse"
+msgstr "الجواب"
+
+#: includes/class-aod-cod-landing.php:183
+msgid "Urgence"
+msgstr "الاستعجال"
+
+#: includes/class-aod-cod-landing.php:187
+msgid "Ce qu’on affiche"
+msgstr "ما الذي يُعرض"
+
+#: includes/class-aod-cod-landing.php:189
+msgid "Le stock restant (lu dans votre fiche produit)"
+msgstr "المخزون المتبقي (يُقرأ من بطاقة المنتج)"
+
+#: includes/class-aod-cod-landing.php:190
+msgid "Le temps restant avant la fin de votre promotion"
+msgstr "الوقت المتبقي قبل نهاية العرض الترويجي"
+
+#: includes/class-aod-cod-landing.php:194
+msgid ""
+"N’afficher que si le stock restant est inférieur ou égal à (0 = toujours)"
+msgstr "لا يُعرض إلا إذا كان المخزون المتبقي أقل من أو يساوي (0 = دائمًا)"
+
+#: includes/class-aod-cod-landing.php:198
+msgid "Formulaire de commande"
+msgstr "استمارة الطلب"
+
+#: includes/class-aod-cod-landing.php:204
+msgid "Réassurance"
+msgstr "عناصر الطمأنة"
+
+#: includes/class-aod-cod-landing.php:208
+msgid "Garanties"
+msgstr "الضمانات"
+
+#: includes/class-aod-cod-landing.php:753
+#: includes/class-aod-cod-landing.php:814
+msgid "Commander maintenant"
+msgstr "اطلب الآن"
+
+#: includes/class-aod-cod-landing.php:1035
+msgid "Sans"
+msgstr "بدون"
+
+#: includes/class-aod-cod-landing.php:1038
+msgid "Avec"
+msgstr "مع"
+
+#. translators: 1 : note attribuée, 2 : note maximale (5).
+#: includes/class-aod-cod-landing.php:1110
+#, php-format
+msgid "Note : %1$d sur %2$d"
+msgstr "التقييم: %1$d من %2$d"
+
+#. translators: %d : nombre d'exemplaires réellement en stock.
+#: includes/class-aod-cod-landing.php:1220
+#, php-format
+msgid "Plus que %d exemplaire en stock"
+msgid_plural "Plus que %d exemplaires en stock"
+msgstr[0] "لم يبق أي مخزون"
+msgstr[1] "لم تبق سوى قطعة واحدة في المخزون"
+msgstr[2] "لم تبق سوى قطعتين في المخزون"
+msgstr[3] "لم تبق سوى %d قطع في المخزون"
+msgstr[4] "لم تبق سوى %d قطعة في المخزون"
+msgstr[5] "لم تبق سوى %d قطعة في المخزون"
+
+#: includes/class-aod-cod-landing.php:1249
+msgctxt "jours (compte à rebours)"
+msgid "j"
+msgstr "ي"
+
+#: includes/class-aod-cod-landing.php:1250
+msgctxt "heures (compte à rebours)"
+msgid "h"
+msgstr "س"
+
+#: includes/class-aod-cod-landing.php:1251
+msgctxt "minutes (compte à rebours)"
+msgid "min"
+msgstr "د"
+
+#: includes/class-aod-cod-landing.php:1252
+msgctxt "secondes (compte à rebours)"
+msgid "s"
+msgstr "ث"
+
+#: includes/class-aod-cod-landing.php:1255
+msgid "Fin de l’offre dans"
+msgstr "ينتهي العرض خلال"
+
+#: includes/class-aod-cod-lang.php:136
+msgid "Choix de la langue"
+msgstr "اختيار اللغة"
+
+#: includes/class-aod-cod-leads.php:341
+msgid "Paniers abandonnés"
+msgstr "السلات المتروكة"
+
+#: includes/class-aod-cod-leads.php:412
+msgid "Paniers abandonnés (prospects à rappeler)"
+msgstr "السلات المتروكة (عملاء محتملون للاتصال بهم)"
+
+#: includes/class-aod-cod-leads.php:415
+msgid "Prospect supprimé."
+msgstr "تم حذف العميل المحتمل."
+
+#: includes/class-aod-cod-leads.php:418
+msgid "Prospects convertis purgés."
+msgstr "تم حذف العملاء المحتملين المحوَّلين."
+
+#. translators: 1: nombre de prospects en attente, 2: nombre convertis
+#: includes/class-aod-cod-leads.php:425
+#, php-format
+msgid "%1$d prospect(s) non confirmé(s) — %2$d converti(s) en commande."
+msgstr "%1$d عميل(عملاء) محتمل غير مؤكد — %2$d تحوّل إلى طلب."
+
+#: includes/class-aod-cod-leads.php:431
+msgid ""
+"Un prospect apparaît dès qu’un visiteur saisit son téléphone sans valider. "
+"Il disparaît automatiquement de cette liste s’il confirme sa commande."
+msgstr ""
+"يظهر العميل المحتمل بمجرد أن يُدخل الزائر رقم هاتفه دون إتمام الطلب، ويختفي "
+"تلقائيًا من هذه القائمة إذا أكّد طلبه."
+
+#: includes/class-aod-cod-leads.php:434
+msgid "Aucun panier abandonné pour le moment. 🎉"
+msgstr "لا توجد سلات متروكة حاليًا. 🎉"
+
+#: includes/class-aod-cod-leads.php:439
+msgid "Quand"
+msgstr "متى"
+
+#: includes/class-aod-cod-leads.php:440
+msgid "Nom"
+msgstr "الاسم"
+
+#: includes/class-aod-cod-leads.php:442 includes/class-aod-shipping.php:1075
+msgid "Produit"
+msgstr "المنتج"
+
+#: includes/class-aod-cod-leads.php:443
+msgid "Wilaya / Commune"
+msgstr "الولاية / البلدية"
+
+#: includes/class-aod-cod-leads.php:445 includes/class-aod-shipping.php:1076
+msgid "Qté"
+msgstr "الكمية"
+
+#: includes/class-aod-cod-leads.php:446
+msgid "Actions"
+msgstr "إجراءات"
+
+#: includes/class-aod-cod-leads.php:472
+msgid "abandonné"
+msgstr "متروك"
+
+#: includes/class-aod-cod-leads.php:474
+msgid "en cours"
+msgstr "قيد المتابعة"
+
+#: includes/class-aod-cod-leads.php:481
+msgid "Appeler"
+msgstr "اتصال"
+
+#: includes/class-aod-cod-leads.php:501
+msgid "Supprimer ce prospect ?"
+msgstr "حذف هذا العميل المحتمل؟"
+
+#: includes/class-aod-cod-leads.php:501
+msgid "Supprimer"
+msgstr "حذف"
+
+#: includes/class-aod-cod-leads.php:513
+msgid "Supprimer définitivement tous les prospects déjà convertis ?"
+msgstr "حذف جميع العملاء المحتملين المحوَّلين نهائيًا؟"
+
+#. translators: %d: nombre de prospects convertis
+#: includes/class-aod-cod-leads.php:517
+#, php-format
+msgid "Purger les %d prospect(s) converti(s)"
+msgstr "حذف %d عميلًا محتملًا محوَّلًا"
+
+#: includes/class-aod-cod-pages.php:138
+msgid "Accueil"
+msgstr "الرئيسية"
+
+#: includes/class-aod-cod-pages.php:140
+msgid "Boutique"
+msgstr "المتجر"
+
+#: includes/class-aod-cod-pages.php:142
+msgid "Contact"
+msgstr "اتصل بنا"
+
+#: includes/class-aod-cod-pages.php:297
+msgid "Découvrir la boutique"
+msgstr "اكتشف المتجر"
+
+#: includes/class-aod-cod-pages.php:306
+msgid "Nos catégories"
+msgstr "فئاتنا"
+
+#: includes/class-aod-cod-pages.php:313
+msgid "Nos produits"
+msgstr "منتجاتنا"
+
+#: includes/class-aod-cod-pages.php:317
+msgid "Voir tous les produits"
+msgstr "عرض كل المنتجات"
+
+#: includes/class-aod-cod-pages.php:327
+msgid ""
+"Vous payez en espèces à la réception. Aucun versement à l’avance, aucune "
+"carte bancaire."
+msgstr "تدفع نقدًا عند الاستلام. لا دفع مسبق، ولا بطاقة بنكية."
+
+#: includes/class-aod-cod-pages.php:331
+msgid "Livraison dans les 58 wilayas"
+msgstr "التوصيل إلى 58 ولاية"
+
+#: includes/class-aod-cod-pages.php:332
+msgid "À domicile ou en point de retrait, partout en Algérie."
+msgstr "إلى المنزل أو نقطة الاستلام، في كامل الجزائر."
+
+#: includes/class-aod-cod-pages.php:336
+msgid "Commande en 1 minute"
+msgstr "اطلب في دقيقة واحدة"
+
+#: includes/class-aod-cod-pages.php:337
+msgid ""
+"Ni panier ni création de compte : votre nom, votre téléphone, et c’est "
+"commandé."
+msgstr "لا سلة ولا إنشاء حساب: اسمك، هاتفك، وتم الطلب."
+
+#: includes/class-aod-cod-pixels.php:1151
+msgid "Renseignez d’abord l’ID du pixel Meta, puis enregistrez."
+msgstr "أدخل أولًا معرّف بكسل ميتا ثم احفظ."
+
+#: includes/class-aod-cod-pixels.php:1154
+msgid "Renseignez d’abord le jeton d’API Conversions, puis enregistrez."
+msgstr "أدخل أولًا رمز واجهة برمجة التحويلات ثم احفظ."
+
+#: includes/class-aod-cod-pixels.php:1162
+msgid "Meta est injoignable (réseau). Réessayez."
+msgstr "تعذّر الوصول إلى ميتا (مشكلة شبكة). أعد المحاولة."
+
+#. translators: %s = nom ou ID du pixel.
+#: includes/class-aod-cod-pixels.php:1169
+#, php-format
+msgid "Connexion réussie : pixel « %s » accessible."
+msgstr "نجح الاتصال: البكسل «%s» متاح."
+
+#. translators: %s = message d'erreur renvoyé par Meta.
+#: includes/class-aod-cod-pixels.php:1176
+#, php-format
+msgid "Refus de Meta : %s"
+msgstr "رفض من ميتا: %s"
+
+#. translators: %s = message d'erreur renvoyé par Meta.
+#: includes/class-aod-cod-pixels.php:1177
+msgid "Jeton ou pixel invalide."
+msgstr "الرمز أو البكسل غير صالح."
+
+#: includes/class-aod-cod-pixels.php:1197
+msgid "Renseignez d’abord l’ID du pixel TikTok, puis enregistrez."
+msgstr "أدخِل أولًا معرّف بكسل تيك توك، ثم احفظ."
+
+#: includes/class-aod-cod-pixels.php:1200
+msgid "Renseignez d’abord le jeton de l’Events API TikTok, puis enregistrez."
+msgstr "أدخِل أولًا رمز Events API لتيك توك، ثم احفظ."
+
+#: includes/class-aod-cod-pixels.php:1203
+msgid ""
+"Renseignez un « code d’événement test » TikTok (puis enregistrez) : le test "
+"l’utilise pour ne PAS toucher vos statistiques de production."
+msgstr ""
+"أدخِل «رمز حدث تجريبي» لتيك توك (ثم احفظ): يستخدمه الاختبار كي لا يمسّ إحصاءات "
+"الإنتاج."
+
+#: includes/class-aod-cod-pixels.php:1242
+msgid "TikTok est injoignable (réseau). Réessayez."
+msgstr "تعذّر الوصول إلى تيك توك (شبكة). أعِد المحاولة."
+
+#: includes/class-aod-cod-pixels.php:1248
+msgid ""
+"Connexion réussie : événement de test accepté par TikTok (onglet « Test des "
+"événements »)."
+msgstr "نجح الاتصال: قبِل تيك توك حدث الاختبار (تبويب «اختبار الأحداث»)."
+
+#. translators: %s = message d'erreur renvoyé par TikTok.
+#: includes/class-aod-cod-pixels.php:1253
+#, php-format
+msgid "Refus de TikTok : %s"
+msgstr "رفض من تيك توك: %s"
+
+#. translators: %s = message d'erreur renvoyé par TikTok.
+#: includes/class-aod-cod-pixels.php:1254
+msgid "Jeton ou pixel TikTok invalide."
+msgstr "رمز أو بكسل تيك توك غير صالح."
+
+#: includes/class-aod-cod-pixels.php:1271
+msgid "Renseignez d’abord l’ID du pixel Snapchat, puis enregistrez."
+msgstr "أدخِل أولًا معرّف بكسل سناب شات، ثم احفظ."
+
+#: includes/class-aod-cod-pixels.php:1274
+msgid ""
+"Renseignez d’abord le jeton de la Conversions API Snapchat, puis enregistrez."
+msgstr "أدخِل أولًا رمز Conversions API لسناب شات، ثم احفظ."
+
+#: includes/class-aod-cod-pixels.php:1291
+msgid "Snapchat est injoignable (réseau). Réessayez."
+msgstr "تعذّر الوصول إلى سناب شات (شبكة). أعِد المحاولة."
+
+#. translators: %s = motif de refus renvoyé par Snapchat.
+#: includes/class-aod-cod-pixels.php:1322
+#, php-format
+msgid "Snapchat a refusé la validation : %s"
+msgstr "رفض سناب شات التحقق: %s"
+
+#. translators: %s = motif de refus renvoyé par Snapchat.
+#: includes/class-aod-cod-pixels.php:1323
+msgid ""
+"Snapchat a refusé la validation. Vérifiez que l’ID de pixel appartient bien "
+"au compte de ce jeton."
+msgstr "رفض سناب شات التحقق. تأكد من أن معرّف البكسل يخص حساب هذا الرمز."
+
+#: includes/class-aod-cod-pixels.php:1325
+msgid "Connexion réussie : pixel Snapchat accessible (validation OK)."
+msgstr "نجح الاتصال: بكسل سناب شات متاح (تحقّق ناجح)."
+
+#. translators: %s = message d'erreur renvoyé par Snapchat.
+#: includes/class-aod-cod-pixels.php:1332
+#, php-format
+msgid "Refus de Snapchat : %s"
+msgstr "رفض من سناب شات: %s"
+
+#. translators: %s = message d'erreur renvoyé par Snapchat.
+#: includes/class-aod-cod-pixels.php:1333
+msgid "Jeton ou pixel Snapchat invalide."
+msgstr "رمز أو بكسل سناب شات غير صالح."
+
+#: includes/class-aod-cod-pixels.php:1343
+#: includes/class-aod-cod-pixels.php:1344
+msgid "Pixels & Tracking"
+msgstr "البيكسلات والتتبع"
+
+#: includes/class-aod-cod-pixels.php:1382
+msgid "Pixels enregistrés."
+msgstr "تم حفظ البيكسلات."
+
+#: includes/class-aod-cod-pixels.php:1389
+msgid "Pixels & Tracking publicitaire"
+msgstr "البيكسلات والتتبع الإعلاني"
+
+#: includes/class-aod-cod-pixels.php:1392
+msgid ""
+"Colle l’identifiant de chaque régie. Laisse vide pour désactiver. Le "
+"PageView est suivi sur tout le site ; l’achat est mesuré sur la page de "
+"remerciement (une fois par commande)."
+msgstr ""
+"الصق معرّف كل منصة إعلانية. اترك الحقل فارغًا للتعطيل. تتم متابعة PageView على "
+"كامل الموقع؛ ويُقاس الشراء في صفحة الشكر (مرة واحدة لكل طلب)."
+
+#: includes/class-aod-cod-pixels.php:1398
+msgid "Meta (Facebook) Pixel ID"
+msgstr "معرّف بيكسل Meta (فيسبوك)"
+
+#: includes/class-aod-cod-pixels.php:1401
+msgid "Gestionnaire d’événements Meta → Paramètres → ID du pixel."
+msgstr "مدير أحداث Meta ← الإعدادات ← معرّف البيكسل."
+
+#: includes/class-aod-cod-pixels.php:1405
+msgid "TikTok Pixel ID"
+msgstr "معرّف بيكسل TikTok"
+
+#: includes/class-aod-cod-pixels.php:1408
+msgid "TikTok Ads → Outils → Événements → Pixel Web."
+msgstr "TikTok Ads ← الأدوات ← الأحداث ← بيكسل الويب."
+
+#: includes/class-aod-cod-pixels.php:1412
+msgid "Snapchat Pixel ID"
+msgstr "معرّف بيكسل Snapchat"
+
+#: includes/class-aod-cod-pixels.php:1415
+msgid "Snapchat Ads → Gestionnaire d’événements → Pixel ID."
+msgstr "Snapchat Ads ← مدير الأحداث ← معرّف البيكسل."
+
+#: includes/class-aod-cod-pixels.php:1419
+msgid "Google Ads — ID de conversion"
+msgstr "Google Ads — معرّف التحويل"
+
+#: includes/class-aod-cod-pixels.php:1422
+msgid "Commence par AW-. Google Ads → Objectifs → Conversions."
+msgstr "يبدأ بـ ‎AW-‎. ‏Google Ads ← الأهداف ← التحويلات."
+
+#: includes/class-aod-cod-pixels.php:1426
+msgid "Google Ads — Libellé de conversion"
+msgstr "Google Ads — تسمية التحويل"
+
+#: includes/class-aod-cod-pixels.php:1429
+msgid ""
+"La partie après la barre « / » dans send_to (étiquette de l’action de "
+"conversion « Achat »). Sans elle, seule la balise de base est posée."
+msgstr ""
+"الجزء الواقع بعد «/» في send_to (تسمية إجراء التحويل «شراء»). بدونه يُوضع "
+"الوسم الأساسي فقط."
+
+#: includes/class-aod-cod-pixels.php:1433
+msgid "Meta — Vérification de domaine"
+msgstr "Meta — التحقّق من النطاق"
+
+#: includes/class-aod-cod-pixels.php:1436
+msgid ""
+"Colle la balise <meta name=\"facebook-domain-verification\" …> fournie par "
+"Meta (ou juste son code). Injectée dans le <head> du site pour valider le "
+"domaine."
+msgstr ""
+"الصق وسم <meta name=\"facebook-domain-verification\" …> الذي يوفّره Meta (أو "
+"رمزه فقط). يُضاف إلى <head> الموقع للتحقّق من النطاق."
+
+#: includes/class-aod-cod-pixels.php:1440
+msgid "Meta — Jeton d’API Conversions (CAPI)"
+msgstr "ميتا — رمز واجهة برمجة التحويلات (CAPI)"
+
+#: includes/class-aod-cod-pixels.php:1442
+#: includes/class-aod-cod-pixels.php:1459
+#: includes/class-aod-cod-pixels.php:1476
+msgid "•••••••• (jeton enregistré — laisser vide pour le conserver)"
+msgstr "•••••••• (رمز محفوظ — اتركه فارغًا للإبقاء عليه)"
+
+#: includes/class-aod-cod-pixels.php:1444
+#: includes/class-aod-cod-pixels.php:1461
+#: includes/class-aod-cod-pixels.php:1478
+msgid "Effacer le jeton"
+msgstr "حذف الرمز"
+
+#: includes/class-aod-cod-pixels.php:1446
+msgid ""
+"Double le pixel navigateur d’un envoi serveur des achats (Facebook/"
+"Instagram), dédupliqué automatiquement. Gestionnaire d’événements Meta → "
+"Paramètres → Conversions API → Générer un jeton d’accès. Nécessite l’ID du "
+"pixel Meta ci-dessus. Laisser vide pour garder le pixel navigateur seul."
+msgstr ""
+"يُضاعف بكسل المتصفّح بإرسال المشتريات من الخادم (فيسبوك/إنستغرام)، مع إزالة "
+"التكرار تلقائيًا. مدير الأحداث في ميتا ← الإعدادات ← واجهة التحويلات "
+"(Conversions API) ← إنشاء رمز وصول. يتطلّب معرّف بكسل ميتا أعلاه. اتركه فارغًا "
+"للاكتفاء ببكسل المتصفّح وحده."
+
+#: includes/class-aod-cod-pixels.php:1450
+msgid "Meta — Code d’événement test (optionnel)"
+msgstr "ميتا — رمز حدث الاختبار (اختياري)"
+
+#: includes/class-aod-cod-pixels.php:1453
+msgid ""
+"Pour vérifier la réception dans le Gestionnaire d’événements → onglet « Test "
+"des événements ». À vider une fois la mise en production validée."
+msgstr ""
+"للتحقّق من الاستلام في مدير الأحداث ← تبويب «اختبار الأحداث». أفرغه بعد تأكيد "
+"الإطلاق."
+
+#: includes/class-aod-cod-pixels.php:1457
+msgid "TikTok — Jeton Events API (conversions serveur)"
+msgstr "تيك توك — رمز Events API (تحويلات من الخادم)"
+
+#: includes/class-aod-cod-pixels.php:1463
+msgid ""
+"Double le pixel navigateur TikTok d’un envoi serveur des achats, dédupliqué "
+"automatiquement. TikTok Ads → Outils → Événements → gérer l’Events API → "
+"générer un jeton d’accès. Nécessite l’ID du pixel TikTok ci-dessus. Laisser "
+"vide pour garder le pixel navigateur seul."
+msgstr ""
+"يُضاعف بكسل متصفّح تيك توك بإرسال المشتريات من الخادم، مع إزالة التكرار "
+"تلقائيًا. TikTok Ads ← الأدوات ← الأحداث ← إدارة Events API ← إنشاء رمز وصول. "
+"يتطلّب معرّف بكسل تيك توك أعلاه. اتركه فارغًا للاكتفاء ببكسل المتصفّح وحده."
+
+#: includes/class-aod-cod-pixels.php:1467
+msgid "TikTok — Code d’événement test (optionnel)"
+msgstr "تيك توك — رمز حدث تجريبي (اختياري)"
+
+#: includes/class-aod-cod-pixels.php:1470
+msgid ""
+"TikTok Ads → Événements → onglet « Test ». Requis par le bouton « Tester la "
+"connexion » de /gestion (l’événement de test n’entre pas dans vos "
+"statistiques). À vider une fois validé."
+msgstr ""
+"TikTok Ads ← الأحداث ← تبويب «اختبار». مطلوب لزر «اختبار الاتصال» في /"
+"gestion (لا يدخل حدث الاختبار في إحصاءاتك). أفرِغه بعد التحقّق."
+
+#: includes/class-aod-cod-pixels.php:1474
+msgid "Snapchat — Jeton Conversions API (conversions serveur)"
+msgstr "سناب شات — رمز Conversions API (تحويلات من الخادم)"
+
+#: includes/class-aod-cod-pixels.php:1480
+msgid ""
+"Double le pixel navigateur Snapchat d’un envoi serveur des achats, "
+"dédupliqué automatiquement. Snapchat Ads → Gestionnaire d’événements → "
+"Conversions API → générer un jeton d’accès. Nécessite l’ID du pixel Snapchat "
+"ci-dessus. Laisser vide pour garder le pixel navigateur seul."
+msgstr ""
+"يُضاعف بكسل متصفّح سناب شات بإرسال المشتريات من الخادم، مع إزالة التكرار "
+"تلقائيًا. Snapchat Ads ← مدير الأحداث ← Conversions API ← إنشاء رمز وصول. "
+"يتطلّب معرّف بكسل سناب شات أعلاه. اتركه فارغًا للاكتفاء ببكسل المتصفّح وحده."
+
+#: includes/class-aod-cod-pixels.php:1484
+msgid "Devise de reporting (régies pub)"
+msgstr "عملة إعداد التقارير (منصّات الإعلانات)"
+
+#: includes/class-aod-cod-pixels.php:1488
+msgid ""
+"Meta refuse le dinar algérien (DZD) : la valeur des achats n’est pas "
+"mesurée. Déclare ici une devise reconnue (USD, EUR…) et le taux « 1 DZD "
+"= ? » pour convertir la valeur envoyée aux régies. Laisse vide pour envoyer "
+"DZD tel quel (défaut)."
+msgstr ""
+"لا تقبل Meta الدينار الجزائري (DZD): لا تُحتسب قيمة الطلبات. حدِّد هنا عملة "
+"مُعترفًا بها (USD، EUR…) وسعر «1 DZD = ؟» لتحويل القيمة المُرسَلة إلى منصّات "
+"الإعلانات. اترك الحقل فارغًا لإرسال DZD كما هو (الإعداد الافتراضي)."
+
+#: includes/class-aod-cod-pixels.php:1492
+#: includes/class-aod-cod-whatsapp.php:369 includes/class-aod-shipping.php:767
+msgid "Enregistrer"
+msgstr "حفظ"
+
+#: includes/class-aod-cod-turnstile.php:288
+msgid "COD Anti-spam (Turnstile)"
+msgstr "مكافحة السبام COD ‏(Turnstile)"
+
+#: includes/class-aod-cod-turnstile.php:289
+msgid "COD Anti-spam"
+msgstr "مكافحة السبام COD"
+
+#: includes/class-aod-cod-turnstile.php:328
+msgid "COD Anti-spam — Cloudflare Turnstile"
+msgstr "مكافحة السبام COD — Cloudflare Turnstile"
+
+#: includes/class-aod-cod-turnstile.php:330
+msgid ""
+"Challenge anti-robot gratuit et invisible pour le formulaire de commande "
+"COD. Crée un widget « Turnstile » sur le tableau de bord Cloudflare (type de "
+"widget : Managed), puis colle les deux clés ci-dessous."
+msgstr ""
+"تحدٍّ مجاني وغير مرئي لمكافحة الروبوتات في استمارة طلب COD. أنشئ ودجت "
+"«Turnstile» في لوحة تحكم Cloudflare (نوع الودجت: Managed)، ثم الصق المفتاحين "
+"أدناه."
+
+#: includes/class-aod-cod-turnstile.php:334
+msgid "Actif"
+msgstr "مفعّل"
+
+#: includes/class-aod-cod-turnstile.php:334
+msgid "Inactif (clés manquantes)"
+msgstr "غير مفعّل (مفاتيح مفقودة)"
+
+#: includes/class-aod-cod-turnstile.php:337
+msgid ""
+"Des clés sont définies dans wp-config.php (constantes) : elles ont priorité "
+"sur les champs ci-dessous."
+msgstr ""
+"توجد مفاتيح معرّفة في wp-config.php (ثوابت): ولها الأولوية على الحقول أدناه."
+
+#: includes/class-aod-cod-turnstile.php:343
+msgid "Clé de site (Site Key)"
+msgstr "مفتاح الموقع (Site Key)"
+
+#: includes/class-aod-cod-turnstile.php:347
+msgid "Clé secrète (Secret Key)"
+msgstr "المفتاح السري (Secret Key)"
+
+#. translators: %s: message d'erreur
+#: includes/class-aod-cod-whatsapp.php:163
+#, php-format
+msgid "Notification WhatsApp non envoyée : %s"
+msgstr "تعذّر إرسال إشعار واتساب: %s"
+
+#. translators: %d: code HTTP
+#: includes/class-aod-cod-whatsapp.php:178
+#, php-format
+msgid ""
+"Notification WhatsApp non envoyée (HTTP %d). Vérifiez le numéro et la clé."
+msgstr "تعذّر إرسال إشعار واتساب (HTTP %d). تحقّق من الرقم والمفتاح."
+
+#. translators: %s: numéro de commande
+#: includes/class-aod-cod-whatsapp.php:194
+#, php-format
+msgid "Nouvelle commande #%s"
+msgstr "طلب جديد ‎#%s"
+
+#: includes/class-aod-cod-whatsapp.php:238
+msgid "Configure et active d’abord la notification."
+msgstr "قم أولًا بإعداد الإشعار وتفعيله."
+
+#: includes/class-aod-cod-whatsapp.php:246
+msgid "✅ Test AOD COD : la notification WhatsApp fonctionne."
+msgstr "✅ اختبار AOD COD: إشعار واتساب يعمل."
+
+#. translators: %s: message d'erreur
+#: includes/class-aod-cod-whatsapp.php:257
+#, php-format
+msgid "Échec de l’envoi : %s"
+msgstr "فشل الإرسال: %s"
+
+#: includes/class-aod-cod-whatsapp.php:265
+msgid "Message de test envoyé. Vérifie ton WhatsApp."
+msgstr "تم إرسال رسالة الاختبار. تحقق من واتساب."
+
+#. translators: 1: code HTTP, 2: réponse
+#: includes/class-aod-cod-whatsapp.php:269
+#, php-format
+msgid ""
+"Réponse inattendue de CallMeBot (HTTP %1$d). Vérifie ton numéro et ta clé. "
+"Détail : %2$s"
+msgstr ""
+"استجابة غير متوقعة من CallMeBot ‏(HTTP %1$d). تحقق من رقمك ومفتاحك. التفاصيل: "
+"%2$s"
+
+#: includes/class-aod-cod-whatsapp.php:283
+msgid "Notification WhatsApp"
+msgstr "إشعار واتساب"
+
+#: includes/class-aod-cod-whatsapp.php:284
+msgid "Notif WhatsApp"
+msgstr "إشعار واتساب"
+
+#: includes/class-aod-cod-whatsapp.php:315
+msgid "Réglages WhatsApp enregistrés."
+msgstr "تم حفظ إعدادات واتساب."
+
+#: includes/class-aod-cod-whatsapp.php:322
+msgid "Notification WhatsApp des commandes"
+msgstr "إشعار واتساب بالطلبات"
+
+#: includes/class-aod-cod-whatsapp.php:325
+msgid ""
+"Reçois un message WhatsApp instantané sur ton téléphone à chaque nouvelle "
+"commande COD. Service gratuit via CallMeBot."
+msgstr ""
+"استقبل رسالة واتساب فورية على هاتفك مع كل طلب COD جديد. خدمة مجانية عبر "
+"CallMeBot."
+
+#: includes/class-aod-cod-whatsapp.php:328
+msgid "Mise en route (une seule fois) :"
+msgstr "خطوات التشغيل (مرة واحدة فقط):"
+
+#. translators: %s: numéro WhatsApp CallMeBot
+#: includes/class-aod-cod-whatsapp.php:332
+#, php-format
+msgid "Enregistre le numéro %s dans tes contacts (nom : CallMeBot)."
+msgstr "احفظ الرقم %s في جهات اتصالك (الاسم: CallMeBot)."
+
+#. translators: %s: phrase à envoyer
+#: includes/class-aod-cod-whatsapp.php:336
+#, php-format
+msgid "Sur WhatsApp, envoie ce message à ce contact : %s"
+msgstr "على واتساب، أرسل هذه الرسالة إلى جهة الاتصال هذه: %s"
+
+#: includes/class-aod-cod-whatsapp.php:338
+msgid "Tu reçois en réponse ta clé API (apikey). Colle-la ci-dessous."
+msgstr "ستتلقى ردًا يحتوي مفتاح API الخاص بك (apikey). الصقه أدناه."
+
+#: includes/class-aod-cod-whatsapp.php:350
+msgid "Envoyer un WhatsApp à chaque commande"
+msgstr "إرسال واتساب مع كل طلب"
+
+#: includes/class-aod-cod-whatsapp.php:355
+msgid "Ton numéro WhatsApp"
+msgstr "رقم واتساب الخاص بك"
+
+#: includes/class-aod-cod-whatsapp.php:358
+msgid ""
+"Avec l’indicatif pays, sans le « + » ni espaces. Algérie = 213. Ex : "
+"213550123456."
+msgstr "مع رمز البلد، بدون «+» ولا مسافات. الجزائر = 213. مثال: 213550123456."
+
+#: includes/class-aod-cod-whatsapp.php:362
+msgid "Clé API (apikey)"
+msgstr "مفتاح API ‏(apikey)"
+
+#: includes/class-aod-cod-whatsapp.php:365
+msgid "Fournie par CallMeBot dans sa réponse WhatsApp."
+msgstr "يوفّره CallMeBot في رده على واتساب."
+
+#: includes/class-aod-cod-whatsapp.php:376
+msgid "Envoyer un message de test"
+msgstr "إرسال رسالة اختبار"
+
+#: includes/class-aod-ship-tracking.php:103
+msgid "Toutes les 2 heures (suivi des colis)"
+msgstr "كل ساعتين (تتبع الطرود)"
+
+#: includes/class-aod-ship-tracking.php:342 includes/class-aod-shipping.php:353
+msgid "Commande introuvable."
+msgstr "الطلب غير موجود."
+
+#: includes/class-aod-ship-tracking.php:348
+msgid "Commande sans colis expédié."
+msgstr "طلب بدون طرد مُرسَل."
+
+#: includes/class-aod-ship-tracking.php:353
+msgid "Transporteur inconnu pour cette commande."
+msgstr "شركة التوصيل غير معروفة لهذا الطلب."
+
+#. translators: 1: nom du livreur, 2: libellé du statut de suivi
+#: includes/class-aod-ship-tracking.php:400
+#, php-format
+msgid "Suivi %1$s : %2$s"
+msgstr "تتبع %1$s: %2$s"
+
+#: includes/class-aod-shipping.php:204 includes/class-aod-shipping.php:226
+#: includes/class-aod-shipping.php:231
+msgctxt "Order status"
+msgid "Confirmée"
+msgstr "مؤكَّدة"
+
+#. translators: %s: nombre de commandes
+#: includes/class-aod-shipping.php:211
+#, php-format
+msgid "Confirmée <span class=\"count\">(%s)</span>"
+msgid_plural "Confirmées <span class=\"count\">(%s)</span>"
+msgstr[0] "مؤكَّدة <span class=\"count\">(%s)</span>"
+msgstr[1] "مؤكَّدة <span class=\"count\">(%s)</span>"
+msgstr[2] "مؤكَّدة <span class=\"count\">(%s)</span>"
+msgstr[3] "مؤكَّدة <span class=\"count\">(%s)</span>"
+msgstr[4] "مؤكَّدة <span class=\"count\">(%s)</span>"
+msgstr[5] "مؤكَّدة <span class=\"count\">(%s)</span>"
+
+#: includes/class-aod-shipping.php:289
+msgid ""
+"Envoi annulé : le transporteur choisi pour cette commande n’est pas "
+"configuré (Livraison → Transporteurs)."
+msgstr ""
+"أُلغي الإرسال: شركة التوصيل المختارة لهذا الطلب غير مُهيَّأة (التوصيل ← شركات "
+"التوصيل)."
+
+#: includes/class-aod-shipping.php:320
+msgid ""
+"Envoi impossible : aucun transporteur n’est configuré (Livraison → "
+"Transporteurs)."
+msgstr "تعذّر الإرسال: لا توجد أي شركة توصيل مهيأة (التوصيل ← شركات التوصيل)."
+
+#: includes/class-aod-shipping.php:321
+msgid ""
+"Envoi impossible : le livreur par défaut n’est pas configuré. Choisissez-le "
+"dans Livraison → Transporteurs."
+msgstr ""
+"تعذّر الإرسال: الناقل الافتراضي غير مهيأ. اختره من التوصيل ← شركات التوصيل."
+
+#: includes/class-aod-shipping.php:361
+msgid ""
+"Cette commande n’a pas de mode de livraison : elle ne concerne pas les "
+"transporteurs."
+msgstr "هذا الطلب لا يتضمّن طريقة توصيل: فهو لا يخصّ شركات التوصيل."
+
+#: includes/class-aod-shipping.php:367
+msgid "Cette commande est déjà expédiée."
+msgstr "هذا الطلب مُرسَل مسبقًا."
+
+#: includes/class-aod-shipping.php:393
+msgid ""
+"Cette commande n’est pas confirmée : elle ne peut pas partir chez le livreur."
+msgstr "هذا الطلب غير مؤكّد: لا يمكن إرساله إلى شركة التوصيل."
+
+#. translators: 1: nom du livreur, 2: message d'erreur
+#: includes/class-aod-shipping.php:464
+#, php-format
+msgid "Envoi au livreur échoué (%1$s) : %2$s"
+msgstr "فشل الإرسال إلى شركة التوصيل (%1$s): %2$s"
+
+#: includes/class-aod-shipping.php:575
+msgid "Envoyée au livreur"
+msgstr "أُرسلت إلى شركة التوصيل"
+
+#: includes/class-aod-shipping.php:576
+msgid "Échec de l’envoi"
+msgstr "فشل الإرسال"
+
+#: includes/class-aod-shipping.php:577
+msgid "Pas encore envoyée"
+msgstr "لم تُرسل بعد"
+
+#: includes/class-aod-shipping.php:659 includes/class-aod-shipping.php:1058
+msgid "Étiquette"
+msgstr "الملصق"
+
+#: includes/class-aod-shipping.php:684
+msgid "Expédition (livreurs)"
+msgstr "الشحن (شركات التوصيل)"
+
+#: includes/class-aod-shipping.php:685
+msgid "Expédition"
+msgstr "الشحن"
+
+#: includes/class-aod-shipping.php:727
+msgid "Réglages d’expédition enregistrés."
+msgstr "تم حفظ إعدادات الشحن."
+
+#: includes/class-aod-shipping.php:733
+msgid "Expédition — Livreurs"
+msgstr "الشحن — شركات التوصيل"
+
+#: includes/class-aod-shipping.php:735
+msgid ""
+"Configurez un ou plusieurs transporteurs. Vous choisirez le livreur au "
+"moment d’envoyer chaque commande."
+msgstr "هيّئ شركة توصيل واحدة أو أكثر. ستختار الناقل عند إرسال كل طلب."
+
+#: includes/class-aod-shipping.php:741 includes/class-aod-shipping.php:744
+msgid "Livreur par défaut"
+msgstr "الناقل الافتراضي"
+
+#: includes/class-aod-shipping.php:749
+msgid "(non configuré)"
+msgstr "(غير مهيأ)"
+
+#: includes/class-aod-shipping.php:753
+msgid ""
+"Le transporteur proposé par défaut quand une commande n’en a pas reçu un à "
+"elle. Doit être configuré ci-dessous."
+msgstr ""
+"شركة التوصيل المقترحة افتراضيًا عندما لا يكون للطلب شركة خاصة به. يجب تهيئتها "
+"أدناه."
+
+#: includes/class-aod-shipping.php:762
+msgid "Configuré"
+msgstr "مهيأ"
+
+#: includes/class-aod-shipping.php:825
+msgid ""
+"Un envoi est déjà en cours pour cette commande. Patientez quelques instants."
+msgstr "هناك إرسال جارٍ بالفعل لهذا الطلب. يُرجى الانتظار قليلاً."
+
+#: includes/class-aod-shipping.php:840
+msgid "Cette commande vient d’être expédiée."
+msgstr "تم شحن هذا الطلب للتوّ."
+
+#: includes/class-aod-shipping.php:923
+#, php-format
+msgid "Colis %1$s créé. Suivi : %2$s"
+msgstr "تم إنشاء الطرد %1$s. التتبع: %2$s"
+
+#: includes/class-aod-shipping.php:934
+msgid "Expédition (livreur)"
+msgstr "الشحن (شركة التوصيل)"
+
+#: includes/class-aod-shipping.php:944
+msgid "Détails de la commande (COD)"
+msgstr "تفاصيل الطلب (COD)"
+
+#: includes/class-aod-shipping.php:995
+msgid "Nom du client"
+msgstr "اسم الزبون"
+
+#: includes/class-aod-shipping.php:1000
+msgid "Copier"
+msgstr "نسخ"
+
+#: includes/class-aod-shipping.php:1004
+msgid "Client"
+msgstr "الزبون"
+
+#: includes/class-aod-shipping.php:1011
+msgid "Stop-desk (point relais)"
+msgstr "مكتب التوصيل (نقطة استلام)"
+
+#: includes/class-aod-shipping.php:1014
+msgid "Type de livraison"
+msgstr "نوع التوصيل"
+
+#: includes/class-aod-shipping.php:1035
+msgid "Centre / station"
+msgstr "المركز / المحطة"
+
+#: includes/class-aod-shipping.php:1046
+msgid "Suivi"
+msgstr "التتبّع"
+
+#: includes/class-aod-shipping.php:1072
+msgid "Articles commandés"
+msgstr "المنتجات المطلوبة"
+
+#: includes/class-aod-shipping.php:1096
+msgid "Sous-total produits"
+msgstr "المجموع الفرعي للمنتجات"
+
+#: includes/class-aod-shipping.php:1100
+msgid "Total à encaisser"
+msgstr "المبلغ الواجب تحصيله"
+
+#: includes/class-aod-shipping.php:1105
+msgid "Aucune information COD pour cette commande."
+msgstr "لا توجد معلومات COD لهذا الطلب."
+
+#: includes/class-aod-shipping.php:1121
+msgid "Copié ✓"
+msgstr "تم النسخ ✓"
+
+#: includes/class-aod-shipping.php:1147
+msgid "Centre / station stop-desk :"
+msgstr "مركز / محطة مكتب التوصيل:"
+
+#: includes/class-aod-shipping.php:1157
+msgid "Saisissez le code du centre/station (liste indisponible)."
+msgstr "أدخل رمز المركز/المحطة (القائمة غير متاحة)."
+
+#: includes/class-aod-shipping.php:1158
+msgid "Code centre / station"
+msgstr "رمز المركز / المحطة"
+
+#: includes/class-aod-shipping.php:1184 includes/class-aod-shipping.php:1224
+msgid "Livreur :"
+msgstr "الناقل:"
+
+#: includes/class-aod-shipping.php:1185
+msgid "Suivi :"
+msgstr "التتبع:"
+
+#: includes/class-aod-shipping.php:1187
+msgid "Étiquette (PDF)"
+msgstr "الملصق (PDF)"
+
+#: includes/class-aod-shipping.php:1194
+msgid "Aucun livreur configuré."
+msgstr "لا توجد شركة توصيل مهيأة."
+
+#: includes/class-aod-shipping.php:1194
+msgid "Configurer"
+msgstr "تهيئة"
+
+#: includes/class-aod-shipping.php:1233
+msgid "Erreur :"
+msgstr "خطأ:"
+
+#: includes/class-aod-shipping.php:1236
+msgid "Envoyer"
+msgstr "إرسال"
+
+#: includes/class-aod-shipping.php:1255
+msgid "Chargement des centres…"
+msgstr "جاري تحميل المراكز…"
+
+#: includes/class-aod-shipping.php:1294
+msgid "Erreur réseau."
+msgstr "خطأ في الشبكة."
+
+#: includes/class-aod-shipping.php:1310
+msgid "Accès refusé."
+msgstr "تم رفض الوصول."
+
+#: includes/class-aod-shipping.php:1320
+msgid "Paramètres invalides."
+msgstr "معطيات غير صالحة."
+
+#: includes/class-aod-shipping.php:1331
+msgid "Commande ou livreur introuvable."
+msgstr "تعذّر العثور على الطلب أو شركة التوصيل."
+
+#: includes/class-aod-shipping.php:1356
+#, php-format
+msgid "Colis créé ✓ Suivi : %s"
+msgstr "تم إنشاء الطرد ✓ التتبع: %s"
+
+#: includes/class-aod-shipping.php:1367
+#, php-format
+msgid "Envoyer à %s"
+msgstr "إرسال إلى %s"
+
+#: includes/class-aod-shipping.php:1412
+#, php-format
+msgid "Expédition : %1$d colis créé(s), %2$d échec(s)."
+msgstr "الشحن: تم إنشاء %1$d طردًا، وفشل %2$d."
+
+#: includes/block/block.json
+msgctxt "block title"
+msgid "Formulaire COD (AOD)"
+msgstr "استمارة الدفع عند الاستلام (AOD)"
+
+#: includes/block/block.json
+msgctxt "block description"
+msgid ""
+"Formulaire de commande à la livraison (COD) : wilaya, commune, frais de "
+"livraison et total en direct."
+msgstr ""
+"استمارة طلب بالدفع عند الاستلام (COD): الولاية، البلدية، رسوم التوصيل "
+"والمجموع مباشرة."
+
+#: includes/block/block.json
+msgctxt "block keyword"
+msgid "cod"
+msgstr "الدفع عند الاستلام"
+
+#: includes/block/block.json
+msgctxt "block keyword"
+msgid "commande"
+msgstr "طلب"
+
+#: includes/block/block.json
+msgctxt "block keyword"
+msgid "livraison"
+msgstr "توصيل"
+
+#: includes/block/block.json
+msgctxt "block keyword"
+msgid "wilaya"
+msgstr "ولاية"
+
+#: includes/block/block.json
+msgctxt "block keyword"
+msgid "algerie"
+msgstr "الجزائر"
+
+#~ msgid ""
+#~ "Envoi automatique annulé : aucun transporteur n’est configuré (Livraison "
+#~ "→ Transporteurs)."
+#~ msgstr ""
+#~ "أُلغي الإرسال التلقائي: لا توجد شركة توصيل مهيأة (التوصيل ← شركات التوصيل)."
+
+#~ msgid ""
+#~ "Envoi automatique annulé : le livreur par défaut n’est pas configuré. "
+#~ "Choisissez-le dans Livraison → Transporteurs."
+#~ msgstr ""
+#~ "أُلغي الإرسال التلقائي: الناقل الافتراضي غير مهيأ. اختره في التوصيل ← "
+#~ "شركات التوصيل."
+
+#~ msgid "Envoi automatique"
+#~ msgstr "الإرسال التلقائي"
+
+#~ msgid "Déclencheur"
+#~ msgstr "المُشغِّل"
+
+#~ msgid ""
+#~ "Envoyer automatiquement au livreur quand la commande passe au statut "
+#~ "« Confirmée »"
+#~ msgstr "الإرسال تلقائيًا إلى شركة التوصيل عندما ينتقل الطلب إلى حالة «مؤكَّدة»"
+
+#~ msgid ""
+#~ "Recommandé : appelez d’abord le client pour confirmer, puis passez la "
+#~ "commande à « Confirmée ». Le bordereau part alors tout seul. Le bouton "
+#~ "« Envoyer » manuel reste disponible."
+#~ msgstr ""
+#~ "موصى به: اتصل بالزبون أولًا للتأكيد، ثم انقل الطلب إلى «مؤكَّدة». عندها يُرسل "
+#~ "الوصل تلقائيًا، ويبقى زر «إرسال» اليدوي متاحًا."
+
+#~ msgid ""
+#~ "Le transporteur utilisé pour l’envoi automatique. Doit être configuré ci-"
+#~ "dessous."
+#~ msgstr "شركة التوصيل المستخدمة للإرسال التلقائي. يجب تهيئتها أدناه."
+
+#, php-format
+#~ msgid "Envoi automatique échoué (%1$s) : %2$s"
+#~ msgstr "فشل الإرسال التلقائي (%1$s): %2$s"
+
+#, php-format
+#~ msgid "Votre panier (%s article(s)) sera commandé avec ce formulaire."
+#~ msgstr "سيتم طلب سلتك (%s منتج) عبر هذا النموذج."
+
+#~ msgid "Voir le panier"
+#~ msgstr "عرض السلة"
+
+#~ msgid "Couleur"
+#~ msgstr "اللون"

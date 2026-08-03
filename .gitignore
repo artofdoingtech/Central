@@ -1,0 +1,62 @@
+# Environnement local — ne pas committer
+.env
+# Install WordPress runtime ignorée…
+wordpress/*
+!wordpress/wp-content/
+wordpress/wp-content/*
+!wordpress/wp-content/themes/
+wordpress/wp-content/themes/*
+# …SAUF les child themes (travail client versionné — core/parent/plugins restent ignorés)
+!wordpress/wp-content/themes/*-child/
+# …et SAUF les mu-plugins maison (numérotation séquentielle des commandes)
+!wordpress/wp-content/mu-plugins/
+# `library/` n'est PAS versionné (poids des thèmes/plugins tiers + licences) —
+# TEMPLATE.md §2. On ignore le DOSSIER, pas seulement les .zip : la règle
+# précédente (`library/themes/*.zip` + `library/plugins/*.zip`) laissait passer
+# un thème livré en .tar.gz, un dossier décompressé ou un PDF de licence, qui
+# seraient partis dans un commit sans que personne ne le remarque.
+# Les deux .gitkeep gardent l'arborescence attendue par setup.sh.
+library/**
+!library/themes/
+!library/plugins/
+!library/**/.gitkeep
+# …SAUF le SOCLE, versionné à dessein (2026-07-28) : sans lui, un `git clone`
+# ne donne pas une application qui démarre — les deux plugins maison déclarent
+# `Requires Plugins: woocommerce` et se mettent en veille, donc /gestion et la
+# boutique n'existent pas. `setup.sh` sait aussi les tirer de wordpress.org,
+# mais ces deux archives rendent l'installation possible HORS LIGNE.
+# Licences : WooCommerce GPLv3, Astra GPLv2+ — redistribution autorisée.
+# ⚠️ Ce sont des PLANCHERS, pas des versions figées : `wp plugin update` et
+# `wp theme update` prennent le relais. Le thème CLIENT, lui, reste hors dépôt.
+!library/plugins/woocommerce.*.zip
+!library/themes/astra.*.zip
+*.log
+
+# Artefacts de déploiement (zip du site + dump DB avec données clients) — locaux uniquement
+# Bâtis par `bash scripts/make-deploiement.sh <domaine>` : régénérables en une
+# commande, jamais versionnés (poids + données clients).
+deploy/
+fichier-prod/
+# Exports mis de côté parce qu'ils sont PÉRIMÉS. Le motif est ignoré pour la même
+# raison que les autres — leur poids —, mais il existe surtout pour que le geste
+# « je le renomme plutôt que de le supprimer » ne fasse pas basculer 150 Mo dans
+# `git status`, où un `git add -A` les emporterait. Relevé le 2026-08-03 : c'est
+# exactement ce qui est arrivé en renommant les deux exports du clone de référence.
+PERIME-NE-PAS-DEPLOYER-*/
+
+# Kit de template Elementor (référence visuelle, non livrable)
+Laste - Real Estate & Property Elementor Template Kit/
+
+# Plugin premium de référence (formulaire COD/arabe, non livrable) — base des améliorations
+woo-jude-form-premium.1.0.7/
+
+# BMAD — config personnelle uniquement (le reste est versionné)
+**/config.user.toml
+# Sorties BMAD : artefacts générés par les agents (briefs, PRD, stories d'un
+# projet donné). Le TEMPLATE fournit le flux (`_bmad/` + les skills `.claude/`),
+# pas les documents qu'un clone produira — ils sont propres à chaque client.
+_bmad-output/
+Deploiement/
+
+# Artefact du cliquet de dérive documentaire (D30) : régénéré par tests/run.sh.
+tests/.git-sujets.txt

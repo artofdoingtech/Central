@@ -1,0 +1,141 @@
+services:
+  db:
+    image: mariadb:11
+    container_name: wp_db_${PROJECT_SLUG}
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:php8.2-apache
+    container_name: wp_app_${PROJECT_SLUG}
+    restart: unless-stopped
+    # DNS public : le resolver Docker interne ne résout pas les domaines externes
+    # (ex. API de livraison EcoTrack) sur cette machine.
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${WP_PORT}:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      # L'image officielle définit déjà WP_DEBUG depuis cette variable. Le
+      # redéfinir dans CONFIG_EXTRA (évalué plus bas dans wp-config.php) émet un
+      # « Constant WP_DEBUG already defined » à CHAQUE requête.
+      WORDPRESS_DEBUG: 1
+      # 🔴 FS_METHOD — SANS LUI, WORDPRESS NE SAIT PAS ÉCRIRE DEPUIS UNE REQUÊTE WEB.
+      #    `get_filesystem_method()` conclut « direct » seulement si le propriétaire
+      #    des fichiers du cœur ÉGALE celui d'un fichier créé par PHP. Or `wordpress/`
+      #    est bind-monté : le cœur appartient à l'utilisateur HÔTE (uid 1000) et PHP
+      #    tourne en www-data (uid 33) — l'égalité est structurellement impossible, et
+      #    aucun `chmod` n'y change rien. WordPress retombe alors sur « ftpsockets »,
+      #    `WP_Filesystem()` rend false, et tout ce qui passe par cette couche échoue
+      #    EN SILENCE : c'est ce qui rendait la journalisation de la Phase 31.3 muette
+      #    sur toute requête web (dette D28) — elle n'écrivait que sous WP-CLI, qui
+      #    tourne en root et passe le test. Mesuré, pas supposé.
+      #    ⚠️ Ne concerne QUE cette pile de dev. Sur un hébergement normal, le
+      #    propriétaire des fichiers et l'utilisateur PHP coïncident.
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG_LOG', true);
+        define('WP_MEMORY_LIMIT', '512M');
+        define('FS_METHOD', 'direct');
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./library:/library:ro
+      # 47.6bis — limites de téléversement. Sans ce fichier, `php -i` répond
+      # « Loaded Configuration File => (none) » et PHP retombe sur ses défauts
+      # compilés (2M/8M) : une photo de 2,8 Mo était refusée alors que
+      # l'application promet 5 Mo. Le `zz-` garantit le dernier mot (conf.d est
+      # lu par ordre alphabétique).
+      # 🚨 LE MÊME MONTAGE EXISTE SUR `wpcli`, et c'est indispensable : la suite
+      # de tests tourne là-bas, les vrais envois arrivent ici. Un seul des deux
+      # et l'un des deux ment. (Leçon FS_METHOD / D28.)
+      - ./docker/php-aod.ini:/usr/local/etc/php/conf.d/zz-aod.ini:ro
+      - ./plugins-dev/aod-cod-form:/var/www/html/wp-content/plugins/aod-cod-form
+      - ./plugins-dev/aod-client-dashboard:/var/www/html/wp-content/plugins/aod-client-dashboard
+
+  wpcli:
+    image: wordpress:cli-php8.2
+    container_name: wp_cli_${PROJECT_SLUG}
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    depends_on:
+      db:
+        condition: service_healthy
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      # 🚨 LE MÊME BLOC QUE LE CONTENEUR WEB — et il manquait ici (relevé en
+      # 47.6bis). `wp-config.php` évalue `WORDPRESS_CONFIG_EXTRA` À CHAQUE
+      # requête, en le lisant dans l'ENVIRONNEMENT : absent de ce service, les
+      # trois constantes n'étaient tout simplement pas définies sous WP-CLI.
+      # Mesuré : `WP_MEMORY_LIMIT` valait 40M (le défaut de WordPress) au lieu de
+      # 512M, et `FS_METHOD` n'était PAS défini — alors que TEMPLATE.md §3 le
+      # présente comme la parade au bind-mount.
+      # C'est la divergence de conteneurs que la 47.6bis vient de fermer sur les
+      # limites de téléversement, sur un second réglage : `tests/run.sh` tourne
+      # ICI, et mesurer une constante dans un conteneur qui ne la reçoit pas,
+      # c'est en tirer une conclusion fausse. (Deux l'ont déjà été dans cette
+      # phase.)
+      # ⚠️ Sans effet de bord : `WP_DEBUG` reste false ici (`WORDPRESS_DEBUG`
+      # n'est volontairement pas posé sur ce service), donc `WP_DEBUG_LOG` ne
+      # branche aucun fichier — la configuration du log vit à l'intérieur du
+      # `if ( WP_DEBUG )` de `wp_debug_mode()`. Et WP-CLI met déjà
+      # `memory_limit` à -1 : les 512M ne peuvent pas le faire redescendre.
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG_LOG', true);
+        define('WP_MEMORY_LIMIT', '512M');
+        define('FS_METHOD', 'direct');
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./library:/library:ro
+      - ./scripts:/scripts
+      - ./tests:/tests:ro
+      # Dépôt entier en LECTURE SEULE (32.6) : le cliquet de dérive documentaire
+      # (tests/unit/test-doc-derive.php) recoupe TEMPLATE.md, la ROADMAP et le
+      # code — les docs vivent à la racine, hors des montages ci-dessus. Sur un
+      # clone existant : `docker compose up -d wpcli` pour appliquer.
+      - ./:/repo:ro
+      # 47.6bis — le MÊME fichier que sur le conteneur web (cf. le commentaire
+      # là-bas). `tests/run.sh` lit `wp_max_upload_size()` ICI : sans ce montage,
+      # le cliquet mesurerait une limite qui ne s'applique à aucun téléversement.
+      - ./docker/php-aod.ini:/usr/local/etc/php/conf.d/zz-aod.ini:ro
+      - ./plugins-dev/aod-cod-form:/var/www/html/wp-content/plugins/aod-cod-form
+      - ./plugins-dev/aod-client-dashboard:/var/www/html/wp-content/plugins/aod-client-dashboard
+    entrypoint: ["tail", "-f", "/dev/null"]
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    container_name: wp_pma_${PROJECT_SLUG}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${PMA_PORT}:80"
+    environment:
+      PMA_HOST: db
+      UPLOAD_LIMIT: 256M
+
+volumes:
+  db_data:

@@ -1,0 +1,16 @@
+{
+  "name": "aod-recette",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Recette navigateur de /gestion (accessibilité AA, clavier, souris, RTL/mobile)",
+  "scripts": {
+    "contraste": "node a11y-contraste.js",
+    "clavier": "node a11y-clavier.js",
+    "souris": "node a11y-souris.js",
+    "noms": "node a11y-noms.js",
+    "rtl": "node rtl-mobile.js"
+  },
+  "dependencies": {
+    "playwright-core": "^1.61.1"
+  }
+}

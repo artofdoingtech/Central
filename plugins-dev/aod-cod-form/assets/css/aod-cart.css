@@ -1,0 +1,631 @@
+/**
+ * Panier COD public — peau du panier (Phase 37).
+ *
+ * Chargée UNIQUEMENT si le gérant a activé le panier. Transitions à propriétés
+ * NOMMÉES (jamais `all` — cliquet statique 18.1) ; `prefers-reduced-motion`
+ * honoré (Phase 19 : le mouvement part, l'acquittement reste).
+ *
+ * 🚨 DEUX RÈGLES QUI ONT COÛTÉ UN BOUTON ILLISIBLE (contraste mesuré 1,05:1) :
+ *
+ * 1. **Le panier ne porte JAMAIS une classe du thème** (`button`, `wp-element-*`…).
+ *    Astra imprime son CSS de boutons en `<style>` inline, donc APRÈS nos
+ *    feuilles : à spécificité égale il gagne, et son fond de marque écrase le
+ *    nôtre. D'où le réarmement `.aod-cart__drawer button` / `.aod-cart__box
+ *    button` en (0,1,1) — il bat `button` (0,0,1) ET `.button` (0,1,0) quel que
+ *    soit l'ordre des feuilles.
+ * 2. **Aucun fond actionnable n'est `transparent`.** Un fond transparent fait
+ *    dépendre le contraste de ce qu'il y a derrière, donc du thème du clone.
+ *
+ * Les tokens `--ac-*` recopient EXACTEMENT ceux du formulaire COD (`--sh-*`,
+ * aod-cod-form.css). La duplication est assumée : cette feuille se charge sur
+ * toute la boutique quand celle du formulaire ne se charge que sur la fiche
+ * produit. Le cliquet `tests/unit/test-panier-peau.php` compare les deux et
+ * rougit si elles divergent — la dérive est bruyante, pas silencieuse.
+ */
+
+:root {
+	--ac-ink: #1a1a1a;
+	--ac-ink-2: #616161;
+	--ac-muted: #8a8a8a;
+	--ac-line: #e1e3e5;
+	--ac-line-soft: #f0f0f1;
+	--ac-surface: #ffffff;
+	--ac-surface-sub: #f6f6f7;
+	--ac-accent: #008060;
+	--ac-accent-dark: #006e52;
+	--ac-accent-wash: #f0faf6;
+	--ac-danger: #d72c0d;
+	--ac-r-sm: 6px;
+	--ac-r-md: 8px;
+	--ac-r-lg: 12px;
+}
+
+/* `display:flex` écraserait le `display:none` que l'attribut `hidden` donne
+ * par défaut : sans ces règles, le drawer « caché » resterait affiché ET
+ * intercepterait les clics de toute la colonne droite. Trouvé par le témoin
+ * 35.3 — pas par la relecture. */
+.aod-cart__fab[hidden],
+.aod-cart__overlay[hidden],
+.aod-cart__drawer[hidden],
+.aod-cart__box[hidden] {
+	display: none;
+}
+
+/* ---- Réarmement défensif : le thème s'arrête ici ----
+ *
+ * Une classe À NOUS sur chaque bouton, jamais un sélecteur d'ancêtre. La
+ * première version écrivait `.aod-cart__drawer button` (0,1,1) : ça battait
+ * bien le thème, mais aussi **nos propres règles de composant** (0,1,0) — et
+ * « Commander » est ressorti sans fond. Vu à l'écran, pas à la relecture.
+ *
+ * Ici tout le monde est à (0,1,0) — sauf `.aod-cart__qty button` (0,1,1), qui
+ * a son homologue exact plus bas. Les règles de composant viennent APRÈS dans
+ * la feuille : à spécificité égale, elles gagnent. Et (0,1,0) bat le `button`
+ * nu (0,0,1) du thème quel que soit l'ordre des feuilles — la seule prise
+ * qu'Astra avait, `.button` (0,1,0), a disparu de notre markup. */
+.aod-cart__close,
+.aod-cart__order,
+.aod-cart__remove,
+.aod-cart__qty button {
+	-webkit-appearance: none;
+	appearance: none;
+	box-sizing: border-box;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	font: inherit;
+	line-height: 1;
+	text-transform: none;
+	letter-spacing: normal;
+	cursor: pointer;
+}
+
+/* ---- Icônes du catalogue (37.2) ----
+ * Mêmes SVG Phosphor que la sidebar de `/gestion`, rendus par `AOD_COD_Icon`.
+ * `currentColor` : l'icône suit la couleur de son bouton, jamais l'inverse —
+ * c'est ce qui permet au même fichier de servir sur fond vert et sur fond blanc.
+ * `display:block` : sans lui, un SVG est en ligne et traîne l'espace de la
+ * ligne de base, ce qui décentre le glyphe dans un bouton carré. */
+.aod-i {
+	display: block;
+	flex: 0 0 auto;
+	fill: currentColor;
+}
+
+/* ---- Bouton flottant ---- */
+
+.aod-cart__fab {
+	position: fixed;
+	inset-block-end: 18px;
+	inset-inline-end: 18px;
+	z-index: 9998;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--ac-accent);
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+	transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.aod-cart__fab:hover { background: var(--ac-accent-dark); transform: scale(1.05); }
+.aod-cart__fab:focus-visible { outline: 2px solid var(--ac-ink); outline-offset: 3px; }
+
+/* Encre neutre, jamais rouge : un panier qui se remplit est une bonne
+ * nouvelle, pas une alerte. Le rouge ne dit qu'une chose ici — indisponible. */
+.aod-cart__badge {
+	position: absolute;
+	inset-block-start: -4px;
+	inset-inline-end: -4px;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	border-radius: 9999px;
+	background: var(--ac-ink);
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+	box-shadow: 0 0 0 2px var(--ac-surface);
+}
+
+/* ---- Panneau ---- */
+
+.aod-cart__overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9998;
+	background: rgba(0, 0, 0, .5);
+}
+
+.aod-cart__drawer {
+	position: fixed;
+	inset-block: 0;
+	inset-inline-end: 0;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	width: min(92vw, 420px);
+	background: var(--ac-surface);
+	color: var(--ac-ink);
+	box-shadow: 0 0 40px rgba(0, 0, 0, .20);
+}
+body.aod-cart-open { overflow: hidden; }
+
+.aod-cart__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px;
+	border-bottom: 1px solid var(--ac-line);
+}
+.aod-cart__title {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--ac-ink);
+}
+
+.aod-cart__close {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: var(--ac-r-md);
+	background: none;
+	color: var(--ac-ink-2);
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+/* 🚨 `:focus` est OBLIGATOIRE ici, pas seulement `:focus-visible`. Le thème
+ * porte un `button:focus{background:…}` en (0,1,1), qui bat notre (0,1,0) : à
+ * l'ouverture du panneau le focus part sur ce bouton, et il ressortait en
+ * rectangle bleu de marque. Mesuré, pas deviné. Nos états sont en (0,2,0). */
+.aod-cart__close:hover,
+.aod-cart__close:focus { background: var(--ac-surface-sub); color: var(--ac-ink); }
+.aod-cart__close:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+
+.aod-cart__list {
+	flex: 1;
+	overflow-y: auto;
+	padding: 4px 16px;
+}
+/* ---- Plafond de lignes atteint / dépassé (D35) ----
+   UN seul habillage pour les DEUX producteurs : le bandeau du tiroir (refus
+   qu'on vient d'opposer, posé par `open( note )`) et la ligne peinte par
+   `paintInto()` quand le serveur a écrêté. Deux peaux pour un même message
+   diraient au lecteur qu'il s'agit de deux choses. */
+.aod-cart__cap {
+	margin: 0 0 12px;
+	padding: 10px 12px;
+	border: 1px solid var(--ac-line);
+	border-inline-start: 3px solid var(--ac-danger);
+	border-radius: var(--ac-r-sm);
+	background: var(--ac-surface-sub);
+	color: var(--ac-ink);
+	font-size: 13px;
+	line-height: 1.45;
+}
+
+.aod-cart__empty {
+	margin: 0;
+	padding: 32px 0;
+	color: var(--ac-ink-2);
+	text-align: center;
+	font-size: 14px;
+}
+
+/* ---- Ligne de panier (panneau ET bloc — même composant) ----
+ * DEUX colonnes, pas cinq : la grille à 5 colonnes écrasait le nom jusqu'à
+ * « Bas… » dès 390 px. Cette structure tient sans média-query et se met en
+ * miroir toute seule en RTL. */
+
+.aod-cart__line {
+	display: grid;
+	grid-template-columns: 56px 1fr;
+	gap: 12px;
+	align-items: start;
+	padding: 12px 0;
+	border-bottom: 1px solid var(--ac-line-soft);
+}
+.aod-cart__line:last-child { border-bottom: 0; }
+.aod-cart__line.is-dead { opacity: .55; }
+
+.aod-cart__img {
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-surface-sub);
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .04);
+	display: block;
+}
+
+.aod-cart__body { min-width: 0; }
+
+.aod-cart__top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+/* Deux lignes, jamais une ellipse : en arabe, une troncature ronge le DÉBUT
+ * d'un nom latin (« …rban Flex ») et rend le produit méconnaissable. */
+.aod-cart__name {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--ac-ink);
+}
+.aod-cart__opts {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: var(--ac-ink-2);
+}
+.aod-cart__dead {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--ac-danger);
+}
+
+.aod-cart__bottom {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: 10px;
+}
+
+/* Pilule : un contrôle qu'on manipule au pouce doit dire « bouton » avant
+ * d'être lu. 36 px de haut, cibles de 36×36. */
+.aod-cart__qty {
+	display: inline-flex;
+	align-items: center;
+	height: 36px;
+	border: 1px solid var(--ac-line);
+	border-radius: 9999px;
+	background: var(--ac-surface-sub);
+	overflow: hidden;
+}
+.aod-cart__qty button {
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	color: var(--ac-ink);
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-cart__qty button:hover,
+.aod-cart__qty button:focus { background: var(--ac-line); color: var(--ac-ink); }
+.aod-cart__qty button:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: -2px; }
+.aod-cart__qtyval {
+	min-width: 28px;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	color: var(--ac-ink);
+}
+
+.aod-cart__linetotal {
+	font-size: 14px;
+	font-weight: 700;
+	white-space: nowrap;
+	color: var(--ac-ink);
+}
+
+.aod-cart__remove {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	margin-block-start: -4px;
+	margin-inline-end: -6px;
+	border-radius: var(--ac-r-sm);
+	background: none;
+	/* Encre secondaire et non `--ac-muted` : mesuré à 3,45:1, le gris atténué
+	 * ne tenait le seuil que si on classait cette icône en contenu NON textuel.
+	 * L'ambiguïté ne vaut pas le gain visuel — #616161 donne 5,92:1. */
+	color: var(--ac-ink-2);
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-cart__remove:hover,
+.aod-cart__remove:focus { background: var(--ac-surface-sub); color: var(--ac-danger); }
+.aod-cart__remove:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+
+/* ---- Pied du panneau ---- */
+
+.aod-cart__foot {
+	padding: 14px 16px 16px;
+	border-top: 1px solid var(--ac-line);
+	background: var(--ac-surface);
+}
+.aod-cart__totalrow {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 14px;
+	color: var(--ac-ink-2);
+}
+.aod-cart__totalrow strong {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--ac-ink);
+}
+.aod-cart__note {
+	margin: 6px 0 12px;
+	font-size: 12px;
+	line-height: 1.45;
+	color: var(--ac-ink-2);
+}
+
+.aod-cart__order {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 48px;
+	padding: 14px 16px;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-accent);
+	color: #fff;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: background-color .15s ease, opacity .15s ease;
+}
+.aod-cart__order:hover,
+.aod-cart__order:focus { background: var(--ac-accent-dark); color: #fff; }
+.aod-cart__order:focus-visible { outline: 2px solid var(--ac-ink); outline-offset: 2px; }
+.aod-cart__order[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* ---- Surimpression « Ajouter au panier » sur les cartes produit ----
+ * Pilule BLANCHE et non bande sombre translucide : ce template vend aussi
+ * bien des baskets sur fond jaune que des parfums sur fond noir, et la bande
+ * sombre devenait illisible sur les photos sombres. */
+
+.aod-cart__qwrap { position: relative; display: block; }
+.aod-cart__quickadd {
+	position: absolute;
+	inset-inline: 10px;
+	inset-block-end: 10px;
+	z-index: 2;
+	display: block;
+	padding: 10px 12px;
+	border-radius: var(--ac-r-md);
+	background: rgba(255, 255, 255, .94);
+	color: var(--ac-ink);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	cursor: pointer;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+	transition: opacity .18s ease, background-color .18s ease, color .18s ease;
+}
+.aod-cart__quickadd:hover { background: var(--ac-accent); color: #fff; }
+.aod-cart__quickadd:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+.aod-cart__quickadd.is-added,
+.aod-cart__quickadd.is-added:hover {
+	background: var(--ac-accent-wash);
+	color: var(--ac-accent-dark);
+}
+
+/* Le survol n'existe qu'à la souris : au tactile le bouton est PERMANENT
+ * (mobile d'abord — l'apparition au survol est la variante desktop). */
+@media (hover: hover) {
+	.aod-cart__qwrap .aod-cart__quickadd { opacity: 0; }
+	li.product:hover .aod-cart__quickadd,
+	.aod-cart__sugcard:hover .aod-cart__quickadd,
+	.aod-cart__qwrap:hover .aod-cart__quickadd,
+	.aod-cart__quickadd:focus-visible { opacity: 1; }
+}
+
+/* ---- Panneau de CHOIX ouvert depuis une carte de grille (2026-08-02) ----
+ * Il monte du BAS (le tiroir du panier vient du côté) : le geste part d'une
+ * carte sous le pouce, la réponse doit arriver là où le pouce est déjà.
+ * Il emprunte la peau du tiroir — mêmes jetons, même en-tête, même bouton de
+ * fermeture : deux surfaces qui font le même métier ne s'habillent pas
+ * différemment. */
+
+.aod-cart__sheet {
+	position: fixed;
+	inset-inline: 0;
+	inset-block-end: 0;
+	z-index: 100000;
+	display: flex;
+	flex-direction: column;
+	max-height: 85vh;
+	padding: 0 16px 16px;
+	overflow-y: auto;
+	background: var(--ac-surface, #fff);
+	border-start-start-radius: var(--ac-r-lg);
+	border-start-end-radius: var(--ac-r-lg);
+	box-shadow: 0 -8px 32px rgba(15, 23, 42, .18);
+}
+.aod-cart__sheet[hidden] { display: none; }
+.aod-cart__sheet .aod-cart__head {
+	position: sticky;
+	inset-block-start: 0;
+	background: var(--ac-surface, #fff);
+}
+.aod-cart__sheet-name {
+	margin: 0 0 12px;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--ac-ink);
+}
+.aod-cart__sheet-price { display: block; font-weight: 700; color: var(--ac-accent-dark); }
+.aod-cart__sheet-body { flex: 1 1 auto; }
+.aod-cart__sheet-msg {
+	margin: 8px 0 0;
+	min-height: 1.2em;
+	font-size: .9em;
+	font-weight: 500;
+	color: #b42318;
+}
+.aod-cart__sheet-msg:empty { min-height: 0; }
+/* Même bouton d'achat que « Commander » : c'est le même geste, il se lit pareil. */
+.aod-cart__sheet-add {
+	display: block;
+	width: 100%;
+	padding: 13px 16px;
+	border: 0;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-accent);
+	color: #fff;
+	font-size: 1em;
+	font-weight: 700;
+	cursor: pointer;
+}
+.aod-cart__sheet-add:hover,
+.aod-cart__sheet-add:focus-visible { background: var(--ac-accent-dark); }
+.aod-cart__sheet-add:focus-visible { outline: 2px solid var(--ac-accent-dark); outline-offset: 2px; }
+.aod-cart__sheet-add[disabled] { opacity: .55; cursor: default; }
+
+/* ---- Bloc de gestion sur la page du formulaire ----
+ * Même largeur, même bordure, même rayon que `.aod-cod` : les deux cartes
+ * doivent se lire comme une pile, pas comme deux blocs étrangers. */
+
+.aod-cart__box {
+	box-sizing: border-box;
+	max-width: 560px;
+	margin: 24px 0 -8px;
+	padding: 16px;
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-lg);
+	background: var(--ac-surface);
+	color: var(--ac-ink);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+}
+.aod-cart__box-title {
+	margin: 0 0 4px;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--ac-ink);
+}
+.aod-cart__box .aod-cart__list { padding: 0; }
+.aod-cart__box .aod-cart__totalrow {
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--ac-line);
+}
+.aod-cart__box .aod-cart__note { margin: 6px 0 0; }
+
+/* ---- « Complétez votre commande » ---- */
+
+.aod-cart__suggest {
+	max-width: 1080px;
+	margin: 32px auto 40px;
+	padding: 0 16px;
+}
+.aod-cart__suggest-title {
+	margin: 0 0 16px;
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+	color: var(--ac-ink);
+}
+.aod-cart__suggrid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+}
+@media (min-width: 768px) {
+	.aod-cart__suggrid { grid-template-columns: repeat(4, 1fr); }
+}
+.aod-cart__sugcard {
+	overflow: hidden;
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-lg);
+	background: var(--ac-surface);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+	transition: box-shadow .18s ease, transform .18s ease;
+}
+.aod-cart__sugcard:hover {
+	box-shadow: 0 4px 16px rgba(0, 0, 0, .10);
+	transform: translateY(-2px);
+}
+.aod-cart__suglink {
+	display: block;
+	color: inherit;
+	text-decoration: none;
+}
+.aod-cart__sugimg {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+}
+.aod-cart__sugtitle {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	padding: 12px 12px 2px;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--ac-ink);
+}
+.aod-cart__sugprice {
+	display: block;
+	padding: 2px 12px 12px;
+	font-size: 13px;
+	color: var(--ac-ink-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.aod-cart__fab,
+	.aod-cart__close,
+	.aod-cart__qty button,
+	.aod-cart__remove,
+	.aod-cart__order,
+	.aod-cart__quickadd,
+	.aod-cart__sugcard {
+		transition: none;
+	}
+	.aod-cart__fab:hover { transform: none; }
+	/* Décor, pas du positionnement (piège Phase 19) : neutraliser est sûr. */
+	.aod-cart__sugcard:hover { transform: none; }
+}
