@@ -2084,6 +2084,33 @@ Marketing / Administration), topbar avec fil d'ariane, application de
 > `.aod-cd-crumb` (« Gestion › Domaine ») + titre, via `section_group_label()`.
 > i18n : 6 chaînes FR/AR. Vérifié en rendu live (6 groupes, breadcrumb correct).
 >
+> 🔁 **CORRIGÉ le 2026-08-03 — le regroupement livré ici portait deux défauts, et
+> l'un d'eux était DÉJÀ connu du dépôt.** Le domaine « Livraison » ne contenait
+> qu'une section, elle aussi nommée « Livraison » : la barre latérale affichait le
+> même mot sur deux lignes qui se touchent. Le fil d'ariane, lui, portait depuis
+> longtemps un test `$group_label !== $page_label` **dont le commentaire citait
+> l'exemple exact** (« Gestion › Livraison › Livraison »). La rustine n'avait donc
+> jamais été propagée à l'endroit que le gérant regarde en permanence — le menu.
+> 🚨 *Même famille que la Phase 46 (« une règle écrite deux fois ne tient pas ») et
+> que la 47 (« une décision propagée à un jumeau et pas à l'autre ») : le défaut
+> n'était pas ignoré, il était traité à un seul des deux endroits où il se voit.*
+> Second défaut, indépendant : `tracking` (« Suivi commande ») vivait dans
+> « Ventes » alors qu'il rend des **états transporteur** (cron 2 h) — d'autant plus
+> mal placé depuis la **Phase 47**, qui a fait de l'envoi un geste déclenché au
+> camion, donc détaché de la confirmation.
+> **Corrigé à la racine, pas au rendu** : le domaine devient « Expédition » (`الشحن`,
+> distinct de « Livraison » = `التوصيل`) et accueille `shipping` **+** `tracking`.
+> Un seul geste ferme les deux : le domaine cesse d'être un singleton homonyme, et
+> « Ventes » cesse de mélanger le tunnel de vente avec le suivi logistique. Toujours
+> 6 groupes — la géométrie du rail réglée au pixel en **45.5** n'est pas touchée.
+> ⚠️ Le test du fil d'ariane est **conservé** comme garde-fou bon marché pour un
+> futur groupe, mais il n'est plus le correctif : son commentaire le dit désormais,
+> pour qu'on ne le relise pas comme la preuve que le cas est couvert.
+> **Cliquet : `tests/unit/test-nav-groupes.php`** (R1 homonymie · R2 section
+> orpheline · R3 double rattachement · R4 slug fantôme · R5 domaine vide · R6
+> l'arbitrage `tracking` lui-même, écrit avec sa raison). *La rustine au rendu
+> n'empêchait pas la dérive de revenir ; seul un cliquet le fait.*
+>
 > **Report assumé :** l'application de `.aod-cd-pagehead` (titre + sous-titre +
 > actions) se fait **page par page** en 5.4-5.7, là où le sous-titre et les
 > actions propres à chaque page sont définis — poser un pagehead générique vide

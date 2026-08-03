@@ -322,6 +322,10 @@ msgstr ""
 msgid "Catalogue"
 msgstr ""
 
+#: includes/class-aod-cd-dashboard.php:216
+msgid "Expédition"
+msgstr ""
+
 #: includes/class-aod-cd-dashboard.php:202
 msgid "Marketing"
 msgstr ""

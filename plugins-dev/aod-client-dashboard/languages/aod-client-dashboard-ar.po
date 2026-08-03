@@ -346,6 +346,15 @@ msgstr "المبيعات"
 msgid "Catalogue"
 msgstr "الكتالوج"
 
+#. Intitulé du DOMAINE qui contient les sections « Livraison » et « Suivi
+#. commande ». Volontairement distinct de « Livraison » (التوصيل) : le domaine ne
+#. doit pas porter le nom de sa propre section, sinon la barre latérale affiche
+#. deux fois le même mot sur deux lignes qui se touchent. الشحن = l'expédition
+#. (l'acte d'envoyer), التوصيل = la livraison (l'acheminement au client).
+#: includes/class-aod-cd-dashboard.php:216
+msgid "Expédition"
+msgstr "الشحن"
+
 #: includes/class-aod-cd-dashboard.php:202
 msgid "Marketing"
 msgstr "التسويق"
