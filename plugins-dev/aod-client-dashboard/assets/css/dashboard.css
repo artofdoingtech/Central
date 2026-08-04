@@ -86,7 +86,7 @@
 	   au DÉCOR (bordures, puces, chevrons), jamais à du texte. */
 	--cd-muted:#666666;      /* texte secondaire — AA sur blanc, #F5F5F5, #EDEDED, teintes douces */
 	--cd-soft:#8A8A8A;       /* DÉCOR UNIQUEMENT (bordures, chevrons) — 3:1, insuffisant pour du texte */
-	--cd-bg:#F5F5F5;
+	--cd-bg:#F1F1F1;
 	--cd-card:#ffffff;
 	--cd-line:#e6e6e6;
 	--cd-line-2:#f0f0f0;
@@ -138,6 +138,18 @@
 	   d'abord un liseré d'encre, toujours contrasté, puis le halo d'accent. */
 	--cd-focus:0 0 0 2px var(--cd-ink),0 0 0 4px rgba(var(--cd-accent-rgb),.35);
 	--cd-shadow:0 10px 30px rgba(24,24,24,.08);
+	/* Ombre AU REPOS (2026-08-04). `--cd-shadow` ne servait qu'au survol : au
+	   repos, une carte blanche sur un fond gris clair n'existait que par son
+	   trait de 1px — elle se lisait comme un contour, pas comme une surface.
+	   D'où l'aspect plat de l'écran, malgré une charte par ailleurs disciplinée.
+	   🎨 On crée la profondeur par l'ÉLÉVATION et non par la valeur : assombrir
+	   le fond aurait mangé la marge de contraste du texte secondaire, qui vit
+	   dessus. Une ombre n'entre dans aucun rapport de lisibilité.
+	   Deux couches — un trait de contact net, puis une diffusion large — parce
+	   qu'une ombre à une seule couche lit « boîte qui flotte » au lieu de
+	   « feuille posée ». Opacités très basses : on cherche la séparation, pas
+	   l'effet. Neutre (noir alpha) : aucune couleur de client en dur. */
+	--cd-shadow-rest:0 1px 2px rgba(24,24,24,.05),0 4px 12px rgba(24,24,24,.04);
 
 	/* ---- Socle d'harmonisation (étape 5.1) ---- */
 	/* Échelle typographique — 6 crans, et ce qui a le droit de ne pas s'y ranger.
@@ -2430,6 +2442,41 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* Titre de bloc : remplace six `style="margin-top:26px"` en dur. 26px n'existe
    dans aucune échelle — l'espacement va de 4 à 40 par crans (D2). */
 .aod-cd-blocktitle{margin-top:var(--cd-sp-6)}
+
+/* ── Les surfaces se posent sur le fond (2026-08-04) ───────────────────────
+   Toutes les cartes de `/gestion` partagent la même recette : fond blanc, trait
+   de 1px, rayon moyen. Sur un fond à #F5F5F5, l'écart de valeur entre la carte
+   et la page est de DIX niveaux sur 255 : la carte n'existait que par son trait.
+   D'où un écran qui se lit comme une liste de rectangles au lieu d'une pile de
+   feuilles — la « platitude » que l'owner a relevée.
+   Deux gestes, volontairement petits :
+     · une ombre AU REPOS (`--cd-shadow-rest`), qui crée la profondeur sans
+       toucher au moindre rapport de contraste ;
+     · un fond très légèrement creusé (#F5F5F5 → #F1F1F1), assez pour que le
+       blanc se détache, pas assez pour manger la marge du texte secondaire
+       (#666 sur #F1F1F1 = 5,08:1, AA demande 4,5).
+   ⚠️ Le fond reste un GRIS PUR (chroma 0). `test-charte-surfaces.php` sépare la
+   surface neutre — légitime en dur — de la couleur, qui doit venir d'un token :
+   une teinte chaude, même discrète, serait une couleur de client écrite en dur.
+   Le survol n'est pas touché : il garde `--cd-shadow`, plus marqué, et le
+   contraste repos → survol reste donc lisible. */
+.aod-cd-kpi,.aod-cd-todo-tile,.aod-cd-chartcard,.aod-cd-tablewrap,.aod-cd-form{box-shadow:var(--cd-shadow-rest)}
+
+/* ── Boutons ───────────────────────────────────────────────────────────────
+   L'action principale portait l'accent mais restait à plat, au même niveau que
+   les boutons secondaires posés à côté d'elle : la couleur disait « c'est
+   important », la profondeur disait « c'est pareil ». Elle se soulève donc,
+   très peu, et retombe à l'appui — l'accusé de réception de la Phase 16 gagne
+   ainsi une seconde lecture, en hauteur.
+   🚫 Aucune couleur nouvelle : l'accent vient du Personnalisateur et le
+   garde-fou de contraste l'éprouve sur six accents hostiles. On ne touche qu'à
+   l'ombre, qui est neutre. */
+.aod-cd-btn-primary{box-shadow:var(--cd-shadow-rest)}
+.aod-cd-btn-primary:active:not(:disabled){box-shadow:none}
+/* Le survol d'un bouton SECONDAIRE portait son trait à `--cd-ink` (#181818) :
+   plus lourd que l'état focus, et deux boutons voisins survolés à la suite
+   faisaient clignoter la rangée. Un gris franc suffit à dire « survolé ». */
+.aod-cd-btn:hover{border-color:#b8b8b8}
 .aod-cd-kpi__top{display:flex;align-items:center;gap:10px}
 /* Phase 15 — le glyphe est un SVG monochrome qui hérite de `color`.
    Il reste sur --cd-ink dans TOUTES les tonalités, volontairement : c'est la
