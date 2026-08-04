@@ -1771,24 +1771,36 @@ class AOD_CD_Section_Products {
 			);
 		}
 
-		// Suffixe du titre : celui de Woo est « (Copy) », non traduit chez nous.
-		// Filtre posé puis RETIRÉ dans la foulée — le laisser changerait aussi le
-		// libellé de la duplication faite depuis wp-admin, ce qui n'est pas demandé.
-		$suffix = static function () {
-			return __( '(copie)', 'aod-client-dashboard' );
-		};
-		add_filter( 'woocommerce_duplicate_product_suffix', $suffix );
 		$copy = ( new WC_Admin_Duplicate_Product() )->product_duplicate( $product );
-		remove_filter( 'woocommerce_duplicate_product_suffix', $suffix );
 
 		if ( ! $copy || ! $copy->get_id() ) {
 			wp_send_json_error( array( 'message' => __( 'La duplication a échoué.', 'aod-client-dashboard' ) ), 500 );
 		}
 
-		// ⚠️ Le suffixe de Woo ne touche QUE le titre WordPress, donc le français.
-		// Sans les deux lignes qui suivent, l'original et sa copie portent le MÊME
-		// titre arabe : indiscernables pour un gérant qui travaille en AR, et le
-		// défaut ne se voit pas en français. Cf. TEMPLATE.md §5 (couple `{fr, ar}`).
+		// TITRE FR — on le RÉÉCRIT, sans quoi la copie s'appelle « … (Copy) », en
+		// anglais, sur une boutique française. Woo écrit ce suffixe EN DUR :
+		//   $duplicate->set_name( sprintf( esc_html__( '%s (Copy)', 'woocommerce' ), … ) )
+		// 🚨 Il n'existe AUCUN filtre pour l'infléchir. Une première version de ce
+		// code posait un `add_filter( 'woocommerce_duplicate_product_suffix', … )` :
+		// ce point d'extension n'existe pas, le filtre ne s'accrochait à rien, et le
+		// résultat — « (Copy) » en français, « (copie) » en arabe — n'a été vu qu'en
+		// comparant les deux fiches en base. *Un filtre posé sur un hook imaginaire
+		// ne lève aucune erreur : il donne l'apparence d'un traitement.*
+		// On repart du nom de l'ORIGINAL, pas de celui de la copie, qui porte déjà
+		// le suffixe anglais.
+		$copy->set_name( trim( $product->get_name() . ' ' . __( '(copie)', 'aod-client-dashboard' ) ) );
+		$copy->save();
+
+		// ⚠️ Le titre WordPress ne couvre QUE le français. Sans les lignes qui
+		// suivent, l'original et sa copie portent le MÊME titre arabe :
+		// indiscernables pour un gérant qui travaille en AR, et le défaut ne se voit
+		// pas en français. Cf. TEMPLATE.md §5 (couple `{fr, ar}`).
+		// ⚠️ LIMITE ASSUMÉE : `__()` rend la langue du GÉRANT, pas l'arabe. Un gérant
+		// qui travaille en français écrit donc « (copie) » — un mot français — dans
+		// un champ arabe. C'est borné et visible : la copie est un brouillon, et le
+		// premier geste est de la renommer. `switch_to_locale( 'ar' )` le règlerait,
+		// au prix d'un chargement de catalogue pour un suffixe ; à faire seulement si
+		// un gérant publie des copies sans les renommer.
 		$title_ar = get_post_meta( $pid, '_aod_title_ar', true );
 		if ( '' !== trim( (string) $title_ar ) ) {
 			update_post_meta( $copy->get_id(), '_aod_title_ar', trim( $title_ar . ' ' . __( '(copie)', 'aod-client-dashboard' ) ) );
