@@ -382,6 +382,37 @@
 				} ); // fin de la continuation confirmModal (47.7)
 			} );
 		} );
+
+		/* Duplication : même patron que la suppression ci-dessus, SANS confirmation
+		   — l'action est réversible (la copie naît en brouillon) et une modale sur
+		   un geste anodin apprend à cliquer « oui » sans lire, ce qui affaiblit
+		   celle de la suppression. On mène directement à la copie : dupliquer sans
+		   aller la renommer n'a aucun intérêt, et deux fiches au même nom traînent. */
+		document.querySelectorAll( '.aod-cd-dup-product' ).forEach( function ( b ) {
+			b.addEventListener( 'click', function () {
+				b.disabled = true;
+				var body = new URLSearchParams();
+				body.append( 'action', 'aod_cd_duplicate_product' );
+				body.append( 'nonce', CD.nonce );
+				body.append( 'product_id', b.dataset.product );
+				fetch( CD.ajaxUrl, { method: 'POST', credentials: 'same-origin', body: body } )
+					.then( function ( r ) { return r.json(); } )
+					.then( function ( res ) {
+						if ( res && res.success ) {
+							// Repli sur une clé EXISTANTE : `dashboard.js` est servi par la
+							// coque, qui est à son plafond de lignes (cf. test-decomposition
+							// R1). Le serveur envoie toujours son message ici — ce repli ne
+							// se déclenche pas, il ne justifie pas une chaîne de plus.
+							toast( res.data.message || CD.i18nSaved, false );
+							if ( res.data.edit_url ) { window.location.href = res.data.edit_url; }
+						} else {
+							b.disabled = false;
+							toast( ( res && res.data && res.data.message ) || CD.i18nErr || 'Erreur.', true );
+						}
+					} )
+					.catch( function () { b.disabled = false; toast( netErr, true ); } );
+			} );
+		} );
 	}
 
 	/* Sections d'options (Taille, Couleur, Pointure…) : sections + valeurs ajoutables */

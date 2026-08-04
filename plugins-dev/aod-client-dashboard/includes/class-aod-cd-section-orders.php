@@ -50,6 +50,7 @@ class AOD_CD_Section_Orders {
 	private function __construct() {
 		// Actions AJAX de la section (mêmes noms qu'avant la 30.6 : dashboard.js inchangé).
 		add_action( 'wp_ajax_aod_cd_order_status', array( $this, 'ajax_order_status' ) );
+		add_action( 'wp_ajax_aod_cd_export_orders', array( $this, 'ajax_export_orders' ) );
 		add_action( 'wp_ajax_aod_cd_order_detail', array( $this, 'ajax_order_detail' ) );
 		// 47.3 — `aod_cd_order_note` a disparu (cf. le bloc qui remplace le handler,
 		// plus bas). La note du confirmateur s'enregistre avec le formulaire.
@@ -144,9 +145,29 @@ class AOD_CD_Section_Orders {
 			}
 		}
 
+		// Export CSV : un LIEN, pas un bouton AJAX — le navigateur doit recevoir un
+		// téléchargement, ce qu'un `fetch()` ne déclenche pas sans passer par un blob.
+		// Le nonce `aod_cd` (celui de toute la section) voyage donc dans l'URL sous la
+		// clé `nonce` : la vérification côté serveur la lit dans `$_REQUEST`, donc en
+		// GET aussi. ⚠️ Ne PAS nommer ici la fonction de vérification : le cliquet D15
+		// (`test-nonce-contract.php`) cherche son nom dans le corps de la méthode SANS
+		// dépouiller les commentaires — la citer suffirait à faire passer `render()`
+		// pour noncée, et à éteindre la garde qui surveille ses lectures de `$_GET`.
+		// Le filtre de statut courant est repris : on exporte CE QU'ON REGARDE, sinon
+		// le gérant qui a filtré « Confirmées » reçoit tout et croit le filtre ignoré.
+		$export_url = add_query_arg(
+			array(
+				'action' => 'aod_cd_export_orders',
+				'statut' => $current,
+				'nonce'  => wp_create_nonce( 'aod_cd' ),
+			),
+			admin_url( 'admin-ajax.php' )
+		);
 		echo AOD_CD_Dashboard::page_head( // phpcs:ignore WordPress.Security.EscapeOutput
 			__( 'Commandes', 'aod-client-dashboard' ),
-			__( 'Suivez, confirmez et expédiez les commandes COD.', 'aod-client-dashboard' )
+			__( 'Suivez, confirmez et expédiez les commandes COD.', 'aod-client-dashboard' ),
+			'<a class="aod-cd-btn aod-cd-btn-sm" href="' . esc_url( $export_url ) . '">'
+				. esc_html__( 'Exporter en CSV', 'aod-client-dashboard' ) . '</a>'
 		);
 
 		// Filtre de statut : segmented control (remplace l'ancien menu déroulant).
@@ -1259,6 +1280,152 @@ class AOD_CD_Section_Orders {
 	 * @param array $args Arguments wc_get_orders.
 	 * @return mixed Résultat de wc_get_orders.
 	 */
+	/**
+	 * Colonnes de l'export CSV — une seule source, lue par l'en-tête ET par les
+	 * lignes. Deux listes séparées dériveraient : c'est le défaut de propagation
+	 * que les Phases 44 et 47 documentent, et il donnerait ici un fichier dont les
+	 * en-têtes ne décrivent plus les colonnes — indétectable à l'œil sur 500 lignes.
+	 *
+	 * @return array<string,callable> Libellé traduit => extracteur( WC_Order ): string
+	 */
+	public static function export_columns() {
+		return array(
+			__( 'N° commande', 'aod-client-dashboard' )  => function ( $o ) { return $o->get_order_number(); },
+			__( 'Date', 'aod-client-dashboard' )         => function ( $o ) {
+				$d = $o->get_date_created();
+				return $d ? $d->date_i18n( 'Y-m-d H:i' ) : '';
+			},
+			__( 'Statut', 'aod-client-dashboard' )       => function ( $o ) { return wc_get_order_status_name( $o->get_status() ); },
+			__( 'Client', 'aod-client-dashboard' )       => function ( $o ) { return trim( $o->get_billing_first_name() . ' ' . $o->get_billing_last_name() ); },
+			__( 'Téléphone', 'aod-client-dashboard' )    => function ( $o ) { return $o->get_billing_phone(); },
+			__( 'Wilaya', 'aod-client-dashboard' )       => function ( $o ) { return (string) $o->get_meta( '_aod_wilaya_name' ); },
+			__( 'Commune', 'aod-client-dashboard' )      => function ( $o ) { return (string) $o->get_meta( '_aod_commune' ); },
+			__( 'Adresse', 'aod-client-dashboard' )      => function ( $o ) { return $o->get_billing_address_1(); },
+			__( 'Livraison', 'aod-client-dashboard' )    => function ( $o ) { return (string) $o->get_meta( '_aod_delivery_type' ); },
+			__( 'Articles', 'aod-client-dashboard' )     => function ( $o ) {
+				$out = array();
+				foreach ( $o->get_items() as $item ) {
+					$out[] = $item->get_name() . ' x' . $item->get_quantity();
+				}
+				return implode( ' | ', $out );
+			},
+			__( 'Total', 'aod-client-dashboard' )        => function ( $o ) { return $o->get_total(); },
+			__( 'Transporteur', 'aod-client-dashboard' ) => function ( $o ) { return (string) $o->get_meta( '_aod_ship_carrier' ); },
+			__( 'Suivi', 'aod-client-dashboard' )        => function ( $o ) { return (string) $o->get_meta( '_aod_ship_tracking' ); },
+			__( 'Assigné à', 'aod-client-dashboard' )    => function ( $o ) {
+				$uid = (int) $o->get_meta( '_aod_assigned_confirmer' );
+				$u   = $uid ? get_userdata( $uid ) : false;
+				return $u ? $u->display_name : '';
+			},
+		);
+	}
+
+	/**
+	 * Neutralise une valeur avant écriture dans le CSV.
+	 *
+	 * 🚨 DEUX PIÈGES, et le second coûte de l'argent.
+	 *
+	 * 1. INJECTION DE FORMULE. Un tableur exécute toute cellule commençant par
+	 *    `=`, `+`, `-` ou `@`. Le nom et l'adresse viennent de l'ACHETEUR : un
+	 *    champ `=HYPERLINK(...)` s'exécute à l'ouverture, chez le gérant, sur sa
+	 *    machine. On préfixe d'une apostrophe, qui neutralise sans altérer la
+	 *    lecture. (CSV injection / CWE-1236.)
+	 * 2. TÉLÉPHONES MUTILÉS. Un numéro algérien commence par 0 ; Excel le lit
+	 *    comme un nombre et écrit `551234567`. En COD, le téléphone EST le moyen
+	 *    de livrer la commande — un export inexploitable pour rappeler un client
+	 *    ne vaut rien. Le préfixe apostrophe force le texte et règle les deux.
+	 *
+	 * @param string $v Valeur brute.
+	 * @return string
+	 */
+	public static function csv_safe( $v ) {
+		$v = (string) $v;
+		if ( '' === $v ) {
+			return $v;
+		}
+		if ( in_array( $v[0], array( '=', '+', '-', '@', "\t", "\r" ), true ) || preg_match( '/^0\d/', $v ) ) {
+			return "'" . $v;
+		}
+		return $v;
+	}
+
+	/**
+	 * Export CSV des commandes (demande owner du 2026-08-04).
+	 *
+	 * Pourquoi : le gérant rapproche l'argent encaissé par le transporteur des
+	 * commandes livrées, et son comptable réclame un fichier. Aujourd'hui ça se
+	 * fait écran par écran.
+	 *
+	 * 🔒 PÉRIMÈTRE. L'export passe par `scoped_orders()`, comme la liste : un
+	 * confirmateur n'exporte que SES commandes. Écrire ici une requête directe
+	 * aurait donné à quiconque ouvre la section un fichier contenant la boutique
+	 * entière — nom, téléphone et adresse de chaque acheteur. Le périmètre n'est
+	 * pas un confort d'affichage, c'est la garantie elle-même.
+	 *
+	 * ⚠️ C'est un TÉLÉCHARGEMENT, donc un lien (GET) et non un `fetch()`. Le nonce
+	 * reste malgré tout le `aod_cd` de toute la section, vérifié par
+	 * `check_ajax_referer()` — qui lit `$_REQUEST`, donc fonctionne en GET. Un
+	 * nonce dédié aurait marché aussi, mais aurait fait de ce handler le SEUL à
+	 * ne pas suivre la règle commune, et `test-permissions-sections.php` la garde
+	 * précisément pour qu'aucun ne s'en écarte sans qu'on le voie.
+	 *
+	 * @return void
+	 */
+	public function ajax_export_orders() {
+		check_ajax_referer( 'aod_cd', 'nonce' );
+		if ( ! AOD_CD_Roles::user_can( 'aod_cap_confirm_orders' ) ) {
+			wp_die( esc_html__( 'Accès refusé.', 'aod-client-dashboard' ), '', array( 'response' => 403 ) );
+		}
+
+		$slug   = isset( $_GET['statut'] ) ? sanitize_key( wp_unslash( $_GET['statut'] ) ) : 'all';
+		$status = ( 'all' === $slug ) ? $this->all_order_status_keys() : array( 'wc-' . $slug );
+
+		$cols = self::export_columns();
+
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename=commandes-' . gmdate( 'Y-m-d' ) . '.csv' );
+
+		$out = fopen( 'php://output', 'w' );
+		// BOM UTF-8 : sans lui, Excel lit le fichier en ANSI et rend illisibles les
+		// accents ET tout l'arabe — sur une boutique bilingue, ce n'est pas un détail.
+		fwrite( $out, "\xEF\xBB\xBF" );
+		// Séparateur « ; » : c'est celui qu'attend Excel en locale FR/AR. Avec « , »
+		// toutes les colonnes atterrissent dans la première, et le gérant conclut
+		// que l'export est cassé.
+		fputcsv( $out, array_keys( $cols ), ';' );
+
+		// Pagination : on ne charge JAMAIS toute la boutique d'un coup. Une
+		// `limit => -1` marche le jour de la livraison et meurt au millième client
+		// — c'est exactement l'auto-DoS relevé en D23 sur le rafraîchissement du suivi.
+		$page = 1;
+		do {
+			$res = $this->scoped_orders(
+				array(
+					'type'     => 'shop_order',
+					'status'   => $status,
+					'limit'    => 200,
+					'page'     => $page,
+					'paginate' => true,
+					'orderby'  => 'date',
+					'order'    => 'DESC',
+				)
+			);
+			$orders = isset( $res->orders ) ? $res->orders : array();
+			foreach ( $orders as $order ) {
+				$row = array();
+				foreach ( $cols as $extract ) {
+					$row[] = self::csv_safe( $extract( $order ) );
+				}
+				fputcsv( $out, $row, ';' );
+			}
+			++$page;
+		} while ( ! empty( $orders ) && $page <= ( isset( $res->max_num_pages ) ? (int) $res->max_num_pages : 1 ) );
+
+		fclose( $out );
+		exit;
+	}
+
 	public function scoped_orders( $args ) {
 		// Cumul (Phase 42.3) : injecté AVANT le test de périmètre produit
 		// ci-dessous — sinon un confirmateur au périmètre produit VIDE mais

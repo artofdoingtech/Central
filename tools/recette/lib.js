@@ -33,12 +33,28 @@ const PASS = process.env.AOD_PASS || ENV.WP_ADMIN_PASSWORD || '';
 /** Chromium : celui de Playwright, sans imposer le paquet `playwright` complet. */
 function chromiumPath() {
 	if ( process.env.AOD_CHROMIUM ) { return process.env.AOD_CHROMIUM; }
-	const cache = path.join( process.env.HOME || '', '.cache', 'ms-playwright' );
+	// 🚨 L'emplacement du cache ET le nom du binaire dépendent de la PLATEFORME.
+	// Ce bloc ne connaissait que Linux : sur Windows, où Playwright installe dans
+	// `%LOCALAPPDATA%\ms-playwright\…\chrome-win64\chrome.exe`, la recette annonçait
+	// « Chromium introuvable » et invitait à le réinstaller — alors qu'il était là.
+	// Un conseil faux coûte plus cher qu'un message vague : on réinstalle, ça ne
+	// change rien, et on conclut que la recette est cassée.
+	const home = process.env.HOME || process.env.USERPROFILE || '';
+	const cache = 'win32' === process.platform
+		? path.join( process.env.LOCALAPPDATA || path.join( home, 'AppData', 'Local' ), 'ms-playwright' )
+		: 'darwin' === process.platform
+			? path.join( home, 'Library', 'Caches', 'ms-playwright' )
+			: path.join( home, '.cache', 'ms-playwright' );
 	if ( ! fs.existsSync( cache ) ) { return null; }
 	// `chromium-1228` avant `chromium_headless_shell-1228` : on veut le vrai navigateur.
 	const dir = fs.readdirSync( cache ).filter( ( d ) => /^chromium-\d+$/.test( d ) ).sort().pop();
 	if ( ! dir ) { return null; }
-	const exe = path.join( cache, dir, 'chrome-linux64', 'chrome' );
+	const rel = 'win32' === process.platform
+		? [ 'chrome-win64', 'chrome.exe' ]
+		: 'darwin' === process.platform
+			? [ 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium' ]
+			: [ 'chrome-linux64', 'chrome' ];
+	const exe = path.join( cache, dir, ...rel );
 	return fs.existsSync( exe ) ? exe : null;
 }
 

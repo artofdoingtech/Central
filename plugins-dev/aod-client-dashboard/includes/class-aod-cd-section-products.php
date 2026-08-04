@@ -36,6 +36,7 @@ class AOD_CD_Section_Products {
 	private function __construct() {
 		add_action( 'wp_ajax_aod_cd_save_product', array( $this, 'ajax_save_product' ) );
 		add_action( 'wp_ajax_aod_cd_delete_product', array( $this, 'ajax_delete_product' ) );
+		add_action( 'wp_ajax_aod_cd_duplicate_product', array( $this, 'ajax_duplicate_product' ) );
 		add_action( 'wp_ajax_aod_cd_save_category', array( $this, 'ajax_save_category' ) );
 		add_action( 'wp_ajax_aod_cd_delete_category', array( $this, 'ajax_delete_category' ) );
 		add_action( 'wp_ajax_aod_cd_desc_image', array( $this, 'ajax_desc_image' ) );
@@ -304,6 +305,10 @@ class AOD_CD_Section_Products {
 					. ( $lp_on ? '<span class="aod-cd-lp-on" aria-hidden="true">●</span><span class="screen-reader-text"> ' . esc_html__( '(affichée)', 'aod-client-dashboard' ) . '</span>' : '' )
 					. '</a> ';
 			}
+			// « Dupliquer » AVANT « Supprimer » : les deux agissent sur la ligne, mais
+			// l'un est réversible et l'autre non — on ne met pas une action anodine
+			// après l'action destructrice, à portée de clic de celle-ci.
+			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-dup-product" data-product="' . esc_attr( $p->get_id() ) . '" data-name="' . esc_attr( $p->get_name() ) . '">' . esc_html__( 'Dupliquer', 'aod-client-dashboard' ) . '</button> ';
 			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn-danger aod-cd-del-product" data-product="' . esc_attr( $p->get_id() ) . '" data-name="' . esc_attr( $p->get_name() ) . '">' . esc_html__( 'Supprimer', 'aod-client-dashboard' ) . '</button>';
 			echo '</td>';
 			echo '</tr>';
@@ -1709,6 +1714,92 @@ class AOD_CD_Section_Products {
 		}
 		$product->delete( false ); // false = corbeille (réversible), pas suppression définitive.
 		wp_send_json_success( array( 'message' => __( 'Produit déplacé dans la corbeille.', 'aod-client-dashboard' ) ) );
+	}
+
+	/**
+	 * AJAX : duplique un produit (demande owner du 2026-08-04).
+	 *
+	 * Pourquoi : une boutique décline le même article (tailles, coloris, packs).
+	 * Ressaisir offres, options, paliers de quantité et couple `{fr, ar}` à chaque
+	 * variante est le geste le plus long de `/gestion` — et le plus propice à
+	 * l'oubli d'un champ arabe, qui ne se voit qu'en passant le site en AR.
+	 *
+	 * 🚨 ON DÉLÈGUE À WOOCOMMERCE, on ne réécrit pas la copie. `product_duplicate()`
+	 * recopie les VARIATIONS, toutes les métas (donc nos `_aod_*` : offres, options,
+	 * points de vente, page de vente…) et les taxonomies. Une copie maison aurait
+	 * couvert les champs auxquels on pense le jour où on l'écrit, et aurait
+	 * silencieusement perdu les suivants — exactement le mode de dérive que les
+	 * Phases 44 et 47 documentent (« un bon motif qui n'atteint pas son jumeau »).
+	 * Le fichier n'est chargé qu'ici : il vit dans `includes/admin/` de Woo, que le
+	 * front n'inclut pas.
+	 *
+	 * La copie naît en BROUILLON (comportement de Woo, volontairement conservé) :
+	 * un doublon publié par accident, c'est deux fiches concurrentes en boutique.
+	 *
+	 * @return void
+	 */
+	public function ajax_duplicate_product() {
+		check_ajax_referer( 'aod_cd', 'nonce' );
+		if ( ! current_user_can( 'edit_products' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+		$pid     = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+		$product = $pid ? wc_get_product( $pid ) : false;
+		if ( ! $product ) {
+			wp_send_json_error( array( 'message' => __( 'Produit introuvable.', 'aod-client-dashboard' ) ), 404 );
+		}
+		// Défense en profondeur, au même rang que la suppression juste au-dessus :
+		// droit sur CE produit, puis périmètre produits du confirmateur.
+		if ( ! current_user_can( 'edit_product', $pid ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+		$scope = AOD_CD_Roles::assigned_products();
+		if ( $scope && ! in_array( $pid, $scope, true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+
+		if ( ! class_exists( 'WC_Admin_Duplicate_Product' ) ) {
+			$file = defined( 'WC_ABSPATH' ) ? WC_ABSPATH . 'includes/admin/class-wc-admin-duplicate-product.php' : '';
+			if ( $file && is_readable( $file ) ) {
+				require_once $file;
+			}
+		}
+		if ( ! class_exists( 'WC_Admin_Duplicate_Product' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( "La duplication n'est pas disponible sur cette installation.", 'aod-client-dashboard' ) ),
+				500
+			);
+		}
+
+		// Suffixe du titre : celui de Woo est « (Copy) », non traduit chez nous.
+		// Filtre posé puis RETIRÉ dans la foulée — le laisser changerait aussi le
+		// libellé de la duplication faite depuis wp-admin, ce qui n'est pas demandé.
+		$suffix = static function () {
+			return __( '(copie)', 'aod-client-dashboard' );
+		};
+		add_filter( 'woocommerce_duplicate_product_suffix', $suffix );
+		$copy = ( new WC_Admin_Duplicate_Product() )->product_duplicate( $product );
+		remove_filter( 'woocommerce_duplicate_product_suffix', $suffix );
+
+		if ( ! $copy || ! $copy->get_id() ) {
+			wp_send_json_error( array( 'message' => __( 'La duplication a échoué.', 'aod-client-dashboard' ) ), 500 );
+		}
+
+		// ⚠️ Le suffixe de Woo ne touche QUE le titre WordPress, donc le français.
+		// Sans les deux lignes qui suivent, l'original et sa copie portent le MÊME
+		// titre arabe : indiscernables pour un gérant qui travaille en AR, et le
+		// défaut ne se voit pas en français. Cf. TEMPLATE.md §5 (couple `{fr, ar}`).
+		$title_ar = get_post_meta( $pid, '_aod_title_ar', true );
+		if ( '' !== trim( (string) $title_ar ) ) {
+			update_post_meta( $copy->get_id(), '_aod_title_ar', trim( $title_ar . ' ' . __( '(copie)', 'aod-client-dashboard' ) ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'message'  => __( 'Produit dupliqué. La copie est un brouillon : relis-la avant de la publier.', 'aod-client-dashboard' ),
+				'edit_url' => $this->products_url( array( 'action' => 'edit', 'product' => $copy->get_id() ) ),
+			)
+		);
 	}
 
 	/* ============================================================

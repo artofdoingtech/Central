@@ -36,6 +36,25 @@ HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT="$( cd "$HERE/../.." && pwd )"
 cd "$ROOT" || exit 1
 
+# 🪟 WINDOWS / GIT BASH — ce script mêle DEUX familles de chemins, et une seule
+# des deux doit être convertie. MSYS réécrit tout argument ressemblant à un chemin
+# POSIX absolu avant que le programme ne le voie :
+#   · les `/scripts/recette-seed-*.php` sont des chemins DANS le conteneur → toute
+#     conversion les casse (« Seed en échec », portes auditant des pages vides) ;
+#   · le `.js` passé à `node` est un chemin de l'HÔTE → sans conversion, Node lit
+#     `/c/Users/…` comme `C:\c\Users\…` et ne trouve aucun module.
+# D'où : conversion coupée globalement, puis rétablie POUR LE SEUL appel à node,
+# via `cygpath -m` (rend `C:/Users/…`, que Git Bash accepte aussi en `cd`).
+# 🚨 Un réglage global ne peut pas convenir aux deux : c'est ce qui rendait cette
+# recette injouable sur Windows, dans un sens comme dans l'autre.
+# Sans effet sur Linux/macOS : la variable y est ignorée, `cygpath` n'existe pas.
+export MSYS_NO_PATHCONV=1
+if command -v cygpath >/dev/null 2>&1; then
+	HERE_NODE="$( cygpath -m "$HERE" )"
+else
+	HERE_NODE="$HERE"
+fi
+
 ACCENTS=( "#1878f0" "#7B1E3A" "#0d9488" "#ff0000" "#111827" )
 FAILS=0
 
@@ -189,7 +208,8 @@ step() { printf '\n\033[1m▸ %s\033[0m\n' "$1"; }
 RETIRES=0
 WITHDRAWN_LIST=""
 run() {
-	node "$HERE/$1"
+	# `$HERE_NODE` et non `$HERE` : chemin de l'HÔTE, cf. le bloc Windows en tête.
+	node "$HERE_NODE/$1"
 	local code=$?
 	if [ "$code" -eq 3 ]; then
 		RETIRES=$(( RETIRES + 1 ))

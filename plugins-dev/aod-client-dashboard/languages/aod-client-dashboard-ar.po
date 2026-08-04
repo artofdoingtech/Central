@@ -982,6 +982,39 @@ msgstr "محدَّد"
 msgid "Supprimer"
 msgstr "حذف"
 
+#: includes/class-aod-cd-section-products.php:309
+msgid "Dupliquer"
+msgstr "نسخ"
+
+#. Export CSV des commandes (2026-08-04).
+#: includes/class-aod-cd-section-orders.php:160
+msgid "Exporter en CSV"
+msgstr "تصدير CSV"
+
+#. En-tête de la 1re colonne du CSV.
+#: includes/class-aod-cd-section-orders.php:1268
+msgid "N° commande"
+msgstr "رقم الطلب"
+
+#. Suffixe ajouté au titre de la copie, en FR *et* en AR (méta `_aod_title_ar`) :
+#. sans lui, l'original et sa copie sont indiscernables dans la langue concernée.
+#: includes/class-aod-cd-section-products.php:1760
+#: includes/class-aod-cd-section-products.php:1789
+msgid "(copie)"
+msgstr "(نسخة)"
+
+#: includes/class-aod-cd-section-products.php:1795
+msgid "Produit dupliqué. La copie est un brouillon : relis-la avant de la publier."
+msgstr "تم نسخ المنتج. النسخة مسودة: راجعها قبل نشرها."
+
+#: includes/class-aod-cd-section-products.php:1752
+msgid "La duplication a échoué."
+msgstr "فشل النسخ."
+
+#: includes/class-aod-cd-section-products.php:1740
+msgid "La duplication n'est pas disponible sur cette installation."
+msgstr "النسخ غير متاح في هذا التثبيت."
+
 #: includes/class-aod-cd-section-abandoned.php:538
 #: includes/class-aod-cd-section-orders.php:413
 msgid "Tout sélectionner"

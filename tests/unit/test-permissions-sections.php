@@ -68,6 +68,13 @@ function aod_test_perm_contrat() {
 		// code : la note du confirmateur est devenue un champ de `order_save_info`
 		// ci-dessous, sous la MÊME capability. Aucun droit n'a bougé.
 		'order_save_info'  => array( 'caps' => array( 'aod_cap_confirm_orders' ), 'famille' => 'gouvernee' ),
+		// 2026-08-04 — export CSV. Gouverné par la section : qui peut LIRE la liste
+		// peut l'emporter. ⚠️ La garantie qui compte n'est pas ici mais dans le
+		// corps : l'export passe par `scoped_orders()`, donc un confirmateur
+		// n'exporte QUE ses commandes assignées. Sans ce passage, cette même
+		// capability livrerait le fichier client de toute la boutique — nom,
+		// téléphone et adresse de chaque acheteur — à qui n'en gouverne qu'une part.
+		'export_orders'    => array( 'caps' => array( 'aod_cap_confirm_orders' ), 'famille' => 'gouvernee' ),
 		'delete_orders'    => array(
 			'caps'    => array( 'delete_shop_orders', 'manage_woocommerce' ),
 			'famille' => 'action-forte',
@@ -146,6 +153,10 @@ function aod_test_perm_contrat() {
 		/* --- Sections réservées au gérant ------------------------------------- */
 		'save_product'     => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
 		'delete_product'   => array( 'caps' => array( 'delete_products' ), 'famille' => 'manager' ),
+		// 2026-08-04 — duplication. `edit_products` et NON `delete_products` : créer
+		// une copie n'est pas destructif (elle naît en brouillon). Même cap que
+		// `save_product`, ce qui est exact — dupliquer, c'est écrire un produit.
+		'duplicate_product' => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
 		'save_category'    => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
 		'delete_category'  => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
 		'save_landing'     => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
