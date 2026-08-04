@@ -917,7 +917,7 @@ class AOD_CD_Dashboard {
 	public static function kpis( $cards ) {
 		$out = '<div class="aod-cd-kpis">';
 		foreach ( $cards as $c ) {
-			$out .= '<div class="aod-cd-kpi">';
+			$out .= '<div class="aod-cd-kpi' . ( empty( $c[5] ) ? '' : ' aod-cd-kpi--' . sanitize_html_class( $c[5] ) ) . '">'; // $c[5] : modificateur optionnel (ex. « primary »), jamais du balisage.
 			$out .= '<div class="aod-cd-kpi__top">';
 			// $c[2] est un NOM D'ICÔNE du catalogue, plus un emoji (Phase 15). Le
 			// composant appelle lui-même AOD_CD_Icon : les appelants restent

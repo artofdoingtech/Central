@@ -2386,6 +2386,50 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	padding:var(--cd-sp-4) var(--cd-sp-5);display:flex;flex-direction:column;gap:10px;transition:border-color .18s var(--cd-ease-out),box-shadow .18s var(--cd-ease-out),transform .18s var(--cd-ease-out);
 }
 .aod-cd-kpi:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:#dcdcdc}
+
+/* ── Hiérarchie de la grille de KPI (2026-08-04) ───────────────────────────
+   La carte PRINCIPALE occupe deux colonnes. Huit cartes de poids identique ne
+   hiérarchisent rien : le chiffre d'affaires pesait autant que « Produits en
+   ligne ». La distinction passe par l'ESPACE et non par une teinte — l'accent
+   est choisi par le client dans le Personnalisateur, et une couleur écrite ici
+   sortirait du garde-fou éprouvé sur six accents hostiles (`run.sh contraste`).
+   Aucune taille de texte nouvelle : le nombre garde son cran, il respire.
+   ⚠️ `span 2` seulement quand la grille a 4 colonnes. Sur la grille à 2 colonnes
+   (≤ la médiane) la carte occuperait TOUTE la largeur et écraserait la rangée
+   suivante ; le `span` y est donc explicitement rendu. */
+/* 🔁 DEUX TENTATIVES ONT ÉTÉ REJETÉES PAR LA CAPTURE D'ÉCRAN, et c'est la leçon
+   la plus utile de ce bloc : la géométrie d'une grille ne se déduit pas, elle se
+   regarde.
+     · `grid-column:span 2` seul → 8 cartes, 9 emplacements sur 4 colonnes = 4+4+1.
+       « Produits en ligne » restait SEULE sur une 3ᵉ rangée, 3 cases vides.
+     · `+ grid-row:span 2` → l'orpheline disparaissait, mais la carte devenait un
+       grand rectangle ne portant qu'un libellé et un nombre : un VIDE au milieu.
+   Retenu : la carte ne bouge pas de la grille (rythme 4+4 intact), et la
+   hiérarchie passe par la TAILLE — le chiffre principal garde son cran (26px),
+   les sept autres descendent d'un cran (20px). Deux tailles déjà recensées : la
+   grille typographique de la 46.5bis n'en gagne aucune.
+   ⚠️ `:has()` restreint la règle à la grille QUI CONTIENT une carte principale.
+   Sans lui, la section Stock — qui emploie le même composant sans hiérarchie —
+   verrait ses quatre chiffres rétrécir sans raison. */
+.aod-cd-kpi--primary .aod-cd-kpi__lab{color:var(--cd-ink)}
+.aod-cd-kpis:has(.aod-cd-kpi--primary) .aod-cd-kpi:not(.aod-cd-kpi--primary) .aod-cd-kpi__val{font-size:var(--cd-fs-xl)}
+
+/* ── Tuiles « à traiter » : le zéro se tait (2026-08-04) ───────────────────
+   Une tuile à 0 n'appelle aucune action. Elle portait pourtant la même pastille
+   colorée que celle qui en appelle une : quatre taches vives dont trois ne
+   veulent rien dire, à l'endroit le plus regardé de l'écran. En gris neutre, un
+   « 3 » en rouge se détache seul, et une rangée entièrement calme SE LIT comme
+   « rien à traiter » sans qu'on ait à l'écrire.
+   🔒 Rien n'est masqué : la tuile reste cliquable, focalisable et nommée. On
+   retire de l'emphase, jamais de l'information — un `display:none` la sortirait
+   de l'ordre de tabulation (leçon 45.5). */
+.aod-cd-todo-tile.is-zero{--tone:var(--cd-soft);--tone-soft:var(--cd-bg)}
+.aod-cd-todo-tile.is-zero .aod-cd-todo-tile__n{color:var(--cd-muted)}
+.aod-cd-todo-tile.is-zero:hover,.aod-cd-todo-tile.is-zero:focus-visible{--tone-soft:var(--cd-line)}
+
+/* Titre de bloc : remplace six `style="margin-top:26px"` en dur. 26px n'existe
+   dans aucune échelle — l'espacement va de 4 à 40 par crans (D2). */
+.aod-cd-blocktitle{margin-top:var(--cd-sp-6)}
 .aod-cd-kpi__top{display:flex;align-items:center;gap:10px}
 /* Phase 15 — le glyphe est un SVG monochrome qui hérite de `color`.
    Il reste sur --cd-ink dans TOUTES les tonalités, volontairement : c'est la
@@ -2530,6 +2574,9 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 @media(max-width:1080px){
 	.aod-cd-todo{grid-template-columns:repeat(2,1fr)}
 	.aod-cd-kpis{grid-template-columns:repeat(2,1fr)}
+	/* Rien à neutraliser ici : la hiérarchie ne touche plus à la géométrie de la
+	   grille, seulement à la taille du chiffre. Elle survit donc telle quelle au
+	   passage à 2 colonnes, puis à 1 sur mobile. */
 }
 @media(max-width:640px){
 	.aod-cd-todo{grid-template-columns:1fr}

@@ -676,18 +676,31 @@ class AOD_CD_Section_Home {
 		// injecté tel quel, comme partout ailleurs où AOD_CD_Icon rend.
 		echo '<div class="aod-cd-todo">';
 		foreach ( $tiles as $t ) {
+			// `is-zero` : une tuile à 0 n'appelle aucune action, mais elle criait aussi
+			// fort que celle qui en appelle une — quatre pastilles colorées côte à côte,
+			// dont trois ne veulent rien dire. Elle passe donc en gris neutre : un « 3 »
+			// en rouge se détache alors immédiatement, et une rangée entièrement calme
+			// SE LIT comme « rien à traiter », sans qu'on ait à l'écrire.
+			// ⚠️ La tuile reste PRÉSENTE, cliquable et dans l'ordre de tabulation : c'est
+			// aussi un raccourci de navigation. On la calme, on ne la retire pas.
 			printf(
-				'<a class="aod-cd-todo-tile" href="%1$s" style="--tone:%2$s;--tone-soft:%3$s">'
+				'<a class="aod-cd-todo-tile%7$s" href="%1$s" style="--tone:%2$s;--tone-soft:%3$s">'
 					. '<span class="aod-cd-todo-tile__ic" aria-hidden="true">%4$s</span>'
 					. '<span class="aod-cd-todo-tile__txt"><span class="aod-cd-todo-tile__n">%5$s</span>'
 					. '<span class="aod-cd-todo-tile__l">%6$s</span></span>'
 					. '<span class="aod-cd-todo-tile__go" aria-hidden="true">›</span></a>',
 				esc_url( $t['url'] ),
-				esc_attr( $t['tone'] ),
-				esc_attr( $t['soft'] ),
+				// 🚨 La neutralisation se fait ICI, pas en CSS : `--tone` est posé en
+				// style INLINE, qui l'emporte sur toute règle de la feuille. Une classe
+				// `.is-zero{--tone:…}` était donc inerte — vraie dans le DOM, sans effet
+				// à l'écran. La corriger à coups de `!important` aurait ouvert une
+				// surenchère de spécificité dans une feuille qui n'en compte aucune.
+				esc_attr( 0 === (int) $t['n'] ? 'var(--cd-soft)' : $t['tone'] ),
+				esc_attr( 0 === (int) $t['n'] ? 'var(--cd-bg)' : $t['soft'] ),
 				AOD_CD_Icon::svg( $t['icon'], array( 'size' => 22 ) ),
 				esc_html( number_format_i18n( $t['n'] ) ),
-				esc_html( $t['label'] )
+				esc_html( $t['label'] ),
+				0 === (int) $t['n'] ? ' is-zero' : ''
 			);
 		}
 		echo '</div>';
@@ -867,7 +880,12 @@ class AOD_CD_Section_Home {
 
 		echo AOD_CD_Dashboard::page_head( // phpcs:ignore WordPress.Security.EscapeOutput
 			/* translators: %s : prénom du gérant */
-			sprintf( __( 'Bonjour %s 👋', 'aod-client-dashboard' ), $first ),
+			// 🚫 Le « 👋 » a été retiré (2026-08-04). La Phase 15 a sorti les emojis de
+			// `/gestion` pour une raison mesurée — la police emoji du système donne un
+			// rendu DIFFÉRENT sur chaque machine — et l'a remplacée par le catalogue
+			// fermé `AOD_CD_Icon`. Celui-ci avait survécu au balayage, seul de son
+			// espèce, dans le titre le plus visible de l'application.
+			sprintf( __( 'Bonjour %s', 'aod-client-dashboard' ), $first ),
 			sprintf(
 				$sous_titre,
 				date_i18n( get_option( 'date_format' ) ),
@@ -1219,7 +1237,15 @@ class AOD_CD_Section_Home {
 		// Pas de delta sur « En attente » ni « Produits en ligne » : ce sont des
 		// instantanés hors période, une comparaison n'aurait aucun sens.
 		$cards = array(
-			array( __( 'Chiffre d’affaires', 'aod-client-dashboard' ), wp_kses_post( wc_price( $d['revenue'] ) ), 'money', 'blue', $this->kpi_delta( $d['revenue'], $p['revenue'] ) ),
+			// 6ᵉ élément = modificateur. Le chiffre d'affaires est LA raison pour
+			// laquelle le gérant ouvre cet écran ; il occupait pourtant la même
+			// surface que « Produits en ligne ». Huit cartes de poids identique, c'est
+			// huit cartes sans hiérarchie — l'œil n'a nulle part où se poser.
+			// 🎨 La distinction se fait par l'ESPACE (deux colonnes), jamais par une
+			// teinte : l'accent est choisi par le client dans le Personnalisateur, et
+			// une carte colorée à la main sortirait du garde-fou de contraste que
+			// `run.sh contraste` éprouve sur six accents hostiles.
+			array( __( 'Chiffre d’affaires', 'aod-client-dashboard' ), wp_kses_post( wc_price( $d['revenue'] ) ), 'money', 'blue', $this->kpi_delta( $d['revenue'], $p['revenue'] ), 'primary' ),
 			array( __( 'Commandes encaissées', 'aod-client-dashboard' ), (string) $d['nb_paid'], 'orders', 'indigo', $this->kpi_delta( $d['nb_paid'], $p['nb_paid'] ) ),
 			array( __( 'Panier moyen', 'aod-client-dashboard' ), wp_kses_post( wc_price( $avg ) ), 'cart', 'teal', $this->kpi_delta( $avg, $p_avg ) ),
 			array( __( 'Marge estimée', 'aod-client-dashboard' ), wp_kses_post( wc_price( $margin ) ), 'trend-up', 'green', $this->kpi_delta( $margin, $p_margin ) ),
@@ -1235,7 +1261,7 @@ class AOD_CD_Section_Home {
 		$this->render_stats_chart( $d['bins'] );
 
 		// Top-produits de la période (par CA généré).
-		echo '<h2 class="aod-cd-form-subtitle" style="margin-top:26px">' . esc_html__( 'Top produits', 'aod-client-dashboard' ) . '</h2>';
+		echo '<h2 class="aod-cd-form-subtitle aod-cd-blocktitle">' . esc_html__( 'Top produits', 'aod-client-dashboard' ) . '</h2>';
 		if ( empty( $d['top'] ) ) {
 			echo AOD_CD_Dashboard::empty_state( 'chart', __( 'Aucune vente sur cette période.', 'aod-client-dashboard' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 		} else {
@@ -1708,7 +1734,7 @@ class AOD_CD_Section_Home {
 			}
 		};
 
-		echo '<h2 class="aod-cd-form-subtitle" style="margin-top:26px">' . esc_html__( 'Par transporteur', 'aod-client-dashboard' ) . '</h2>';
+		echo '<h2 class="aod-cd-form-subtitle aod-cd-blocktitle">' . esc_html__( 'Par transporteur', 'aod-client-dashboard' ) . '</h2>';
 		echo '<div class="aod-cd-tablewrap"><table class="aod-cd-table aod-cd-table--cards"><thead><tr><th>' . esc_html__( 'Transporteur', 'aod-client-dashboard' ) . '</th>';
 		foreach ( $cols as $h ) {
 			echo '<th>' . esc_html( $h ) . '</th>';
@@ -1722,7 +1748,7 @@ class AOD_CD_Section_Home {
 		echo '</tbody></table></div>';
 
 		// Ventilation par wilaya : top 10, le reste agrégé.
-		echo '<h2 class="aod-cd-form-subtitle" style="margin-top:26px">' . esc_html__( 'Par wilaya', 'aod-client-dashboard' ) . '</h2>';
+		echo '<h2 class="aod-cd-form-subtitle aod-cd-blocktitle">' . esc_html__( 'Par wilaya', 'aod-client-dashboard' ) . '</h2>';
 		echo '<div class="aod-cd-tablewrap"><table class="aod-cd-table aod-cd-table--cards"><thead><tr><th>' . esc_html__( 'Wilaya', 'aod-client-dashboard' ) . '</th>';
 		foreach ( $cols as $h ) {
 			echo '<th>' . esc_html( $h ) . '</th>';
@@ -1758,7 +1784,7 @@ class AOD_CD_Section_Home {
 		// Colis bloqués (non terminaux sans événement récent), plus anciens d'abord.
 		if ( $d['blocked'] ) {
 			/* translators: %d : nombre de jours sans événement. */
-			echo '<h2 class="aod-cd-form-subtitle" style="margin-top:26px">' . esc_html( sprintf( __( 'Colis bloqués (sans événement depuis plus de %d jours)', 'aod-client-dashboard' ), self::BLOCKED_DAYS ) ) . '</h2>';
+			echo '<h2 class="aod-cd-form-subtitle aod-cd-blocktitle">' . esc_html( sprintf( __( 'Colis bloqués (sans événement depuis plus de %d jours)', 'aod-client-dashboard' ), self::BLOCKED_DAYS ) ) . '</h2>';
 			$cols_bl = array(
 				__( 'N°', 'aod-client-dashboard' ),
 				__( 'Transporteur', 'aod-client-dashboard' ),
@@ -2146,7 +2172,7 @@ class AOD_CD_Section_Home {
 		// confirmateur connecté) : le tableau ne peut plus diverger des cartes.
 		$rows = $row_uid ? array( $row_uid => self::conf_row( $d, $row_uid ) ) : $d['rows'];
 
-		echo '<h2 class="aod-cd-form-subtitle" style="margin-top:26px">' . esc_html__( 'Par confirmateur', 'aod-client-dashboard' ) . '</h2>';
+		echo '<h2 class="aod-cd-form-subtitle aod-cd-blocktitle">' . esc_html__( 'Par confirmateur', 'aod-client-dashboard' ) . '</h2>';
 		$cols_cf = array(
 			__( 'Confirmateur', 'aod-client-dashboard' ),
 			__( 'Confirmées', 'aod-client-dashboard' ),

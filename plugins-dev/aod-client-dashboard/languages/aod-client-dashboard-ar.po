@@ -1331,8 +1331,10 @@ msgstr "طلباتك — %1$s · %2$s."
 #. translators: %s : prénom du gérant
 #: includes/class-aod-cd-section-home.php:870
 #, php-format
-msgid "Bonjour %s 👋"
-msgstr "مرحبًا %s 👋"
+#. L'emoji « 👋 » a été retiré des deux versions le 2026-08-04 : la Phase 15 a
+#. sorti les emojis de /gestion (rendu different selon la police du systeme).
+msgid "Bonjour %s"
+msgstr "مرحبًا %s"
 
 #: includes/class-aod-cd-section-home.php:912
 #: includes/class-aod-cd-section-stock.php:717
