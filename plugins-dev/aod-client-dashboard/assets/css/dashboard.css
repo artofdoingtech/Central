@@ -2609,6 +2609,13 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-cell-total{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 
 /* ---- Tonalités d'icône des KPI ------------------------------------------ */
+/* `t-accent` = pastille SANS signification, qui prend la teinte du client.
+   Déclarée explicitement bien qu'identique au fond par défaut de `__ic` : une
+   tonalité qui n'existe que par un repli implicite se perd au premier refactor,
+   et l'appelant croirait avoir demandé quelque chose. Elle dit ici, en toutes
+   lettres, « cette icône ne code aucun état » — ce qui rend leur signal au
+   rouge (annulée) et à l'ambre (en attente), voisins immédiats dans la grille. */
+.aod-cd-kpi__ic.t-accent{background:var(--cd-accent-soft)}
 .aod-cd-kpi__ic.t-blue{background:var(--cd-info-soft)}
 .aod-cd-kpi__ic.t-indigo{background:#e7e9fd}
 .aod-cd-kpi__ic.t-teal{background:#d9f2f6}

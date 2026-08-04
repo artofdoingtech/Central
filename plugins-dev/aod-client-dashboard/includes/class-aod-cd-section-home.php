@@ -1245,14 +1245,22 @@ class AOD_CD_Section_Home {
 			// teinte : l'accent est choisi par le client dans le Personnalisateur, et
 			// une carte colorée à la main sortirait du garde-fou de contraste que
 			// `run.sh contraste` éprouve sur six accents hostiles.
-			array( __( 'Chiffre d’affaires', 'aod-client-dashboard' ), wp_kses_post( wc_price( $d['revenue'] ) ), 'money', 'blue', $this->kpi_delta( $d['revenue'], $p['revenue'] ), 'primary' ),
-			array( __( 'Commandes encaissées', 'aod-client-dashboard' ), (string) $d['nb_paid'], 'orders', 'indigo', $this->kpi_delta( $d['nb_paid'], $p['nb_paid'] ) ),
-			array( __( 'Panier moyen', 'aod-client-dashboard' ), wp_kses_post( wc_price( $avg ) ), 'cart', 'teal', $this->kpi_delta( $avg, $p_avg ) ),
+			// 🎨 TONALITÉ `accent` = « cette pastille ne signifie RIEN ». Ces trois-là
+			// portaient du bleu, de l'indigo et du teal : trois teintes fixes, choisies
+			// pour varier, posées à côté d'un rouge (annulée) et d'un ambre (en attente)
+			// qui, eux, portent un état. Quand le décoratif emprunte le vocabulaire du
+			// sémantique, le sémantique cesse d'être lisible — le gérant ne peut plus
+			// savoir quelle couleur mérite son attention.
+			// Elles retombent donc sur `--cd-accent-soft`, la teinte du client : la page
+			// gagne en cohérence de marque ET rend leur signal au rouge et à l'ambre.
+			array( __( 'Chiffre d’affaires', 'aod-client-dashboard' ), wp_kses_post( wc_price( $d['revenue'] ) ), 'money', 'accent', $this->kpi_delta( $d['revenue'], $p['revenue'] ), 'primary' ),
+			array( __( 'Commandes encaissées', 'aod-client-dashboard' ), (string) $d['nb_paid'], 'orders', 'accent', $this->kpi_delta( $d['nb_paid'], $p['nb_paid'] ) ),
+			array( __( 'Panier moyen', 'aod-client-dashboard' ), wp_kses_post( wc_price( $avg ) ), 'cart', 'accent', $this->kpi_delta( $avg, $p_avg ) ),
 			array( __( 'Marge estimée', 'aod-client-dashboard' ), wp_kses_post( wc_price( $margin ) ), 'trend-up', 'green', $this->kpi_delta( $margin, $p_margin ) ),
 			array( __( 'Taux de marge', 'aod-client-dashboard' ), esc_html( number_format_i18n( $margin_rate, 1 ) . ' %' ), 'percent', 'green', $this->kpi_delta( $margin_rate, $p_mrate, true, true ) ),
 			array( __( 'En attente (en cours)', 'aod-client-dashboard' ), (string) $d['nb_pending'], 'pending', 'amber' ),
 			array( __( 'Annulées', 'aod-client-dashboard' ), (string) $d['nb_cancel'], 'cancel', 'red', $this->kpi_delta( $d['nb_cancel'], $p['nb_cancel'], false ) ),
-			array( __( 'Produits en ligne', 'aod-client-dashboard' ), (string) $d['nb_prod'], 'products', 'slate' ),
+			array( __( 'Produits en ligne', 'aod-client-dashboard' ), (string) $d['nb_prod'], 'products', 'accent' ),
 		);
 
 		$this->render_kpis( $cards );

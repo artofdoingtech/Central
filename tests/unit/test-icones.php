@@ -157,7 +157,15 @@ foreach ( $sources as $src ) {
 	// ternaire — `'rupture', $rupture > 0 ? 'red' : 'green'`. Sans cette tolérance
 	// le motif sautait ces deux cartes, et le test se serait déclaré satisfait
 	// après avoir regardé 17 icônes sur 18.
-	if ( preg_match_all( "/,\s*'([a-z0-9-]+)'\s*,[^,]{0,60}?'(?:blue|indigo|teal|green|amber|red|slate)'/", $code, $m ) ) {
+	// ⚠️ `accent` ajoutée le 2026-08-04, et l'oubli s'est vu IMMÉDIATEMENT : quatre
+	// cartes de l'Accueil ont quitté `blue`/`indigo`/`teal` pour cette tonalité —
+	// celle qui dit « cette pastille ne code aucun état » et prend la teinte du
+	// client — et le balayage est aussitôt tombé à 17 noms. C'est le comportement
+	// voulu : cette liste est un RECENSEMENT des tonalités, au même titre que celui
+	// des tailles de texte (46.5bis). Une tonalité qu'on introduit sans l'inscrire
+	// ici rend le motif aveugle aux cartes qui la portent — et un balayage aveugle
+	// se déclare satisfait en ayant regardé moins que ce qu'il annonce.
+	if ( preg_match_all( "/,\s*'([a-z0-9-]+)'\s*,[^,]{0,60}?'(?:accent|blue|indigo|teal|green|amber|red|slate)'/", $code, $m ) ) {
 		foreach ( $m[1] as $n ) {
 			$noms_kpi[ $n ] = basename( $src );
 		}
