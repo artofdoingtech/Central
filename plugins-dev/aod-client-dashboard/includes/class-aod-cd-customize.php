@@ -81,6 +81,35 @@ class AOD_CD_Customize {
 	 */
 	const WASH_MIX = 0.94;
 
+	/**
+	 * Mélange du FOND DE PAGE (`--cd-bg`) vers le blanc — demande owner du
+	 * 2026-08-04 : « une couleur pour le fond ».
+	 *
+	 * 🚨 POURQUOI DÉRIVÉ ET NON ÉCRIT EN DUR. La demande était « turquoise ». Un
+	 * `#ECF6F6` posé dans `dashboard.css` aurait été juste pour CE client et faux
+	 * pour le suivant — c'est exactement ce que `test-charte-surfaces.php`
+	 * interdit en séparant la surface neutre (grise, légitime en dur) de la
+	 * couleur, qui doit venir d'un token. Ici le fond prend la teinte de l'accent
+	 * choisi dans le Personnalisateur : turquoise chez qui choisit le turquoise,
+	 * gris-bleu chez qui choisit du bleu nuit. La demande est satisfaite SANS
+	 * qu'un clone hérite du goût d'un autre.
+	 *
+	 * Pourquoi 0.92 et pas WASH_MIX (0.94) : le `wash` est une surface posée SUR
+	 * le fond, donc presque blanche. Le fond, lui, doit rester nettement sous le
+	 * blanc des cartes, sinon la page et ses cartes se confondent — c'était le
+	 * défaut corrigé le même jour par l'ombre au repos. Deux crans plus bas
+	 * suffisent : assez pour que la teinte se voie, assez haut pour que
+	 * `--cd-muted` reste lisible dessus sur TOUS les accents.
+	 *
+	 * Marges mesurées (#666 sur le fond dérivé, AA exige 4,5) :
+	 *   turquoise #0d9488 → #ECF6F6 → 5,0:1   ·   jaune #FFE21E → 5,1:1
+	 *   presque-noir #111827 → #ECEDEE → 4,8:1 (le pire cas des six accents)
+	 * ⚠️ Un mélange plus bas (0.90 testé) fait tomber l'accent presque-noir à
+	 * 4,66:1 — au-dessus du seuil, mais sans marge pour un futur accent plus
+	 * sombre. `test-contraste.php` fait foi ; ce commentaire ne le remplace pas.
+	 */
+	const BG_MIX = 0.92;
+
 	/** Amorçage. */
 	public static function init() {
 		add_action( 'customize_register', array( __CLASS__, 'register' ) );
@@ -218,6 +247,10 @@ class AOD_CD_Customize {
 		// Surface teintée portant du texte, y compris `--cd-muted`. Cf. wash().
 		$wash = self::wash( $hex );
 
+		// Fond de PAGE teinté par l'accent (cf. BG_MIX). Il porte `--cd-muted`
+		// (le sous-titre de chaque écran) et sert de fond aux cartes blanches.
+		$bg = self::to_hex( self::mix( $rgb, 255, self::BG_MIX ) );
+
 		// Fond de la sidebar, teinté de l'accent (étape 15.5). Cf. side().
 		$side = self::side();
 
@@ -250,6 +283,7 @@ class AOD_CD_Customize {
 			. '--cd-accent-ink:' . $ink . ';'
 			. '--cd-accent-soft:' . $soft . ';'
 			. '--cd-accent-wash:' . $wash . ';'
+			. '--cd-bg:' . $bg . ';'
 			. '--cd-accent-on-dark:' . $on_dark . ';'
 			. '--cd-side:' . $side . ';'
 			. '}';
