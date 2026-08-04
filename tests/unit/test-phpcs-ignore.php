@@ -60,7 +60,7 @@ defined( 'ABSPATH' ) || exit;
 function aod_test_pcs_census() {
 	return array(
 		'WordPress.Security.EscapeOutput'         => array(
-			'n'        => 155,
+			'n'        => 156,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
@@ -152,7 +152,15 @@ function aod_test_pcs_census() {
 				. 'les attributs SVG, ce qui est la raison d’être de la dérogation. '
 				. '⚠️ La hausse est venue AVEC son cliquet rouge : le census a refusé le panneau avant '
 				. 'sa relecture. C’est le comportement voulu — une dérogation d’échappement ne doit '
-				. 'jamais entrer sans passer par ce paragraphe.',
+				. 'jamais entrer sans passer par ce paragraphe. '
+				. 'La 156ᵉ (2026-08-04, avertissement de marge partielle, class-aod-cd-section-home.php) : '
+				. '`echo AOD_CD_Icon::svg( \'warning\' )` devant la note qui prévient que la marge '
+				. 'affichée est une estimation. MÊME patron que la 134ᵉ et la 155ᵉ — catalogue FERMÉ, '
+				. 'nom d’icône littéral du dépôt, la méthode refuse tout nom hors catalogue, aucune '
+				. 'saisie du gérant ni de l’acheteur n’atteint le markup ; `wp_kses_post()` mangerait '
+				. 'les attributs SVG. Le TEXTE de la note, lui, passe par `esc_html__()` juste après. '
+				. '⚠️ Comme la 155ᵉ, la hausse est venue avec son rouge : le census a refusé '
+				. 'l’avertissement avant sa relecture — troisième fois que ce garde-fou joue son rôle.',
 		),
 		'WordPress.Security.NonceVerification'    => array(
 			'n'        => 18,

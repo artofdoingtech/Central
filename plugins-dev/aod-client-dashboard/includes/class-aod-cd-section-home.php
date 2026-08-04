@@ -1313,14 +1313,34 @@ class AOD_CD_Section_Home {
 			echo '</tbody></table></div>';
 		}
 
+		// ⚠️ L'AVERTISSEMENT RESTE VISIBLE, la MÉTHODOLOGIE se replie. Le tri n'est
+		// pas cosmétique : cette note-ci dit qu'un nombre AFFICHÉ À L'ÉCRAN est faux
+		// — partiel, faute de prix d'achat. La replier reviendrait à publier une
+		// marge sous-évaluée en cachant ce qui l'explique, et le gérant prendrait ses
+		// décisions dessus. Une réserve sur une donnée voyage avec la donnée.
+		if ( $d['miss_cost'] ) {
+			echo '<p class="aod-cd-note aod-cd-note--warn">'
+				. AOD_CD_Icon::svg( 'warning', array( 'size' => 15 ) ) // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+				. ' ' . esc_html__( 'Certains produits vendus n’ont pas de prix d’achat renseigné — la marge affichée est donc une estimation partielle.', 'aod-client-dashboard' )
+				. '</p>';
+		}
+
+		// Le reste explique COMMENT les chiffres sont calculés. C'est de la référence :
+		// on la lit une fois, à la prise en main, puis plus jamais — alors qu'elle
+		// occupait en permanence le bas de chaque écran de statistiques, en trois
+		// paragraphes de même taille et de même couleur. Repliée, l'information n'est
+		// pas perdue : elle est à un clic, et la page cesse d'être un mur.
+		// `<details>` natif : ni script, ni état à mémoriser, ouvrable au clavier, et
+		// le contenu reste dans le document — donc lisible par une synthèse vocale et
+		// trouvable par la recherche du navigateur, contrairement à une infobulle.
+		echo '<details class="aod-cd-note-fold">';
+		echo '<summary>' . esc_html__( 'Comment ces chiffres sont calculés', 'aod-client-dashboard' ) . '</summary>';
 		echo '<p class="aod-cd-note">' . esc_html__( 'CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée. « En attente » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues.', 'aod-client-dashboard' ) . '</p>';
 		if ( $filters['produit'] ) {
 			echo '<p class="aod-cd-note">' . esc_html__( 'Filtre produit actif : CA, marge et graphe ne comptent que les lignes de ce produit (hors livraison et hors autres produits des mêmes commandes) ; « En attente » et « Annulées » ne comptent que les commandes le contenant.', 'aod-client-dashboard' ) . '</p>';
 		}
 		echo '<p class="aod-cd-note">' . esc_html__( 'Marge = CA produits (hors livraison) − prix d’achat. Renseignez le « Prix d’achat » d’un produit pour qu’il compte dans la marge ; les produits sans prix d’achat sont ignorés (un « — » s’affiche).', 'aod-client-dashboard' ) . '</p>';
-		if ( $d['miss_cost'] ) {
-			echo '<p class="aod-cd-note">' . esc_html__( 'Note : certains produits vendus n’ont pas de prix d’achat renseigné — la marge affichée est donc une estimation partielle.', 'aod-client-dashboard' ) . '</p>';
-		}
+		echo '</details>';
 	}
 
 	/**

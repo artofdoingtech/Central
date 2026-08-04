@@ -2443,6 +2443,35 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    dans aucune échelle — l'espacement va de 4 à 40 par crans (D2). */
 .aod-cd-blocktitle{margin-top:var(--cd-sp-6)}
 
+/* ── Notes de méthode repliées (2026-08-04) ────────────────────────────────
+   Trois paragraphes de définitions occupaient en permanence le bas de chaque
+   écran de statistiques, à la même taille et dans la même couleur que tout le
+   reste. On les lit une fois, à la prise en main, puis plus jamais.
+   Repliées : l'information reste dans le document — donc accessible au clavier,
+   à une synthèse vocale et à la recherche du navigateur — mais la page cesse
+   d'être un mur. C'est la demande owner « c'est un peu chargé ».
+   🔒 L'AVERTISSEMENT sur la marge partielle, lui, n'est PAS ici : il qualifie un
+   nombre affiché à l'écran. Une réserve sur une donnée voyage avec la donnée. */
+.aod-cd-note-fold{margin-top:var(--cd-sp-5)}
+.aod-cd-note-fold>summary{
+	cursor:pointer;font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);
+	text-transform:uppercase;letter-spacing:.05em;padding:var(--cd-sp-2) 0;list-style:none;
+	display:inline-flex;align-items:center;gap:var(--cd-sp-2);
+}
+.aod-cd-note-fold>summary::-webkit-details-marker{display:none}
+/* Le chevron est un GLYPHE et pivote seul : faire pivoter le `summary` ferait
+   tourner tout le libellé (leçon D32, où la rotation portée par la cellule
+   débordait de 13px une fois pivotée). */
+.aod-cd-note-fold>summary::before{content:"›";display:inline-block;transition:transform .18s var(--cd-ease-out)}
+.aod-cd-note-fold[open]>summary::before{transform:rotate(90deg)}
+.aod-cd-note-fold>summary:hover{color:var(--cd-ink)}
+.aod-cd-note-fold>summary:focus-visible{outline:none;box-shadow:var(--cd-focus);border-radius:var(--cd-r-sm)}
+
+/* L'avertissement se distingue de la note ordinaire : il porte une icône et
+   l'encre pleine, parce qu'il n'explique pas — il prévient. */
+.aod-cd-note--warn{display:flex;align-items:flex-start;gap:var(--cd-sp-2);color:var(--cd-ink);font-weight:600}
+.aod-cd-note--warn .aod-cd-i{flex:none;margin-top:2px}
+
 /* ── Les surfaces se posent sur le fond (2026-08-04) ───────────────────────
    Toutes les cartes de `/gestion` partagent la même recette : fond blanc, trait
    de 1px, rayon moyen. Sur un fond à #F5F5F5, l'écart de valeur entre la carte

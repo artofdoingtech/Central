@@ -1449,13 +1449,21 @@ msgstr ""
 "الهامش = رقم أعمال المنتجات (دون التوصيل) − سعر الشراء. أدخل «سعر الشراء» "
 "لمنتج لكي يُحتسب في الهامش؛ المنتجات بدون سعر شراء تُهمَل (يظهر «—»)."
 
+#. Le préfixe « Note : » a été retiré le 2026-08-04 : la phrase est devenue un
+#. AVERTISSEMENT porteur d'icône, et « Note » l'annonçait comme accessoire.
 #: includes/class-aod-cd-section-home.php:1288
 msgid ""
-"Note : certains produits vendus n’ont pas de prix d’achat renseigné — la "
-"marge affichée est donc une estimation partielle."
+"Certains produits vendus n’ont pas de prix d’achat renseigné — la marge "
+"affichée est donc une estimation partielle."
 msgstr ""
-"ملاحظة: بعض المنتجات المباعة ليس لها سعر شراء مُدخَل — لذا فالهامش المعروض "
-"تقدير جزئي."
+"بعض المنتجات المباعة ليس لها سعر شراء مُدخَل — لذا فالهامش المعروض تقدير "
+"جزئي."
+
+#. Libellé du repli qui contient les définitions (CA, marge). Référence que l'on
+#. lit une fois, contrairement à l'avertissement ci-dessus, qui reste visible.
+#: includes/class-aod-cd-section-home.php:1330
+msgid "Comment ces chiffres sont calculés"
+msgstr "كيف تُحتسب هذه الأرقام"
 
 #. translators: %s : nom du produit filtré.
 #: includes/class-aod-cd-section-home.php:1361
