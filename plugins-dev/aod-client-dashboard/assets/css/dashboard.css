@@ -2452,6 +2452,38 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    d'être un mur. C'est la demande owner « c'est un peu chargé ».
    🔒 L'AVERTISSEMENT sur la marge partielle, lui, n'est PAS ici : il qualifie un
    nombre affiché à l'écran. Une réserve sur une donnée voyage avec la donnée. */
+/* ── Hiérarchie des surfaces (2026-08-04) ──────────────────────────────────
+   Constat owner : « tous les div sont blancs ». Exact, et c'est le vrai défaut
+   de structure de l'écran — pas un manque d'ornement. Tuiles, barre de filtres,
+   cartes de chiffres, graphe et tableau partageaient la MÊME recette : blanc,
+   trait, rayon, ombre. Tout ayant le même poids, l'œil ne distingue plus un
+   RÉGLAGE d'un RÉSULTAT, et la page se lit comme une pile de boîtes.
+
+   On installe donc deux niveaux au lieu d'un :
+     · le CHROME (ce qui pilote l'affichage) recule — pas de fond, pas d'ombre ;
+     · le CONTENU (ce qu'on est venu lire) reste une feuille posée.
+
+   La barre de filtres est du chrome : elle avait pourtant le poids exact du
+   graphe du chiffre d'affaires, qu'elle sépare des tuiles. Vidée de son fond,
+   elle cesse d'être un obstacle entre « ce qu'il y a à faire » et « ce que ça
+   donne ». Les champs, eux, restent blancs : ce sont EUX les objets qu'on
+   manipule, et ils se détachent maintenant de leur propre panneau.
+   🔒 Cible `.aod-cd-filters` et NON `.aod-cd-form` : le même composant sert aux
+   pages de réglages, où le traitement en carte est juste — on y enregistre, on
+   n'y filtre pas. Confondre les deux aurait aplati la moitié de `/gestion`.
+   Le filet de séparation remplace la bordure : il ferme la zone de pilotage
+   sans lui rendre le poids d'une carte. */
+.aod-cd-filters{
+	background:transparent;border:0;box-shadow:none;
+	/* ⚠️ Le `padding:26px` du composant portait AUSSI la respiration au-dessus des
+	   champs. En vidant le fond je l'ai supprimée d'un coup, et les onglets sont
+	   venus toucher le libellé « PRODUIT » — vu à la capture, pas déduit. On la
+	   rend explicitement, sur le pas d'espacement (26px n'y figure pas, cf. D2). */
+	padding:var(--cd-sp-5) 0;
+	border-bottom:1px solid var(--cd-line);
+	border-radius:0;
+}
+
 .aod-cd-note-fold{margin-top:var(--cd-sp-5)}
 .aod-cd-note-fold>summary{
 	cursor:pointer;font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);
