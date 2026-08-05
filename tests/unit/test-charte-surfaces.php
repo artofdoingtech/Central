@@ -653,7 +653,27 @@ $aod_surf_vars = AOD_CD_Customize::css_vars();
 preg_match( '/:root\s*\{(.*?)\}/s', $aod_surf_decom, $aod_surf_rootm );
 $aod_surf_root = isset( $aod_surf_rootm[1] ) ? $aod_surf_rootm[1] : '';
 
-foreach ( array( '--cd-accent-soft', '--cd-accent-wash' ) as $aod_surf_tok ) {
+/*
+ * 🔁 `--cd-bg` et `--cd-card` ONT ÉTÉ AJOUTÉS ICI LE 2026-08-04, et l'oubli qu'ils
+ * réparent est celui que ce contrôle existe pour attraper. Le fond de page est
+ * devenu dérivé la veille (BG_MIX) sans que son repli bouge : `dashboard.css`
+ * annonçait encore `#F1F1F1` quand le système produit `#fffded` pour l'accent par
+ * défaut. Invisible — la valeur fausse n'est jamais celle qui s'affiche —, et
+ * exactement la dérive décrite au-dessus, sur un token que la liste ne balayait
+ * pas. Une liste en dur hérite des angles morts du jour où on l'a écrite : tout
+ * token de SURFACE ajouté à css_vars() doit venir ici.
+ *
+ * 🔴 ET LA PREUVE EST TOMBÉE LE LENDEMAIN, sur un token que la liste ne couvrait
+ * toujours pas : `--cd-accent-strong` annonçait `#e6cb00` en repli quand le
+ * système produit `#e0c71a` pour l'accent par défaut. La dérive avait pu durer
+ * parce que ce token n'avait AUCUN lecteur — personne ne pouvait voir la couleur
+ * fausse, faute de règle qui l'affiche. Maintenant que le survol du bouton
+ * principal le consomme, il entre ici avec son encre.
+ * ⚠️ La leçon vaut au-delà du cas : un repli faux sur un token INUTILISÉ est
+ * invisible deux fois — ni à l'écran, ni au raisonnement. C'est le premier usage
+ * qui le révèle, et il est alors trop tard pour savoir depuis quand.
+ */
+foreach ( array( '--cd-accent-soft', '--cd-accent-wash', '--cd-bg', '--cd-card', '--cd-accent-strong', '--cd-accent-strong-ink' ) as $aod_surf_tok ) {
 	$aod_surf_php = preg_match( '/' . preg_quote( $aod_surf_tok, '/' ) . ':\s*(#[0-9a-fA-F]{6})/', $aod_surf_vars, $aod_surf_pm )
 		? strtolower( $aod_surf_pm[1] ) : '';
 	$aod_surf_cssv = preg_match( '/' . preg_quote( $aod_surf_tok, '/' ) . '\s*:\s*(#[0-9a-fA-F]{3,6})/', $aod_surf_root, $aod_surf_cm )

@@ -624,12 +624,25 @@ class AOD_CD_Section_Home {
 			}
 		);
 
+		/*
+		 * 🔁 LES TEINTES DES TUILES SONT PASSÉES AUX TOKENS SÉMANTIQUES (2026-08-05).
+		 * Elles étaient écrites en dur — `#d97706`, `#dc2626`, `#b45309` — et
+		 * doublaient `--cd-warn` / `--cd-bad`, que les KPI voisins emploient pour
+		 * EXACTEMENT le même sens. `test-charte-surfaces.php` avait consigné cette
+		 * divergence (« deux palettes divergentes qu'une phase ultérieure doit
+		 * fusionner ») ; c'est ici qu'elle se ferme, côté tuiles.
+		 * 🚨 Et ce n'était pas que de la cohérence : les pastilles étant passées en
+		 * APLAT, la teinte porte désormais le glyphe. Mesuré, blanc sur la couleur —
+		 * `#d97706` ne donnait que 3,19:1, à 0,19 point du seuil WCAG 1.4.11 pour un
+		 * graphique. Sur `--cd-warn` (#8a4708) : 7,03. Les tokens sémantiques ont été
+		 * assombris précisément pour être lisibles ; les littéraux, jamais.
+		 */
 		if ( $can_orders ) {
 			$tiles[] = array(
 				'n'     => (int) $counts['pending'],
 				'label' => __( 'Commandes en attente', 'aod-client-dashboard' ),
 				'icon'  => 'pending',
-				'tone'  => '#d97706',
+				'tone'  => 'var(--cd-warn)',
 				'soft'  => 'var(--cd-warn-soft)',
 				'url'   => add_query_arg( 'statut', 'pending', home_url( '/' . AOD_CD_SLUG . '/orders' ) ),
 			);
@@ -639,7 +652,7 @@ class AOD_CD_Section_Home {
 				'n'     => (int) $counts['failed'],
 				'label' => __( 'Échecs de livraison', 'aod-client-dashboard' ),
 				'icon'  => 'warning',
-				'tone'  => '#dc2626',
+				'tone'  => 'var(--cd-bad)',
 				'soft'  => 'var(--cd-bad-soft)',
 				'url'   => add_query_arg( 'etat', AOD_Carrier::ST_FAILED, home_url( '/' . AOD_CD_SLUG . '/tracking' ) ),
 			);
@@ -647,7 +660,7 @@ class AOD_CD_Section_Home {
 				'n'     => (int) $counts['blocked'],
 				'label' => __( 'Colis bloqués', 'aod-client-dashboard' ),
 				'icon'  => 'blocked',
-				'tone'  => '#dc2626',
+				'tone'  => 'var(--cd-bad)',
 				'soft'  => 'var(--cd-bad-soft)',
 				'url'   => add_query_arg( 'etat', 'bloques', home_url( '/' . AOD_CD_SLUG . '/tracking' ) ),
 			);
@@ -662,7 +675,7 @@ class AOD_CD_Section_Home {
 				'n'     => (int) $counts['lowstock'],
 				'label' => __( 'Produits à réapprovisionner', 'aod-client-dashboard' ),
 				'icon'  => 'products',
-				'tone'  => '#b45309',
+				'tone'  => 'var(--cd-warn)',
 				'soft'  => 'var(--cd-warn-soft)',
 				'url'   => home_url( '/' . AOD_CD_SLUG . '/stock' ),
 			);
@@ -690,13 +703,24 @@ class AOD_CD_Section_Home {
 					. '<span class="aod-cd-todo-tile__l">%6$s</span></span>'
 					. '<span class="aod-cd-todo-tile__go" aria-hidden="true">›</span></a>',
 				esc_url( $t['url'] ),
-				// 🚨 La neutralisation se fait ICI, pas en CSS : `--tone` est posé en
-				// style INLINE, qui l'emporte sur toute règle de la feuille. Une classe
-				// `.is-zero{--tone:…}` était donc inerte — vraie dans le DOM, sans effet
-				// à l'écran. La corriger à coups de `!important` aurait ouvert une
-				// surenchère de spécificité dans une feuille qui n'en compte aucune.
-				esc_attr( 0 === (int) $t['n'] ? 'var(--cd-soft)' : $t['tone'] ),
-				esc_attr( 0 === (int) $t['n'] ? 'var(--cd-bg)' : $t['soft'] ),
+				// 🔁 LA TUILE PORTE DÉSORMAIS SA VRAIE COULEUR, MÊME À ZÉRO (2026-08-05).
+				// La veille, un zéro recevait ici `var(--cd-soft)` : quatre carrés GRIS en
+				// haut de l'écran le plus regardé. La demande owner (« des couleurs
+				// attirantes ») et l'intention d'origine (« le zéro se tait ») ne sont pas
+				// contradictoires — elles se règlent par l'INTENSITÉ, pas par le gris.
+				// Une tuile à zéro garde sa teinte en aplat PÂLE, une tuile qui appelle une
+				// action la porte en aplat PLEIN. L'écart entre les deux est plus net
+				// qu'avant, où les deux états étaient pâles.
+				//
+				// 🚨 CE QUI CHANGE DE PLACE, ET POURQUOI. La neutralisation vivait ici — et
+				// non en CSS — parce que `--tone` est un style INLINE, que nulle règle de la
+				// feuille ne peut surcharger. Le raisonnement reste vrai ; ce qui a changé,
+				// c'est qu'on n'a plus besoin de surcharger la VARIABLE. La feuille agit
+				// maintenant sur la DÉCLARATION de la pastille
+				// (`.is-zero .aod-cd-todo-tile__ic`), qui n'est pas inline : la classe
+				// `is-zero` posée plus bas suffit, sans `!important`.
+				esc_attr( $t['tone'] ),
+				esc_attr( $t['soft'] ),
 				AOD_CD_Icon::svg( $t['icon'], array( 'size' => 22 ) ),
 				esc_html( number_format_i18n( $t['n'] ) ),
 				esc_html( $t['label'] ),
@@ -944,11 +968,29 @@ class AOD_CD_Section_Home {
 		}
 		$products = wc_get_products( $prod_args );
 		?>
+		<?php
+		/*
+		 * 🚨 `data-aod-select` N'EST PAS DÉCORATIF (2026-08-05, retour owner : « quand
+		 * je clique sur Produit, c'est moche »). Sans cet attribut, le navigateur ouvre
+		 * la liste d'options du SYSTÈME D'EXPLOITATION — que le CSS ne peut pas
+		 * atteindre, ni pour la teinte, ni pour l'espacement, ni pour l'ouverture.
+		 * Aucune retouche de feuille ne pouvait donc répondre à la demande.
+		 *
+		 * L'attribut branche le select personnalisé de `dashboard.js` (`bindSelects()`) :
+		 * le `<select>` natif reste dans le DOM, caché, et continue de porter la
+		 * soumission du formulaire — c'est de l'AMÉLIORATION PROGRESSIVE, le filtre
+		 * fonctionne encore si le JS ne se charge pas.
+		 *
+		 * ⚠️ Le composant existait et servait déjà dans la section Livraison ; ces deux
+		 * champs étaient simplement passés à côté. Une amélioration qui n'est pas
+		 * DEMANDÉE par un composant reste invisible à qui écrit le composant suivant.
+		 */
+		?>
 		<form class="aod-cd-form aod-cd-filters" method="get" action="<?php echo esc_url( $this->home_url_args() ); ?>">
 			<input type="hidden" name="onglet" value="<?php echo esc_attr( $active ); ?>">
 			<div class="aod-cd-field">
 				<label class="aod-cd-label" for="aod-cd-f-product"><?php esc_html_e( 'Produit', 'aod-client-dashboard' ); ?></label>
-				<select id="aod-cd-f-product" name="produit">
+				<select id="aod-cd-f-product" name="produit" data-aod-select>
 					<option value=""><?php esc_html_e( 'Tous les produits', 'aod-client-dashboard' ); ?></option>
 					<?php foreach ( $products as $p ) : ?>
 						<option value="<?php echo esc_attr( $p->get_id() ); ?>" <?php selected( $filters['produit'], $p->get_id() ); ?>><?php echo esc_html( $p->get_name() ); ?></option>
@@ -964,7 +1006,7 @@ class AOD_CD_Section_Home {
 				?>
 				<div class="aod-cd-field">
 					<label class="aod-cd-label" for="aod-cd-f-confirmer"><?php esc_html_e( 'Confirmateur', 'aod-client-dashboard' ); ?></label>
-					<select id="aod-cd-f-confirmer" name="confirmateur">
+					<select id="aod-cd-f-confirmer" name="confirmateur" data-aod-select>
 						<option value=""><?php esc_html_e( 'Tous les confirmateurs', 'aod-client-dashboard' ); ?></option>
 						<?php foreach ( $members as $m ) : ?>
 							<option value="<?php echo esc_attr( $m->ID ); ?>" <?php selected( $filters['confirmateur'], $m->ID ); ?>><?php echo esc_html( $m->display_name ); ?></option>

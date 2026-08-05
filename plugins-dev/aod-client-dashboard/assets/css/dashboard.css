@@ -61,7 +61,8 @@
 	   ailleurs dans ce fichier, tout passe par ces variables. */
 	--cd-accent:#FFE21E;              /* accent signature (défaut template) */
 	--cd-accent-rgb:255,226,30;       /* même accent en composantes (anneaux/alpha) */
-	--cd-accent-strong:#e6cb00;       /* variante survol / renforcée */
+	--cd-accent-strong:#e0c71a;       /* variante survol / renforcée */
+	--cd-accent-strong-ink:#000000;   /* encre lisible SUR --cd-accent-strong (best_ink de SA luminance) */
 	--cd-accent-ink:#000000;          /* encre lisible SUR l'accent (best_ink : noir|blanc) */
 	--cd-accent-soft:#fffbe0;         /* teinte douce (fonds discrets) — porte --cd-ink, PAS --cd-muted */
 	--cd-accent-wash:#fffdf2;         /* surface teintée portant du texte, --cd-muted compris (cf. wash()) */
@@ -86,8 +87,15 @@
 	   au DÉCOR (bordures, puces, chevrons), jamais à du texte. */
 	--cd-muted:#666666;      /* texte secondaire — AA sur blanc, #F5F5F5, #EDEDED, teintes douces */
 	--cd-soft:#8A8A8A;       /* DÉCOR UNIQUEMENT (bordures, chevrons) — 3:1, insuffisant pour du texte */
-	--cd-bg:#F1F1F1;
-	--cd-card:#ffffff;
+	/* Fond de page ET surface des cartes : DÉRIVÉS de l'accent (BG_MIX / CARD_MIX)
+	   et injectés en ligne par css_vars(). Les valeurs ci-dessous sont les replis,
+	   et ce sont celles que le système produit pour l'accent PAR DÉFAUT du template
+	   — pas des couleurs choisies ici (`test-charte-surfaces.php` compare les deux).
+	   🚨 Le blanc pur n'est plus une surface : il est réservé aux CHAMPS de saisie,
+	   qui doivent se détacher de la carte qui les porte. Une carte remise à #fff
+	   redonnerait au réglage le poids du résultat — le défaut corrigé la veille. */
+	--cd-bg:#fffded;
+	--cd-card:#fffef5;
 	--cd-line:#e6e6e6;
 	--cd-line-2:#f0f0f0;
 	/* Fond de la sidebar : DÉRIVÉ de l'accent (15 % d'accent dans le neutre) et
@@ -653,7 +661,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 .aod-cd-main{flex:1;min-width:0;display:flex;flex-direction:column}
 .aod-cd-top{
 	display:flex;align-items:center;justify-content:space-between;
-	padding:20px 30px;background:#fff;border-bottom:1px solid var(--cd-line);
+	padding:20px 30px;background:var(--cd-card);border-bottom:1px solid var(--cd-line);
 	position:sticky;top:0;z-index:5;
 }
 .aod-cd-topttl{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -676,10 +684,10 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 .aod-cd-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
 .aod-cd-tab{
 	display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:var(--cd-r-sm);
-	background:#fff;border:1px solid var(--cd-line);color:var(--cd-ink);text-decoration:none;
+	background:var(--cd-card);border:1px solid var(--cd-line);color:var(--cd-ink);text-decoration:none;
 	font-weight:600;font-size:var(--cd-fs-sm);transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);
 }
-.aod-cd-tab:hover{border-color:var(--cd-ink);background:#fafafa}
+.aod-cd-tab:hover{border-color:var(--cd-accent);background:var(--cd-accent-wash)}
 .aod-cd-tab.is-active{background:var(--cd-ink);color:#fff;border-color:var(--cd-ink)}
 .aod-cd-badge{background:rgba(24,24,24,.08);border-radius:30px;padding:1px 9px;font-size:var(--cd-fs-xs);font-weight:700}
 .aod-cd-tab.is-active .aod-cd-badge{background:var(--cd-yellow);color:var(--cd-accent-ink)}
@@ -690,11 +698,11 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
    sans JavaScript ni menu déroulant. */
 
 /* ---- Tableaux ---- */
-.aod-cd-tablewrap{background:#fff;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);overflow:hidden;overflow-x:auto}
+.aod-cd-tablewrap{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);overflow:hidden;overflow-x:auto}
 .aod-cd-table{width:100%;border-collapse:collapse;min-width:760px}
 .aod-cd-table th{
 	text-align:start;padding:14px 16px;font-size:var(--cd-fs-xs);text-transform:uppercase;letter-spacing:.8px;
-	font-weight:700;color:var(--cd-muted);background:#fafafa;border-bottom:1px solid var(--cd-line);
+	font-weight:700;color:var(--cd-muted);background:var(--cd-bg);border-bottom:1px solid var(--cd-line);
 }
 .aod-cd-table td{padding:14px 16px;border-bottom:1px solid var(--cd-line-2);vertical-align:middle}
 .aod-cd-table tr:last-child td{border-bottom:0}
@@ -718,11 +726,19 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
    parce qu'elle est un état PERSISTANT — passer la souris sur une ligne
    sélectionnée ne doit pas effacer l'information « celle-ci est cochée ».
 
-   Le zébrage, lui, reste volontairement ACHROMATIQUE : il couvre la moitié des
-   lignes en permanence. Le teinter ferait lire toute la table comme colorée par
-   la marque. Son ancien `#f4f4f1` avait un biais jaune de 3 points, reliquat de
-   l'accent par défaut du template. */
-.aod-cd-table:not(.aod-cd-carriers) tbody tr:nth-child(even) td{background:#f4f4f4}
+   🔁 LE ZÉBRAGE N'EST PLUS ACHROMATIQUE, et l'inverse était écrit ici jusqu'au
+   2026-08-04 : « le teinter ferait lire toute la table comme colorée par la
+   marque ». Ce raisonnement tenait tant que la carte qui porte la table était du
+   BLANC PUR — un gris s'y détachait proprement. La carte est désormais teintée
+   (`--cd-card`, cf. CARD_MIX), et l'ancien `#f4f4f4` devient faux de deux façons :
+     · il vire au gris sale sur une surface colorée ;
+     · surtout, il CESSE DE SÉPARER LES LIGNES. Mesuré pour l'accent turquoise, la
+       carte vaut #f4fafa : le zébrage et elle partagent exactement la même valeur
+       de rouge (244), l'écart tombe à 6 points sur deux canaux sur trois.
+   Le zébrage reprend donc la teinte du FOND DE PAGE — plus sombre que la carte
+   pour tout accent, par construction (BG_MIX < CARD_MIX), donc séparateur garanti
+   sans dépendre de la couleur choisie par le client. */
+.aod-cd-table:not(.aod-cd-carriers) tbody tr:nth-child(even) td{background:var(--cd-bg)}
 .aod-cd-table:not(.aod-cd-carriers) tbody tr:hover td{background:var(--cd-accent-wash)}
 .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td{background:var(--cd-accent-wash)}
 /* Survol et sélection partagent la teinte : aucun taux de mélange ne peut être à
@@ -859,7 +875,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-leadassignsel-menu,
 .aod-cd-carriersel-menu,
 .aod-cd-catdd-panel{
-	padding:6px;background:#fff;overflow:auto;
+	padding:6px;background:var(--cd-card);overflow:auto;
 	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
 	box-shadow:0 16px 40px rgba(24,24,24,.18);
 }
@@ -948,9 +964,23 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 	font-family:inherit;font-size:var(--cd-fs-md);font-weight:600;color:var(--cd-ink);
 	cursor:pointer;transition:border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);text-align:start;line-height:1.2;
 }
-.aod-cd-csel-btn:hover{border-color:var(--cd-ink)}
+/* ── Le select personnalisé porte la marque (2026-08-05) ────────────────────
+   Demande owner : « quand je clique sur Produit, c'est moche ». Le premier
+   correctif est ailleurs — les filtres de l'Accueil n'appelaient pas ce
+   composant et ouvraient la liste du SYSTÈME (cf. `class-aod-cd-section-home.php`).
+   Restait la peau, qui virait à l'encre : un noir identique chez tous les clients
+   sur un contrôle qu'on ouvre à longueur de journée.
+   🔒 Le FOND du bouton reste blanc, à dessein : c'est un CHAMP de saisie, et le
+   blanc leur est réservé depuis que les cartes sont teintées (cf. CARD_MIX). Un
+   champ qui prend la couleur de sa carte cesse de se lire comme saisissable. */
+.aod-cd-csel-btn:hover{border-color:var(--cd-accent)}
 .aod-cd-csel-btn:focus-visible{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
-.aod-cd-csel.is-open .aod-cd-csel-btn{border-color:var(--cd-ink);box-shadow:0 0 0 2px rgba(24,24,24,.08)}
+/* ⚠️ L'anneau de l'état OUVERT peut, lui, dépendre de l'accent — contrairement à
+   l'anneau de FOCUS, que la 46.1 a explicitement sorti de l'accent après l'avoir
+   trouvé à 1,15:1. Ce ne sont pas le même objet : le focus doit rester visible
+   pour qui navigue au clavier, l'ouverture est redondante (le menu est là, et
+   `aria-expanded` le dit). Les deux règles cohabitent sans se contredire. */
+.aod-cd-csel.is-open .aod-cd-csel-btn{border-color:var(--cd-accent);box-shadow:0 0 0 3px rgba(var(--cd-accent-rgb),.16)}
 .aod-cd-csel-text{flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .aod-cd-csel-caret{
 	flex:0 0 auto;width:8px;height:8px;margin-top:-3px;opacity:.55;
@@ -970,8 +1000,19 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 	border-radius:var(--cd-r-sm);background:none;font-family:inherit;
 	font-size:var(--cd-fs-md);font-weight:600;color:var(--cd-ink);cursor:pointer;text-align:start;transition:background-color .12s var(--cd-ease-out),color .12s var(--cd-ease-out);
 }
-.aod-cd-csel-opt:hover{background:#fafafa}
-.aod-cd-csel-opt.is-active{background:var(--cd-bg)}
+/* Survol : la teinte du client plutôt qu'un gris — même geste que `.aod-cd-btn`
+   et `.aod-cd-seg__btn`, et `--cd-accent-wash` est la seule surface teintée dont
+   la lisibilité est éprouvée pour TOUT accent (cf. `wash()`).
+   Choix courant : un LISERÉ d'accent, pas un fond plus soutenu. C'est le motif
+   déjà employé par la ligne de tableau sélectionnée — et pour la même raison
+   mesurée là-bas : aucun taux de mélange ne peut être à la fois plus marqué que
+   le survol ET rester AA pour un accent sombre. Le liseré est décoratif au sens
+   WCAG 1.4.11 : l'option choisie est déjà annoncée par `aria-selected`.
+   ⚠️ `box-shadow` n'a pas d'équivalent logique — en arabe la liste s'aligne à
+   droite et le liseré doit changer de bord, d'où la surcharge RTL. */
+.aod-cd-csel-opt:hover{background:var(--cd-accent-wash)}
+.aod-cd-csel-opt.is-active{background:var(--cd-accent-wash);box-shadow:inset 3px 0 0 var(--cd-accent)}
+html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-accent)}
 
 /* ---- Sélecteur d'assignation (Phase 42.4 : commandes · 43.3 : prospects) ---- */
 /* Jumeau de `.aod-cd-statussel` (même patron de menu personnalisé), classes
@@ -1109,7 +1150,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 /* ---- Cartes stats ---- */
 .aod-cd-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
 .aod-cd-card{
-	position:relative;background:#fff;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
+	position:relative;background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
 	padding:11px 12px;display:flex;flex-direction:column;gap:7px;overflow:hidden;
 	transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
 }
@@ -1119,22 +1160,26 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 }
 .aod-cd-card:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:#d9d9d9}
 .aod-cd-card:hover::before{transform:scaleY(1)}
+/* Aplat, comme les pastilles de KPI (2026-08-05) : le couple (fond doux, encre
+   foncée) devient (fond foncé, glyphe clair). Même composant visuel dans deux
+   sections différentes — les laisser diverger donnerait deux langages pour une
+   seule idée, et c'est exactement la dérive que la Phase 46 a eu à défaire. */
 .aod-cd-card-ico{
 	width:30px;height:30px;border-radius:var(--cd-r-sm);display:inline-flex;align-items:center;justify-content:center;
-	font-size:15px;line-height:1;background:var(--cd-accent-soft);color:var(--cd-ink);
+	font-size:15px;line-height:1;background:var(--cd-accent);color:var(--cd-accent-ink);
 }
-.aod-cd-card-ico.t-blue{background:#e6f0ff;color:#1d4ed8}
-.aod-cd-card-ico.t-indigo{background:#ecebff;color:#4338ca}
-.aod-cd-card-ico.t-teal{background:#d9f6f3;color:#0e7490}
-.aod-cd-card-ico.t-green{background:#e1f7e8;color:#15803d}
-.aod-cd-card-ico.t-amber{background:#fff2cc;color:#b45309}
+.aod-cd-card-ico.t-blue{background:#1d4ed8;color:#fff}
+.aod-cd-card-ico.t-indigo{background:#4338ca;color:#fff}
+.aod-cd-card-ico.t-teal{background:#0e7490;color:#fff}
+.aod-cd-card-ico.t-green{background:#15803d;color:#fff}
+.aod-cd-card-ico.t-amber{background:#b45309;color:#fff}
 .aod-cd-card-ico.t-red{background:#fde7e5;color:#b91c1c}
 .aod-cd-card-ico.t-slate{background:#eef1f5;color:#475569}
 .aod-cd-card-val{font-size:var(--cd-fs-lg);font-weight:800;color:var(--cd-ink);line-height:1.05;letter-spacing:-.3px}
 .aod-cd-card-lab{margin-top:2px;color:var(--cd-ink);font-size:var(--cd-fs-xs);font-weight:700;letter-spacing:.1px}
 
 /* ---- Graphe CA (courbe SVG, sans librairie) ---- */
-.aod-cd-chartcard{background:#fff;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:18px 20px}
+.aod-cd-chartcard{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:18px 20px}
 .aod-cd-chart-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px}
 .aod-cd-chart-title{margin:0;font-size:var(--cd-fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--cd-muted)}
 .aod-cd-chart-total{font-size:var(--cd-fs-sm);color:var(--cd-muted);font-weight:600}
@@ -1166,10 +1211,24 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .aod-cd-btn{
 	display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:var(--cd-r-sm);
-	background:#fff;border:1px solid var(--cd-line);color:var(--cd-ink);text-decoration:none;
+	background:var(--cd-card);border:1px solid var(--cd-line);color:var(--cd-ink);text-decoration:none;
 	font-family:inherit;font-weight:700;font-size:var(--cd-fs-sm);cursor:pointer;line-height:1.2;transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);
 }
-.aod-cd-btn:hover{border-color:var(--cd-ink);background:#fafafa}
+/* ── Le survol d'un bouton secondaire porte enfin la marque (2026-08-05) ────
+   Il virait au gris (`#fafafa`, bord encre) : un accusé de réception neutre,
+   identique chez tous les clients, sur le geste le plus fréquent de l'interface.
+   Il prend maintenant la teinte du client — `--cd-accent-wash`, la seule surface
+   teintée dont le contraste sous `--cd-muted` est éprouvé pour TOUT accent
+   (cf. `wash()`). Le bord passe à l'accent plein : c'est du décor au sens WCAG
+   1.4.11, l'état de survol n'étant pas la seule façon de savoir où l'on est. */
+.aod-cd-btn:hover{border-color:var(--cd-accent);background:var(--cd-accent-wash);transform:translateY(-1px);box-shadow:var(--cd-shadow-rest)}
+/* 🚨 UN SEUL PIXEL, ET C'EST DÉLIBÉRÉ. Les cartes se soulèvent de 3 px : ce sont
+   des SURFACES, on les survole une par une. Un bouton vit dans une rangée de
+   voisins — à 3 px, une barre d'actions ondule sous la souris. Le geste se lit
+   quand même, parce qu'il est en DEUX temps : le bouton monte d'un pixel au
+   survol, puis retombe et se creuse de 2 % à l'appui (règle suivante, qui
+   REMPLACE le `transform` au lieu de s'y ajouter). C'est l'aller-retour qui fait
+   l'accusé de réception, pas l'amplitude. */
 
 /* ---- Accusé de réception à l'appui (Phase 16) --------------------------- *
  * Ces contrôles se cliquent toute la journée et ne renvoyaient RIEN pendant
@@ -1186,12 +1245,24 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-page:not(:disabled):active,
 .aod-cd-lang__btn:active,
 .aod-cd-csel-btn:not(:disabled):active,
+.aod-cd-assignsel-btn:not(:disabled):active,
+.aod-cd-leadassignsel-btn:not(:disabled):active,
+.aod-cd-carriersel-btn:not(:disabled):active,
 .aod-cd-statussel-btn:not(:disabled):active{transform:scale(.98)}
 .aod-cd-btn-primary{
 	background:var(--cd-yellow);border-color:var(--cd-yellow);color:var(--cd-accent-ink);
 	text-transform:uppercase;letter-spacing:.5px;
 }
-.aod-cd-btn-primary:hover{background:var(--cd-ink);border-color:var(--cd-ink);color:#fff}
+/* 🔁 LE SURVOL DU BOUTON PRINCIPAL NE VIRE PLUS AU NOIR (2026-08-05). Il passait
+   à `--cd-ink` : lisible, mais il ÉTEIGNAIT la marque au moment précis où le
+   gérant agit, et il rendait tous les clones identiques au survol.
+   Il prend désormais `--cd-accent-strong` — le token calculé à chaque page et
+   qui, jusqu'ici, n'avait AUCUN lecteur (constat écrit dans
+   `test-charte-surfaces.php` : « un manque de design », consigné sans être
+   corrigé). Il fallait d'abord lui donner son encre : `--cd-accent-ink` est
+   calibrée sur l'accent de BASE et tombe sous AA sur la variante pour 4 accents
+   sur 8 — dont le turquoise de ce client (4,48:1). Cf. `class-aod-cd-customize.php`. */
+.aod-cd-btn-primary:hover{background:var(--cd-accent-strong);border-color:var(--cd-accent-strong);color:var(--cd-accent-strong-ink)}
 .aod-cd-btn-primary:disabled{opacity:.5;cursor:default}
 .aod-cd-btn-primary:disabled:hover{background:var(--cd-yellow);color:var(--cd-accent-ink)}
 .aod-cd-btn-sm{padding:7px 13px;font-size:var(--cd-fs-xs)}
@@ -1200,7 +1271,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-rowactions{white-space:nowrap}
 
 /* ---- Formulaire produit ---- */
-.aod-cd-form{background:#fff;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:26px;max-width:none}
+.aod-cd-form{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:26px;max-width:none}
 .aod-cd-form-title{margin:0 0 20px;font-size:var(--cd-fs-lg);font-weight:800;letter-spacing:-.2px}
 .aod-cd-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px}
 .aod-cd-col{display:flex;flex-direction:column;gap:16px}
@@ -1450,7 +1521,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
    cartes. Étape 5.4 : call-sites migrés vers AOD_CD_Dashboard::empty_state(). */
 .aod-cd-note,.aod-cd-soon{color:var(--cd-muted)}
 .aod-cd-note{margin-top:14px;font-size:var(--cd-fs-sm);line-height:1.6}
-.aod-cd-soon{background:#fff;border:1.5px dashed var(--cd-line);border-radius:var(--cd-r-md);padding:48px;text-align:center;font-weight:600}
+.aod-cd-soon{background:var(--cd-card);border:1.5px dashed var(--cd-line);border-radius:var(--cd-r-md);padding:48px;text-align:center;font-weight:600}
 .aod-cd-toast{
 	position:fixed;bottom:24px;inset-inline-end:24px;background:var(--cd-ink);color:#fff;
 	padding:13px 20px;border-radius:var(--cd-r-sm);box-shadow:0 10px 28px rgba(0,0,0,.22);
@@ -1517,7 +1588,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 	.aod-cd-table--cards td{display:block;width:100%}
 	.aod-cd-table--cards tr{
 		position:relative;
-		background:#fff;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
+		background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
 		margin:0 0 12px;padding:4px 2px;box-shadow:0 1px 2px rgba(24,24,24,.04);
 	}
 	.aod-cd-table--cards tr:last-child{margin-bottom:0}
@@ -2361,7 +2432,12 @@ html[dir="rtl"] .aod-cd-imp-table td .aod-cd-imp-arrow{display:inline-block;tran
 	padding:8px 14px;border-radius:6px;font-family:inherit;font-size:var(--cd-fs-sm);font-weight:700;
 	color:var(--cd-muted);white-space:nowrap;transition:background-color .14s var(--cd-ease-out),color .14s var(--cd-ease-out),transform .14s var(--cd-ease-out);text-decoration:none;
 }
-.aod-cd-seg__btn:hover{color:var(--cd-ink);background:var(--cd-line-2)}
+/* Même traitement que `.aod-cd-btn:hover` et `.aod-cd-tab:hover` (2026-08-05) :
+   le survol porte la teinte du client, pas un gris. 🚨 Celui-ci a été trouvé par
+   une SONDE de survol, pas à la lecture — les trois règles vivent à 1 700 lignes
+   d'écart et rien ne les relie. C'est la dérive de la Phase 46 dans sa version
+   inverse : une décision appliquée à deux endroits sur trois. */
+.aod-cd-seg__btn:hover{color:var(--cd-ink);background:var(--cd-accent-wash)}
 .aod-cd-seg__btn.is-active{background:var(--cd-ink);color:#fff}
 /* Pas de règle `:focus-visible` ici : le socle (~l.158) la porte, en encre — et
    la géométrie est IDENTIQUE (2 px, offset 2 px), seule la couleur change. Cf. 46.1. */
@@ -2382,7 +2458,7 @@ html[dir="rtl"] .aod-cd-imp-table td .aod-cd-imp-arrow{display:inline-block;tran
    déjà pour son nombre. Contrairement aux KPI, ces tonalités ONT une encre
    fournie par l'appelant (`'tone' => '#dc2626'`), donc lisible sur `--tone-soft`
    sans avoir à en inventer une. */
-.aod-cd-todo-tile__ic{width:40px;height:40px;flex:0 0 auto;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:var(--tone-soft,var(--cd-accent-soft));color:var(--tone,var(--cd-ink))}
+.aod-cd-todo-tile__ic{width:40px;height:40px;flex:0 0 auto;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:var(--tone,var(--cd-accent));color:#fff}
 .aod-cd-todo-tile__ic .aod-cd-i{width:22px;height:22px}
 .aod-cd-todo-tile__txt{display:flex;flex-direction:column;gap:1px;min-width:0}
 .aod-cd-todo-tile__n{font-size:var(--cd-fs-xl);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
@@ -2402,9 +2478,11 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* ── Hiérarchie de la grille de KPI (2026-08-04) ───────────────────────────
    La carte PRINCIPALE occupe deux colonnes. Huit cartes de poids identique ne
    hiérarchisent rien : le chiffre d'affaires pesait autant que « Produits en
-   ligne ». La distinction passe par l'ESPACE et non par une teinte — l'accent
-   est choisi par le client dans le Personnalisateur, et une couleur écrite ici
-   sortirait du garde-fou éprouvé sur six accents hostiles (`run.sh contraste`).
+   ligne ». La distinction passe par l'ESPACE — et, depuis le 2026-08-04, par une
+   marque d'accent posée sur la pastille et un liseré (bloc suivant). Ce qui reste
+   interdit n'est pas la teinte : c'est la couleur ÉCRITE ICI. L'accent est choisi
+   par le client dans le Personnalisateur ; un littéral sortirait du garde-fou
+   éprouvé sur six accents hostiles (`run.sh contraste`), un token non.
    Aucune taille de texte nouvelle : le nombre garde son cran, il respire.
    ⚠️ `span 2` seulement quand la grille a 4 colonnes. Sur la grille à 2 colonnes
    (≤ la médiane) la carte occuperait TOUTE la largeur et écraserait la rangée
@@ -2426,6 +2504,26 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-kpi--primary .aod-cd-kpi__lab{color:var(--cd-ink)}
 .aod-cd-kpis:has(.aod-cd-kpi--primary) .aod-cd-kpi:not(.aod-cd-kpi--primary) .aod-cd-kpi__val{font-size:var(--cd-fs-xl)}
 
+/* ── La couleur va DANS la carte, pas sur elle (2026-08-04) ────────────────
+   Demande owner : « toutes les petites sections sont blanches ». Les cartes ont
+   cessé de l'être (`--cd-card`), mais la teinte d'une surface qui porte du
+   `--cd-muted` est PLAFONNÉE par le contraste — cf. CARD_MIX : une carte
+   « bien colorée » est mathématiquement impossible sans mettre son propre texte
+   sous AA. La couleur franche doit donc se poser sur des éléments qui ne portent
+   pas de texte secondaire : ici la pastille d'icône et un liseré.
+   🔒 Sur la carte PRINCIPALE seulement. Quatre pastilles vives réintroduiraient
+   ce que la veille a retiré aux tuiles à zéro — de l'emphase là où il n'y a rien
+   à signaler. Une seule marque vive, sur le seul chiffre qui commande.
+   L'encre de la pastille est `--cd-accent-ink`, choisie par `best_ink()` : elle
+   tient AA pour TOUT accent du cube, y compris ceux qu'aucun de nous n'a en tête.
+   Le liseré est décoratif au sens WCAG 1.4.11 — le libellé dit déjà ce que la
+   carte contient — donc il n'a pas à tenir 3:1.
+   🔁 La surcharge de pastille qui accompagnait ce liseré A ÉTÉ RETIRÉE le
+   lendemain : TOUTES les pastilles sont passées en aplat (bloc « Tonalités
+   d'icône »), elle ne distinguait donc plus rien. Une règle qui répète ce que
+   fait déjà le défaut se lit comme une intention, et fait hésiter le suivant. */
+.aod-cd-kpi--primary{border-inline-start:3px solid var(--cd-accent)}
+
 /* ── Tuiles « à traiter » : le zéro se tait (2026-08-04) ───────────────────
    Une tuile à 0 n'appelle aucune action. Elle portait pourtant la même pastille
    colorée que celle qui en appelle une : quatre taches vives dont trois ne
@@ -2434,10 +2532,20 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    « rien à traiter » sans qu'on ait à l'écrire.
    🔒 Rien n'est masqué : la tuile reste cliquable, focalisable et nommée. On
    retire de l'emphase, jamais de l'information — un `display:none` la sortirait
-   de l'ordre de tabulation (leçon 45.5). */
-.aod-cd-todo-tile.is-zero{--tone:var(--cd-soft);--tone-soft:var(--cd-bg)}
+   de l'ordre de tabulation (leçon 45.5).
+
+   🔁 RÉGLÉ AUTREMENT LE LENDEMAIN, sur demande owner (« des couleurs attirantes »).
+   Le gris tenait la promesse au prix de quatre carrés MORTS en haut de l'écran le
+   plus regardé. L'emphase se retire aussi bien par l'INTENSITÉ : un zéro garde sa
+   teinte en aplat pâle, une tuile qui appelle une action la porte en aplat plein.
+   L'écart entre les deux états est même plus lisible qu'avant, où tous deux
+   étaient pâles et ne différaient que d'un ton de gris.
+   ⚠️ Les deux règles supprimées ici (`--tone` et `--tone-soft` surchargés sur
+   `.is-zero`) étaient INERTES depuis toujours — la veille l'avait constaté sans
+   les retirer. Une règle sans effet qui décrit une intention est pire qu'absente :
+   elle se relit comme le mécanisme en place. */
+.aod-cd-todo-tile.is-zero .aod-cd-todo-tile__ic{background:var(--tone-soft,var(--cd-accent-soft));color:var(--tone,var(--cd-ink))}
 .aod-cd-todo-tile.is-zero .aod-cd-todo-tile__n{color:var(--cd-muted)}
-.aod-cd-todo-tile.is-zero:hover,.aod-cd-todo-tile.is-zero:focus-visible{--tone-soft:var(--cd-line)}
 
 /* Titre de bloc : remplace six `style="margin-top:26px"` en dur. 26px n'existe
    dans aucune échelle — l'espacement va de 4 à 40 par crans (D2). */
@@ -2545,7 +2653,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    glyphe recoloré par tonalité obligerait à inventer une encre lisible pour
    indigo, teal et slate, qui n'en ont pas — trois couleurs de plus à prouver,
    pour un gain nul : le fond dit déjà tout. */
-.aod-cd-kpi__ic{width:34px;height:34px;border-radius:var(--cd-r-sm);display:inline-flex;align-items:center;justify-content:center;background:var(--cd-accent-soft);color:var(--cd-ink)}
+.aod-cd-kpi__ic{width:34px;height:34px;border-radius:var(--cd-r-sm);display:inline-flex;align-items:center;justify-content:center;background:var(--cd-accent);color:var(--cd-accent-ink)}
 .aod-cd-kpi__ic .aod-cd-i{width:18px;height:18px}
 .aod-cd-kpi__lab{font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);text-transform:uppercase;letter-spacing:.05em}
 .aod-cd-kpi__val{font-size:var(--cd-fs-2xl);font-weight:800;line-height:1;letter-spacing:-.5px;color:var(--cd-ink);font-variant-numeric:tabular-nums}
@@ -2675,15 +2783,28 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    tonalité qui n'existe que par un repli implicite se perd au premier refactor,
    et l'appelant croirait avoir demandé quelque chose. Elle dit ici, en toutes
    lettres, « cette icône ne code aucun état » — ce qui rend leur signal au
-   rouge (annulée) et à l'ambre (en attente), voisins immédiats dans la grille. */
-.aod-cd-kpi__ic.t-accent{background:var(--cd-accent-soft)}
-.aod-cd-kpi__ic.t-blue{background:var(--cd-info-soft)}
-.aod-cd-kpi__ic.t-indigo{background:#e7e9fd}
-.aod-cd-kpi__ic.t-teal{background:#d9f2f6}
-.aod-cd-kpi__ic.t-green{background:var(--cd-ok-soft)}
-.aod-cd-kpi__ic.t-amber{background:var(--cd-warn-soft)}
-.aod-cd-kpi__ic.t-red{background:var(--cd-bad-soft)}
-.aod-cd-kpi__ic.t-slate{background:#eef1f5}
+   rouge (annulée) et à l'ambre (en attente), voisins immédiats dans la grille.
+
+   🔁 LES PASTILLES SONT PASSÉES EN APLAT LE 2026-08-05 (demande owner : « les
+   petits carrés blancs, des couleurs attirantes »). Elles étaient une teinte
+   PÂLE portant un glyphe sombre ; elles sont maintenant la couleur PLEINE
+   portant un glyphe clair. Aucune couleur nouvelle n'a été inventée : chaque
+   tonalité avait déjà son couple (fond doux, encre foncée), on prend l'encre
+   comme fond. C'est ce qui rend le changement sûr — ces encres ont été calibrées
+   pour être lisibles, donc elles sont foncées, donc un glyphe clair y contraste.
+
+   Mesuré, glyphe sur aplat (WCAG 1.4.11 exige 3:1 pour un graphique porteur de
+   sens) : ok 6,4 · warn 7,0 · bad 6,3 · info 4,9 · indigo 7,9 · slate 7,4.
+   L'accent, lui, ne se mesure pas ici : il est libre, et c'est `--cd-accent-ink`
+   (best_ink) qui garantit son cas — la même mécanique que le bouton principal. */
+.aod-cd-kpi__ic.t-accent{background:var(--cd-accent);color:var(--cd-accent-ink)}
+.aod-cd-kpi__ic.t-blue{background:var(--cd-info);color:#fff}
+.aod-cd-kpi__ic.t-indigo{background:#4338ca;color:#fff}
+.aod-cd-kpi__ic.t-teal{background:var(--cd-info);color:#fff}
+.aod-cd-kpi__ic.t-green{background:var(--cd-ok);color:#fff}
+.aod-cd-kpi__ic.t-amber{background:var(--cd-warn);color:#fff}
+.aod-cd-kpi__ic.t-red{background:var(--cd-bad);color:#fff}
+.aod-cd-kpi__ic.t-slate{background:#475569;color:#fff}
 
 /* ---- Responsive des composants ------------------------------------------ */
 @media(max-width:1080px){
@@ -2958,7 +3079,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-lp-onoff .aod-cd-note{margin-top:6px;color:var(--cd-muted)}
 
 .aod-cd-lp-blocks{display:flex;flex-direction:column;gap:var(--cd-sp-3)}
-.aod-cd-lp-block{border:1px solid var(--cd-line);border-radius:var(--cd-r-md);background:#fff;overflow:hidden}
+.aod-cd-lp-block{border:1px solid var(--cd-line);border-radius:var(--cd-r-md);background:var(--cd-card);overflow:hidden}
 .aod-cd-lp-head{
 	display:flex;align-items:center;gap:var(--cd-sp-2);
 	padding:var(--cd-sp-2) var(--cd-sp-3);background:var(--cd-bg);border-bottom:1px solid var(--cd-line);
@@ -3088,10 +3209,60 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	.aod-cd-page:not(:disabled):active,
 	.aod-cd-lang__btn:active,
 	.aod-cd-csel-btn:not(:disabled):active,
+	.aod-cd-assignsel-btn:not(:disabled):active,
+	.aod-cd-leadassignsel-btn:not(:disabled):active,
+	.aod-cd-carriersel-btn:not(:disabled):active,
 	.aod-cd-statussel-btn:not(:disabled):active{transform:none}
+	/* Le soulèvement au survol d'un bouton (2026-08-05) est du DÉPLACEMENT : il
+	   part ici. La teinte d'accent et le bord restent — le bouton répond encore,
+	   il ne bouge plus. L'ombre part avec lui : seule, elle donnerait un relief
+	   que plus aucun mouvement ne justifie. */
+	.aod-cd-btn:hover{transform:none;box-shadow:none}
 	.aod-cd-kpi:hover{transform:none}
 	.aod-cd-todo-tile:hover{transform:none}
 	.aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:none}
+	/* 🔴 DEUX OUBLIS DE LA MÊME FAMILLE, trouvés le 2026-08-05 en cherchant celui
+	   du menu transporteur — un balayage voit ce qu'une relecture manque.
+
+	   · `.aod-cd-card:hover` se soulevait de 3 px sans jamais être neutralisée.
+	   · Le chevron des tuiles l'était… mais PAS EN ARABE. La surcharge RTL pèse
+	     (0,4,1) contre (0,3,0) pour la neutralisation : elle gagnait la cascade.
+	     Le mouvement ne subsistait donc que dans la langue qu'on relit le moins.
+	   🚨 D'où la règle que le cliquet fait respecter : la neutralisation doit
+	   reprendre le sélecteur AU CARACTÈRE PRÈS. C'est la seule façon d'être sûr
+	   qu'elle pèse au moins autant que la règle qu'elle annule — l'avertissement
+	   en tête de ce bloc le disait déjà, et il a quand même été enfreint deux fois. */
+	.aod-cd-card:hover{transform:none;box-shadow:none}
+	html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:none}
+	/* Le chevron du select personnalisé n'est PAS neutralisé par `transform:none` :
+	   sa rotation DESSINE le chevron (un carré bordé de deux côtés), l'annuler
+	   rendrait un carré. C'est la TRANSITION qui est du mouvement, pas la
+	   transformation — c'est donc elle qui part. Ce cas est hors du périmètre de
+	   R3 dans `test-mouvement-reduit.php`, et le test le dit. */
+	.aod-cd-csel-caret{transition:none}
+	/* 🔴 QUATRE CAS DE PLUS, et ceux-là ont été trouvés par le CLIQUET, pas à l'œil
+	   — dans la minute qui a suivi son écriture. C'est l'argument de son existence :
+	   trois défauts avaient été repérés à la main, il en restait quatre.
+
+	   · `.aod-cd-modal-box` glissait de 8 px à chaque ouverture de modale — la
+	     surface la plus grande et la plus fréquente de tout /gestion.
+	   · Les deux boutons de suppression groupée se creusaient à l'appui sans
+	     neutralisation : ils étaient absents des DEUX listes de la Phase 16.
+	   · Les liserés d'accent des cartes et des tuiles POUSSENT (scaleY 0 → 1).
+
+	   ⚠️ Les liserés se neutralisent par la TRANSITION, pas par la transformation.
+	   `transform:none` vaut identité, donc scaleY(1) : le liseré resterait affiché
+	   EN PERMANENCE, y compris au repos — on remplacerait un mouvement par une
+	   information fausse. Ce qui doit partir, c'est la pousse ; l'apparition reste,
+	   instantanée. Les deux sélecteurs sont posés : celui du survol coupe l'entrée,
+	   celui du repos coupe la sortie. */
+	.aod-cd-modal-box{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	.aod-cd-order-bulk-del:not(:disabled):active,
+	.aod-cd-lead-bulk-del:not(:disabled):active{transform:none}
+	.aod-cd-card::before,
+	.aod-cd-todo-tile::before,
+	.aod-cd-card:hover::before,
+	.aod-cd-todo-tile:hover::before{transition:none}
 	/* Le toast ne glisse plus : il se contente d'apparaître. Le `transform` est
 	   annulé AU REPOS AUSSI — ne l'annuler que sur `.show` laisserait un saut
 	   de 10px, c'est-à-dire précisément le mouvement qu'on retire. */
@@ -3107,11 +3278,23 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	   réel — il devait donc s'accompagner de sa neutralisation, sans quoi la
 	   Phase 17 aurait introduit du mouvement non désactivable. `assignsel`
 	   (Phase 42.4) rejoint le groupe dès sa création : jamais d'animation non
-	   désactivable posée après coup — `leadassignsel` (43.3) de même. */
+	   désactivable posée après coup — `leadassignsel` (43.3) de même.
+
+	   🔴 ET `carriersel` (47.1) MANQUAIT ICI, trouvé le 2026-08-05. Il figure bien
+	   parmi les SIX sélecteurs qui reçoivent `aod-cd-pop` quinze cents lignes plus
+	   haut, mais n'était que le CINQUIÈME dans cette liste : le menu du
+	   transporteur glissait de 8 px chez quelqu'un ayant demandé à son système de
+	   réduire les animations. Rien ne pouvait le signaler — l'écran est identique
+	   pour qui n'a pas activé le réglage.
+	   🚨 C'est exactement le défaut que le paragraphe ci-dessus s'engage à ne
+	   jamais commettre, commis sur le widget suivant. Une promesse écrite au-dessus
+	   d'une liste ne protège pas la ligne qu'on ajoutera demain ; seule une porte
+	   le fait — d'où `test-mouvement-reduit.php`. */
 	.aod-cd-statussel-menu:not([hidden]),
 	.aod-cd-csel-menu:not([hidden]),
 	.aod-cd-assignsel-menu:not([hidden]),
 	.aod-cd-leadassignsel-menu:not([hidden]),
+	.aod-cd-carriersel-menu:not([hidden]),
 	.aod-cd-catdd-panel:not([hidden]){animation:aod-cd-fade .14s var(--cd-ease-out)}
 }
 @keyframes aod-cd-fade{from{opacity:0}to{opacity:1}}

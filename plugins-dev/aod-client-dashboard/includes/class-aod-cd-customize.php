@@ -110,6 +110,40 @@ class AOD_CD_Customize {
 	 */
 	const BG_MIX = 0.92;
 
+	/**
+	 * Mélange de la SURFACE DES CARTES (`--cd-card`) vers le blanc — demande owner
+	 * du 2026-08-04 : « toutes les petites sections sont blanches ».
+	 *
+	 * 🚨 CE QUE LA MESURE IMPOSE, ET QUI DÉCIDE DE LA VALEUR. On ne peut pas rendre
+	 * les cartes « bien colorées » : une surface qui porte `--cd-muted` ne peut pas
+	 * descendre sous `BG_MIX` (0.92) — c'est exactement le plancher AA établi
+	 * ci-dessus, sur le pire des six accents. Or les cartes portent du `--cd-muted`
+	 * (libellé de KPI, devise, « vs période précédente »), et elles doivent en plus
+	 * rester PLUS CLAIRES que le fond, sinon la carte cesse de se lire comme posée
+	 * dessus. La marge de manœuvre n'est donc pas « du blanc à la couleur » mais
+	 * ]0.92 ; 1.0[ — 8 centièmes, pas davantage.
+	 *
+	 * 0.955 est le milieu utile de cet intervalle :
+	 *   turquoise #0d9488 → carte #f4fafa · fond #ecf6f5 → 8 points d'écart sur R
+	 *   jaune #FFE21E     → carte #fffef5 · fond #fffded → teinte lisible, non blanche
+	 * Plus haut (0.975 essayé), la teinte n'est plus perceptible et le changement
+	 * ne se voit pas ; plus bas, la carte rejoint le fond et l'élévation tombe.
+	 *
+	 * Mesuré sur les six accents hostiles (`--cd-muted` #666 sur la carte, AA = 4,5) :
+	 * 5,44 · 5,67 · 5,26 · 5,43 · 5,31 · 5,33 — le pire cas reste le presque-noir
+	 * #111827, comme pour le fond, avec 0,36 point de marge en plus que lui.
+	 *
+	 * 🔒 La garantie AA est acquise par MONOTONIE, pas par une seconde mesure : la
+	 * carte est par construction plus claire que `--cd-bg`, dont le contraste sous
+	 * `--cd-muted` est déjà éprouvé sur les six accents. `test-fond-accent.php`
+	 * l'exige explicitement plutôt que de s'en remettre à ce commentaire.
+	 *
+	 * ⚠️ Conséquence voulue : le blanc pur cesse d'être le défaut et devient un
+	 * RÔLE — il ne reste que sur les CHAMPS de saisie, qui se détachent enfin de la
+	 * carte qui les porte au lieu de s'y fondre.
+	 */
+	const CARD_MIX = 0.955;
+
 	/** Amorçage. */
 	public static function init() {
 		add_action( 'customize_register', array( __CLASS__, 'register' ) );
@@ -240,6 +274,37 @@ class AOD_CD_Customize {
 			? self::to_hex( self::mix( $rgb, 0, 0.12 ) )
 			: self::to_hex( self::mix( $rgb, 255, 0.18 ) );
 
+		// Encre lisible SUR `$strong` — ajoutée le 2026-08-05, et c'est ce qui rendait
+		// `--cd-accent-strong` inutilisable.
+		//
+		// 🚨 `test-charte-surfaces.php` consignait le problème sans le nommer : « le
+		// survol des surfaces d'accent ne se sert pas de la couleur prévue pour lui »,
+		// `--cd-accent-strong` calculé à chaque page et lu par ZÉRO règle. La raison
+		// n'était pas l'oubli mais un PIÈGE : réutiliser `--cd-accent-ink`, calculée
+		// pour l'accent de BASE, casse AA sur la variante.
+		//
+		// MESURÉ, et le résultat est pire que prévu — 4 accents sur 8 tombent sous AA
+		// si on réutilise l'encre de base (ratio sur `$strong`, seuil 4,5) :
+		//
+		//   turquoise #0d9488 → 4,48 ❌ → 4,69 ✅   (l'accent choisi par CE client)
+		//   rouge pur #ff0000 → 4,17 ❌ → 5,04 ✅
+		//   vert  #2f6b3a     → 4,25 ❌ → 4,95 ✅
+		//   bleu-gris #4a5a8a → 4,36 ❌ → 4,81 ✅
+		//   jaune, bleu, bordeaux, presque-noir : inchangés, déjà larges.
+		//
+		// La cause est mécanique : `best_ink()` bascule du noir au blanc vers une
+		// luminance de ~0,179, et `$strong` DÉPLACE la luminance — de 12 % vers le noir
+		// pour un accent clair, de 18 % vers le blanc pour un accent sombre. La
+		// variante peut donc franchir le seuil que la base n'avait pas franchi, et
+		// l'encre de la base devient le mauvais choix. Le défaut ne se voyait qu'AU
+		// SURVOL : aucune capture d'écran au repos ne pouvait le montrer.
+		//
+		// D'où une encre propre, choisie par la MÊME fonction sur la luminance de
+		// `$strong` : la variante est libre de basculer d'encre quand la base ne le
+		// fait pas. C'est ce qui rend le token enfin consommable (cf. `dashboard.css`,
+		// `.aod-cd-btn-primary:hover`).
+		$strong_ink = self::best_ink( self::luminance( self::rgb( $strong ) ) );
+
 		// Teinte douce (fonds discrets, anneaux de focus légers). Calibrée pour
 		// porter `--cd-ink` : ne PAS l'utiliser sous du `--cd-muted` — cf. wash().
 		$soft = self::to_hex( self::mix( $rgb, 255, 0.86 ) );
@@ -250,6 +315,10 @@ class AOD_CD_Customize {
 		// Fond de PAGE teinté par l'accent (cf. BG_MIX). Il porte `--cd-muted`
 		// (le sous-titre de chaque écran) et sert de fond aux cartes blanches.
 		$bg = self::to_hex( self::mix( $rgb, 255, self::BG_MIX ) );
+
+		// Surface des CARTES, teintée elle aussi (cf. CARD_MIX). Toujours plus claire
+		// que `$bg` — c'est ce qui la fait lire comme posée dessus.
+		$card = self::to_hex( self::mix( $rgb, 255, self::CARD_MIX ) );
 
 		// Fond de la sidebar, teinté de l'accent (étape 15.5). Cf. side().
 		$side = self::side();
@@ -280,10 +349,12 @@ class AOD_CD_Customize {
 			. '--cd-accent:' . $hex . ';'
 			. '--cd-accent-rgb:' . implode( ',', array_map( 'intval', $rgb ) ) . ';'
 			. '--cd-accent-strong:' . $strong . ';'
+			. '--cd-accent-strong-ink:' . $strong_ink . ';'
 			. '--cd-accent-ink:' . $ink . ';'
 			. '--cd-accent-soft:' . $soft . ';'
 			. '--cd-accent-wash:' . $wash . ';'
 			. '--cd-bg:' . $bg . ';'
+			. '--cd-card:' . $card . ';'
 			. '--cd-accent-on-dark:' . $on_dark . ';'
 			. '--cd-side:' . $side . ';'
 			. '}';

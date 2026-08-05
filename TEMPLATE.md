@@ -172,6 +172,28 @@ Accès (ports dans `.env`) : Boutique `http://localhost:${WP_PORT}` · Admin
   précisément celui qui fonctionnait. *Éprouver une couche dans le contexte où on
   la développe plutôt que dans celui où elle sert, c'est se garantir un vert
   permanent.*
+- 🐌 **LENTEUR SUR WINDOWS / macOS — c'est la MÉTADONNÉE, pas le débit** (retour
+  owner du 2026-08-05). Une page mettait **22 secondes** sur un clone Windows, y
+  compris un simple 301. Mesuré dans le conteneur : lire 762 Ko de traductions
+  prend 0,43 s (normal), mais **`stat()` sur 2 000 fichiers du bind-mount prend
+  10,6 s contre 0,14 s sur le disque du conteneur — un facteur 75**. Or une
+  requête WordPress en fait des milliers (l'OPcache revalide ses 2 252 entrées,
+  PHP résout chaque segment de chaque chemin). Ni SQL (39 requêtes, 0,3 ms) ni le
+  réseau (0,32 s) n'y sont pour quoi que ce soit.
+  → Corrigé dans **`docker/php-aod.ini`** (bloc « lenteur ») + **`docker/opcache-blacklist.txt`** :
+  **22,4 s → 3 à 5 s**, et un fichier statique **265 ms → 20 ms**.
+  ⚠️ **Un clone déjà installé doit recréer ses conteneurs** — il y a un montage de
+  plus : `docker compose up -d` depuis le dossier du clone.
+  ⚠️ **Le régime établi demande une dizaine de requêtes** : le cache de realpath
+  est propre à chaque processus Apache. Une seule mesure après un `restart` tombe
+  encore à 7-9 s et ferait conclure, à tort, que le réglage ne sert à rien.
+  🚨 **La contrepartie est explicite** : `opcache.validate_timestamps = 0` figerait
+  le code de `plugins-dev/` jusqu'au redémarrage du conteneur — la promesse §2
+  (« toute édition est immédiatement live ») tomberait **en silence**, la page
+  s'affichant simplement périmée. C'est la liste noire qui la tient, et elle a été
+  **éprouvée** (édition → `V1` puis `V2` sans redémarrage) plutôt que supposée. Son
+  périmètre est étroit **par mesure** : y ajouter `wp-content/themes/` en entier
+  coûtait 4 s par requête.
 - **Pas d'internet sortant fiable** par défaut. Un bloc `dns: [8.8.8.8, 1.1.1.1]`
   dans `docker-compose.yml` débloque les appels API externes (Ecotrack…). Si un
   clone neuf échoue sur des appels externes, vérifier ce bloc en premier.

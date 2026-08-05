@@ -1,0 +1,34 @@
+; Fichiers que l'OPcache NE DOIT PAS mettre en cache — pile de DÉVELOPPEMENT.
+;
+; 🚨 CE FICHIER EST LA CONTREPARTIE DE `opcache.validate_timestamps = 0`.
+; Sans lui, ce réglage rendrait FAUSSE la promesse centrale de TEMPLATE.md §2 :
+; « toute édition dans `plugins-dev/` est immédiatement live ». PHP servirait
+; indéfiniment la version compilée au démarrage du conteneur, et un correctif
+; n'aurait aucun effet visible — le pire mode d'échec possible, puisque rien ne
+; le signale : la page s'affiche, elle est simplement périmée.
+;
+; Un fichier listé ici est RECOMPILÉ à chaque requête. Le coût n'est donc pas
+; celui du dossier entier, mais des seuls fichiers réellement inclus par la
+; requête. Ce qu'on achète en échange : les ~2 250 fichiers du CŒUR et de
+; WooCommerce ne sont plus jamais consultés sur le disque — c'est là qu'était la
+; dépense (cf. `docker/php-aod.ini`, bloc « lenteur »).
+;
+; ⚠️ LE PÉRIMÈTRE EST ÉTROIT PAR MESURE, PAS PAR PRUDENCE. Une première version
+; listait aussi `wp-content/themes/` en entier : mesuré, elle coûtait **4 s par
+; requête** (9,7 s au lieu de 5,8 s) — le thème parent Astra charge des dizaines
+; de fichiers à chaque page, et les recompiler tous rendait la moitié du gain.
+; N'ajoute donc rien ici sans mesurer avant/après.
+;
+; Format : un préfixe de chemin par ligne. `*` et `?` sont acceptés.
+
+; Les deux plugins maison — ce qu'on édite tous les jours.
+/var/www/html/wp-content/plugins/aod-cod-form/
+/var/www/html/wp-content/plugins/aod-client-dashboard/
+
+; Le CHILD theme du clone, et lui seul (TEMPLATE.md §4 : les personnalisations
+; vivent dans `<theme>-child/`, jamais dans le parent — qu'une mise à jour
+; écraserait). Le parent reste donc en cache, c'est tout l'objet du motif.
+; ⚠️ Un thème PARENT modifié à la main ne sera pas rechargé : il faut alors
+;    `docker compose restart wordpress`. C'est assumé — on ne modifie pas un
+;    thème parent sur ce template.
+/var/www/html/wp-content/themes/*-child/

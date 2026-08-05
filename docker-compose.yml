@@ -67,6 +67,7 @@ services:
       # de tests tourne là-bas, les vrais envois arrivent ici. Un seul des deux
       # et l'un des deux ment. (Leçon FS_METHOD / D28.)
       - ./docker/php-aod.ini:/usr/local/etc/php/conf.d/zz-aod.ini:ro
+      - ./docker/opcache-blacklist.txt:/usr/local/etc/php/opcache-blacklist.txt:ro
       - ./plugins-dev/aod-cod-form:/var/www/html/wp-content/plugins/aod-cod-form
       - ./plugins-dev/aod-client-dashboard:/var/www/html/wp-content/plugins/aod-client-dashboard
 
@@ -120,6 +121,7 @@ services:
       # là-bas). `tests/run.sh` lit `wp_max_upload_size()` ICI : sans ce montage,
       # le cliquet mesurerait une limite qui ne s'applique à aucun téléversement.
       - ./docker/php-aod.ini:/usr/local/etc/php/conf.d/zz-aod.ini:ro
+      - ./docker/opcache-blacklist.txt:/usr/local/etc/php/opcache-blacklist.txt:ro
       - ./plugins-dev/aod-cod-form:/var/www/html/wp-content/plugins/aod-cod-form
       - ./plugins-dev/aod-client-dashboard:/var/www/html/wp-content/plugins/aod-client-dashboard
     entrypoint: ["tail", "-f", "/dev/null"]
