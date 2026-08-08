@@ -782,7 +782,8 @@ disent le même chiffre).
 
 **Un seul point de personnalisation** : `class-aod-cd-customize.php` (362 l.)
 expose au Personnalisateur l'**accent** (`theme_mod` `aod_cd_accent`, défaut
-`#FFE21E`) et en **dérive** tout le reste en variables CSS (`css_vars()`).
+`#0E5C66` — pétrole ; `#116048` puis `#FFE21E` avant le 2026-08-08) et en **dérive** tout le reste
+en variables CSS (`css_vars()`).
 Le client choisit une couleur ; il ne choisit jamais une encre, une teinte ni
 une bordure.
 
@@ -793,7 +794,7 @@ l'accessibilité :
 |---|---|---|
 | `--cd-accent-ink` | encre posée **sur** l'accent | `best_ink()` choisit entre **noir pur** et blanc. Pas `#181818` : avec notre encre habituelle, le meilleur des deux tombe à **4,21:1** pour un bleu de marque banal (`#1878f0`) — sous AA. Le noir pur remonte le plancher du cube RGB entier à 4,58:1. |
 | `--cd-accent-on-dark` | accent utilisé **en texte** sur nos surfaces sombres | `readable_on()` éclaircit l'accent jusqu'à 4,6:1. ⚠️ **Depuis la Phase 15, ces surfaces sont DEUX** : la sidebar (teintée, dérivée) et le neutre `#181818` (pastille de langue, pagination). Une seule variable les sert : elle est calibrée sur la **plus claire des deux**. Ne pas la recâbler sur « la sidebar » — 72 accents sur 4 096 donnent une sidebar *plus sombre* que le neutre. |
-| `--cd-side` (Phase 15) | fond de la sidebar, **dérivé** de l'accent | `side()` : 15 % d'accent dans `#181818`, **puis un plafond de luminance** (`SIDE_MAX_LUM`). Le plafond n'est pas cosmétique : sans lui, le mélange transmet la *clarté* de l'accent autant que sa teinte, et le jaune par défaut sortait à **4,0×** la luminance du neutre (kaki) quand tous les autres tenaient sous 2,4×. Les 4 096 assertions étaient vertes — c'est la capture d'écran qui l'a montré. |
+| `--cd-side` (Phase 15) | fond de la sidebar, **dérivé** de l'accent | `side()` : 15 % d'accent dans `#181818`, **puis un plafond de luminance** (`SIDE_MAX_LUM`). Le plafond n'est pas cosmétique : sans lui, le mélange transmet la *clarté* de l'accent autant que sa teinte, et le jaune, alors défaut du template, sortait à **4,0×** la luminance du neutre (kaki) quand tous les autres tenaient sous 2,4×. Les 4 096 assertions étaient vertes — c'est la capture d'écran qui l'a montré. |
 | `--cd-muted` (`#666`) / `--cd-soft` (`#8A8A8A`) | gris de texte / gris de **décor** | Il n'existe que **deux** gris de texte : le seuil AA tenu sur le pire de nos fonds (badges `#EDEDED`, teintes d'alerte) plafonne à `#666`. `--cd-soft` est **décor uniquement** (bordures, chevrons) — jamais du texte. |
 | `--cd-focus` | anneau de focus, **deux couches** | Liseré `--cd-ink` (toujours contrasté) **puis** halo d'accent. 🚨 Un anneau bâti sur le seul accent est invisible dès que le client en choisit un pâle — et le défaut du template EST un jaune pâle : quatre contrôles (`statussel`, `assignsel`, `leadassignsel`, `seg__btn`) écrivaient `outline:2px solid var(--cd-yellow|--cd-accent)`, soit **1,15:1**, alors que la règle inverse était écrite en tête du même fichier. Supprimés en 46.1 ; c'est le socle global (`.aod-cd :focus-visible`, en encre) qui gouverne. Gardé des DEUX côtés : R1 de `test-chrome-conformite.php` tient la règle sur tous les accents à la fois, la porte `contraste` mesure l'anneau **calculé** (463 contrôles focalisés au clavier × 6 accents). |
 
@@ -945,8 +946,9 @@ filets pour le checkout classique/blocks. Le reset boutique remet le compteur à
 - **`tools/recette/`** : recette navigateur de `/gestion` (playwright-core, sort
   en erreur si ça casse) — contraste AA, noms accessibles, clavier, **souris**,
   RTL + mobile 390 px. `bash tools/recette/run.sh`. L'audit de contraste est
-  rejoué sur **6 accents** : l'accent par défaut (jaune très clair) masque des
-  fautes qu'un accent de marque ordinaire révèle aussitôt. **À relancer sur
+  rejoué sur **7 accents** : un accent confortable masque des fautes qu'un accent
+  de marque ordinaire, ou extrême, révèle aussitôt — le jaune très clair, longtemps
+  le défaut du template, est resté dans le balayage à ce titre. **À relancer sur
   chaque clone une fois l'accent du client réglé.** S'y ajoutent **`mouvement`**
   (Phase 16 — transitions nommées ; ⚠️ n'inspecte que `dashboard.css` sur `/gestion`),
   `public` (les 3 pages publiques), `landing` et `cod` (une vraie commande COD de

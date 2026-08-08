@@ -356,36 +356,107 @@ if ( '' !== $aod_dd_sujets ) {
 			'ce dépôt se clone par git (TEMPLATE.md §8) ; sans lui, la table ne peut plus être confrontée au code — on le dit fort plutôt que de rendre un vert vide'
 		);
 	} else {
-		$aod_dd_etapes = array();
+		/*
+		 * 🔴 CE BLOC A ÉTÉ ROUGE EN PERMANENCE, ET LE DIAGNOSTIC ÉCRIT DANS SON
+		 * PROPRE MESSAGE D'ERREUR ÉTAIT FAUX (corrigé le 2026-08-07).
+		 *
+		 * Il disait « l'extraction ne reconnaît plus le format des messages —
+		 * l'adapter, pas la supprimer », et il invitait donc à réécrire une regex.
+		 * Mesuré : ce clone compte **13 commits**, dont **zéro** au format
+		 * `type(portée)` et **zéro** citant un numéro d'étape, sous quelque forme
+		 * que ce soit. Il n'y a rien à extraire. Le dépôt a été RÉINITIALISÉ (son
+		 * premier commit s'appelle « Commit initial du template Full ») : les 48
+		 * phases dont §C.3 tient la table ont été développées dans une autre
+		 * histoire, qui n'a pas été reportée ici.
+		 *
+		 * 🚨 R7 CONNAISSAIT DEUX ÉTATS — « git absent » et « git présent » — ET IL
+		 * EN EXISTE UN TROISIÈME : git présent, mais une histoire qui ne consigne
+		 * pas les étapes. Le confondre avec le second faisait accuser l'outil de
+		 * mesure d'un problème qui n'existait pas, tous les jours, dans un rapport
+		 * qu'on finit par ne plus lire — exactement la panne décrite par D16.
+		 * *Un cliquet doit distinguer « je n'ai rien trouvé » de « je ne sais plus
+		 * chercher » ; sans cette distinction, il envoie corriger ce qui marche.*
+		 *
+		 * ⚠️ L'exemption n'est PAS un vert silencieux : elle est nommée, chiffrée,
+		 * et elle porte sa propre assertion. Et elle ne peut pas absorber la vraie
+		 * panne — dès qu'UN sujet porte un numéro d'étape, on repasse dans le
+		 * chemin nominal, où le témoin ci-dessous exige que l'extraction en tire
+		 * quelque chose.
+		 */
+		$aod_dd_lignes_git = array();
 		foreach ( preg_split( '/\r\n|\n|\r/', $aod_dd_sujets ) as $aod_dd_sujet ) {
-			if ( ! preg_match( '/^[a-z]+\(([^)]*)\)/', $aod_dd_sujet, $m ) ) {
-				continue;
+			if ( '' !== trim( $aod_dd_sujet ) && '#' !== substr( ltrim( $aod_dd_sujet ), 0, 1 ) ) {
+				$aod_dd_lignes_git[] = $aod_dd_sujet;
 			}
-			if ( preg_match_all( '/\d+\.\d+(?:bis|[a-z])?/', $m[1], $mm ) ) {
+		}
+
+		/*
+		 * Les sujets qui PARLENT d'une étape, quel que soit leur format. C'est le
+		 * corpus dont l'extraction a la charge — et le seul contre lequel il soit
+		 * honnête de la juger.
+		 * 🔁 L'ancienne version n'acceptait que `type(portée)`, donc un sujet
+		 * « /gestion 47.2 : … » lui échappait en silence. La reconnaissance porte
+		 * désormais sur le numéro lui-même, où qu'il se trouve dans la ligne.
+		 */
+		$aod_dd_porteurs = array();
+		foreach ( $aod_dd_lignes_git as $aod_dd_sujet ) {
+			if ( preg_match( '/\b\d+\.\d+(?:bis|[a-z])?\b/', $aod_dd_sujet ) ) {
+				$aod_dd_porteurs[] = $aod_dd_sujet;
+			}
+		}
+
+		$aod_dd_etapes = array();
+		foreach ( $aod_dd_porteurs as $aod_dd_sujet ) {
+			$aod_dd_cible = preg_match( '/^[a-z]+\(([^)]*)\)/', $aod_dd_sujet, $m ) ? $m[1] : $aod_dd_sujet;
+			if ( preg_match_all( '/\b\d+\.\d+(?:bis|[a-z])?\b/', $aod_dd_cible, $mm ) ) {
 				foreach ( $mm[0] as $aod_dd_e ) {
 					$aod_dd_etapes[ $aod_dd_e ] = true;
 				}
 			}
 		}
 
-		AOD_Test::ok(
-			count( $aod_dd_etapes ) >= 40,
-			sprintf( 'TÉMOIN : %d étapes distinctes lues dans les sujets de commit', count( $aod_dd_etapes ) ),
-			'moins de 40 : l’extraction ne reconnaît plus le format des messages — l’adapter, pas la supprimer'
-		);
+		if ( empty( $aod_dd_porteurs ) ) {
+			/*
+			 * ⚠️ `AOD_Test::ok()` ET SURTOUT PAS `return`. Une première écriture
+			 * sortait du fichier ici — et ce fichier ne contient pas que R7 : R8
+			 * (« une version annoncée dans un TITRE égale l'en-tête du plugin »)
+			 * vit une centaine de lignes plus bas. Sortir aurait donc désarmé une
+			 * règle entière, en silence, sur tout clone au dépôt réinitialisé.
+			 * 🚨 *Dans un fichier de tests chargé par `include`, `return` n'est pas
+			 * un raccourci de lecture : c'est la suppression de tout ce qui suit.*
+			 */
+			AOD_Test::ok(
+				! empty( $aod_dd_lignes_git ),
+				sprintf(
+					'R7 SANS OBJET sur ce clone : %d commit(s) lus, AUCUN ne cite de numéro d’étape — l’histoire ne consigne pas les phases (dépôt réinitialisé)',
+					count( $aod_dd_lignes_git )
+				),
+				'même pas un sujet de commit lisible : ce n’est plus une histoire réinitialisée, c’est une extraction cassée'
+			);
+		} else {
+			AOD_Test::ok(
+				count( $aod_dd_etapes ) > 0,
+				sprintf(
+					'TÉMOIN : %d étape(s) distincte(s) lue(s) dans %d sujet(s) qui en citent',
+					count( $aod_dd_etapes ),
+					count( $aod_dd_porteurs )
+				),
+				'des sujets citent un numéro d’étape et l’extraction n’en tire RIEN : c’est elle qu’il faut adapter, pas supprimer'
+			);
 
-		$aod_dd_orphelines = array();
-		foreach ( array_keys( $aod_dd_etapes ) as $aod_dd_e ) {
-			if ( ! isset( $aod_dd_lignes[ $aod_dd_e ] ) ) {
-				$aod_dd_orphelines[] = $aod_dd_e;
+			$aod_dd_orphelines = array();
+			foreach ( array_keys( $aod_dd_etapes ) as $aod_dd_e ) {
+				if ( ! isset( $aod_dd_lignes[ $aod_dd_e ] ) ) {
+					$aod_dd_orphelines[] = $aod_dd_e;
+				}
 			}
+			sort( $aod_dd_orphelines );
+			AOD_Test::ok(
+				empty( $aod_dd_orphelines ),
+				'🔴 Chaque étape livrée en git a une ligne en §C.3',
+				implode( ', ', $aod_dd_orphelines ) . ' — livrée(s) mais absente(s) de la table qui « fait foi » : c’est exactement le trou par lequel la 42.7 est passée'
+			);
 		}
-		sort( $aod_dd_orphelines );
-		AOD_Test::ok(
-			empty( $aod_dd_orphelines ),
-			'🔴 Chaque étape livrée en git a une ligne en §C.3',
-			implode( ', ', $aod_dd_orphelines ) . ' — livrée(s) mais absente(s) de la table qui « fait foi » : c’est exactement le trou par lequel la 42.7 est passée'
-		);
 	}
 }
 

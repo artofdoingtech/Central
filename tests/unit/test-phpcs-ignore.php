@@ -60,7 +60,7 @@ defined( 'ABSPATH' ) || exit;
 function aod_test_pcs_census() {
 	return array(
 		'WordPress.Security.EscapeOutput'         => array(
-			'n'        => 156,
+			'n'        => 163,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
@@ -160,7 +160,53 @@ function aod_test_pcs_census() {
 				. 'saisie du gérant ni de l’acheteur n’atteint le markup ; `wp_kses_post()` mangerait '
 				. 'les attributs SVG. Le TEXTE de la note, lui, passe par `esc_html__()` juste après. '
 				. '⚠️ Comme la 155ᵉ, la hausse est venue avec son rouge : le census a refusé '
-				. 'l’avertissement avant sa relecture — troisième fois que ce garde-fou joue son rôle.',
+				. 'l’avertissement avant sa relecture — troisième fois que ce garde-fou joue son rôle. '
+				. 'Les 157ᵉ et 158ᵉ (2026-08-06, MARQUE de la barre latérale) sont un COUPLE et se '
+				. 'relisent ensemble. `AOD_CD_Access::brand_mark()` rend soit le logo du client, soit '
+				. 'un sceau ; `class-aod-cd-dashboard.php` l’imprime. '
+				. '· Le SVG du sceau : MÊME patron que la 134ᵉ, la 155ᵉ et la 156ᵉ — `AOD_CD_Icon` est '
+				. 'un catalogue FERMÉ, le nom d’icône est un littéral du dépôt, `wp_kses_post()` '
+				. 'mangerait les attributs SVG. '
+				. '· L’`echo` de la coque : la valeur vient d’UNE méthode du plugin, dont les deux '
+				. 'branches échappent à la source — `esc_url()` sur l’URL du logo, catalogue fermé sur '
+				. 'le sceau. Aucune saisie d’aucun acteur n’y entre. '
+				. '🚨 CE QUI MÉRITE D’ÊTRE SU : l’URL du logo vient d’un ATTACHEMENT WordPress '
+				. '(`get_theme_mod(\'custom_logo\')` → `wp_get_attachment_image_src()`), donc d’une '
+				. 'donnée que le gérant contrôle — c’est le seul des quatre cas de cette famille où '
+				. 'ce soit vrai. Elle est échappée par `esc_url()` DANS la méthode, jamais ici : '
+				. 'déplacer cet échappement vers l’appelant rendrait la dérogation fausse. '
+				. '⚠️ Quatrième fois que ce census refuse une entrée avant relecture. '
+				. 'La 159ᵉ (2026-08-06, ICÔNES DES ONGLETS de l’Accueil, class-aod-cd-section-home.php) : '
+				. '`AOD_CD_Icon::svg()` passé en `%4$s` du `printf()` qui rend chaque onglet. '
+				. 'MÊME patron que la 134ᵉ, la 155ᵉ, la 156ᵉ et le sceau de la 157ᵉ — catalogue FERMÉ, '
+				. 'nom d’icône littéral du dépôt (une table `slug => icône` écrite dans la méthode, '
+				. 'jamais une donnée), la méthode refuse tout nom hors catalogue, et `wp_kses_post()` '
+				. 'mangerait les attributs SVG. '
+				. '⚠️ CE QUI EST NOUVEAU ICI, et qui vaut d’être lu avant de recopier le motif : la '
+				. 'dérogation porte sur un `printf()` À PLUSIEURS ARGUMENTS, pas sur un `echo` d’une '
+				. 'seule valeur. Elle couvre donc, en une ligne, quatre autres arguments qui sont bien '
+				. 'échappés (`esc_attr`, `esc_url`, un littéral, `esc_html`) — un futur argument ajouté '
+				. 'à ce même appel entrerait sous une dérogation qu’il n’a pas demandée, SANS que rien '
+				. 'ne rougisse. C’est pourquoi la raison nomme le NUMÉRO de l’argument couvert. '
+				. 'Les 160ᵉ à 163ᵉ (2026-08-07, CAMEMBERT de l’Accueil, class-aod-cd-section-home.php, '
+				. 'render_stats_donut) : quatre dérogations pour DEUX motifs, tous deux déjà relus. '
+				. '· 160ᵉ/161ᵉ — les deux `AOD_CD_Dashboard::empty_state( \'chart\', … )` des cas sans '
+				. 'vente : patron identique à tous les autres appels d’état vide du dépôt (catalogue '
+				. 'FERMÉ `AOD_CD_Icon` pour le glyphe, libellé échappé À L’INTÉRIEUR de la méthode). '
+				. '· 162ᵉ/163ᵉ — `echo $svg` et `echo $lignes`, deux chaînes ASSEMBLÉES quelques lignes '
+				. 'plus haut dans la même méthode. C’est le patron des 141ᵉ/142ᵉ (« je rends du markup '
+				. 'déjà échappé par le code qui l’a construit »), à ceci près que le constructeur n’est '
+				. 'pas une méthode séparée mais la boucle juste au-dessus — ce qui le rend PLUS facile '
+				. 'à relire, pas moins : tout ce qui entre dans ces chaînes est visible d’un seul '
+				. 'regard. Chaque attribut variable passe par `esc_attr()`, chaque texte par '
+				. '`esc_html()`, et les seules valeurs numériques sortent de `number_format()` — donc '
+				. 'de chiffres, un point et un signe moins, jamais d’une saisie. '
+				. '🚨 CE QUI MÉRITE D’ÊTRE SU AVANT DE RECOPIER LE MOTIF : le NOM DE PRODUIT qui entre '
+				. 'dans la légende est, lui, une donnée saisie par le gérant — la seule surface '
+				. 'd’injection de tout ce bloc. Elle est fermée par `esc_html()` au moment de la '
+				. 'concaténation, jamais ici. Déplacer cet échappement (par exemple en construisant la '
+				. 'légende ailleurs) rendrait ces deux dérogations FAUSSES sans qu’aucun cliquet ne le '
+				. 'voie : le census compte les annotations, il ne relit pas ce qu’elles couvrent.',
 		),
 		'WordPress.Security.NonceVerification'    => array(
 			'n'        => 18,

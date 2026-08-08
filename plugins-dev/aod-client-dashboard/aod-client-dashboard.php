@@ -97,6 +97,7 @@ add_action( 'plugins_loaded', function () {
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-access.php';
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-customize.php';
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-icon.php';
+	require_once AOD_CD_PATH . 'includes/class-aod-cd-temps.php';
 	// Disponibilité du socle COD (32.1) — AVANT les sections, qui l'interrogent.
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-cod.php';
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-dashboard.php';

@@ -18,6 +18,18 @@
  *        (illisible sur un accent clair comme le jaune par défaut).
  *   R3 · Le fond du bouton n'est PAS une couleur hexadécimale en dur — c'est le
  *        retour en arrière qu'on interdit.
+ *   R4 · Le SURVOL du bouton prend `--cd-accent-strong-ink`, jamais `--cd-accent-ink`.
+ *   R5 · Le fond de la page lit les deux tons du fond de `/gestion`.
+ *
+ * 🔴 R4 ET R5 SONT NÉS D'UN DÉFAUT QUE CE FICHIER LAISSAIT PASSER (2026-08-08).
+ * R1→R3 gardaient le bouton AU REPOS, et rien d'autre. Or le survol écrivait
+ * `color:var(--cd-accent-ink)` sous un fond `var(--cd-accent-strong)` : l'encre de
+ * l'accent de BASE posée sur sa VARIANTE. `dashboard.css` avait été corrigé de ce
+ * défaut exact le 2026-08-05 — mesuré alors : 4 accents sur 8 tombent sous AA —,
+ * et la correction n'avait jamais atteint la page de connexion.
+ * ⚠️ Il était invisible deux fois : au repos (le survol ne se photographie pas) et
+ * sur l'accent par défaut, où les deux encres coïncident. *Un cliquet qui garde un
+ * état garde CET état, pas le composant.*
  *
  * ⚠️ Le contraste de `--cd-accent-ink` sur l'accent est déjà prouvé, pour TOUT
  * accent, par `test-contraste.php` (il éprouve `best_ink`). Ce cliquet-ci garde le
@@ -80,4 +92,44 @@ if ( preg_match( '/\.button-primary\s*\{[^}]*\}/s', $aod_login_css, $m ) ) {
 	);
 } else {
 	AOD_Test::ok( false, 'R3 — la règle .button-primary est présente dans le CSS login', 'Introuvable : le bouton n’est plus stylé ?' );
+}
+
+/* R4 — le SURVOL prend l'encre de SA propre couleur (cf. l'en-tête) */
+if ( preg_match( '/\.button-primary:hover[^{]*\{[^}]*\}/s', $aod_login_css, $aod_login_hm ) ) {
+	$aod_login_hover = $aod_login_hm[0];
+	AOD_Test::ok(
+		false !== strpos( $aod_login_hover, 'color:var(--cd-accent-strong-ink)' ),
+		'R4 — le survol du bouton prend var(--cd-accent-strong-ink), pas l’encre de l’accent de base',
+		'🚨 `--cd-accent-ink` est calculée sur la luminance de l’accent NU. `$strong` la '
+			. 'déplace (−12 % vers le noir si l’accent est clair, +18 % vers le blanc s’il est '
+			. 'sombre) et peut franchir le seuil de bascule de best_ink() que la base n’avait '
+			. 'pas franchi. Mesuré le 2026-08-05 sur dashboard.css : 4 accents sur 8 sous AA. '
+			. 'Le défaut ne se voit ni au repos, ni sur l’accent par défaut.'
+	);
+	AOD_Test::ok(
+		! preg_match( '/color\s*:\s*var\(--cd-accent-ink\)/', $aod_login_hover ),
+		'R4 — …et il ne réutilise plus l’encre de l’accent de base',
+		'C’est la régression exacte corrigée le 2026-08-08 : la remettre casse AA au survol '
+			. 'chez la moitié des accents, en silence.'
+	);
+} else {
+	AOD_Test::ok( false, 'R4 — la règle de survol du bouton primaire est présente', 'Introuvable : le survol n’est plus stylé ?' );
+}
+
+/* R5 — la page de connexion porte le fond de /gestion, pas un gris en dur */
+AOD_Test::ok(
+	false !== strpos( $aod_login_css, 'var(--cd-page)' ) && false !== strpos( $aod_login_css, 'var(--cd-page-2)' ),
+	'R5 — le fond de la page de connexion lit les DEUX tons du fond de /gestion',
+	'La connexion est la porte d’entrée de /gestion : un fond écrit en dur en fait la '
+		. 'seule page qui ne ressemble pas à ce qu’elle ouvre — et il ne suit aucun accent.'
+);
+if ( preg_match( '/body\.login\s*\{[^}]*\}/s', $aod_login_css, $aod_login_bm ) ) {
+	AOD_Test::ok(
+		! preg_match( '/background(-color)?\s*:\s*#[0-9a-fA-F]{3,6}/', $aod_login_bm[0] ),
+		'R5 — …et ce fond n’est pas une couleur hexadécimale en dur',
+		'`background:#f3f4f6` a vécu ici jusqu’au 2026-08-08. Un fond en dur ne suit ni '
+			. 'l’accent du client, ni les arbitrages de fond de /gestion.'
+	);
+} else {
+	AOD_Test::ok( false, 'R5 — la règle body.login est présente', 'Introuvable : le fond n’est plus stylé ?' );
 }

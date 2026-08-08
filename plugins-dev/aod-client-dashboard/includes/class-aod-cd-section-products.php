@@ -286,7 +286,7 @@ class AOD_CD_Section_Products {
 			$img      = $p->get_image( array( 40, 40 ) );
 			$edit_url = $this->products_url( array( 'action' => 'edit', 'product' => $p->get_id() ) );
 			echo '<tr data-product="' . esc_attr( $p->get_id() ) . '">';
-			echo '<td class="aod-cd-cell-prod" data-label="' . esc_attr__( 'Produit', 'aod-client-dashboard' ) . '"><span class="aod-cd-prod">' . wp_kses_post( $img ) . '<a href="' . esc_url( $edit_url ) . '">' . esc_html( $p->get_name() ) . '</a></span></td>';
+			echo '<td class="aod-cd-cell-prod" data-label="' . esc_attr__( 'Produit', 'aod-client-dashboard' ) . '"><span class="aod-cd-prod">' . wp_kses_post( $img ) . '<a class="aod-cd-prod__name" href="' . esc_url( $edit_url ) . '">' . esc_html( $p->get_name() ) . '</a></span></td>';
 			echo '<td data-label="' . esc_attr__( 'Prix', 'aod-client-dashboard' ) . '">' . $this->render_price_cell( $p ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML déjà échappé dans le helper.
 			// Badge de stock : MÊME règle que la page Stock (une seule source de vérité).
 			echo '<td data-label="' . esc_attr__( 'Stock', 'aod-client-dashboard' ) . '">' . AOD_CD_Section_Stock::instance()->stock_pill( $p ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le composant.
@@ -309,7 +309,21 @@ class AOD_CD_Section_Products {
 			// l'un est réversible et l'autre non — on ne met pas une action anodine
 			// après l'action destructrice, à portée de clic de celle-ci.
 			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-dup-product" data-product="' . esc_attr( $p->get_id() ) . '" data-name="' . esc_attr( $p->get_name() ) . '">' . esc_html__( 'Dupliquer', 'aod-client-dashboard' ) . '</button> ';
-			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn-danger aod-cd-del-product" data-product="' . esc_attr( $p->get_id() ) . '" data-name="' . esc_attr( $p->get_name() ) . '">' . esc_html__( 'Supprimer', 'aod-client-dashboard' ) . '</button>';
+			// 🔁 2026-08-08 — « Supprimer » passe à l'ICÔNE SEULE. Mesuré : la colonne
+			// « Actions » occupait **409 px** sur 1 316, soit presque autant que la
+			// colonne du produit lui-même — quatre boutons écrits pour des gestes qu'on
+			// ne fait qu'occasionnellement, en face d'une donnée qu'on lit à chaque ligne.
+			// ⚠️ SEULEMENT celui-ci. La corbeille est le seul pictogramme de notre
+			// catalogue qui dise sans ambiguïté ce que fait son bouton ; « Dupliquer »
+			// n'a pas d'icône évidente (ni `stack`, ni `squares-four`, ni `images` ne
+			// veulent dire « copier »), et une icône qu'il faut deviner coûte plus que
+			// la largeur qu'elle économise. Il garde donc son libellé.
+			// ⚠️ Le libellé change de porteur, il ne disparaît pas : `aria-label` pour
+			// les lecteurs d'écran, `title` au survol — même chaîne, rien à retraduire.
+			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn-danger aod-cd-btn--ico aod-cd-del-product" data-product="' . esc_attr( $p->get_id() ) . '" data-name="' . esc_attr( $p->get_name() ) . '"'
+				. ' aria-label="' . esc_attr__( 'Supprimer', 'aod-client-dashboard' ) . '"'
+				. ' title="' . esc_attr__( 'Supprimer', 'aod-client-dashboard' ) . '">'
+				. AOD_CD_Icon::svg( 'trash', array( 'size' => 15 ) ) . '</button>';
 			echo '</td>';
 			echo '</tr>';
 		}
@@ -336,7 +350,7 @@ class AOD_CD_Section_Products {
 		if ( $p->is_type( 'variable' ) ) {
 			// Produit variable : on conserve la fourchette de prix native de WooCommerce.
 			$html = $p->get_price_html();
-			$out .= '<span class="aod-cd-price-now">' . ( $html ? wp_kses_post( $html ) : '&mdash;' ) . '</span>';
+			$out .= '<span class="aod-cd-price-now"><span class="aod-cd-price-tag">' . esc_html__( 'Prix', 'aod-client-dashboard' ) . '</span> ' . ( $html ? wp_kses_post( $html ) : '&mdash;' ) . '</span>';
 		} else {
 			$regular = $p->get_regular_price();
 			$sale    = $p->get_sale_price();
@@ -350,7 +364,12 @@ class AOD_CD_Section_Products {
 				if ( '' !== (string) $price ) {
 					$current = (float) $price;
 				}
-				$out .= '<span class="aod-cd-price-now">' . ( '' !== (string) $price ? wp_kses_post( wc_price( $price ) ) : '&mdash;' ) . '</span>';
+				// ⚠️ Le libellé « Prix » est ÉMIS MÊME SEUL depuis le 2026-08-08. Il ne
+				// répète pas l'en-tête de colonne pour le plaisir : chaque ligne du bloc
+				// est une grille libellé / valeur, et une ligne sans libellé fait tomber son
+				// montant dans la COLONNE DES LIBELLÉS. Un produit sans promotion voyait
+				// donc son prix décalé à gauche de tous les autres.
+				$out .= '<span class="aod-cd-price-now"><span class="aod-cd-price-tag">' . esc_html__( 'Prix', 'aod-client-dashboard' ) . '</span> ' . ( '' !== (string) $price ? wp_kses_post( wc_price( $price ) ) : '&mdash;' ) . '</span>';
 			}
 		}
 
@@ -362,7 +381,12 @@ class AOD_CD_Section_Products {
 				$margin = $current - (float) $cost;
 				$pct    = $current > 0 ? round( $margin / $current * 100 ) : 0;
 				$state  = $margin < 0 ? ' aod-cd-price-margin--neg' : '';
-				$out   .= '<span class="aod-cd-price-margin' . $state . '"><span class="aod-cd-price-tag">' . esc_html__( 'Marge', 'aod-client-dashboard' ) . '</span> ' . wp_kses_post( wc_price( $margin ) ) . ' <span class="aod-cd-price-pct">(' . esc_html( (string) $pct ) . '%)</span></span>';
+				// ⚠️ LE POURCENTAGE EST DANS LA MÊME BOÎTE QUE LE MONTANT, et ce n'est
+				// pas cosmétique : chaque ligne du bloc de prix est une grille à DEUX
+				// colonnes (libellé / valeur). Cette ligne-ci en avait trois — libellé,
+				// montant, pourcentage — et le troisième passait à la ligne suivante,
+				// tout seul sous le tableau. Vu à la capture, pas à la lecture.
+				$out   .= '<span class="aod-cd-price-margin' . $state . '"><span class="aod-cd-price-tag">' . esc_html__( 'Marge', 'aod-client-dashboard' ) . '</span> <span class="aod-cd-price-val">' . wp_kses_post( wc_price( $margin ) ) . ' <span class="aod-cd-price-pct">(' . esc_html( (string) $pct ) . '%)</span></span></span>';
 			}
 		}
 
@@ -588,15 +612,20 @@ class AOD_CD_Section_Products {
 								<span></span>
 							</div>
 
-							<div class="aod-cd-offer-rows">
-								<?php
-								$oi = 0;
-								foreach ( $offers as $row ) {
-									$this->render_offer_row( $oi, $row );
-									$oi++;
-								}
-								?>
-							</div>
+							<?php
+							// 🔒 LA BALISE OUVRANTE, LA BOUCLE ET LA FERMANTE TIENNENT SUR UNE
+							// SEULE LIGNE, et ce n'est pas de la mise en forme : `dashboard.css`
+							// masque l'en-tête de colonnes (« Nombre d'unités » / « Prix total du
+							// lot ») tant qu'aucune offre n'existe, via `:empty`. Or `:empty`
+							// compte les NŒUDS TEXTE — le seul retour à la ligne qu'il y avait ici
+							// suffisait à rendre le <div> « non vide », et la règle CSS était morte
+							// en silence : l'en-tête restait affiché au-dessus du néant.
+							// ⚠️ Ne pas ré-indenter la ligne suivante : le défaut revient, sans que
+							// rien ne le signale. Un `:has()` imbriqué aurait évité la contrainte
+							// côté CSS, mais la spécification l'interdit.
+							$oi = 0;
+							?>
+							<div class="aod-cd-offer-rows"><?php foreach ( $offers as $row ) { $this->render_offer_row( $oi, $row ); $oi++; } ?></div>
 
 							<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-offer-add" data-next="<?php echo esc_attr( (string) $oi ); ?>">+ <?php esc_html_e( 'Ajouter une offre', 'aod-client-dashboard' ); ?></button>
 

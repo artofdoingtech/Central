@@ -1,18 +1,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: AOD Client Dashboard 0.18.3\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/aod-client-"
-"dashboard\n"
-"POT-Creation-Date: 2026-08-03T10:05:15+00:00\n"
-"PO-Revision-Date: 2026-07-07T12:00:00+00:00\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/aod-client-dashboard\n"
 "Last-Translator: Art Of Doing\n"
 "Language-Team: Arabic\n"
-"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
-"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+"POT-Creation-Date: 2026-08-03T10:05:15+00:00\n"
+"PO-Revision-Date: 2026-07-07T12:00:00+00:00\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
 #. Plugin Name of the plugin
 #: aod-client-dashboard.php
@@ -27,14 +25,8 @@ msgstr ""
 
 #. Description of the plugin
 #: aod-client-dashboard.php
-msgid ""
-"Espace de gestion front-end pour le client de la boutique : commandes, "
-"produits, livraison, stats, pixels, WhatsApp — SANS accès à wp-admin. Rôle "
-"restreint + interface marquée au thème."
-msgstr ""
-"مساحة إدارة أمامية لصاحب المتجر: الطلبات، المنتجات، التوصيل، الإحصائيات، "
-"البيكسلات، واتساب — دون الوصول إلى لوحة تحكم ووردبريس. دور مقيّد + واجهة "
-"بهوية المتجر."
+msgid "Espace de gestion front-end pour le client de la boutique : commandes, produits, livraison, stats, pixels, WhatsApp — SANS accès à wp-admin. Rôle restreint + interface marquée au thème."
+msgstr "مساحة إدارة أمامية لصاحب المتجر: الطلبات، المنتجات، التوصيل، الإحصائيات، البيكسلات، واتساب — دون الوصول إلى لوحة تحكم ووردبريس. دور مقيّد + واجهة بهوية المتجر."
 
 #. Author of the plugin
 #: aod-client-dashboard.php
@@ -46,17 +38,11 @@ msgid "AOD Client Dashboard est inactif : WooCommerce est requis."
 msgstr "AOD Client Dashboard معطّل: ووكومرس مطلوب."
 
 #: aod-client-dashboard.php:91
-msgid ""
-"AOD Client Dashboard : le plugin « AOD COD Form » est recommandé. Sans lui, "
-"les commandes « Confirmées », les tarifs de livraison par wilaya et l’envoi "
-"automatique aux transporteurs ne sont pas disponibles dans l’espace de "
-"gestion."
-msgstr ""
-"AOD Client Dashboard: يُنصح بتفعيل إضافة « AOD COD Form ». بدونها، لن تتوفّر "
-"الطلبات « المؤكَّدة » وأسعار التوصيل حسب الولاية والإرسال التلقائي إلى شركات "
-"التوصيل في مساحة الإدارة."
+msgid "AOD Client Dashboard : le plugin « AOD COD Form » est recommandé. Sans lui, les commandes « Confirmées », les tarifs de livraison par wilaya et l’envoi automatique aux transporteurs ne sont pas disponibles dans l’espace de gestion."
+msgstr "AOD Client Dashboard: يُنصح بتفعيل إضافة « AOD COD Form ». بدونها، لن تتوفّر الطلبات « المؤكَّدة » وأسعار التوصيل حسب الولاية والإرسال التلقائي إلى شركات التوصيل في مساحة الإدارة."
 
-#: includes/class-aod-cd-account.php:38 includes/class-aod-cd-account.php:66
+#: includes/class-aod-cd-account.php:38
+#: includes/class-aod-cd-account.php:66
 msgid "Accès Gérant Boutique"
 msgstr "وصول مدير المتجر"
 
@@ -64,11 +50,12 @@ msgstr "وصول مدير المتجر"
 msgid "Accès Gérant"
 msgstr "وصول المدير"
 
-#: includes/class-aod-cd-account.php:52 includes/class-aod-cd-account.php:154
+#: includes/class-aod-cd-account.php:52
+#: includes/class-aod-cd-account.php:154
 #: includes/class-aod-cd-section-abandoned.php:326
-#: includes/class-aod-cd-section-abandoned.php:687
-#: includes/class-aod-cd-section-abandoned.php:717
-#: includes/class-aod-cd-section-abandoned.php:833
+#: includes/class-aod-cd-section-abandoned.php:707
+#: includes/class-aod-cd-section-abandoned.php:737
+#: includes/class-aod-cd-section-abandoned.php:853
 #: includes/class-aod-cd-section-account.php:162
 #: includes/class-aod-cd-section-account.php:225
 #: includes/class-aod-cd-section-landing.php:91
@@ -80,29 +67,33 @@ msgstr "وصول المدير"
 #: includes/class-aod-cd-section-landing.php:777
 #: includes/class-aod-cd-section-marketing.php:323
 #: includes/class-aod-cd-section-marketing.php:355
-#: includes/class-aod-cd-section-orders.php:1392
-#: includes/class-aod-cd-section-orders.php:1404
-#: includes/class-aod-cd-section-orders.php:1480
-#: includes/class-aod-cd-section-orders.php:1655
-#: includes/class-aod-cd-section-orders.php:1883
-#: includes/class-aod-cd-section-orders.php:1897
-#: includes/class-aod-cd-section-orders.php:1928
-#: includes/class-aod-cd-section-orders.php:2088
-#: includes/class-aod-cd-section-orders.php:2100
-#: includes/class-aod-cd-section-orders.php:2158
-#: includes/class-aod-cd-section-orders.php:2240
-#: includes/class-aod-cd-section-orders.php:2248
-#: includes/class-aod-cd-section-orders.php:2268
-#: includes/class-aod-cd-section-orders.php:2277
-#: includes/class-aod-cd-section-products.php:1088
-#: includes/class-aod-cd-section-products.php:1100
-#: includes/class-aod-cd-section-products.php:1104
-#: includes/class-aod-cd-section-products.php:1695
-#: includes/class-aod-cd-section-products.php:1704
-#: includes/class-aod-cd-section-products.php:1708
-#: includes/class-aod-cd-section-products.php:1749
-#: includes/class-aod-cd-section-products.php:1866
-#: includes/class-aod-cd-section-products.php:1906
+#: includes/class-aod-cd-section-orders.php:1414
+#: includes/class-aod-cd-section-orders.php:1596
+#: includes/class-aod-cd-section-orders.php:1608
+#: includes/class-aod-cd-section-orders.php:1684
+#: includes/class-aod-cd-section-orders.php:1859
+#: includes/class-aod-cd-section-orders.php:2087
+#: includes/class-aod-cd-section-orders.php:2101
+#: includes/class-aod-cd-section-orders.php:2132
+#: includes/class-aod-cd-section-orders.php:2292
+#: includes/class-aod-cd-section-orders.php:2304
+#: includes/class-aod-cd-section-orders.php:2362
+#: includes/class-aod-cd-section-orders.php:2444
+#: includes/class-aod-cd-section-orders.php:2452
+#: includes/class-aod-cd-section-orders.php:2472
+#: includes/class-aod-cd-section-orders.php:2481
+#: includes/class-aod-cd-section-products.php:1093
+#: includes/class-aod-cd-section-products.php:1105
+#: includes/class-aod-cd-section-products.php:1109
+#: includes/class-aod-cd-section-products.php:1700
+#: includes/class-aod-cd-section-products.php:1709
+#: includes/class-aod-cd-section-products.php:1713
+#: includes/class-aod-cd-section-products.php:1744
+#: includes/class-aod-cd-section-products.php:1754
+#: includes/class-aod-cd-section-products.php:1758
+#: includes/class-aod-cd-section-products.php:1852
+#: includes/class-aod-cd-section-products.php:1969
+#: includes/class-aod-cd-section-products.php:2009
 #: includes/class-aod-cd-section-shipping.php:55
 #: includes/class-aod-cd-section-shipping.php:432
 #: includes/class-aod-cd-section-shipping.php:589
@@ -111,10 +102,10 @@ msgstr "وصول المدير"
 #: includes/class-aod-cd-section-stock.php:70
 #: includes/class-aod-cd-section-stock.php:74
 #: includes/class-aod-cd-section-team.php:330
-#: includes/class-aod-cd-section-tracking.php:513
-#: includes/class-aod-cd-section-tracking.php:527
-#: includes/class-aod-cd-section-tracking.php:590
-#: includes/class-aod-cd-section-tracking.php:603
+#: includes/class-aod-cd-section-tracking.php:516
+#: includes/class-aod-cd-section-tracking.php:530
+#: includes/class-aod-cd-section-tracking.php:593
+#: includes/class-aod-cd-section-tracking.php:606
 #: includes/class-aod-cd-section-whatsapp.php:123
 #: includes/class-aod-cd-section-whatsapp.php:138
 msgid "Accès refusé."
@@ -123,23 +114,20 @@ msgstr "تم رفض الوصول."
 #. translators: %s: dashboard URL
 #: includes/class-aod-cd-account.php:71
 #, php-format
-msgid ""
-"Crée le compte que ton client utilisera pour gérer sa boutique. Il se "
-"connectera normalement puis sera dirigé vers son espace : %s — sans aucun "
-"accès au tableau de bord WordPress."
-msgstr ""
-"أنشئ الحساب الذي سيستخدمه عميلك لإدارة متجره. سيسجّل الدخول بشكل عادي ثم "
-"سيُوجَّه إلى مساحته: %s — دون أي وصول إلى لوحة تحكم ووردبريس."
+msgid "Crée le compte que ton client utilisera pour gérer sa boutique. Il se connectera normalement puis sera dirigé vers son espace : %s — sans aucun accès au tableau de bord WordPress."
+msgstr "أنشئ الحساب الذي سيستخدمه عميلك لإدارة متجره. سيسجّل الدخول بشكل عادي ثم سيُوجَّه إلى مساحته: %s — دون أي وصول إلى لوحة تحكم ووردبريس."
 
 #: includes/class-aod-cd-account.php:84
 msgid "Créer un compte gérant"
 msgstr "إنشاء حساب مدير"
 
-#: includes/class-aod-cd-account.php:90 includes/class-aod-cd-account.php:119
+#: includes/class-aod-cd-account.php:90
+#: includes/class-aod-cd-account.php:119
 msgid "Identifiant"
 msgstr "اسم المستخدم"
 
-#: includes/class-aod-cd-account.php:90 includes/class-aod-cd-account.php:102
+#: includes/class-aod-cd-account.php:90
+#: includes/class-aod-cd-account.php:102
 msgid "requis"
 msgstr "مطلوب"
 
@@ -160,9 +148,7 @@ msgid "Mot de passe"
 msgstr "كلمة المرور"
 
 #: includes/class-aod-cd-account.php:105
-msgid ""
-"Au moins 10 caractères. Un mot de passe fort est pré-rempli ; communique-le "
-"au client."
+msgid "Au moins 10 caractères. Un mot de passe fort est pré-rempli ; communique-le au client."
 msgstr "10 أحرف على الأقل. تم تعبئة كلمة مرور قوية مسبقًا؛ أرسلها إلى العميل."
 
 #: includes/class-aod-cd-account.php:109
@@ -186,14 +172,14 @@ msgid "E-mail"
 msgstr "البريد الإلكتروني"
 
 #: includes/class-aod-cd-account.php:122
-#: includes/class-aod-cd-section-products.php:278
-#: includes/class-aod-cd-section-products.php:297
-#: includes/class-aod-cd-section-tracking.php:346
+#: includes/class-aod-cd-section-products.php:279
+#: includes/class-aod-cd-section-products.php:298
+#: includes/class-aod-cd-section-tracking.php:349
 msgid "Actions"
 msgstr "إجراءات"
 
 #: includes/class-aod-cd-account.php:132
-#: includes/class-aod-cd-section-orders.php:2901
+#: includes/class-aod-cd-section-orders.php:3105
 #: includes/class-aod-cd-section-team.php:207
 msgid "Modifier"
 msgstr "تعديل"
@@ -227,30 +213,22 @@ msgstr "هذا البريد الإلكتروني مستخدم بالفعل."
 #. translators: %s: login of the created manager
 #: includes/class-aod-cd-account.php:195
 #, php-format
-msgid ""
-"Compte gérant « %s » créé. Il peut se connecter et sera dirigé vers son "
-"espace de gestion."
-msgstr ""
-"تم إنشاء حساب المدير « %s ». يمكنه تسجيل الدخول وسيُوجَّه إلى مساحة الإدارة "
-"الخاصة به."
+msgid "Compte gérant « %s » créé. Il peut se connecter et sera dirigé vers son espace de gestion."
+msgstr "تم إنشاء حساب المدير « %s ». يمكنه تسجيل الدخول وسيُوجَّه إلى مساحة الإدارة الخاصة به."
 
-#: includes/class-aod-cd-customize.php:98
+#: includes/class-aod-cd-customize.php:437
 msgid "Espace de gestion"
 msgstr "مساحة الإدارة"
 
-#: includes/class-aod-cd-customize.php:99
-msgid ""
-"Couleur d’accent de l’espace gérant (/gestion). Le logo et le nom viennent "
-"de « Identité du site »."
-msgstr ""
-"لون التمييز الخاص بمساحة الإدارة (/gestion). يأتي الشعار والاسم من «هوية "
-"الموقع»."
+#: includes/class-aod-cd-customize.php:438
+msgid "Couleur d’accent de l’espace gérant (/gestion). Le logo et le nom viennent de « Identité du site »."
+msgstr "لون التمييز الخاص بمساحة الإدارة (/gestion). يأتي الشعار والاسم من «هوية الموقع»."
 
-#: includes/class-aod-cd-customize.php:118
+#: includes/class-aod-cd-customize.php:457
 msgid "Couleur d’accent"
 msgstr "لون التمييز"
 
-#: includes/class-aod-cd-customize.php:119
+#: includes/class-aod-cd-customize.php:458
 msgid "Boutons, éléments actifs, points forts de l’interface de gestion."
 msgstr "الأزرار والعناصر النشطة والنقاط البارزة في واجهة الإدارة."
 
@@ -259,7 +237,7 @@ msgid "Accueil"
 msgstr "الرئيسية"
 
 #: includes/class-aod-cd-dashboard.php:48
-#: includes/class-aod-cd-section-orders.php:148
+#: includes/class-aod-cd-section-orders.php:167
 #: includes/class-aod-cd-section-team.php:65
 msgid "Commandes"
 msgstr "الطلبات"
@@ -271,31 +249,31 @@ msgid "Commandes abandonnées"
 msgstr "الطلبات المهجورة"
 
 #: includes/class-aod-cd-dashboard.php:50
-#: includes/class-aod-cd-section-orders.php:2943
-#: includes/class-aod-cd-section-products.php:237
+#: includes/class-aod-cd-section-orders.php:3147
+#: includes/class-aod-cd-section-products.php:238
 msgid "Produits"
 msgstr "المنتجات"
 
 #: includes/class-aod-cd-dashboard.php:51
-#: includes/class-aod-cd-section-products.php:276
-#: includes/class-aod-cd-section-products.php:291
+#: includes/class-aod-cd-section-products.php:277
+#: includes/class-aod-cd-section-products.php:292
 #: includes/class-aod-cd-section-stock.php:485
 #: includes/class-aod-cd-section-team.php:67
 msgid "Stock"
 msgstr "المخزون"
 
 #: includes/class-aod-cd-dashboard.php:52
-#: includes/class-aod-cd-section-products.php:95
-#: includes/class-aod-cd-section-products.php:490
+#: includes/class-aod-cd-section-products.php:96
+#: includes/class-aod-cd-section-products.php:495
 msgid "Catégories"
 msgstr "الفئات"
 
 #: includes/class-aod-cd-dashboard.php:53
-#: includes/class-aod-cd-dashboard.php:201
-#: includes/class-aod-cd-section-abandoned.php:545
-#: includes/class-aod-cd-section-abandoned.php:636
+#: includes/class-aod-cd-section-abandoned.php:551
+#: includes/class-aod-cd-section-abandoned.php:656
 #: includes/class-aod-cd-section-home.php:488
-#: includes/class-aod-cd-section-orders.php:2920
+#: includes/class-aod-cd-section-orders.php:1341
+#: includes/class-aod-cd-section-orders.php:3124
 #: includes/class-aod-cd-section-shipping.php:135
 msgid "Livraison"
 msgstr "التوصيل"
@@ -311,9 +289,11 @@ msgid "Pixels & Tracking"
 msgstr "البيكسلات والتتبّع"
 
 #: includes/class-aod-cd-dashboard.php:56
-#: includes/class-aod-cd-section-abandoned.php:613
-#: includes/class-aod-cd-section-orders.php:529
-#: includes/class-aod-cd-section-orders.php:2915
+#: includes/class-aod-cd-section-abandoned.php:631
+#: includes/class-aod-cd-section-abandoned.php:632
+#: includes/class-aod-cd-section-orders.php:585
+#: includes/class-aod-cd-section-orders.php:586
+#: includes/class-aod-cd-section-orders.php:3119
 #: includes/class-aod-cd-section-whatsapp.php:61
 msgid "WhatsApp"
 msgstr "واتساب"
@@ -330,7 +310,7 @@ msgstr "حسابي"
 
 #: includes/class-aod-cd-dashboard.php:172
 #: includes/class-aod-cd-section-landing.php:112
-#: includes/class-aod-cd-section-products.php:303
+#: includes/class-aod-cd-section-products.php:304
 msgid "Page de vente"
 msgstr "صفحة البيع"
 
@@ -346,12 +326,7 @@ msgstr "المبيعات"
 msgid "Catalogue"
 msgstr "الكتالوج"
 
-#. Intitulé du DOMAINE qui contient les sections « Livraison » et « Suivi
-#. commande ». Volontairement distinct de « Livraison » (التوصيل) : le domaine ne
-#. doit pas porter le nom de sa propre section, sinon la barre latérale affiche
-#. deux fois le même mot sur deux lignes qui se touchent. الشحن = l'expédition
-#. (l'acte d'envoyer), التوصيل = la livraison (l'acheminement au client).
-#: includes/class-aod-cd-dashboard.php:216
+#: includes/class-aod-cd-dashboard.php:201
 msgid "Expédition"
 msgstr "الشحن"
 
@@ -378,8 +353,7 @@ msgid "Gestion"
 msgstr "الإدارة"
 
 #: includes/class-aod-cd-dashboard.php:333
-msgid ""
-"Supprimer cette catégorie ? Les produits concernés perdront ce classement."
+msgid "Supprimer cette catégorie ? Les produits concernés perdront ce classement."
 msgstr "حذف هذه الفئة؟ ستفقد المنتجات المعنية هذا التصنيف."
 
 #: includes/class-aod-cd-dashboard.php:334
@@ -429,8 +403,8 @@ msgstr "لا يوجد تخفيض (سيُهمَل)"
 #: includes/class-aod-cd-dashboard.php:349
 #: includes/class-aod-cd-dashboard.php:372
 #: includes/class-aod-cd-dashboard.php:395
-#: includes/class-aod-cd-section-orders.php:2859
-#: includes/class-aod-cd-section-products.php:722
+#: includes/class-aod-cd-section-orders.php:3063
+#: includes/class-aod-cd-section-products.php:727
 #: includes/class-aod-cd-section-team.php:306
 msgid "Annuler"
 msgstr "إلغاء"
@@ -440,8 +414,8 @@ msgid "Colis créé"
 msgstr "تم إنشاء الطرد"
 
 #: includes/class-aod-cd-dashboard.php:351
-#: includes/class-aod-cd-section-products.php:491
-#: includes/class-aod-cd-section-products.php:493
+#: includes/class-aod-cd-section-products.php:496
+#: includes/class-aod-cd-section-products.php:498
 msgid "Sélectionner des catégories"
 msgstr "اختر الفئات"
 
@@ -450,17 +424,13 @@ msgid "Nouveau"
 msgstr "جديد"
 
 #: includes/class-aod-cd-dashboard.php:353
-#: includes/class-aod-cd-section-products.php:630
+#: includes/class-aod-cd-section-products.php:635
 msgid "Retirer cette photo"
 msgstr "إزالة هذه الصورة"
 
 #: includes/class-aod-cd-dashboard.php:354
-msgid ""
-"Dernière confirmation : supprimer définitivement TOUS les produits et TOUTES "
-"les commandes ? Cette action est irréversible."
-msgstr ""
-"تأكيد أخير: هل تريد حذف جميع المنتجات وجميع الطلبات نهائيًا؟ هذا الإجراء لا "
-"يمكن التراجع عنه."
+msgid "Dernière confirmation : supprimer définitivement TOUS les produits et TOUTES les commandes ? Cette action est irréversible."
+msgstr "تأكيد أخير: هل تريد حذف جميع المنتجات وجميع الطلبات نهائيًا؟ هذا الإجراء لا يمكن التراجع عنه."
 
 #: includes/class-aod-cd-dashboard.php:355
 msgid "Réinitialisation en cours… ne fermez pas cette page."
@@ -472,16 +442,12 @@ msgstr "تمت إعادة تهيئة المتجر."
 
 #: includes/class-aod-cd-dashboard.php:357
 #, php-format
-msgid ""
-"Supprimer définitivement %d commande(s) sélectionnée(s) ? Cette action est "
-"irréversible."
+msgid "Supprimer définitivement %d commande(s) sélectionnée(s) ? Cette action est irréversible."
 msgstr "حذف %d طلب محدد نهائيًا؟ هذا الإجراء لا يمكن التراجع عنه."
 
 #: includes/class-aod-cd-dashboard.php:358
 #, php-format
-msgid ""
-"Supprimer définitivement %d prospect(s) sélectionné(s) ? Cette action est "
-"irréversible."
+msgid "Supprimer définitivement %d prospect(s) sélectionné(s) ? Cette action est irréversible."
 msgstr "حذف %d عميل محتمل محدَّد نهائيًا؟ لا يمكن التراجع عن هذا الإجراء."
 
 #: includes/class-aod-cd-dashboard.php:360
@@ -491,12 +457,8 @@ msgstr "(%d مسندة مسبقًا، تم تجاهلها)"
 
 #: includes/class-aod-cd-dashboard.php:361
 #, php-format
-msgid ""
-"%d commande(s) sélectionnée(s) sont DÉJÀ assignées à un confirmateur. Les "
-"lui retirer pour les réassigner ?"
-msgstr ""
-"%d طلب(ات) محددة مسندة مسبقًا إلى مسؤول تأكيد. هل تريد سحبها منه وإعادة "
-"إسنادها؟"
+msgid "%d commande(s) sélectionnée(s) sont DÉJÀ assignées à un confirmateur. Les lui retirer pour les réassigner ?"
+msgstr "%d طلب(ات) محددة مسندة مسبقًا إلى مسؤول تأكيد. هل تريد سحبها منه وإعادة إسنادها؟"
 
 #: includes/class-aod-cd-dashboard.php:363
 #, php-format
@@ -526,7 +488,7 @@ msgid "Transporteur par défaut"
 msgstr "شركة التوصيل الافتراضية"
 
 #: includes/class-aod-cd-dashboard.php:371
-#: includes/class-aod-cd-section-orders.php:900
+#: includes/class-aod-cd-section-orders.php:958
 msgid "Envoyer"
 msgstr "إرسال"
 
@@ -558,9 +520,7 @@ msgstr "إغلاق"
 
 #: includes/class-aod-cd-dashboard.php:379
 #, php-format
-msgid ""
-"Sélection trop grande : %1$d commandes pour un maximum de %2$d. Réduisez la "
-"sélection."
+msgid "Sélection trop grande : %1$d commandes pour un maximum de %2$d. Réduisez la sélection."
 msgstr "التحديد كبير جدًا: %1$d طلبًا بحد أقصى %2$d. قلّل التحديد."
 
 #: includes/class-aod-cd-dashboard.php:380
@@ -569,19 +529,17 @@ msgstr "لا يوجد بين هذه الطلبات ما يمكن إرساله."
 
 #: includes/class-aod-cd-dashboard.php:382
 #, php-format
-msgid ""
-"%d commande(s) portent une note pour le livreur que le transporteur choisi "
-"ne recevra PAS."
+msgid "%d commande(s) portent une note pour le livreur que le transporteur choisi ne recevra PAS."
 msgstr "%d طلب/طلبات تحمل ملاحظة للموصِّل لن يستلمها شركة التوصيل المختارة."
 
 #: includes/class-aod-cd-dashboard.php:383
-#: includes/class-aod-cd-section-orders.php:2777
+#: includes/class-aod-cd-section-orders.php:2981
 msgid "Retirer"
 msgstr "إزالة"
 
 #: includes/class-aod-cd-dashboard.php:384
-#: includes/class-aod-cd-section-orders.php:2801
-#: includes/class-aod-cd-section-products.php:665
+#: includes/class-aod-cd-section-orders.php:3005
+#: includes/class-aod-cd-section-products.php:670
 msgid "Quantité"
 msgstr "الكمية"
 
@@ -611,26 +569,27 @@ msgstr "جارٍ الاستيراد…"
 
 #. translators: %d : nombre de wilayas agrégées hors top 10.
 #: includes/class-aod-cd-dashboard.php:391
-#: includes/class-aod-cd-section-abandoned.php:544
-#: includes/class-aod-cd-section-abandoned.php:629
-#: includes/class-aod-cd-section-home.php:1726
-#: includes/class-aod-cd-section-home.php:1736
-#: includes/class-aod-cd-section-home.php:1752
-#: includes/class-aod-cd-section-orders.php:424
-#: includes/class-aod-cd-section-orders.php:534
-#: includes/class-aod-cd-section-orders.php:2696
+#: includes/class-aod-cd-section-abandoned.php:550
+#: includes/class-aod-cd-section-abandoned.php:649
+#: includes/class-aod-cd-section-home.php:1857
+#: includes/class-aod-cd-section-home.php:1867
+#: includes/class-aod-cd-section-home.php:1883
+#: includes/class-aod-cd-section-orders.php:459
+#: includes/class-aod-cd-section-orders.php:592
+#: includes/class-aod-cd-section-orders.php:1338
+#: includes/class-aod-cd-section-orders.php:2900
 #: includes/class-aod-cd-section-shipping.php:181
 #: includes/class-aod-cd-section-shipping.php:212
 msgid "Wilaya"
 msgstr "الولاية"
 
 #: includes/class-aod-cd-dashboard.php:392
-#: includes/class-aod-cd-section-abandoned.php:637
+#: includes/class-aod-cd-section-abandoned.php:657
 msgid "Domicile"
 msgstr "المنزل"
 
 #: includes/class-aod-cd-dashboard.php:393
-#: includes/class-aod-cd-section-abandoned.php:637
+#: includes/class-aod-cd-section-abandoned.php:657
 msgid "Stop-desk"
 msgstr "مكتب التوصيل"
 
@@ -651,12 +610,8 @@ msgid "Aucun tarif reçu."
 msgstr "لم يُستلَم أي سعر."
 
 #: includes/class-aod-cd-dashboard.php:399
-msgid ""
-"Appliquer les tarifs importés aux wilayas cochées ? Les tarifs actuels "
-"seront sauvegardés (restaurables)."
-msgstr ""
-"تطبيق الأسعار المستوردة على الولايات المحدّدة؟ سيتم حفظ الأسعار الحالية (يمكن "
-"استعادتها)."
+msgid "Appliquer les tarifs importés aux wilayas cochées ? Les tarifs actuels seront sauvegardés (restaurables)."
+msgstr "تطبيق الأسعار المستوردة على الولايات المحدّدة؟ سيتم حفظ الأسعار الحالية (يمكن استعادتها)."
 
 #: includes/class-aod-cd-dashboard.php:400
 msgid "Restaurer les tarifs précédents ? L’import le plus récent sera annulé."
@@ -676,7 +631,7 @@ msgstr "حذف هذا القسم؟ سيُفقد محتواه."
 
 #: includes/class-aod-cd-dashboard.php:404
 #: includes/class-aod-cd-section-landing.php:444
-#: includes/class-aod-cd-section-products.php:614
+#: includes/class-aod-cd-section-products.php:619
 msgid "Aucune image"
 msgstr "لا توجد صورة"
 
@@ -718,11 +673,8 @@ msgid "Ou choisir un fichier vidéo depuis mon PC"
 msgstr "أو اختَر ملف فيديو من جهازك"
 
 #: includes/class-aod-cd-dashboard.php:414
-msgid ""
-"Le lien YouTube reste léger (rien n’est chargé avant le clic). Un fichier "
-"est hébergé sur votre site."
-msgstr ""
-"رابط يوتيوب يبقى خفيفًا (لا يُحمَّل شيء قبل النقر)، أمّا الملف فيُستضاف على موقعك."
+msgid "Le lien YouTube reste léger (rien n’est chargé avant le clic). Un fichier est hébergé sur votre site."
+msgstr "رابط يوتيوب يبقى خفيفًا (لا يُحمَّل شيء قبل النقر)، أمّا الملف فيُستضاف على موقعك."
 
 #: includes/class-aod-cd-dashboard.php:415
 msgid "Lien YouTube non reconnu."
@@ -744,19 +696,16 @@ msgstr "التأكيد"
 
 #. translators: %s : poids maximal accepté, déjà formaté.
 #. translators: %s : poids maximal accepté, déjà formaté (ex. « 2 Mo »).
-#: includes/class-aod-cd-dashboard.php:427 includes/class-aod-cd-upload.php:139
+#: includes/class-aod-cd-dashboard.php:427
+#: includes/class-aod-cd-upload.php:139
 #, php-format
 msgid "Fichier trop lourd : %s au maximum."
 msgstr "الملف ثقيل جدًّا: %s كحدٍّ أقصى."
 
 #. translators: %s : poids maximal accepté, déjà formaté.
 #: includes/class-aod-cd-dashboard.php:428
-msgid ""
-"Remplacer les blocs actuels par ceux de l’autre produit ? Le travail en "
-"cours sur cette page sera perdu."
-msgstr ""
-"هل تريد استبدال الأقسام الحالية بأقسام المنتج الآخر؟ سيضيع العمل الجاري على "
-"هذه الصفحة."
+msgid "Remplacer les blocs actuels par ceux de l’autre produit ? Le travail en cours sur cette page sera perdu."
+msgstr "هل تريد استبدال الأقسام الحالية بأقسام المنتج الآخر؟ سيضيع العمل الجاري على هذه الصفحة."
 
 #: includes/class-aod-cd-dashboard.php:441
 msgid "Menu"
@@ -782,9 +731,7 @@ msgid "Produits : %d"
 msgstr "المنتجات : %d"
 
 #: includes/class-aod-cd-dashboard.php:543
-msgid ""
-"Aucune section ne vous est attribuée pour le moment. Contactez le gérant de "
-"la boutique."
+msgid "Aucune section ne vous est attribuée pour le moment. Contactez le gérant de la boutique."
 msgstr "لم يتم إسناد أي قسم إليك حتى الآن. يرجى التواصل مع صاحب المتجر."
 
 #: includes/class-aod-cd-dashboard.php:664
@@ -792,9 +739,9 @@ msgid "Rechercher"
 msgstr "بحث"
 
 #: includes/class-aod-cd-dashboard.php:667
-#: includes/class-aod-cd-section-abandoned.php:494
-#: includes/class-aod-cd-section-orders.php:211
-#: includes/class-aod-cd-section-tracking.php:307
+#: includes/class-aod-cd-section-abandoned.php:497
+#: includes/class-aod-cd-section-orders.php:239
+#: includes/class-aod-cd-section-tracking.php:310
 msgid "Réinitialiser"
 msgstr "إعادة تعيين"
 
@@ -803,38 +750,38 @@ msgid "Pagination"
 msgstr "ترقيم الصفحات"
 
 #: includes/class-aod-cd-dashboard.php:833
-#: includes/class-aod-cd-section-home.php:958
+#: includes/class-aod-cd-section-home.php:1018
 #: includes/class-aod-cd-section-stock.php:723
 msgid "Du"
 msgstr "من"
 
 #: includes/class-aod-cd-dashboard.php:835
-#: includes/class-aod-cd-section-home.php:962
+#: includes/class-aod-cd-section-home.php:1022
 #: includes/class-aod-cd-section-stock.php:727
 msgid "Au"
 msgstr "إلى"
 
 #. translators: %s : libellé du champ (ex. « Titre »).
-#: includes/class-aod-cd-dashboard.php:1019
+#: includes/class-aod-cd-dashboard.php:1023
 #, php-format
 msgid "%s — français"
 msgstr "%s — بالفرنسية"
 
 #. translators: %s : libellé du champ (ex. « Titre »).
-#: includes/class-aod-cd-dashboard.php:1021
+#: includes/class-aod-cd-dashboard.php:1025
 #, php-format
 msgid "%s — arabe"
 msgstr "%s — بالعربية"
 
-#: includes/class-aod-cd-dashboard.php:1056
+#: includes/class-aod-cd-dashboard.php:1060
 msgid "Français"
 msgstr "الفرنسية"
 
-#: includes/class-aod-cd-dashboard.php:1064
+#: includes/class-aod-cd-dashboard.php:1068
 msgid "العربية"
 msgstr "العربية"
 
-#: includes/class-aod-cd-dashboard.php:1081
+#: includes/class-aod-cd-dashboard.php:1085
 msgid "Cette section arrive bientôt."
 msgstr "هذا القسم قريبًا."
 
@@ -848,10 +795,10 @@ msgstr "إدارة المتجر"
 
 #: includes/class-aod-cd-roles.php:131
 #: includes/class-aod-cd-section-abandoned.php:483
-#: includes/class-aod-cd-section-home.php:948
-#: includes/class-aod-cd-section-home.php:2151
-#: includes/class-aod-cd-section-orders.php:200
-#: includes/class-aod-cd-section-tracking.php:295
+#: includes/class-aod-cd-section-home.php:1008
+#: includes/class-aod-cd-section-home.php:2282
+#: includes/class-aod-cd-section-orders.php:221
+#: includes/class-aod-cd-section-tracking.php:298
 msgid "Confirmateur"
 msgstr "مسؤول التأكيد"
 
@@ -860,12 +807,8 @@ msgid "Admin"
 msgstr "المدير"
 
 #: includes/class-aod-cd-section-abandoned.php:213
-msgid ""
-"Montant approché : le choix de variante n’est pas mémorisé par un panier "
-"abandonné, le supplément éventuel n’est donc pas compté."
-msgstr ""
-"مبلغ تقريبي: السلة المتروكة لا تحفظ اختيار المتغيّر، لذا لا يُحتسب الفارق في "
-"السعر إن وُجد."
+msgid "Montant approché : le choix de variante n’est pas mémorisé par un panier abandonné, le supplément éventuel n’est donc pas compté."
+msgstr "مبلغ تقريبي: السلة المتروكة لا تحفظ اختيار المتغيّر، لذا لا يُحتسب الفارق في السعر إن وُجد."
 
 #: includes/class-aod-cd-section-abandoned.php:214
 msgid "≈"
@@ -873,32 +816,32 @@ msgstr "≈"
 
 #: includes/class-aod-cd-section-abandoned.php:222
 #: includes/class-aod-cd-section-abandoned.php:286
-#: includes/class-aod-cd-section-orders.php:742
-#: includes/class-aod-cd-section-orders.php:1559
+#: includes/class-aod-cd-section-orders.php:800
+#: includes/class-aod-cd-section-orders.php:1763
 msgid "Non assignée"
 msgstr "غير مسندة"
 
 #: includes/class-aod-cd-section-abandoned.php:277
 #: includes/class-aod-cd-section-abandoned.php:349
-#: includes/class-aod-cd-section-abandoned.php:690
-#: includes/class-aod-cd-section-abandoned.php:836
+#: includes/class-aod-cd-section-abandoned.php:710
+#: includes/class-aod-cd-section-abandoned.php:856
 msgid "Le module de commande COD n’est pas actif."
 msgstr "وحدة الطلب عند الاستلام غير مفعّلة."
 
 #: includes/class-aod-cd-section-abandoned.php:283
-#: includes/class-aod-cd-section-abandoned.php:697
-#: includes/class-aod-cd-section-abandoned.php:702
+#: includes/class-aod-cd-section-abandoned.php:717
+#: includes/class-aod-cd-section-abandoned.php:722
 msgid "Prospect introuvable."
 msgstr "العميل المحتمل غير موجود."
 
 #: includes/class-aod-cd-section-abandoned.php:290
-#: includes/class-aod-cd-section-orders.php:1564
-#: includes/class-aod-cd-section-orders.php:1661
+#: includes/class-aod-cd-section-orders.php:1768
+#: includes/class-aod-cd-section-orders.php:1865
 msgid "Confirmateur invalide."
 msgstr "مُؤكِّد غير صالح."
 
 #: includes/class-aod-cd-section-abandoned.php:338
-#: includes/class-aod-cd-section-orders.php:1497
+#: includes/class-aod-cd-section-orders.php:1701
 msgid "Assignation mise à jour."
 msgstr "تم تحديث الإسناد."
 
@@ -915,20 +858,16 @@ msgid "Abandonnés"
 msgstr "مهجورة"
 
 #: includes/class-aod-cd-section-abandoned.php:406
-#: includes/class-aod-cd-section-abandoned.php:603
-#: includes/class-aod-cd-section-orders.php:923
+#: includes/class-aod-cd-section-abandoned.php:609
+#: includes/class-aod-cd-section-orders.php:981
 msgid "En cours"
 msgstr "قيد المعالجة"
 
 #. translators: %d = nombre de prospects devenus commandes.
 #: includes/class-aod-cd-section-abandoned.php:433
 #, php-format
-msgid ""
-"Un visiteur a rempli le formulaire sans valider. %d a déjà été récupéré en "
-"commande."
-msgid_plural ""
-"Un visiteur a rempli le formulaire sans valider. %d ont déjà été récupérés "
-"en commande."
+msgid "Un visiteur a rempli le formulaire sans valider. %d a déjà été récupéré en commande."
+msgid_plural "Un visiteur a rempli le formulaire sans valider. %d ont déjà été récupérés en commande."
 msgstr[0] "ملأ زائرٌ النموذج دون تأكيد الطلب. لم يُسترجَع أيّ طلب بعد."
 msgstr[1] "ملأ زائرٌ النموذج دون تأكيد الطلب. تم استرجاع طلب واحد منها."
 msgstr[2] "ملأ زائرٌ النموذج دون تأكيد الطلب. تم استرجاع طلبين منها."
@@ -937,18 +876,15 @@ msgstr[4] "ملأ زائرٌ النموذج دون تأكيد الطلب. تم �
 msgstr[5] "ملأ زائرٌ النموذج دون تأكيد الطلب. تم استرجاع %d طلب منها."
 
 #: includes/class-aod-cd-section-abandoned.php:436
-msgid ""
-"Un visiteur a rempli le formulaire de commande sans cliquer « Commander ». "
-"Rappelez-le tant qu’il est chaud."
-msgstr ""
-"ملأ زائرٌ نموذج الطلب دون الضغط على «اطلب الآن». عاود الاتصال به ما دام مهتمًّا."
+msgid "Un visiteur a rempli le formulaire de commande sans cliquer « Commander ». Rappelez-le tant qu’il est chaud."
+msgstr "ملأ زائرٌ نموذج الطلب دون الضغط على «اطلب الآن». عاود الاتصال به ما دام مهتمًّا."
 
 #: includes/class-aod-cd-section-abandoned.php:445
-#: includes/class-aod-cd-section-abandoned.php:492
-#: includes/class-aod-cd-section-home.php:968
-#: includes/class-aod-cd-section-orders.php:209
+#: includes/class-aod-cd-section-abandoned.php:495
+#: includes/class-aod-cd-section-home.php:1028
+#: includes/class-aod-cd-section-orders.php:237
 #: includes/class-aod-cd-section-stock.php:733
-#: includes/class-aod-cd-section-tracking.php:305
+#: includes/class-aod-cd-section-tracking.php:308
 msgid "Filtrer"
 msgstr "تصفية"
 
@@ -956,167 +892,165 @@ msgstr "تصفية"
 msgid "Rechercher : nom, téléphone…"
 msgstr "ابحث: الاسم، الهاتف…"
 
-#: includes/class-aod-cd-section-abandoned.php:485
-#: includes/class-aod-cd-section-home.php:950
-#: includes/class-aod-cd-section-orders.php:202
-#: includes/class-aod-cd-section-tracking.php:297
+#: includes/class-aod-cd-section-abandoned.php:488
+#: includes/class-aod-cd-section-home.php:1010
+#: includes/class-aod-cd-section-orders.php:230
+#: includes/class-aod-cd-section-tracking.php:300
 msgid "Tous les confirmateurs"
 msgstr "كل مسؤولي التأكيد"
 
-#: includes/class-aod-cd-section-abandoned.php:502
+#: includes/class-aod-cd-section-abandoned.php:505
 msgid "Aucun résultat pour cette recherche."
 msgstr "لا نتائج لهذا البحث."
 
-#: includes/class-aod-cd-section-abandoned.php:502
+#: includes/class-aod-cd-section-abandoned.php:505
 msgid "Aucun panier abandonné pour le moment."
 msgstr "لا سلال مهجورة حاليًا."
 
-#: includes/class-aod-cd-section-abandoned.php:528
+#: includes/class-aod-cd-section-abandoned.php:531
 msgid "sélectionné(s)"
 msgstr "محدَّد"
 
-#: includes/class-aod-cd-section-abandoned.php:531
-#: includes/class-aod-cd-section-orders.php:405
-#: includes/class-aod-cd-section-products.php:307
+#: includes/class-aod-cd-section-abandoned.php:534
+#: includes/class-aod-cd-section-orders.php:433
+#: includes/class-aod-cd-section-products.php:312
 #: includes/class-aod-cd-section-team.php:211
 msgid "Supprimer"
 msgstr "حذف"
 
-#: includes/class-aod-cd-section-products.php:309
+#: includes/class-aod-cd-section-products.php:311
 msgid "Dupliquer"
 msgstr "نسخ"
 
-#. Export CSV des commandes (2026-08-04).
-#: includes/class-aod-cd-section-orders.php:160
+#: includes/class-aod-cd-section-orders.php:170
 msgid "Exporter en CSV"
 msgstr "تصدير CSV"
 
-#. En-tête de la 1re colonne du CSV.
-#: includes/class-aod-cd-section-orders.php:1268
+#: includes/class-aod-cd-section-orders.php:1330
 msgid "N° commande"
 msgstr "رقم الطلب"
 
-#. Suffixe ajouté au titre de la copie, en FR *et* en AR (méta `_aod_title_ar`) :
-#. sans lui, l'original et sa copie sont indiscernables dans la langue concernée.
-#: includes/class-aod-cd-section-products.php:1760
-#: includes/class-aod-cd-section-products.php:1789
+#: includes/class-aod-cd-section-products.php:1791
+#: includes/class-aod-cd-section-products.php:1806
 msgid "(copie)"
 msgstr "(نسخة)"
 
-#: includes/class-aod-cd-section-products.php:1795
+#: includes/class-aod-cd-section-products.php:1811
 msgid "Produit dupliqué. La copie est un brouillon : relis-la avant de la publier."
 msgstr "تم نسخ المنتج. النسخة مسودة: راجعها قبل نشرها."
 
-#: includes/class-aod-cd-section-products.php:1752
+#: includes/class-aod-cd-section-products.php:1777
 msgid "La duplication a échoué."
 msgstr "فشل النسخ."
 
-#: includes/class-aod-cd-section-products.php:1740
+#: includes/class-aod-cd-section-products.php:1769
 msgid "La duplication n'est pas disponible sur cette installation."
 msgstr "النسخ غير متاح في هذا التثبيت."
 
-#: includes/class-aod-cd-section-abandoned.php:538
-#: includes/class-aod-cd-section-orders.php:413
+#: includes/class-aod-cd-section-abandoned.php:541
+#: includes/class-aod-cd-section-orders.php:441
 msgid "Tout sélectionner"
 msgstr "تحديد الكل"
 
-#: includes/class-aod-cd-section-abandoned.php:541
-#: includes/class-aod-cd-section-abandoned.php:599
+#: includes/class-aod-cd-section-abandoned.php:547
+#: includes/class-aod-cd-section-abandoned.php:605
 msgid "Quand"
 msgstr "متى"
 
-#: includes/class-aod-cd-section-abandoned.php:542
-#: includes/class-aod-cd-section-abandoned.php:607
-#: includes/class-aod-cd-section-orders.php:423
-#: includes/class-aod-cd-section-orders.php:500
-#: includes/class-aod-cd-section-orders.php:2908
+#: includes/class-aod-cd-section-abandoned.php:548
+#: includes/class-aod-cd-section-abandoned.php:613
+#: includes/class-aod-cd-section-orders.php:458
+#: includes/class-aod-cd-section-orders.php:535
+#: includes/class-aod-cd-section-orders.php:1336
+#: includes/class-aod-cd-section-orders.php:3112
 #: includes/class-aod-cd-section-tracking.php:192
-#: includes/class-aod-cd-section-tracking.php:334
+#: includes/class-aod-cd-section-tracking.php:337
 msgid "Client"
 msgstr "الزبون"
 
-#: includes/class-aod-cd-section-abandoned.php:543
-#: includes/class-aod-cd-section-abandoned.php:627
-#: includes/class-aod-cd-section-home.php:932
-#: includes/class-aod-cd-section-home.php:1249
-#: includes/class-aod-cd-section-products.php:274
-#: includes/class-aod-cd-section-products.php:288
+#: includes/class-aod-cd-section-abandoned.php:549
+#: includes/class-aod-cd-section-abandoned.php:647
+#: includes/class-aod-cd-section-home.php:992
+#: includes/class-aod-cd-section-home.php:1360
+#: includes/class-aod-cd-section-products.php:275
+#: includes/class-aod-cd-section-products.php:289
 #: includes/class-aod-cd-section-stock.php:513
 #: includes/class-aod-cd-section-stock.php:837
 msgid "Produit"
 msgstr "المنتج"
 
-#: includes/class-aod-cd-section-abandoned.php:546
-#: includes/class-aod-cd-section-abandoned.php:640
-#: includes/class-aod-cd-section-orders.php:2945
+#: includes/class-aod-cd-section-abandoned.php:552
+#: includes/class-aod-cd-section-abandoned.php:660
+#: includes/class-aod-cd-section-orders.php:3149
 msgid "Qté"
 msgstr "الكمية"
 
-#: includes/class-aod-cd-section-abandoned.php:550
-#: includes/class-aod-cd-section-abandoned.php:641
+#: includes/class-aod-cd-section-abandoned.php:556
+#: includes/class-aod-cd-section-abandoned.php:661
 msgid "Montant"
 msgstr "المبلغ"
 
-#: includes/class-aod-cd-section-abandoned.php:555
-#: includes/class-aod-cd-section-abandoned.php:656
-#: includes/class-aod-cd-section-orders.php:436
-#: includes/class-aod-cd-section-orders.php:554
+#: includes/class-aod-cd-section-abandoned.php:561
+#: includes/class-aod-cd-section-abandoned.php:676
+#: includes/class-aod-cd-section-orders.php:471
+#: includes/class-aod-cd-section-orders.php:612
+#: includes/class-aod-cd-section-orders.php:1352
 #: includes/class-aod-cd-section-tracking.php:199
-#: includes/class-aod-cd-section-tracking.php:340
+#: includes/class-aod-cd-section-tracking.php:343
 msgid "Assigné à"
 msgstr "مسند إلى"
 
-#: includes/class-aod-cd-section-abandoned.php:595
+#: includes/class-aod-cd-section-abandoned.php:601
 msgid "Sélectionner ce prospect"
 msgstr "تحديد هذا العميل المحتمل"
 
-#: includes/class-aod-cd-section-abandoned.php:602
+#: includes/class-aod-cd-section-abandoned.php:608
 msgid "Abandonné"
 msgstr "مهجور"
 
-#: includes/class-aod-cd-section-abandoned.php:612
-#: includes/class-aod-cd-section-orders.php:528
-#: includes/class-aod-cd-section-orders.php:2914
+#: includes/class-aod-cd-section-abandoned.php:627
+#: includes/class-aod-cd-section-abandoned.php:628
+#: includes/class-aod-cd-section-orders.php:581
+#: includes/class-aod-cd-section-orders.php:582
+#: includes/class-aod-cd-section-orders.php:3118
 msgid "Appeler"
 msgstr "اتصال"
 
-#: includes/class-aod-cd-section-abandoned.php:621
+#: includes/class-aod-cd-section-abandoned.php:641
 msgid "Commander"
 msgstr "إنشاء الطلب"
 
-#: includes/class-aod-cd-section-abandoned.php:710
-msgid ""
-"Ce prospect n’a pas de numéro de téléphone : impossible de créer une "
-"commande."
+#: includes/class-aod-cd-section-abandoned.php:730
+msgid "Ce prospect n’a pas de numéro de téléphone : impossible de créer une commande."
 msgstr "لا يملك هذا العميل المحتمل رقم هاتف: يتعذّر إنشاء طلب."
 
-#: includes/class-aod-cd-section-abandoned.php:723
-#: includes/class-aod-cd-section-abandoned.php:742
+#: includes/class-aod-cd-section-abandoned.php:743
+#: includes/class-aod-cd-section-abandoned.php:762
 msgid "Ce prospect a déjà été converti en commande."
 msgstr "تم بالفعل تحويل هذا العميل المحتمل إلى طلب."
 
-#: includes/class-aod-cd-section-abandoned.php:733
+#: includes/class-aod-cd-section-abandoned.php:753
 msgid "Conversion déjà en cours pour ce prospect."
 msgstr "التحويل جارٍ بالفعل لهذا العميل المحتمل."
 
-#: includes/class-aod-cd-section-abandoned.php:760
+#: includes/class-aod-cd-section-abandoned.php:780
 msgid "La commande n’a pas pu être créée."
 msgstr "تعذّر إنشاء الطلب."
 
-#: includes/class-aod-cd-section-abandoned.php:767
+#: includes/class-aod-cd-section-abandoned.php:787
 msgid "Commande créée. Complétez-la, puis validez le statut."
 msgstr "تم إنشاء الطلب. أكمِله ثم أكّد الحالة."
 
-#: includes/class-aod-cd-section-abandoned.php:842
+#: includes/class-aod-cd-section-abandoned.php:862
 msgid "Aucun prospect sélectionné."
 msgstr "لم يُحدَّد أي عميل محتمل."
 
-#: includes/class-aod-cd-section-abandoned.php:853
+#: includes/class-aod-cd-section-abandoned.php:873
 msgid "Aucun prospect n’a pu être supprimé."
 msgstr "تعذّر حذف أي عميل محتمل."
 
 #. translators: %d: nombre de prospects supprimés.
-#: includes/class-aod-cd-section-abandoned.php:859
+#: includes/class-aod-cd-section-abandoned.php:879
 #, php-format
 msgid "%d prospect supprimé."
 msgid_plural "%d prospects supprimés."
@@ -1127,19 +1061,16 @@ msgstr[3] "تم حذف %d عميل محتمل."
 msgstr[4] "تم حذف %d عميل محتمل."
 msgstr[5] "تم حذف %d عميل محتمل."
 
-#: includes/class-aod-cd-section-abandoned.php:899
+#: includes/class-aod-cd-section-abandoned.php:919
 msgid "Paiement à la livraison"
 msgstr "الدفع عند الاستلام"
 
-#: includes/class-aod-cd-section-abandoned.php:950
-msgid ""
-"Commande créée depuis un panier abandonné — à compléter, puis à confirmer."
+#: includes/class-aod-cd-section-abandoned.php:970
+msgid "Commande créée depuis un panier abandonné — à compléter, puis à confirmer."
 msgstr "طلب مُنشأ من سلة مهجورة — يجب إكماله ثم تأكيده."
 
-#: includes/class-aod-cd-section-abandoned.php:951
-msgid ""
-"Commande créée depuis un panier abandonné (sans produit) — articles à "
-"composer au téléphone, puis à confirmer."
+#: includes/class-aod-cd-section-abandoned.php:971
+msgid "Commande créée depuis un panier abandonné (sans produit) — articles à composer au téléphone, puis à confirmer."
 msgstr "طلب مُنشأ من سلة مهجورة (بدون منتج) — تُحدَّد المنتجات عبر الهاتف ثم يُؤكَّد."
 
 #: includes/class-aod-cd-section-account.php:59
@@ -1174,9 +1105,9 @@ msgstr "كلمة مرور جديدة"
 
 #: includes/class-aod-cd-section-account.php:109
 #: includes/class-aod-cd-section-landing.php:217
-#: includes/class-aod-cd-section-orders.php:2858
-#: includes/class-aod-cd-section-products.php:201
-#: includes/class-aod-cd-section-products.php:721
+#: includes/class-aod-cd-section-orders.php:3062
+#: includes/class-aod-cd-section-products.php:202
+#: includes/class-aod-cd-section-products.php:726
 #: includes/class-aod-cd-section-stock.php:833
 #: includes/class-aod-cd-section-team.php:309
 #: includes/class-aod-cd-section-whatsapp.php:105
@@ -1188,15 +1119,8 @@ msgid "Zone de danger"
 msgstr "منطقة خطرة"
 
 #: includes/class-aod-cd-section-account.php:132
-msgid ""
-"Réinitialiser la boutique supprime définitivement TOUS les produits (avec "
-"leurs photos) et TOUTES les commandes, puis remet le compteur des numéros de "
-"commande à #1. Les pages, réglages et votre compte ne sont pas touchés. "
-"Cette action est irréversible."
-msgstr ""
-"إعادة تهيئة المتجر تحذف نهائيًا جميع المنتجات (مع صورها) وجميع الطلبات، ثم "
-"تعيد عدّاد أرقام الطلبات إلى ‎#1. لا تتأثر الصفحات ولا الإعدادات ولا حسابك. "
-"هذا الإجراء لا يمكن التراجع عنه."
+msgid "Réinitialiser la boutique supprime définitivement TOUS les produits (avec leurs photos) et TOUTES les commandes, puis remet le compteur des numéros de commande à #1. Les pages, réglages et votre compte ne sont pas touchés. Cette action est irréversible."
+msgstr "إعادة تهيئة المتجر تحذف نهائيًا جميع المنتجات (مع صورها) وجميع الطلبات، ثم تعيد عدّاد أرقام الطلبات إلى ‎#1. لا تتأثر الصفحات ولا الإعدادات ولا حسابك. هذا الإجراء لا يمكن التراجع عنه."
 
 #: includes/class-aod-cd-section-account.php:136
 msgid "Pour confirmer, recopiez exactement la phrase ci-dessous :"
@@ -1233,12 +1157,8 @@ msgstr "عبارة التأكيد غير مطابقة. تم إلغاء إعاد�
 #. translators: 1: nb produits, 2: nb images, 3: nb commandes.
 #: includes/class-aod-cd-section-account.php:258
 #, php-format
-msgid ""
-"Boutique réinitialisée : %1$d produit(s), %2$d image(s) et %3$d commande(s) "
-"supprimés. La prochaine commande portera le n° #1."
-msgstr ""
-"تمت إعادة تهيئة المتجر: تم حذف %1$d منتج و%2$d صورة و%3$d طلب. سيحمل الطلب "
-"التالي الرقم ‎#1."
+msgid "Boutique réinitialisée : %1$d produit(s), %2$d image(s) et %3$d commande(s) supprimés. La prochaine commande portera le n° #1."
+msgstr "تمت إعادة تهيئة المتجر: تم حذف %1$d منتج و%2$d صورة و%3$d طلب. سيحمل الطلب التالي الرقم ‎#1."
 
 #. translators: %d: nb de prospects (leads) supprimés.
 #: includes/class-aod-cd-section-account.php:266
@@ -1268,506 +1188,424 @@ msgstr "آخر 30 يومًا"
 msgid "du %1$s au %2$s"
 msgstr "من %1$s إلى %2$s"
 
-#: includes/class-aod-cd-section-home.php:630
+#: includes/class-aod-cd-section-home.php:643
 msgid "Commandes en attente"
 msgstr "طلبات قيد الانتظار"
 
-#: includes/class-aod-cd-section-home.php:640
+#: includes/class-aod-cd-section-home.php:653
 msgid "Échecs de livraison"
 msgstr "محاولات توصيل فاشلة"
 
-#: includes/class-aod-cd-section-home.php:648
+#: includes/class-aod-cd-section-home.php:661
 msgid "Colis bloqués"
 msgstr "طرود عالقة"
 
-#: includes/class-aod-cd-section-home.php:663
+#: includes/class-aod-cd-section-home.php:676
 msgid "Produits à réapprovisionner"
 msgstr "منتجات تحتاج إعادة تموين"
 
-#: includes/class-aod-cd-section-home.php:822
+#: includes/class-aod-cd-section-home.php:859
 msgid "Protection anti-robot : vérification impossible"
 msgstr "الحماية من الروبوتات: تعذّر التحقق"
 
-#: includes/class-aod-cd-section-home.php:823
-msgid ""
-"Le service de vérification est injoignable de façon répétée. Les commandes "
-"non vérifiées sont désormais refusées, pour éviter les fausses commandes. "
-"Vérifiez la connexion du serveur et vos clés dans Réglages → COD Anti-spam."
-msgstr ""
-"خدمة التحقق غير متاحة بشكل متكرر. يتم الآن رفض الطلبات غير المتحقَّق منها "
-"لتفادي الطلبات الوهمية. تحقّق من اتصال الخادم ومن مفاتيحك في الإعدادات ← COD "
-"مكافحة السبام."
+#: includes/class-aod-cd-section-home.php:860
+msgid "Le service de vérification est injoignable de façon répétée. Les commandes non vérifiées sont désormais refusées, pour éviter les fausses commandes. Vérifiez la connexion du serveur et vos clés dans Réglages → COD Anti-spam."
+msgstr "خدمة التحقق غير متاحة بشكل متكرر. يتم الآن رفض الطلبات غير المتحقَّق منها لتفادي الطلبات الوهمية. تحقّق من اتصال الخادم ومن مفاتيحك في الإعدادات ← COD مكافحة السبام."
 
-#: includes/class-aod-cd-section-home.php:826
+#: includes/class-aod-cd-section-home.php:863
 msgid "Protection anti-robot momentanément inactive"
 msgstr "الحماية من الروبوتات معطّلة مؤقتًا"
 
-#: includes/class-aod-cd-section-home.php:827
-msgid ""
-"Le service de vérification ne répond pas. Les commandes continuent d’être "
-"acceptées pour ne pas vous faire perdre de ventes, mais elles ne sont plus "
-"filtrées : surveillez les fausses commandes. Si cela persiste, vérifiez la "
-"connexion du serveur."
-msgstr ""
-"خدمة التحقق لا تستجيب. لا تزال الطلبات مقبولة حتى لا تفقد مبيعات، لكنها لم "
-"تعد مُصفّاة: راقب الطلبات الوهمية. إذا استمر الأمر، تحقّق من اتصال الخادم."
+#: includes/class-aod-cd-section-home.php:864
+msgid "Le service de vérification ne répond pas. Les commandes continuent d’être acceptées pour ne pas vous faire perdre de ventes, mais elles ne sont plus filtrées : surveillez les fausses commandes. Si cela persiste, vérifiez la connexion du serveur."
+msgstr "خدمة التحقق لا تستجيب. لا تزال الطلبات مقبولة حتى لا تفقد مبيعات، لكنها لم تعد مُصفّاة: راقب الطلبات الوهمية. إذا استمر الأمر، تحقّق من اتصال الخادم."
 
-#: includes/class-aod-cd-section-home.php:844
+#: includes/class-aod-cd-section-home.php:881
 msgid "Aucune statistique ne vous est accessible pour le moment."
 msgstr "لا تتوفر لديك أي إحصائيات في الوقت الحالي."
 
 #. translators: 1 : date du jour, 2 : période affichée (ex. « 30 derniers jours »)
-#: includes/class-aod-cd-section-home.php:864
+#: includes/class-aod-cd-section-home.php:901
 #, php-format
 msgid "Vue d’ensemble de la boutique — %1$s · %2$s."
 msgstr "نظرة عامة على المتجر — %1$s · %2$s."
 
 #. translators: 1 : date du jour, 2 : période affichée (ex. « 30 derniers jours »)
-#: includes/class-aod-cd-section-home.php:866
+#: includes/class-aod-cd-section-home.php:903
 #, php-format
 msgid "Vos commandes — %1$s · %2$s."
 msgstr "طلباتك — %1$s · %2$s."
 
-#. translators: %s : prénom du gérant
-#: includes/class-aod-cd-section-home.php:870
+#: includes/class-aod-cd-section-home.php:912
 #, php-format
-#. L'emoji « 👋 » a été retiré des deux versions le 2026-08-04 : la Phase 15 a
-#. sorti les emojis de /gestion (rendu different selon la police du systeme).
 msgid "Bonjour %s"
 msgstr "مرحبًا %s"
 
-#: includes/class-aod-cd-section-home.php:912
+#: includes/class-aod-cd-section-home.php:954
 #: includes/class-aod-cd-section-stock.php:717
 msgid "Jour"
 msgstr "اليوم"
 
-#: includes/class-aod-cd-section-home.php:913
+#: includes/class-aod-cd-section-home.php:955
 #: includes/class-aod-cd-section-stock.php:718
 msgid "Semaine"
 msgstr "الأسبوع"
 
-#: includes/class-aod-cd-section-home.php:934
+#: includes/class-aod-cd-section-home.php:994
 msgid "Tous les produits"
 msgstr "كل المنتجات"
 
-#: includes/class-aod-cd-section-home.php:992
+#: includes/class-aod-cd-section-home.php:1052
 msgid "Onglets de statistiques"
 msgstr "تبويبات الإحصائيات"
 
 #. translators: %s : variation en points de pourcentage
-#: includes/class-aod-cd-section-home.php:1155
+#: includes/class-aod-cd-section-home.php:1240
 #, php-format
 msgid "%s pts"
 msgstr "%s نقطة"
 
-#: includes/class-aod-cd-section-home.php:1177
+#: includes/class-aod-cd-section-home.php:1262
 msgid "vs période préc."
 msgstr "مقارنة بالفترة السابقة"
 
-#: includes/class-aod-cd-section-home.php:1222
+#: includes/class-aod-cd-section-home.php:1323
 msgid "Chiffre d’affaires"
 msgstr "رقم الأعمال"
 
-#: includes/class-aod-cd-section-home.php:1223
+#: includes/class-aod-cd-section-home.php:1324
 msgid "Commandes encaissées"
 msgstr "الطلبات المحصّلة"
 
-#: includes/class-aod-cd-section-home.php:1224
+#: includes/class-aod-cd-section-home.php:1325
 msgid "Panier moyen"
 msgstr "متوسط قيمة الطلب"
 
-#: includes/class-aod-cd-section-home.php:1225
+#: includes/class-aod-cd-section-home.php:1326
 msgid "Marge estimée"
 msgstr "الهامش التقديري"
 
-#: includes/class-aod-cd-section-home.php:1226
+#: includes/class-aod-cd-section-home.php:1327
 msgid "Taux de marge"
 msgstr "نسبة الهامش"
 
-#: includes/class-aod-cd-section-home.php:1227
+#: includes/class-aod-cd-section-home.php:1328
 msgid "En attente (en cours)"
 msgstr "قيد الانتظار (حاليًا)"
 
-#: includes/class-aod-cd-section-home.php:1228
-#: includes/class-aod-cd-section-orders.php:105
+#: includes/class-aod-cd-section-home.php:1329
+#: includes/class-aod-cd-section-orders.php:106
 msgid "Annulées"
 msgstr "ملغاة"
 
-#: includes/class-aod-cd-section-home.php:1229
+#: includes/class-aod-cd-section-home.php:1330
 msgid "Produits en ligne"
 msgstr "المنتجات المنشورة"
 
-#: includes/class-aod-cd-section-home.php:1238
+#: includes/class-aod-cd-section-home.php:1349
 msgid "Top produits"
 msgstr "أفضل المنتجات"
 
-#: includes/class-aod-cd-section-home.php:1240
-#: includes/class-aod-cd-section-home.php:2274
+#: includes/class-aod-cd-section-home.php:1351
+#: includes/class-aod-cd-section-home.php:2405
+#: includes/class-aod-cd-section-home.php:2546
+#: includes/class-aod-cd-section-home.php:2568
 msgid "Aucune vente sur cette période."
 msgstr "لا توجد مبيعات في هذه الفترة."
 
-#: includes/class-aod-cd-section-home.php:1250
+#: includes/class-aod-cd-section-home.php:1361
 msgid "Quantité vendue"
 msgstr "الكمية المباعة"
 
-#: includes/class-aod-cd-section-home.php:1251
+#: includes/class-aod-cd-section-home.php:1362
 msgid "CA généré"
 msgstr "الإيرادات المحققة"
 
-#: includes/class-aod-cd-section-home.php:1252
-#: includes/class-aod-cd-section-products.php:360
+#: includes/class-aod-cd-section-home.php:1363
+#: includes/class-aod-cd-section-products.php:365
 #: includes/class-aod-cd-section-shipping.php:353
 msgid "Marge"
 msgstr "الهامش"
 
-#: includes/class-aod-cd-section-home.php:1282
-msgid ""
-"CA = total des commandes en cours, confirmées et terminées sur la période "
-"sélectionnée. « En attente » et « Produits en ligne » reflètent l’état "
-"actuel, toutes périodes confondues."
-msgstr ""
-"رقم الأعمال = إجمالي الطلبات الجارية والمؤكدة والمكتملة خلال الفترة المحددة. "
-"«قيد الانتظار» و«المنتجات المنشورة» تعكسان الحالة الحالية بغض النظر عن "
-"الفترة."
+#: includes/class-aod-cd-section-home.php:1415
+msgid "CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée. « En attente » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues."
+msgstr "رقم الأعمال = إجمالي الطلبات الجارية والمؤكدة والمكتملة خلال الفترة المحددة. «قيد الانتظار» و«المنتجات المنشورة» تعكسان الحالة الحالية بغض النظر عن الفترة."
 
-#: includes/class-aod-cd-section-home.php:1284
-msgid ""
-"Filtre produit actif : CA, marge et graphe ne comptent que les lignes de ce "
-"produit (hors livraison et hors autres produits des mêmes commandes) ; « En "
-"attente » et « Annulées » ne comptent que les commandes le contenant."
-msgstr ""
-"تصفية المنتج مفعّلة : رقم الأعمال والهامش والرسم البياني لا تحتسب سوى أسطر "
-"هذا المنتج (دون التوصيل ودون المنتجات الأخرى في الطلبات نفسها)؛ « قيد "
-"الانتظار » و« ملغاة » لا تحتسبان سوى الطلبات التي تحتويه."
+#: includes/class-aod-cd-section-home.php:1417
+msgid "Filtre produit actif : CA, marge et graphe ne comptent que les lignes de ce produit (hors livraison et hors autres produits des mêmes commandes) ; « En attente » et « Annulées » ne comptent que les commandes le contenant."
+msgstr "تصفية المنتج مفعّلة : رقم الأعمال والهامش والرسم البياني لا تحتسب سوى أسطر هذا المنتج (دون التوصيل ودون المنتجات الأخرى في الطلبات نفسها)؛ « قيد الانتظار » و« ملغاة » لا تحتسبان سوى الطلبات التي تحتويه."
 
-#: includes/class-aod-cd-section-home.php:1286
-msgid ""
-"Marge = CA produits (hors livraison) − prix d’achat. Renseignez le « Prix "
-"d’achat » d’un produit pour qu’il compte dans la marge ; les produits sans "
-"prix d’achat sont ignorés (un « — » s’affiche)."
-msgstr ""
-"الهامش = رقم أعمال المنتجات (دون التوصيل) − سعر الشراء. أدخل «سعر الشراء» "
-"لمنتج لكي يُحتسب في الهامش؛ المنتجات بدون سعر شراء تُهمَل (يظهر «—»)."
+#: includes/class-aod-cd-section-home.php:1419
+msgid "Marge = CA produits (hors livraison) − prix d’achat. Renseignez le « Prix d’achat » d’un produit pour qu’il compte dans la marge ; les produits sans prix d’achat sont ignorés (un « — » s’affiche)."
+msgstr "الهامش = رقم أعمال المنتجات (دون التوصيل) − سعر الشراء. أدخل «سعر الشراء» لمنتج لكي يُحتسب في الهامش؛ المنتجات بدون سعر شراء تُهمَل (يظهر «—»)."
 
-#. Le préfixe « Note : » a été retiré le 2026-08-04 : la phrase est devenue un
-#. AVERTISSEMENT porteur d'icône, et « Note » l'annonçait comme accessoire.
-#: includes/class-aod-cd-section-home.php:1288
-msgid ""
-"Certains produits vendus n’ont pas de prix d’achat renseigné — la marge "
-"affichée est donc une estimation partielle."
-msgstr ""
-"بعض المنتجات المباعة ليس لها سعر شراء مُدخَل — لذا فالهامش المعروض تقدير "
-"جزئي."
+#: includes/class-aod-cd-section-home.php:1401
+msgid "Certains produits vendus n’ont pas de prix d’achat renseigné — la marge affichée est donc une estimation partielle."
+msgstr "بعض المنتجات المباعة ليس لها سعر شراء مُدخَل — لذا فالهامش المعروض تقدير جزئي."
 
-#. Libellé du repli qui contient les définitions (CA, marge). Référence que l'on
-#. lit une fois, contrairement à l'avertissement ci-dessus, qui reste visible.
-#: includes/class-aod-cd-section-home.php:1330
+#: includes/class-aod-cd-section-home.php:1414
 msgid "Comment ces chiffres sont calculés"
 msgstr "كيف تُحتسب هذه الأرقام"
 
 #. translators: %s : nom du produit filtré.
-#: includes/class-aod-cd-section-home.php:1361
+#: includes/class-aod-cd-section-home.php:1492
 #, php-format
 msgid "produit : %s"
 msgstr "المنتج : %s"
 
 #. translators: %s : nom du confirmateur filtré.
-#: includes/class-aod-cd-section-home.php:1366
+#: includes/class-aod-cd-section-home.php:1497
 #, php-format
 msgid "confirmateur : %s"
 msgstr "مسؤول التأكيد : %s"
 
 #. translators: %s : liste des filtres actifs (produit, confirmateur).
-#: includes/class-aod-cd-section-home.php:1370
+#: includes/class-aod-cd-section-home.php:1501
 #, php-format
 msgid "Chiffres filtrés — %s"
 msgstr "أرقام مُصفّاة — %s"
 
 #. translators: 1 : nombre de colis, 2 : pourcentage des expédiées.
-#: includes/class-aod-cd-section-home.php:1613
+#: includes/class-aod-cd-section-home.php:1744
 #, php-format
 msgid "%1$s (%2$s %%)"
 msgstr "%1$s (%2$s %%)"
 
-#: includes/class-aod-cd-section-home.php:1624
+#: includes/class-aod-cd-section-home.php:1755
 #: includes/class-aod-cd-section-tracking.php:54
-#: includes/class-aod-cd-section-tracking.php:593
+#: includes/class-aod-cd-section-tracking.php:596
 msgid "Le module de livraison n’est pas actif."
 msgstr "وحدة التوصيل غير مفعّلة."
 
-#: includes/class-aod-cd-section-home.php:1624
+#: includes/class-aod-cd-section-home.php:1755
 #: includes/class-aod-cd-section-tracking.php:54
 msgid "Activez le plugin « AOD COD Form » pour suivre l’évolution des colis."
 msgstr "فعّل إضافة « AOD COD Form » لتتبّع تطوّر الطرود."
 
-#: includes/class-aod-cd-section-home.php:1633
+#: includes/class-aod-cd-section-home.php:1764
 msgid "Aucun colis expédié sur cette période (avec ces filtres)."
 msgstr "لا توجد طرود مُرسلة في هذه الفترة (مع هذه التصفيات)."
 
 #. translators: %s : nombre de jours (1 décimale).
-#: includes/class-aod-cd-section-home.php:1640
-#: includes/class-aod-cd-section-home.php:1943
+#: includes/class-aod-cd-section-home.php:1771
+#: includes/class-aod-cd-section-home.php:2074
 #, php-format
 msgid "%s jours"
 msgstr "%s أيام"
 
-#: includes/class-aod-cd-section-home.php:1658
+#: includes/class-aod-cd-section-home.php:1789
 msgid "Colis expédiés"
 msgstr "الطرود المُرسلة"
 
-#: includes/class-aod-cd-section-home.php:1659
-#: includes/class-aod-cd-section-home.php:1674
+#: includes/class-aod-cd-section-home.php:1790
+#: includes/class-aod-cd-section-home.php:1805
 msgid "Livrés"
 msgstr "مُسلَّمة"
 
-#: includes/class-aod-cd-section-home.php:1660
-#: includes/class-aod-cd-section-home.php:1676
+#: includes/class-aod-cd-section-home.php:1791
+#: includes/class-aod-cd-section-home.php:1807
 msgid "En transit"
 msgstr "قيد النقل"
 
-#: includes/class-aod-cd-section-home.php:1661
-#: includes/class-aod-cd-section-home.php:1677
+#: includes/class-aod-cd-section-home.php:1792
+#: includes/class-aod-cd-section-home.php:1808
 msgid "Retournés"
 msgstr "مُرتجعة"
 
-#: includes/class-aod-cd-section-home.php:1662
+#: includes/class-aod-cd-section-home.php:1793
 msgid "Échec de livraison"
 msgstr "فشل التسليم"
 
-#: includes/class-aod-cd-section-home.php:1663
+#: includes/class-aod-cd-section-home.php:1794
 msgid "Colis annulés"
 msgstr "طرود ملغاة"
 
-#: includes/class-aod-cd-section-home.php:1664
+#: includes/class-aod-cd-section-home.php:1795
 msgid "Délai moyen de livraison"
 msgstr "متوسط مدة التسليم"
 
 #. translators: %d : nombre de jours sans événement.
-#: includes/class-aod-cd-section-home.php:1666
+#: includes/class-aod-cd-section-home.php:1797
 #, php-format
 msgid "Bloqués (> %d jours)"
 msgstr "عالقة (> %d أيام)"
 
-#: includes/class-aod-cd-section-home.php:1673
+#: includes/class-aod-cd-section-home.php:1804
 msgid "Expédiés"
 msgstr "مُرسلة"
 
-#: includes/class-aod-cd-section-home.php:1675
+#: includes/class-aod-cd-section-home.php:1806
 msgid "Taux livré"
 msgstr "نسبة التسليم"
 
-#: includes/class-aod-cd-section-home.php:1678
+#: includes/class-aod-cd-section-home.php:1809
 msgid "Échec"
 msgstr "فشل"
 
-#: includes/class-aod-cd-section-home.php:1711
+#: includes/class-aod-cd-section-home.php:1842
 msgid "Par transporteur"
 msgstr "حسب شركة التوصيل"
 
-#: includes/class-aod-cd-section-home.php:1712
-#: includes/class-aod-cd-section-home.php:1718
-#: includes/class-aod-cd-section-home.php:1764
-#: includes/class-aod-cd-section-orders.php:432
-#: includes/class-aod-cd-section-orders.php:548
+#: includes/class-aod-cd-section-home.php:1843
+#: includes/class-aod-cd-section-home.php:1849
+#: includes/class-aod-cd-section-home.php:1895
+#: includes/class-aod-cd-section-orders.php:467
+#: includes/class-aod-cd-section-orders.php:606
+#: includes/class-aod-cd-section-orders.php:1350
 #: includes/class-aod-cd-section-shipping.php:286
 #: includes/class-aod-cd-section-shipping.php:345
 #: includes/class-aod-cd-section-tracking.php:193
 #: includes/class-aod-cd-section-tracking.php:269
-#: includes/class-aod-cd-section-tracking.php:335
-#: includes/class-aod-cd-section-tracking.php:456
+#: includes/class-aod-cd-section-tracking.php:338
+#: includes/class-aod-cd-section-tracking.php:459
 msgid "Transporteur"
 msgstr "شركة التوصيل"
 
-#: includes/class-aod-cd-section-home.php:1725
+#: includes/class-aod-cd-section-home.php:1856
 msgid "Par wilaya"
 msgstr "حسب الولاية"
 
 #. translators: %d : nombre de wilayas agrégées hors top 10.
-#: includes/class-aod-cd-section-home.php:1752
+#: includes/class-aod-cd-section-home.php:1883
 #, php-format
 msgid "Autres wilayas (%d)"
 msgstr "ولايات أخرى (%d)"
 
 #. translators: %d : nombre de jours sans événement.
-#: includes/class-aod-cd-section-home.php:1761
+#: includes/class-aod-cd-section-home.php:1892
 #, php-format
 msgid "Colis bloqués (sans événement depuis plus de %d jours)"
 msgstr "طرود عالقة (بدون أي حدث منذ أكثر من %d أيام)"
 
-#: includes/class-aod-cd-section-home.php:1763
-#: includes/class-aod-cd-section-orders.php:422
-#: includes/class-aod-cd-section-orders.php:486
+#: includes/class-aod-cd-section-home.php:1894
+#: includes/class-aod-cd-section-orders.php:457
+#: includes/class-aod-cd-section-orders.php:521
 #: includes/class-aod-cd-section-tracking.php:190
-#: includes/class-aod-cd-section-tracking.php:332
+#: includes/class-aod-cd-section-tracking.php:335
 msgid "N°"
 msgstr "رقم"
 
-#: includes/class-aod-cd-section-home.php:1765
+#: includes/class-aod-cd-section-home.php:1896
 #: includes/class-aod-cd-section-tracking.php:195
-#: includes/class-aod-cd-section-tracking.php:278
-#: includes/class-aod-cd-section-tracking.php:337
+#: includes/class-aod-cd-section-tracking.php:281
+#: includes/class-aod-cd-section-tracking.php:340
 msgid "État du colis"
 msgstr "حالة الطرد"
 
-#: includes/class-aod-cd-section-home.php:1766
+#: includes/class-aod-cd-section-home.php:1897
 msgid "Dernier événement"
 msgstr "آخر حدث"
 
-#. translators: %s : durée écoulée (ex. « 3 heures »).
-#. translators: %s : durée écoulée (ex. « 3 heures »)
-#: includes/class-aod-cd-section-home.php:1775
-#: includes/class-aod-cd-section-tracking.php:432
-#, php-format
-msgid "il y a %s"
-msgstr "منذ %s"
-
 #. translators: %d : nombre total de colis bloqués.
-#: includes/class-aod-cd-section-home.php:1784
+#: includes/class-aod-cd-section-home.php:1915
 #, php-format
-msgid ""
-"Seuls les 20 colis les plus anciens sont listés (%d bloqués au total). Le "
-"détail complet est dans « Suivi commande »."
-msgstr ""
-"تُعرض فقط أقدم 20 طردًا (%d طرد عالق في المجموع). التفاصيل الكاملة في « تتبع "
-"الطلب »."
+msgid "Seuls les 20 colis les plus anciens sont listés (%d bloqués au total). Le détail complet est dans « Suivi commande »."
+msgstr "تُعرض فقط أقدم 20 طردًا (%d طرد عالق في المجموع). التفاصيل الكاملة في « تتبع الطلب »."
 
-#: includes/class-aod-cd-section-home.php:1788
-msgid ""
-"Base des taux : commandes expédiées (colis créé chez un transporteur) dont "
-"la date de création tombe dans la période, quel que soit leur statut de "
-"commande. Un colis sans suivi synchronisé compte « En transit »."
-msgstr ""
-"أساس النسب: الطلبات المُرسلة (طرد أُنشئ لدى شركة توصيل) التي يقع تاريخ إنشائها "
-"ضمن الفترة، أيًا كانت حالة الطلب. الطرد الذي لم يُزامَن تتبّعه يُحسب « قيد "
-"النقل »."
+#: includes/class-aod-cd-section-home.php:1919
+msgid "Base des taux : commandes expédiées (colis créé chez un transporteur) dont la date de création tombe dans la période, quel que soit leur statut de commande. Un colis sans suivi synchronisé compte « En transit »."
+msgstr "أساس النسب: الطلبات المُرسلة (طرد أُنشئ لدى شركة توصيل) التي يقع تاريخ إنشائها ضمن الفترة، أيًا كانت حالة الطلب. الطرد الذي لم يُزامَن تتبّعه يُحسب « قيد النقل »."
 
 #. translators: %s : nombre de livraisons mesurables.
-#: includes/class-aod-cd-section-home.php:1791
+#: includes/class-aod-cd-section-home.php:1922
 #, php-format
-msgid ""
-"Délai moyen calculé sur %s livraison(s) dont l’historique transporteur est "
-"horodaté (du premier événement du colis à sa livraison)."
-msgstr ""
-"متوسط المدة محسوب على %s عملية(عمليات) تسليم ذات سجل مؤرَّخ لدى شركة التوصيل "
-"(من أول حدث للطرد إلى تسليمه)."
+msgid "Délai moyen calculé sur %s livraison(s) dont l’historique transporteur est horodaté (du premier événement du colis à sa livraison)."
+msgstr "متوسط المدة محسوب على %s عملية(عمليات) تسليم ذات سجل مؤرَّخ لدى شركة التوصيل (من أول حدث للطرد إلى تسليمه)."
 
-#: includes/class-aod-cd-section-home.php:1793
-msgid ""
-"Délai moyen indisponible : aucune livraison de la période n’a d’historique "
-"transporteur horodaté."
-msgstr ""
-"متوسط المدة غير متاح: لا توجد أي عملية تسليم في الفترة ذات سجل مؤرَّخ لدى شركة "
-"التوصيل."
+#: includes/class-aod-cd-section-home.php:1924
+msgid "Délai moyen indisponible : aucune livraison de la période n’a d’historique transporteur horodaté."
+msgstr "متوسط المدة غير متاح: لا توجد أي عملية تسليم في الفترة ذات سجل مؤرَّخ لدى شركة التوصيل."
 
-#: includes/class-aod-cd-section-home.php:1796
-msgid ""
-"Filtre produit actif : les taux portent sur les commandes contenant ce "
-"produit (un colis est livré ou non en entier — pas de découpage par ligne)."
-msgstr ""
-"تصفية المنتج مفعّلة: النسب تخص الطلبات التي تحتوي هذا المنتج (الطرد يُسلَّم "
-"كاملًا أو لا يُسلَّم — لا تقسيم حسب الأسطر)."
+#: includes/class-aod-cd-section-home.php:1927
+msgid "Filtre produit actif : les taux portent sur les commandes contenant ce produit (un colis est livré ou non en entier — pas de découpage par ligne)."
+msgstr "تصفية المنتج مفعّلة: النسب تخص الطلبات التي تحتوي هذا المنتج (الطرد يُسلَّم كاملًا أو لا يُسلَّم — لا تقسيم حسب الأسطر)."
 
 #. translators: %s : nombre d'heures (1 décimale).
-#: includes/class-aod-cd-section-home.php:1940
+#: includes/class-aod-cd-section-home.php:2071
 #, php-format
 msgid "%s h"
 msgstr "%s سا"
 
-#: includes/class-aod-cd-section-home.php:2000
+#: includes/class-aod-cd-section-home.php:2131
 msgid "Aucune commande reçue sur cette période (avec ces filtres)."
 msgstr "لا توجد طلبات مستلمة في هذه الفترة (مع هذه التصفيات)."
 
-#: includes/class-aod-cd-section-home.php:2058
+#: includes/class-aod-cd-section-home.php:2189
 msgid "Commandes reçues"
 msgstr "الطلبات المستلمة"
 
-#: includes/class-aod-cd-section-home.php:2059
+#: includes/class-aod-cd-section-home.php:2190
 msgid "Commandes reçues (boutique)"
 msgstr "الطلبات المستلمة (المتجر)"
 
-#: includes/class-aod-cd-section-home.php:2066
-#: includes/class-aod-cd-section-home.php:2152
-#: includes/class-aod-cd-section-orders.php:103
+#: includes/class-aod-cd-section-home.php:2197
+#: includes/class-aod-cd-section-home.php:2283
+#: includes/class-aod-cd-section-orders.php:104
 msgid "Confirmées"
 msgstr "مؤكَّدة"
 
-#: includes/class-aod-cd-section-home.php:2067
+#: includes/class-aod-cd-section-home.php:2198
 msgid "Délai moyen de confirmation"
 msgstr "متوسط مدة التأكيد"
 
-#: includes/class-aod-cd-section-home.php:2070
+#: includes/class-aod-cd-section-home.php:2201
 msgid "Confirmées non attribuées"
 msgstr "مؤكَّدة غير منسوبة"
 
-#: includes/class-aod-cd-section-home.php:2106
+#: includes/class-aod-cd-section-home.php:2237
 msgid "Commandes assignées"
 msgstr "الطلبات المسندة"
 
-#: includes/class-aod-cd-section-home.php:2141
-msgid ""
-"Vos chiffres : « Confirmées » et « Délai moyen » ne comptent que VOS "
-"confirmations. Le pourcentage, lui, les rapporte aux commandes reçues par la "
-"boutique sur la période — pas seulement aux vôtres."
-msgstr ""
-"أرقامك: «مؤكَّدة» و«متوسط المدة» تحتسب تأكيداتك أنت فقط. أمّا النسبة المئوية "
-"فتُنسب إلى الطلبات المستلمة في المتجر خلال الفترة — لا إلى طلباتك وحدها."
+#: includes/class-aod-cd-section-home.php:2272
+msgid "Vos chiffres : « Confirmées » et « Délai moyen » ne comptent que VOS confirmations. Le pourcentage, lui, les rapporte aux commandes reçues par la boutique sur la période — pas seulement aux vôtres."
+msgstr "أرقامك: «مؤكَّدة» و«متوسط المدة» تحتسب تأكيداتك أنت فقط. أمّا النسبة المئوية فتُنسب إلى الطلبات المستلمة في المتجر خلال الفترة — لا إلى طلباتك وحدها."
 
-#: includes/class-aod-cd-section-home.php:2149
+#: includes/class-aod-cd-section-home.php:2280
 msgid "Par confirmateur"
 msgstr "حسب مسؤول التأكيد"
 
-#: includes/class-aod-cd-section-home.php:2153
+#: includes/class-aod-cd-section-home.php:2284
 msgid "Part"
 msgstr "الحصة"
 
-#: includes/class-aod-cd-section-home.php:2154
+#: includes/class-aod-cd-section-home.php:2285
 msgid "Délai moyen"
 msgstr "متوسط المدة"
 
-#: includes/class-aod-cd-section-home.php:2172
+#: includes/class-aod-cd-section-home.php:2303
 msgid "Non attribuées"
 msgstr "غير منسوبة"
 
-#: includes/class-aod-cd-section-home.php:2179
-msgid ""
-"Reçues = commandes créées sur la période, tous statuts. Confirmées = "
-"commandes tracées par un confirmateur + « non attribuées » (statut Confirmée/"
-"Terminée sans traçabilité, antérieures au suivi d’équipe)."
-msgstr ""
-"المستلمة = الطلبات المُنشأة خلال الفترة، بكل الحالات. المؤكَّدة = الطلبات "
-"المتتبَّعة من مسؤول تأكيد + « غير المنسوبة » (حالة مؤكدة/مكتملة دون تتبّع، "
-"سابقة لتتبّع الفريق)."
+#: includes/class-aod-cd-section-home.php:2310
+msgid "Reçues = commandes créées sur la période, tous statuts. Confirmées = commandes tracées par un confirmateur + « non attribuées » (statut Confirmée/Terminée sans traçabilité, antérieures au suivi d’équipe)."
+msgstr "المستلمة = الطلبات المُنشأة خلال الفترة، بكل الحالات. المؤكَّدة = الطلبات المتتبَّعة من مسؤول تأكيد + « غير المنسوبة » (حالة مؤكدة/مكتملة دون تتبّع، سابقة لتتبّع الفريق)."
 
 #. translators: %s : nombre de confirmations tracées mesurables.
-#: includes/class-aod-cd-section-home.php:2183
+#: includes/class-aod-cd-section-home.php:2314
 #, php-format
-msgid ""
-"Délai moyen calculé sur %s confirmation(s) tracée(s) (de la création de la "
-"commande à sa première confirmation)."
-msgstr ""
-"متوسط المدة محسوب على %s تأكيد(تأكيدات) متتبَّعة (من إنشاء الطلب إلى أول تأكيد "
-"له)."
+msgid "Délai moyen calculé sur %s confirmation(s) tracée(s) (de la création de la commande à sa première confirmation)."
+msgstr "متوسط المدة محسوب على %s تأكيد(تأكيدات) متتبَّعة (من إنشاء الطلب إلى أول تأكيد له)."
 
-#: includes/class-aod-cd-section-home.php:2186
-msgid ""
-"Filtre produit actif : les chiffres portent sur les commandes contenant ce "
-"produit."
+#: includes/class-aod-cd-section-home.php:2317
+msgid "Filtre produit actif : les chiffres portent sur les commandes contenant ce produit."
 msgstr "تصفية المنتج مفعّلة: الأرقام تخص الطلبات التي تحتوي هذا المنتج."
 
-#: includes/class-aod-cd-section-home.php:2269
+#: includes/class-aod-cd-section-home.php:2400
 msgid "Évolution du chiffre d’affaires"
 msgstr "تطوّر رقم الأعمال"
 
-#: includes/class-aod-cd-section-home.php:2270
-#: includes/class-aod-cd-section-orders.php:425
-#: includes/class-aod-cd-section-orders.php:535
-#: includes/class-aod-cd-section-orders.php:2835
-#: includes/class-aod-cd-section-orders.php:2945
-#: includes/class-aod-cd-section-orders.php:2970
+#: includes/class-aod-cd-section-home.php:2401
+#: includes/class-aod-cd-section-home.php:2619
+#: includes/class-aod-cd-section-orders.php:460
+#: includes/class-aod-cd-section-orders.php:593
+#: includes/class-aod-cd-section-orders.php:1349
+#: includes/class-aod-cd-section-orders.php:3039
+#: includes/class-aod-cd-section-orders.php:3149
+#: includes/class-aod-cd-section-orders.php:3174
 msgid "Total"
 msgstr "المجموع"
 
-#: includes/class-aod-cd-section-home.php:2325
+#: includes/class-aod-cd-section-home.php:2456
 msgid "Chiffre d’affaires sur la période"
 msgstr "رقم الأعمال خلال الفترة"
 
@@ -1778,25 +1616,22 @@ msgid "Le plugin « AOD COD Form » est requis."
 msgstr "إضافة « AOD COD Form » مطلوبة."
 
 #: includes/class-aod-cd-section-landing.php:73
-msgid ""
-"C’est lui qui affiche la page de vente sur la boutique. Sans lui, il n’y a "
-"rien à éditer."
+msgid "C’est lui qui affiche la page de vente sur la boutique. Sans lui, il n’y a rien à éditer."
 msgstr "هي التي تعرض صفحة البيع في المتجر. بدونها لا يوجد ما يُحرَّر."
 
 #: includes/class-aod-cd-section-landing.php:81
 #: includes/class-aod-cd-section-landing.php:672
 #: includes/class-aod-cd-section-landing.php:768
-#: includes/class-aod-cd-section-products.php:376
-#: includes/class-aod-cd-section-products.php:1132
-#: includes/class-aod-cd-section-products.php:1700
+#: includes/class-aod-cd-section-products.php:381
+#: includes/class-aod-cd-section-products.php:1137
+#: includes/class-aod-cd-section-products.php:1705
+#: includes/class-aod-cd-section-products.php:1749
 #: includes/class-aod-cd-section-stock.php:67
 msgid "Produit introuvable."
 msgstr "المنتج غير موجود."
 
 #: includes/class-aod-cd-section-landing.php:82
-msgid ""
-"Une page de vente appartient à un produit : ouvrez-la depuis la liste des "
-"produits."
+msgid "Une page de vente appartient à un produit : ouvrez-la depuis la liste des produits."
 msgstr "صفحة البيع تابعة لمنتج: افتحها من قائمة المنتجات."
 
 #: includes/class-aod-cd-section-landing.php:107
@@ -1812,25 +1647,16 @@ msgid "Afficher la page de vente à la place de la fiche produit"
 msgstr "عرض صفحة البيع بدل بطاقة المنتج"
 
 #: includes/class-aod-cd-section-landing.php:126
-msgid ""
-"L’adresse du produit ne change pas. Éteint, le produit s’affiche comme avant "
-"— votre travail est conservé. Vous pouvez donc préparer la page "
-"tranquillement, puis l’allumer."
-msgstr ""
-"عنوان المنتج لا يتغيّر. عند الإطفاء يظهر المنتج كما كان — ويبقى عملك محفوظاً. "
-"يمكنك إذن تحضير الصفحة على مهلك ثم تشغيلها."
+msgid "L’adresse du produit ne change pas. Éteint, le produit s’affiche comme avant — votre travail est conservé. Vous pouvez donc préparer la page tranquillement, puis l’allumer."
+msgstr "عنوان المنتج لا يتغيّر. عند الإطفاء يظهر المنتج كما كان — ويبقى عملك محفوظاً. يمكنك إذن تحضير الصفحة على مهلك ثم تشغيلها."
 
 #: includes/class-aod-cd-section-landing.php:139
 msgid "Afficher un bouton « Commander » collé en bas de l’écran (mobile)"
 msgstr "عرض زر «اطلب الآن» ملتصقاً بأسفل الشاشة (الهاتف)"
 
 #: includes/class-aod-cd-section-landing.php:142
-msgid ""
-"Il ramène au formulaire, et s’efface tout seul quand le visiteur y arrive. "
-"Il n’apparaît que si la page contient le bloc « Formulaire de commande »."
-msgstr ""
-"يعيد الزائر إلى استمارة الطلب، ويختفي وحده عندما يصل إليها. ولا يظهر إلا إذا "
-"كانت الصفحة تحتوي على قسم «استمارة الطلب»."
+msgid "Il ramène au formulaire, et s’efface tout seul quand le visiteur y arrive. Il n’apparaît que si la page contient le bloc « Formulaire de commande »."
+msgstr "يعيد الزائر إلى استمارة الطلب، ويختفي وحده عندما يصل إليها. ولا يظهر إلا إذا كانت الصفحة تحتوي على قسم «استمارة الطلب»."
 
 #: includes/class-aod-cd-section-landing.php:144
 msgid "Texte du bouton"
@@ -1841,25 +1667,16 @@ msgid "Aucun bloc pour le moment."
 msgstr "لا يوجد أي قسم حالياً."
 
 #: includes/class-aod-cd-section-landing.php:161
-msgid ""
-"Ajoutez le « Héro », puis le « Formulaire de commande » : c’est le minimum "
-"d’une page qui vend."
-msgstr ""
-"أضف « القسم الرئيسي » ثم « استمارة الطلب »: هذا هو الحد الأدنى لصفحة تبيع."
+msgid "Ajoutez le « Héro », puis le « Formulaire de commande » : c’est le minimum d’une page qui vend."
+msgstr "أضف « القسم الرئيسي » ثم « استمارة الطلب »: هذا هو الحد الأدنى لصفحة تبيع."
 
 #: includes/class-aod-cd-section-landing.php:173
 msgid "Partir d’un modèle"
 msgstr "الانطلاق من نموذج"
 
 #: includes/class-aod-cd-section-landing.php:177
-msgid ""
-"Le modèle pose la structure d’une page qui vend — héro, bénéfices, galerie, "
-"avis, questions, urgence, formulaire, garanties — avec des blocs vides : les "
-"textes restent à écrire, en français et en arabe."
-msgstr ""
-"يضع النموذج هيكل صفحة تبيع — الواجهة، المزايا، معرض الصور، الآراء، الأسئلة، "
-"الاستعجال، الاستمارة، الضمانات — بأقسام فارغة: تبقى النصوص لتُكتب، بالفرنسية "
-"وبالعربية."
+msgid "Le modèle pose la structure d’une page qui vend — héro, bénéfices, galerie, avis, questions, urgence, formulaire, garanties — avec des blocs vides : les textes restent à écrire, en français et en arabe."
+msgstr "يضع النموذج هيكل صفحة تبيع — الواجهة، المزايا، معرض الصور، الآراء، الأسئلة، الاستعجال، الاستمارة، الضمانات — بأقسام فارغة: تبقى النصوص لتُكتب، بالفرنسية وبالعربية."
 
 #: includes/class-aod-cd-section-landing.php:189
 msgid "Ou copier la page de vente d’un autre produit"
@@ -1870,12 +1687,8 @@ msgid "Copier"
 msgstr "نسخ"
 
 #: includes/class-aod-cd-section-landing.php:199
-msgid ""
-"La copie remplace les blocs actuels et arrive ÉTEINTE : ses textes parlent "
-"de l’autre produit — adaptez-les, puis allumez la page."
-msgstr ""
-"النسخة تستبدل الأقسام الحالية وتصل مُطفأة: نصوصها تتحدث عن المنتج الآخر — "
-"عدّلوها ثم شغّلوا الصفحة."
+msgid "La copie remplace les blocs actuels et arrive ÉTEINTE : ses textes parlent de l’autre produit — adaptez-les, puis allumez la page."
+msgstr "النسخة تستبدل الأقسام الحالية وتصل مُطفأة: نصوصها تتحدث عن المنتج الآخر — عدّلوها ثم شغّلوا الصفحة."
 
 #: includes/class-aod-cd-section-landing.php:206
 msgid "Ajouter un bloc"
@@ -1883,9 +1696,9 @@ msgstr "إضافة قسم"
 
 #: includes/class-aod-cd-section-landing.php:213
 #: includes/class-aod-cd-section-landing.php:566
-#: includes/class-aod-cd-section-orders.php:2825
-#: includes/class-aod-cd-section-products.php:117
-#: includes/class-aod-cd-section-products.php:637
+#: includes/class-aod-cd-section-orders.php:3029
+#: includes/class-aod-cd-section-products.php:118
+#: includes/class-aod-cd-section-products.php:642
 #: includes/class-aod-cd-section-team.php:308
 #: includes/class-aod-cd-section-team.php:309
 msgid "Ajouter"
@@ -1904,46 +1717,24 @@ msgid "Supprimer ce bloc"
 msgstr "حذف هذا القسم"
 
 #: includes/class-aod-cd-section-landing.php:269
-msgid ""
-"Le formulaire de commande (wilaya, commune, livraison, offres) est repris "
-"tel quel de votre fiche produit. Vous n’en réglez ici que le titre."
-msgstr ""
-"استمارة الطلب (الولاية، البلدية، التوصيل، العروض) مأخوذة كما هي من بطاقة "
-"المنتج. لا تضبط هنا سوى العنوان."
+msgid "Le formulaire de commande (wilaya, commune, livraison, offres) est repris tel quel de votre fiche produit. Vous n’en réglez ici que le titre."
+msgstr "استمارة الطلب (الولاية، البلدية، التوصيل، العروض) مأخوذة كما هي من بطاقة المنتج. لا تضبط هنا سوى العنوان."
 
 #: includes/class-aod-cd-section-landing.php:275
-msgid ""
-"Les chiffres sont ceux de votre boutique : le stock est lu dans votre fiche "
-"produit, et le compte à rebours s’arrête à la fin de votre promotion. Si le "
-"stock n’est pas géré, ou si la promotion n’a pas de date de fin, le bloc ne "
-"s’affiche pas — plutôt rien qu’un chiffre inventé."
-msgstr ""
-"الأرقام المعروضة هي أرقام متجرك: المخزون يُقرأ من بطاقة المنتج، والعد "
-"التنازلي يتوقف عند نهاية عرضك الترويجي. وإذا لم يكن المخزون مُدارًا، أو لم يكن "
-"للعرض تاريخ نهاية، فإن القسم لا يظهر إطلاقًا — لا شيء خير من رقم مُختلق."
+msgid "Les chiffres sont ceux de votre boutique : le stock est lu dans votre fiche produit, et le compte à rebours s’arrête à la fin de votre promotion. Si le stock n’est pas géré, ou si la promotion n’a pas de date de fin, le bloc ne s’affiche pas — plutôt rien qu’un chiffre inventé."
+msgstr "الأرقام المعروضة هي أرقام متجرك: المخزون يُقرأ من بطاقة المنتج، والعد التنازلي يتوقف عند نهاية عرضك الترويجي. وإذا لم يكن المخزون مُدارًا، أو لم يكن للعرض تاريخ نهاية، فإن القسم لا يظهر إطلاقًا — لا شيء خير من رقم مُختلق."
 
 #: includes/class-aod-cd-section-landing.php:276
 #, php-format
-msgid ""
-"Dans le message, écrivez %d à l’endroit où doit apparaître le nombre restant "
-"— par exemple : « Plus que %d pièces en stock ! ». Laissez le message vide "
-"pour utiliser le texte par défaut."
-msgstr ""
-"في النص، اكتب %d في المكان الذي يجب أن يظهر فيه العدد المتبقي — مثلاً: «لم "
-"تبق سوى %d قطع في المخزون!». اترك النص فارغاً لاستعمال العبارة الافتراضية."
+msgid "Dans le message, écrivez %d à l’endroit où doit apparaître le nombre restant — par exemple : « Plus que %d pièces en stock ! ». Laissez le message vide pour utiliser le texte par défaut."
+msgstr "في النص، اكتب %d في المكان الذي يجب أن يظهر فيه العدد المتبقي — مثلاً: «لم تبق سوى %d قطع في المخزون!». اترك النص فارغاً لاستعمال العبارة الافتراضية."
 
 #: includes/class-aod-cd-section-landing.php:281
-msgid ""
-"Collez un lien YouTube, ou envoyez un fichier vidéo — pas les deux : si les "
-"deux sont remplis, c’est le fichier qui est joué. La vidéo ne se charge "
-"qu’au clic du visiteur : c’est l’image de couverture qui s’affiche avant."
-msgstr ""
-"الصق رابط يوتيوب، أو أرسل ملف فيديو — وليس الاثنين معًا: إذا مُلئ الحقلان، "
-"فالملف هو الذي يُشغَّل. لا يُحمَّل الفيديو إلا عند نقر الزائر: صورة الغلاف هي التي "
-"تظهر قبل ذلك."
+msgid "Collez un lien YouTube, ou envoyez un fichier vidéo — pas les deux : si les deux sont remplis, c’est le fichier qui est joué. La vidéo ne se charge qu’au clic du visiteur : c’est l’image de couverture qui s’affiche avant."
+msgstr "الصق رابط يوتيوب، أو أرسل ملف فيديو — وليس الاثنين معًا: إذا مُلئ الحقلان، فالملف هو الذي يُشغَّل. لا يُحمَّل الفيديو إلا عند نقر الزائر: صورة الغلاف هي التي تظهر قبل ذلك."
 
 #: includes/class-aod-cd-section-landing.php:452
-#: includes/class-aod-cd-section-products.php:174
+#: includes/class-aod-cd-section-products.php:175
 msgid "Retirer l’image"
 msgstr "إزالة الصورة"
 
@@ -1956,9 +1747,7 @@ msgid "Ajouter des images à la galerie"
 msgstr "إضافة صور إلى المعرض"
 
 #: includes/class-aod-cd-section-landing.php:496
-msgid ""
-"Les images choisies seront ajoutées à l’enregistrement. Pour changer votre "
-"choix, sélectionnez à nouveau vos fichiers."
+msgid "Les images choisies seront ajoutées à l’enregistrement. Pour changer votre choix, sélectionnez à nouveau vos fichiers."
 msgstr "ستُضاف الصور المختارة عند الحفظ. لتغيير اختيارك، اختر ملفاتك من جديد."
 
 #. translators: %s : taille maximale d'envoi acceptée (ex. « 5 Mo »).
@@ -1980,13 +1769,8 @@ msgid "Ajoutez au moins un bloc avant d’afficher la page de vente."
 msgstr "أضف قسماً واحداً على الأقل قبل عرض صفحة البيع."
 
 #: includes/class-aod-cd-section-landing.php:708
-msgid ""
-"Ajoutez le bloc « Formulaire de commande » : sans lui, le visiteur ne peut "
-"pas commander. (Vous pouvez aussi enregistrer en laissant la page de vente "
-"éteinte.)"
-msgstr ""
-"أضف قسم « استمارة الطلب »: بدونه لا يستطيع الزائر أن يطلب. (يمكنك أيضاً الحفظ "
-"مع ترك صفحة البيع مطفأة.)"
+msgid "Ajoutez le bloc « Formulaire de commande » : sans lui, le visiteur ne peut pas commander. (Vous pouvez aussi enregistrer en laissant la page de vente éteinte.)"
+msgstr "أضف قسم « استمارة الطلب »: بدونه لا يستطيع الزائر أن يطلب. (يمكنك أيضاً الحفظ مع ترك صفحة البيع مطفأة.)"
 
 #. translators: %s : message d'erreur renvoyé par WordPress.
 #: includes/class-aod-cd-section-landing.php:732
@@ -2021,13 +1805,8 @@ msgid "Vérification de domaine"
 msgstr "التحقّق من النطاق"
 
 #: includes/class-aod-cd-section-marketing.php:129
-msgid ""
-"Pour confirmer que le domaine vous appartient. Collez ici la balise donnée "
-"par Meta (ou seulement son code) : elle sera ajoutée dans l’en-tête du site. "
-"Puis cliquez « Vérifier le domaine » dans Meta."
-msgstr ""
-"لتأكيد ملكيّتك للنطاق. الصق هنا الوسم الذي تمنحه لك ميتا (أو رمزه فقط): سيُضاف "
-"تلقائيًا في ترويسة الموقع. ثمّ اضغط «التحقّق من النطاق» في ميتا."
+msgid "Pour confirmer que le domaine vous appartient. Collez ici la balise donnée par Meta (ou seulement son code) : elle sera ajoutée dans l’en-tête du site. Puis cliquez « Vérifier le domaine » dans Meta."
+msgstr "لتأكيد ملكيّتك للنطاق. الصق هنا الوسم الذي تمنحه لك ميتا (أو رمزه فقط): سيُضاف تلقائيًا في ترويسة الموقع. ثمّ اضغط «التحقّق من النطاق» في ميتا."
 
 #: includes/class-aod-cd-section-marketing.php:133
 msgid "TikTok"
@@ -2062,23 +1841,16 @@ msgid "Libellé de conversion"
 msgstr "تسمية التحويل"
 
 #: includes/class-aod-cd-section-marketing.php:157
-msgid ""
-"La partie après « / » dans send_to. Sans lui, seule la balise de base est "
-"posée."
+msgid "La partie après « / » dans send_to. Sans lui, seule la balise de base est posée."
 msgstr "الجزء الذي يلي «/» في send_to. بدونه، يُوضع الوسم الأساسي فقط."
 
 #: includes/class-aod-cd-section-marketing.php:164
-msgid ""
-"Une carte par régie : collez l’identifiant, laissez vide pour désactiver."
+msgid "Une carte par régie : collez l’identifiant, laissez vide pour désactiver."
 msgstr "بطاقة لكل منصّة إعلانية: الصق المعرّف، واتركه فارغًا للتعطيل."
 
 #: includes/class-aod-cd-section-marketing.php:168
-msgid ""
-"Le PageView est suivi sur tout le site ; l’achat est mesuré sur la page de "
-"remerciement (une fois par commande)."
-msgstr ""
-"يُتتبَّع PageView في كامل الموقع؛ ويُقاس الشراء في صفحة الشكر (مرّة واحدة لكل "
-"طلب)."
+msgid "Le PageView est suivi sur tout le site ; l’achat est mesuré sur la page de remerciement (une fois par commande)."
+msgstr "يُتتبَّع PageView في كامل الموقع؛ ويُقاس الشراء في صفحة الشكر (مرّة واحدة لكل طلب)."
 
 #: includes/class-aod-cd-section-marketing.php:177
 #: includes/class-aod-cd-section-marketing.php:199
@@ -2100,15 +1872,8 @@ msgid "Meta — API de Conversion (CAPI)"
 msgstr "ميتا — واجهة برمجة التحويلات (CAPI)"
 
 #: includes/class-aod-cd-section-marketing.php:203
-msgid ""
-"Envoie aussi vos achats à Meta depuis le serveur (Facebook/Instagram), en "
-"plus du pixel du navigateur : vous ne perdez plus les conversions bloquées "
-"par iOS ou les bloqueurs de pub. La déduplication est automatique. Nécessite "
-"l’ID du pixel Meta ci-dessus."
-msgstr ""
-"يُرسل مشترياتك إلى ميتا من الخادم أيضًا (فيسبوك/إنستغرام)، إضافةً إلى بكسل "
-"المتصفّح: لن تفقد بعد الآن التحويلات التي يحجبها نظام iOS أو مانعات "
-"الإعلانات. إزالة التكرار تلقائية. يتطلّب معرّف بكسل ميتا أعلاه."
+msgid "Envoie aussi vos achats à Meta depuis le serveur (Facebook/Instagram), en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées par iOS ou les bloqueurs de pub. La déduplication est automatique. Nécessite l’ID du pixel Meta ci-dessus."
+msgstr "يُرسل مشترياتك إلى ميتا من الخادم أيضًا (فيسبوك/إنستغرام)، إضافةً إلى بكسل المتصفّح: لن تفقد بعد الآن التحويلات التي يحجبها نظام iOS أو مانعات الإعلانات. إزالة التكرار تلقائية. يتطلّب معرّف بكسل ميتا أعلاه."
 
 #: includes/class-aod-cd-section-marketing.php:205
 #: includes/class-aod-cd-section-marketing.php:239
@@ -2123,12 +1888,8 @@ msgid "•••••••• enregistré — laisser vide pour le conserver"
 msgstr "•••••••• محفوظ — اتركه فارغًا للإبقاء عليه"
 
 #: includes/class-aod-cd-section-marketing.php:207
-msgid ""
-"Gestionnaire d’événements Meta → Paramètres → Conversions API → Générer un "
-"jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
-msgstr ""
-"مدير الأحداث في ميتا ← الإعدادات ← واجهة التحويلات (Conversions API) ← إنشاء "
-"رمز وصول. اتركه فارغًا للاكتفاء ببكسل المتصفّح وحده."
+msgid "Gestionnaire d’événements Meta → Paramètres → Conversions API → Générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
+msgstr "مدير الأحداث في ميتا ← الإعدادات ← واجهة التحويلات (Conversions API) ← إنشاء رمز وصول. اتركه فارغًا للاكتفاء ببكسل المتصفّح وحده."
 
 #: includes/class-aod-cd-section-marketing.php:212
 #: includes/class-aod-cd-section-marketing.php:246
@@ -2141,12 +1902,8 @@ msgid "Code d’événement test (optionnel)"
 msgstr "رمز حدث الاختبار (اختياري)"
 
 #: includes/class-aod-cd-section-marketing.php:218
-msgid ""
-"Pour voir vos achats arriver dans le Gestionnaire d’événements → onglet "
-"« Test des événements ». À vider une fois validé."
-msgstr ""
-"لرؤية مشترياتك تصل في مدير الأحداث ← تبويب «اختبار الأحداث». أفرغه بعد "
-"التأكّد."
+msgid "Pour voir vos achats arriver dans le Gestionnaire d’événements → onglet « Test des événements ». À vider une fois validé."
+msgstr "لرؤية مشترياتك تصل في مدير الأحداث ← تبويب «اختبار الأحداث». أفرغه بعد التأكّد."
 
 #: includes/class-aod-cd-section-marketing.php:221
 #: includes/class-aod-cd-section-marketing.php:255
@@ -2158,9 +1915,7 @@ msgstr "اختبار الاتصال"
 #: includes/class-aod-cd-section-marketing.php:224
 #: includes/class-aod-cd-section-marketing.php:258
 #: includes/class-aod-cd-section-marketing.php:287
-msgid ""
-"Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de "
-"le coller."
+msgid "Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller."
 msgstr "يستخدم الاختبار الرمز المحفوظ: احفظ أولًا إن كنت قد لصقته للتو."
 
 #: includes/class-aod-cd-section-marketing.php:232
@@ -2168,71 +1923,40 @@ msgid "TikTok — API de Conversion (Events API)"
 msgstr "تيك توك — واجهة برمجة التحويلات (Events API)"
 
 #: includes/class-aod-cd-section-marketing.php:237
-msgid ""
-"Envoie aussi vos achats à TikTok depuis le serveur, en plus du pixel du "
-"navigateur : vous ne perdez plus les conversions bloquées côté navigateur. "
-"La déduplication est automatique. Nécessite l’ID du pixel TikTok ci-dessus."
-msgstr ""
-"يُرسل مشترياتك إلى تيك توك من الخادم أيضًا، إضافةً إلى بكسل المتصفّح: لن تفقد "
-"بعد الآن التحويلات المحجوبة من جهة المتصفّح. إزالة التكرار تلقائية. يتطلّب "
-"معرّف بكسل تيك توك أعلاه."
+msgid "Envoie aussi vos achats à TikTok depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel TikTok ci-dessus."
+msgstr "يُرسل مشترياتك إلى تيك توك من الخادم أيضًا، إضافةً إلى بكسل المتصفّح: لن تفقد بعد الآن التحويلات المحجوبة من جهة المتصفّح. إزالة التكرار تلقائية. يتطلّب معرّف بكسل تيك توك أعلاه."
 
 #: includes/class-aod-cd-section-marketing.php:241
-msgid ""
-"TikTok Ads → Outils → Événements → gérer l’Events API → générer un jeton "
-"d’accès. Laisser vide pour garder le pixel du navigateur seul."
-msgstr ""
-"TikTok Ads ← الأدوات ← الأحداث ← إدارة Events API ← إنشاء رمز وصول. اتركه "
-"فارغًا للاكتفاء ببكسل المتصفّح وحده."
+msgid "TikTok Ads → Outils → Événements → gérer l’Events API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
+msgstr "TikTok Ads ← الأدوات ← الأحداث ← إدارة Events API ← إنشاء رمز وصول. اتركه فارغًا للاكتفاء ببكسل المتصفّح وحده."
 
 #: includes/class-aod-cd-section-marketing.php:250
 msgid "Code d’événement test (requis pour tester)"
 msgstr "رمز حدث الاختبار (مطلوب للاختبار)"
 
 #: includes/class-aod-cd-section-marketing.php:252
-msgid ""
-"TikTok Ads → Événements → onglet « Test ». Requis pour le bouton « Tester » "
-"ci-dessous (l’événement de test n’entre pas dans vos statistiques). À vider "
-"une fois validé."
-msgstr ""
-"TikTok Ads ← الأحداث ← تبويب «اختبار». مطلوب لزر «اختبار» أدناه (لا يدخل حدث "
-"الاختبار في إحصاءاتك). أفرِغه بعد التحقّق."
+msgid "TikTok Ads → Événements → onglet « Test ». Requis pour le bouton « Tester » ci-dessous (l’événement de test n’entre pas dans vos statistiques). À vider une fois validé."
+msgstr "TikTok Ads ← الأحداث ← تبويب «اختبار». مطلوب لزر «اختبار» أدناه (لا يدخل حدث الاختبار في إحصاءاتك). أفرِغه بعد التحقّق."
 
 #: includes/class-aod-cd-section-marketing.php:266
 msgid "Snapchat — API de Conversion"
 msgstr "سناب شات — واجهة برمجة التحويلات"
 
 #: includes/class-aod-cd-section-marketing.php:271
-msgid ""
-"Envoie aussi vos achats à Snapchat depuis le serveur, en plus du pixel du "
-"navigateur : vous ne perdez plus les conversions bloquées côté navigateur. "
-"La déduplication est automatique. Nécessite l’ID du pixel Snapchat ci-dessus."
-msgstr ""
-"يُرسل مشترياتك إلى سناب شات من الخادم أيضًا، إضافةً إلى بكسل المتصفّح: لن تفقد "
-"بعد الآن التحويلات المحجوبة من جهة المتصفّح. إزالة التكرار تلقائية. يتطلّب "
-"معرّف بكسل سناب شات أعلاه."
+msgid "Envoie aussi vos achats à Snapchat depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel Snapchat ci-dessus."
+msgstr "يُرسل مشترياتك إلى سناب شات من الخادم أيضًا، إضافةً إلى بكسل المتصفّح: لن تفقد بعد الآن التحويلات المحجوبة من جهة المتصفّح. إزالة التكرار تلقائية. يتطلّب معرّف بكسل سناب شات أعلاه."
 
 #: includes/class-aod-cd-section-marketing.php:275
-msgid ""
-"Snapchat Ads → Gestionnaire d’événements → Conversions API → générer un "
-"jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
-msgstr ""
-"Snapchat Ads ← مدير الأحداث ← Conversions API ← إنشاء رمز وصول. اتركه فارغًا "
-"للاكتفاء ببكسل المتصفّح وحده."
+msgid "Snapchat Ads → Gestionnaire d’événements → Conversions API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
+msgstr "Snapchat Ads ← مدير الأحداث ← Conversions API ← إنشاء رمز وصول. اتركه فارغًا للاكتفاء ببكسل المتصفّح وحده."
 
 #: includes/class-aod-cd-section-marketing.php:294
 msgid "Devise de reporting"
 msgstr "عملة إعداد التقارير"
 
 #: includes/class-aod-cd-section-marketing.php:297
-msgid ""
-"Meta refuse le dinar algérien : la valeur de vos achats n’est pas comptée "
-"dans vos publicités. Déclarez une devise reconnue et son taux pour rendre "
-"cette valeur mesurable. Laissez vide pour ne rien changer."
-msgstr ""
-"لا تقبل Meta الدينار الجزائري: لا تُحتسب قيمة مبيعاتك في إعلاناتك. حدِّد عملة "
-"مُعترفًا بها وسعرها لجعل هذه القيمة قابلة للقياس. اترك الحقل فارغًا لعدم تغيير "
-"أي شيء."
+msgid "Meta refuse le dinar algérien : la valeur de vos achats n’est pas comptée dans vos publicités. Déclarez une devise reconnue et son taux pour rendre cette valeur mesurable. Laissez vide pour ne rien changer."
+msgstr "لا تقبل Meta الدينار الجزائري: لا تُحتسب قيمة مبيعاتك في إعلاناتك. حدِّد عملة مُعترفًا بها وسعرها لجعل هذه القيمة قابلة للقياس. اترك الحقل فارغًا لعدم تغيير أي شيء."
 
 #: includes/class-aod-cd-section-marketing.php:299
 msgid "Devise (code à 3 lettres)"
@@ -2247,8 +1971,7 @@ msgid "Taux : 1 DZD = ?"
 msgstr "السعر: 1 DZD = ؟"
 
 #: includes/class-aod-cd-section-marketing.php:306
-msgid ""
-"Combien vaut 1 dinar dans la devise choisie (ex. 0,0075 pour le dollar)."
+msgid "Combien vaut 1 dinar dans la devise choisie (ex. 0,0075 pour le dollar)."
 msgstr "كم يساوي دينار واحد بالعملة المختارة (مثال: 0,0075 للدولار)."
 
 #: includes/class-aod-cd-section-marketing.php:312
@@ -2272,214 +1995,216 @@ msgstr "منصّة غير معروفة."
 msgid "Échec du test."
 msgstr "فشل الاختبار."
 
-#: includes/class-aod-cd-section-orders.php:101
+#: includes/class-aod-cd-section-orders.php:102
 msgid "Toutes"
 msgstr "الكل"
 
-#: includes/class-aod-cd-section-orders.php:102
-#: includes/class-aod-cd-section-orders.php:922
+#: includes/class-aod-cd-section-orders.php:103
+#: includes/class-aod-cd-section-orders.php:980
 msgid "En attente"
 msgstr "قيد الانتظار"
 
-#: includes/class-aod-cd-section-orders.php:104
+#: includes/class-aod-cd-section-orders.php:105
 msgid "Terminées"
 msgstr "مكتملة"
 
-#: includes/class-aod-cd-section-orders.php:149
+#: includes/class-aod-cd-section-orders.php:168
 msgid "Suivez, confirmez et expédiez les commandes COD."
 msgstr "تابع، أكّد وأرسل طلبات الدفع عند الاستلام."
 
-#: includes/class-aod-cd-section-orders.php:156
+#: includes/class-aod-cd-section-orders.php:177
 msgid "Filtrer par statut"
 msgstr "تصفية حسب الحالة"
 
-#: includes/class-aod-cd-section-orders.php:183
+#: includes/class-aod-cd-section-orders.php:204
 msgid "Rechercher : n°, nom, téléphone…"
 msgstr "بحث: رقم، اسم، هاتف…"
 
-#: includes/class-aod-cd-section-orders.php:238
-#: includes/class-aod-cd-section-orders.php:248
+#: includes/class-aod-cd-section-orders.php:266
+#: includes/class-aod-cd-section-orders.php:276
 msgid "Non assignées"
 msgstr "غير مسندة"
 
-#: includes/class-aod-cd-section-orders.php:299
+#: includes/class-aod-cd-section-orders.php:327
 msgid "Aucune commande dans cette catégorie."
 msgstr "لا توجد طلبات في هذه الفئة."
 
-#: includes/class-aod-cd-section-orders.php:327
+#: includes/class-aod-cd-section-orders.php:355
 msgid "sélectionnée(s)"
 msgstr "محدد(ة)"
 
-#: includes/class-aod-cd-section-orders.php:341
+#: includes/class-aod-cd-section-orders.php:369
 msgid "Assigner la sélection à un confirmateur"
 msgstr "إسناد العناصر المحددة إلى مسؤول التأكيد"
 
-#: includes/class-aod-cd-section-orders.php:342
+#: includes/class-aod-cd-section-orders.php:370
 msgid "Assigner à…"
 msgstr "إسناد إلى…"
 
-#: includes/class-aod-cd-section-orders.php:357
+#: includes/class-aod-cd-section-orders.php:385
 msgid "Écraser les assignations existantes"
 msgstr "استبدال الإسنادات الحالية"
 
-#: includes/class-aod-cd-section-orders.php:360
+#: includes/class-aod-cd-section-orders.php:388
 msgid "Assigner"
 msgstr "إسناد"
 
-#: includes/class-aod-cd-section-orders.php:381
+#: includes/class-aod-cd-section-orders.php:409
 msgid "Router la sélection vers un transporteur"
 msgstr "توجيه التحديد إلى شركة توصيل"
 
-#: includes/class-aod-cd-section-orders.php:382
+#: includes/class-aod-cd-section-orders.php:410
 msgid "Transporteur…"
 msgstr "شركة التوصيل…"
 
-#: includes/class-aod-cd-section-orders.php:388
+#: includes/class-aod-cd-section-orders.php:416
 msgid "Router"
 msgstr "توجيه"
 
-#: includes/class-aod-cd-section-orders.php:399
+#: includes/class-aod-cd-section-orders.php:427
 msgid "Envoyer au transporteur"
 msgstr "إرسال إلى شركة التوصيل"
 
-#: includes/class-aod-cd-section-orders.php:426
-#: includes/class-aod-cd-section-orders.php:537
-#: includes/class-aod-cd-section-products.php:277
-#: includes/class-aod-cd-section-products.php:293
-#: includes/class-aod-cd-section-products.php:518
+#: includes/class-aod-cd-section-orders.php:461
+#: includes/class-aod-cd-section-orders.php:595
+#: includes/class-aod-cd-section-orders.php:1335
+#: includes/class-aod-cd-section-products.php:278
+#: includes/class-aod-cd-section-products.php:294
+#: includes/class-aod-cd-section-products.php:523
 #: includes/class-aod-cd-section-shipping.php:287
 msgid "Statut"
 msgstr "الحالة"
 
-#: includes/class-aod-cd-section-orders.php:434
-#: includes/class-aod-cd-section-orders.php:551
-#: includes/class-aod-cd-section-orders.php:2936
+#: includes/class-aod-cd-section-orders.php:469
+#: includes/class-aod-cd-section-orders.php:609
+#: includes/class-aod-cd-section-orders.php:1351
+#: includes/class-aod-cd-section-orders.php:3140
 #: includes/class-aod-cd-section-team.php:66
 msgid "Suivi"
 msgstr "التتبّع"
 
-#: includes/class-aod-cd-section-orders.php:479
+#: includes/class-aod-cd-section-orders.php:514
 msgid "Sélectionner cette commande"
 msgstr "تحديد هذا الطلب"
 
-#: includes/class-aod-cd-section-orders.php:521
+#: includes/class-aod-cd-section-orders.php:552
 #: includes/class-aod-cd-section-tracking.php:201
-#: includes/class-aod-cd-section-tracking.php:350
+#: includes/class-aod-cd-section-tracking.php:353
 msgid "Détail"
 msgstr "التفاصيل"
 
-#: includes/class-aod-cd-section-orders.php:645
+#: includes/class-aod-cd-section-orders.php:703
 msgid "Aucun transporteur"
 msgstr "لا توجد شركة توصيل"
 
-#: includes/class-aod-cd-section-orders.php:650
-#: includes/class-aod-cd-section-orders.php:657
-#: includes/class-aod-cd-section-orders.php:1864
+#: includes/class-aod-cd-section-orders.php:708
+#: includes/class-aod-cd-section-orders.php:715
+#: includes/class-aod-cd-section-orders.php:2068
 msgid "Non configuré"
 msgstr "غير مُهيَّأ"
 
 #. translators: %s : nom du transporteur réglé pour toute la boutique.
-#: includes/class-aod-cd-section-orders.php:662
+#: includes/class-aod-cd-section-orders.php:720
 #, php-format
 msgid "Par défaut (%s)"
 msgstr "الافتراضي (%s)"
 
-#: includes/class-aod-cd-section-orders.php:900
+#: includes/class-aod-cd-section-orders.php:958
 msgid "Réessayer"
 msgstr "إعادة المحاولة"
 
-#: includes/class-aod-cd-section-orders.php:924
+#: includes/class-aod-cd-section-orders.php:982
 msgid "Confirmée"
 msgstr "مؤكَّدة"
 
-#: includes/class-aod-cd-section-orders.php:925
+#: includes/class-aod-cd-section-orders.php:983
 msgid "En pause"
 msgstr "متوقفة"
 
-#: includes/class-aod-cd-section-orders.php:926
+#: includes/class-aod-cd-section-orders.php:984
 msgid "Terminée"
 msgstr "مكتملة"
 
-#: includes/class-aod-cd-section-orders.php:927
+#: includes/class-aod-cd-section-orders.php:985
 msgid "Annulée"
 msgstr "ملغاة"
 
-#: includes/class-aod-cd-section-orders.php:928
+#: includes/class-aod-cd-section-orders.php:986
 msgid "Remboursée"
 msgstr "مُسترَدّة"
 
-#: includes/class-aod-cd-section-orders.php:929
+#: includes/class-aod-cd-section-orders.php:987
 msgid "Échouée"
 msgstr "فاشلة"
 
-#: includes/class-aod-cd-section-orders.php:930
-#: includes/class-aod-cd-section-products.php:294
-#: includes/class-aod-cd-section-products.php:521
+#: includes/class-aod-cd-section-orders.php:988
+#: includes/class-aod-cd-section-products.php:295
+#: includes/class-aod-cd-section-products.php:526
 msgid "Brouillon"
 msgstr "مسوّدة"
 
-#: includes/class-aod-cd-section-orders.php:1401
-#: includes/class-aod-cd-section-orders.php:1488
-#: includes/class-aod-cd-section-orders.php:1894
-#: includes/class-aod-cd-section-orders.php:2097
-#: includes/class-aod-cd-section-orders.php:2245
-#: includes/class-aod-cd-section-orders.php:2274
-#: includes/class-aod-cd-section-tracking.php:598
+#: includes/class-aod-cd-section-orders.php:1605
+#: includes/class-aod-cd-section-orders.php:1692
+#: includes/class-aod-cd-section-orders.php:2098
+#: includes/class-aod-cd-section-orders.php:2301
+#: includes/class-aod-cd-section-orders.php:2449
+#: includes/class-aod-cd-section-orders.php:2478
+#: includes/class-aod-cd-section-tracking.php:601
 msgid "Commande introuvable."
 msgstr "الطلب غير موجود."
 
-#: includes/class-aod-cd-section-orders.php:1407
+#: includes/class-aod-cd-section-orders.php:1611
 msgid "Statut invalide."
 msgstr "حالة غير صالحة."
 
-#: includes/class-aod-cd-section-orders.php:1414
+#: includes/class-aod-cd-section-orders.php:1618
 msgid "Statut modifié depuis l’espace de gestion."
 msgstr "تم تغيير الحالة من مساحة الإدارة."
 
 #. translators: %s : nom de l'utilisateur ayant confirmé la commande.
-#: includes/class-aod-cd-section-orders.php:1433
+#: includes/class-aod-cd-section-orders.php:1637
 #, php-format
 msgid "Confirmée par %s."
 msgstr "تم التأكيد بواسطة %s."
 
-#: includes/class-aod-cd-section-orders.php:1455
+#: includes/class-aod-cd-section-orders.php:1659
 msgid "Statut mis à jour."
 msgstr "تم تحديث الحالة."
 
-#: includes/class-aod-cd-section-orders.php:1667
-#: includes/class-aod-cd-section-orders.php:1945
-#: includes/class-aod-cd-section-orders.php:2164
+#: includes/class-aod-cd-section-orders.php:1871
+#: includes/class-aod-cd-section-orders.php:2149
+#: includes/class-aod-cd-section-orders.php:2368
 msgid "Aucune commande sélectionnée."
 msgstr "لم يتم تحديد أي طلب."
 
 #. translators: %1$d: nombre assignées, %2$s: nom du confirmateur.
-#: includes/class-aod-cd-section-orders.php:1675
+#: includes/class-aod-cd-section-orders.php:1879
 #, php-format
 msgid "%1$d commande(s) assignée(s) à %2$s."
 msgstr "تم إسناد %1$d طلب(ات) إلى %2$s."
 
 #. translators: %d: nombre de commandes réassignées (elles étaient déjà assignées à quelqu'un d'autre).
-#: includes/class-aod-cd-section-orders.php:1682
+#: includes/class-aod-cd-section-orders.php:1886
 #, php-format
 msgid "%d déjà assignée(s) ont été RÉASSIGNÉE(S)."
 msgstr "%d مسندة مسبقًا تمت إعادة إسنادها."
 
-#: includes/class-aod-cd-section-orders.php:1835
+#: includes/class-aod-cd-section-orders.php:2039
 msgid "Commande déjà expédiée : son transporteur ne peut plus changer."
 msgstr "الطلب مُرسَل مسبقًا: لم يعد بالإمكان تغيير شركة التوصيل الخاصة به."
 
-#: includes/class-aod-cd-section-orders.php:1844
-#: includes/class-aod-cd-section-orders.php:1939
+#: includes/class-aod-cd-section-orders.php:2048
+#: includes/class-aod-cd-section-orders.php:2143
 msgid "Transporteur inconnu ou non configuré (Livraison → Transporteurs)."
 msgstr "شركة توصيل غير معروفة أو غير مُهيَّأة (التوصيل ← شركات التوصيل)."
 
-#: includes/class-aod-cd-section-orders.php:1863
+#: includes/class-aod-cd-section-orders.php:2067
 msgid "Transporteur mis à jour."
 msgstr "تم تحديث شركة التوصيل."
 
-#: includes/class-aod-cd-section-orders.php:1886
-#: includes/class-aod-cd-section-orders.php:1931
-#: includes/class-aod-cd-section-orders.php:2091
+#: includes/class-aod-cd-section-orders.php:2090
+#: includes/class-aod-cd-section-orders.php:2135
+#: includes/class-aod-cd-section-orders.php:2295
 #: includes/class-aod-cd-section-shipping.php:435
 #: includes/class-aod-cd-section-shipping.php:592
 #: includes/class-aod-cd-section-shipping.php:716
@@ -2487,23 +2212,23 @@ msgid "Module de livraison indisponible."
 msgstr "وحدة التوصيل غير متوفرة."
 
 #. translators: %1$d : nombre de commandes routées, %2$s : nom du transporteur.
-#: includes/class-aod-cd-section-orders.php:1952
+#: includes/class-aod-cd-section-orders.php:2156
 #, php-format
 msgid "%1$d commande(s) routée(s) vers %2$s."
 msgstr "تم توجيه %1$d طلب(ات) إلى %2$s."
 
 #. translators: %s : numéro de suivi du colis.
-#: includes/class-aod-cd-section-orders.php:2141
+#: includes/class-aod-cd-section-orders.php:2345
 #, php-format
 msgid "Colis créé ✓ Suivi : %s"
 msgstr "تم إنشاء الطرد ✓ التتبّع: %s"
 
-#: includes/class-aod-cd-section-orders.php:2191
+#: includes/class-aod-cd-section-orders.php:2395
 msgid "Aucune commande n’a pu être supprimée."
 msgstr "تعذّر حذف أي طلب."
 
 #. translators: %d: nombre de commandes supprimées.
-#: includes/class-aod-cd-section-orders.php:2196
+#: includes/class-aod-cd-section-orders.php:2400
 #, php-format
 msgid "%d commande supprimée."
 msgid_plural "%d commandes supprimées."
@@ -2515,7 +2240,7 @@ msgstr[4] "تم حذف %d طلب."
 msgstr[5] "تم حذف %d طلب."
 
 #. translators: %d: nombre de commandes non supprimées.
-#: includes/class-aod-cd-section-orders.php:2202
+#: includes/class-aod-cd-section-orders.php:2406
 #, php-format
 msgid "%d commande n’a pas pu être supprimée."
 msgid_plural "%d commandes n’ont pas pu être supprimées."
@@ -2526,241 +2251,222 @@ msgstr[3] "تعذّر حذف %d طلب."
 msgstr[4] "تعذّر حذف %d طلب."
 msgstr[5] "تعذّر حذف %d طلب."
 
-#: includes/class-aod-cd-section-orders.php:2256
-#: includes/class-aod-cd-section-orders.php:2529
+#: includes/class-aod-cd-section-orders.php:2460
+#: includes/class-aod-cd-section-orders.php:2733
 #, php-format
 msgid "Commande #%s"
 msgstr "الطلب رقم %s"
 
-#: includes/class-aod-cd-section-orders.php:2288
+#: includes/class-aod-cd-section-orders.php:2492
 msgid "Le téléphone est obligatoire."
 msgstr "رقم الهاتف إلزامي."
 
-#: includes/class-aod-cd-section-orders.php:2297
+#: includes/class-aod-cd-section-orders.php:2501
 msgid "Wilaya invalide."
 msgstr "ولاية غير صالحة."
 
-#: includes/class-aod-cd-section-orders.php:2300
+#: includes/class-aod-cd-section-orders.php:2504
 msgid "Commune invalide pour cette wilaya."
 msgstr "بلدية غير صالحة لهذه الولاية."
 
-#: includes/class-aod-cd-section-orders.php:2429
+#: includes/class-aod-cd-section-orders.php:2633
 msgid "Une commande doit contenir au moins un article."
 msgstr "يجب أن يحتوي الطلب على منتج واحد على الأقل."
 
-#: includes/class-aod-cd-section-orders.php:2512
-msgid ""
-"Infos client / livraison, articles et total modifiés depuis l’espace de "
-"gestion."
+#: includes/class-aod-cd-section-orders.php:2716
+msgid "Infos client / livraison, articles et total modifiés depuis l’espace de gestion."
 msgstr "تم تعديل معلومات العميل/التوصيل والمنتجات والإجمالي من مساحة الإدارة."
 
-#: includes/class-aod-cd-section-orders.php:2514
-msgid ""
-"Infos client / livraison et articles modifiés depuis l’espace de gestion."
+#: includes/class-aod-cd-section-orders.php:2718
+msgid "Infos client / livraison et articles modifiés depuis l’espace de gestion."
 msgstr "تم تعديل معلومات العميل/التوصيل والمنتجات من مساحة الإدارة."
 
-#: includes/class-aod-cd-section-orders.php:2516
-msgid ""
-"Infos client / livraison et total forcé manuellement depuis l’espace de "
-"gestion."
+#: includes/class-aod-cd-section-orders.php:2720
+msgid "Infos client / livraison et total forcé manuellement depuis l’espace de gestion."
 msgstr "تم تعديل معلومات العميل/التوصيل وفرض الإجمالي يدويًا من مساحة الإدارة."
 
-#: includes/class-aod-cd-section-orders.php:2518
+#: includes/class-aod-cd-section-orders.php:2722
 msgid "Infos client / livraison modifiées depuis l’espace de gestion."
 msgstr "تم تعديل معلومات العميل/التوصيل من مساحة الإدارة."
 
-#: includes/class-aod-cd-section-orders.php:2528
+#: includes/class-aod-cd-section-orders.php:2732
 msgid "Commande mise à jour."
 msgstr "تم تحديث الطلب."
 
-#: includes/class-aod-cd-section-orders.php:2677
+#: includes/class-aod-cd-section-orders.php:2881
 msgid "Nom du client"
 msgstr "اسم العميل"
 
-#: includes/class-aod-cd-section-orders.php:2681
+#: includes/class-aod-cd-section-orders.php:1337
+#: includes/class-aod-cd-section-orders.php:2885
 msgid "Téléphone"
 msgstr "الهاتف"
 
-#: includes/class-aod-cd-section-orders.php:2683
+#: includes/class-aod-cd-section-orders.php:2887
 msgid "Type de livraison"
 msgstr "نوع التوصيل"
 
-#: includes/class-aod-cd-section-orders.php:2685
-#: includes/class-aod-cd-section-orders.php:2926
+#: includes/class-aod-cd-section-orders.php:2889
+#: includes/class-aod-cd-section-orders.php:3130
 msgid "À domicile"
 msgstr "إلى المنزل"
 
-#: includes/class-aod-cd-section-orders.php:2686
-#: includes/class-aod-cd-section-orders.php:2926
+#: includes/class-aod-cd-section-orders.php:2890
+#: includes/class-aod-cd-section-orders.php:3130
 msgid "Stop-desk (bureau)"
 msgstr "مكتب التوصيل"
 
-#: includes/class-aod-cd-section-orders.php:2690
+#: includes/class-aod-cd-section-orders.php:1340
+#: includes/class-aod-cd-section-orders.php:2894
 msgid "Adresse"
 msgstr "العنوان"
 
-#: includes/class-aod-cd-section-orders.php:2698
-#: includes/class-aod-cd-section-orders.php:2711
+#: includes/class-aod-cd-section-orders.php:2902
+#: includes/class-aod-cd-section-orders.php:2915
 msgid "—"
 msgstr "—"
 
-#: includes/class-aod-cd-section-orders.php:2709
+#: includes/class-aod-cd-section-orders.php:1339
+#: includes/class-aod-cd-section-orders.php:2913
 msgid "Commune"
 msgstr "البلدية"
 
-#: includes/class-aod-cd-section-orders.php:2742
+#: includes/class-aod-cd-section-orders.php:2946
 msgid "Note pour le livreur"
 msgstr "ملاحظة للموصِّل"
 
 #. translators: %d : nombre maximal de caractères.
-#: includes/class-aod-cd-section-orders.php:2749
+#: includes/class-aod-cd-section-orders.php:2953
 #, php-format
-msgid ""
-"Consigne transmise au livreur avec le colis (%d caractères maximum). "
-"Certains transporteurs ne la reçoivent pas : l’écran d’envoi vous le dira."
-msgstr ""
-"تعليمة تُرسَل إلى الموصِّل مع الطرد (%d حرف كحد أقصى). بعض شركات التوصيل لا "
-"تستلمها: ستُنبِّهك شاشة الإرسال."
+msgid "Consigne transmise au livreur avec le colis (%d caractères maximum). Certains transporteurs ne la reçoivent pas : l’écran d’envoi vous le dira."
+msgstr "تعليمة تُرسَل إلى الموصِّل مع الطرد (%d حرف كحد أقصى). بعض شركات التوصيل لا تستلمها: ستُنبِّهك شاشة الإرسال."
 
-#: includes/class-aod-cd-section-orders.php:2765
+#: includes/class-aod-cd-section-orders.php:1342
+#: includes/class-aod-cd-section-orders.php:2969
 msgid "Articles"
 msgstr "المنتجات"
 
-#: includes/class-aod-cd-section-orders.php:2767
-msgid ""
-"Aucun article pour l’instant. Ajoutez ci-dessous les produits dictés par le "
-"client au téléphone."
-msgstr ""
-"لا توجد أي منتجات بعد. أضِف أدناه المنتجات التي يمليها العميل عبر الهاتف."
+#: includes/class-aod-cd-section-orders.php:2971
+msgid "Aucun article pour l’instant. Ajoutez ci-dessous les produits dictés par le client au téléphone."
+msgstr "لا توجد أي منتجات بعد. أضِف أدناه المنتجات التي يمليها العميل عبر الهاتف."
 
-#: includes/class-aod-cd-section-orders.php:2814
+#: includes/class-aod-cd-section-orders.php:3018
 msgid "Ajouter un article"
 msgstr "إضافة منتج"
 
-#: includes/class-aod-cd-section-orders.php:2816
+#: includes/class-aod-cd-section-orders.php:3020
 msgid "— Choisir un produit —"
 msgstr "— اختر منتجًا —"
 
-#: includes/class-aod-cd-section-orders.php:2830
-msgid ""
-"Le total est recalculé automatiquement (prix de base + suppléments des "
-"variantes)."
+#: includes/class-aod-cd-section-orders.php:3034
+msgid "Le total est recalculé automatiquement (prix de base + suppléments des variantes)."
 msgstr "يُعاد حساب الإجمالي تلقائيًا (السعر الأساسي + زيادات المتغيّرات)."
 
-#: includes/class-aod-cd-section-orders.php:2836
+#: includes/class-aod-cd-section-orders.php:3040
 msgid "Total à payer (livraison incluse)"
 msgstr "الإجمالي المستحق (شامل التوصيل)"
 
-#: includes/class-aod-cd-section-orders.php:2839
-msgid ""
-"Laissez ce montant tel quel pour un calcul automatique. Modifiez-le pour "
-"forcer le total à encaisser (ex. remise accordée au téléphone)."
-msgstr ""
-"اترك هذا المبلغ كما هو ليُحسب تلقائيًا. عدّله لفرض الإجمالي المطلوب تحصيله "
-"(مثال: تخفيض مُنِح عبر الهاتف)."
+#: includes/class-aod-cd-section-orders.php:3043
+msgid "Laissez ce montant tel quel pour un calcul automatique. Modifiez-le pour forcer le total à encaisser (ex. remise accordée au téléphone)."
+msgstr "اترك هذا المبلغ كما هو ليُحسب تلقائيًا. عدّله لفرض الإجمالي المطلوب تحصيله (مثال: تخفيض مُنِح عبر الهاتف)."
 
-#: includes/class-aod-cd-section-orders.php:2945
+#: includes/class-aod-cd-section-orders.php:3149
 msgid "Article"
 msgstr "المنتج"
 
-#: includes/class-aod-cd-section-orders.php:2968
+#: includes/class-aod-cd-section-orders.php:3172
 msgid "Prix produit"
 msgstr "سعر المنتج"
 
-#: includes/class-aod-cd-section-orders.php:2969
+#: includes/class-aod-cd-section-orders.php:3173
 msgid "Prix livraison"
 msgstr "سعر التوصيل"
 
-#: includes/class-aod-cd-section-orders.php:2981
-#: includes/class-aod-cd-section-orders.php:2993
+#: includes/class-aod-cd-section-orders.php:3185
+#: includes/class-aod-cd-section-orders.php:3197
 msgid "Notes & historique"
 msgstr "الملاحظات والسجلّ"
 
-#: includes/class-aod-cd-section-orders.php:2985
+#: includes/class-aod-cd-section-orders.php:3189
 msgid "Système"
 msgstr "النظام"
 
-#: includes/class-aod-cd-section-orders.php:2994
+#: includes/class-aod-cd-section-orders.php:3198
 msgid "Aucune note pour le moment."
 msgstr "لا توجد ملاحظات حتى الآن."
 
-#: includes/class-aod-cd-section-products.php:96
+#: includes/class-aod-cd-section-products.php:97
 msgid "Classez vos produits. Supprimer une catégorie n’efface aucun produit."
 msgstr "صنّف منتجاتك. حذف فئة لا يحذف أي منتج."
 
-#: includes/class-aod-cd-section-products.php:103
+#: includes/class-aod-cd-section-products.php:104
 msgid "Nouvelle catégorie"
 msgstr "فئة جديدة"
 
-#: includes/class-aod-cd-section-products.php:105
+#: includes/class-aod-cd-section-products.php:106
 msgid "Nom de la nouvelle catégorie"
 msgstr "اسم الفئة الجديدة"
 
-#: includes/class-aod-cd-section-products.php:107
+#: includes/class-aod-cd-section-products.php:108
 msgid "Nom en arabe (facultatif)"
 msgstr "الاسم بالعربية (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:107
+#: includes/class-aod-cd-section-products.php:108
 msgid "Nom de la nouvelle catégorie en arabe"
 msgstr "اسم الفئة الجديدة بالعربية"
 
-#: includes/class-aod-cd-section-products.php:110
-#: includes/class-aod-cd-section-products.php:194
+#: includes/class-aod-cd-section-products.php:111
+#: includes/class-aod-cd-section-products.php:195
 msgid "Afficher sur l’accueil"
 msgstr "إظهار في الصفحة الرئيسية"
 
-#: includes/class-aod-cd-section-products.php:112
-#: includes/class-aod-cd-section-products.php:196
+#: includes/class-aod-cd-section-products.php:113
+#: includes/class-aod-cd-section-products.php:197
 msgid "Ordre d’affichage sur l’accueil"
 msgstr "ترتيب العرض في الصفحة الرئيسية"
 
 #. translators: %s: nom actuel de la catégorie.
-#: includes/class-aod-cd-section-products.php:113
-#: includes/class-aod-cd-section-products.php:183
+#: includes/class-aod-cd-section-products.php:114
+#: includes/class-aod-cd-section-products.php:184
 msgid "Catégorie parente"
 msgstr "الفئة الأم"
 
-#: includes/class-aod-cd-section-products.php:114
-#: includes/class-aod-cd-section-products.php:184
+#: includes/class-aod-cd-section-products.php:115
+#: includes/class-aod-cd-section-products.php:185
 msgid "— Catégorie principale —"
 msgstr "— فئة رئيسية —"
 
-#: includes/class-aod-cd-section-products.php:119
-msgid ""
-"Choisissez une catégorie parente pour en faire une sous-catégorie (par "
-"exemple une gamme rattachée à une marque). Cliquez sur la vignette d’une "
-"catégorie pour lui choisir une image, affichée sur la page d’accueil."
-msgstr ""
-"اختر فئة أمًّا لجعلها فئة فرعية (مثلاً تشكيلة تابعة لعلامة تجارية). انقر على "
-"الصورة المصغّرة لفئة لاختيار صورة لها، تُعرض في الصفحة الرئيسية."
+#: includes/class-aod-cd-section-products.php:120
+msgid "Choisissez une catégorie parente pour en faire une sous-catégorie (par exemple une gamme rattachée à une marque). Cliquez sur la vignette d’une catégorie pour lui choisir une image, affichée sur la page d’accueil."
+msgstr "اختر فئة أمًّا لجعلها فئة فرعية (مثلاً تشكيلة تابعة لعلامة تجارية). انقر على الصورة المصغّرة لفئة لاختيار صورة لها، تُعرض في الصفحة الرئيسية."
 
-#: includes/class-aod-cd-section-products.php:130
-#: includes/class-aod-cd-section-products.php:506
+#: includes/class-aod-cd-section-products.php:131
+#: includes/class-aod-cd-section-products.php:511
 msgid "Aucune catégorie pour le moment."
 msgstr "لا توجد فئات حتى الآن."
 
-#: includes/class-aod-cd-section-products.php:130
+#: includes/class-aod-cd-section-products.php:131
 msgid "Créez-en une ci-dessus pour commencer à classer vos produits."
 msgstr "أنشئ واحدة أعلاه لتبدأ تصنيف منتجاتك."
 
 #. translators: %s: nom actuel de la catégorie.
-#: includes/class-aod-cd-section-products.php:176
+#: includes/class-aod-cd-section-products.php:177
 #, php-format
 msgid "Nom de la catégorie « %s »"
 msgstr "اسم الفئة «‏%s‏»"
 
-#: includes/class-aod-cd-section-products.php:182
+#: includes/class-aod-cd-section-products.php:183
 msgid "Nom en arabe"
 msgstr "الاسم بالعربية"
 
 #. translators: %s: nom actuel de la catégorie.
-#: includes/class-aod-cd-section-products.php:182
+#: includes/class-aod-cd-section-products.php:183
 #, php-format
 msgid "Nom en arabe de la catégorie « %s »"
 msgstr "اسم الفئة «‏%s‏» بالعربية"
 
 #. translators: %d: nombre de produits
-#: includes/class-aod-cd-section-products.php:199
+#: includes/class-aod-cd-section-products.php:200
 #, php-format
 msgid "%d produit"
 msgid_plural "%d produits"
@@ -2771,464 +2477,404 @@ msgstr[3] "%d منتجات"
 msgstr[4] "%d منتجًا"
 msgstr[5] "%d منتج"
 
-#: includes/class-aod-cd-section-products.php:202
+#: includes/class-aod-cd-section-products.php:203
 msgid "Supprimer la catégorie"
 msgstr "حذف الفئة"
 
-#: includes/class-aod-cd-section-products.php:238
+#: includes/class-aod-cd-section-products.php:239
 msgid "Votre catalogue : prix, stock et mise en ligne."
 msgstr "كتالوجك: الأسعار والمخزون والنشر."
 
-#: includes/class-aod-cd-section-products.php:239
+#: includes/class-aod-cd-section-products.php:240
 msgid "Ajouter un produit"
 msgstr "إضافة منتج"
 
-#: includes/class-aod-cd-section-products.php:248
+#: includes/class-aod-cd-section-products.php:249
 msgid "Rechercher un produit…"
 msgstr "ابحث عن منتج…"
 
-#: includes/class-aod-cd-section-products.php:266
+#: includes/class-aod-cd-section-products.php:267
 msgid "Aucun produit ne correspond à cette recherche."
 msgstr "لا يوجد منتج يطابق هذا البحث."
 
-#: includes/class-aod-cd-section-products.php:267
-msgid ""
-"Aucun produit pour le moment. Cliquez sur « Ajouter un produit » pour "
-"commencer."
+#: includes/class-aod-cd-section-products.php:268
+msgid "Aucun produit pour le moment. Cliquez sur « Ajouter un produit » pour commencer."
 msgstr "لا يوجد منتج حتى الآن. انقر على « إضافة منتج » للبدء."
 
-#: includes/class-aod-cd-section-products.php:275
-#: includes/class-aod-cd-section-products.php:289
-#: includes/class-aod-cd-section-products.php:341
+#: includes/class-aod-cd-section-products.php:276
+#: includes/class-aod-cd-section-products.php:290
+#: includes/class-aod-cd-section-products.php:346
 msgid "Prix"
 msgstr "السعر"
 
-#: includes/class-aod-cd-section-products.php:294
-#: includes/class-aod-cd-section-products.php:520
+#: includes/class-aod-cd-section-products.php:295
+#: includes/class-aod-cd-section-products.php:525
 msgid "En ligne"
 msgstr "منشور"
 
-#: includes/class-aod-cd-section-products.php:298
+#: includes/class-aod-cd-section-products.php:299
 msgid "Éditer"
 msgstr "تعديل"
 
-#: includes/class-aod-cd-section-products.php:304
+#: includes/class-aod-cd-section-products.php:305
 msgid "(affichée)"
 msgstr "(معروضة)"
 
-#: includes/class-aod-cd-section-products.php:342
+#: includes/class-aod-cd-section-products.php:347
 msgid "Promo"
 msgstr "تخفيض"
 
-#: includes/class-aod-cd-section-products.php:353
+#: includes/class-aod-cd-section-products.php:358
 msgid "Achat"
 msgstr "الشراء"
 
-#: includes/class-aod-cd-section-products.php:420
+#: includes/class-aod-cd-section-products.php:425
 msgid "Modifier le produit"
 msgstr "تعديل المنتج"
 
-#: includes/class-aod-cd-section-products.php:420
+#: includes/class-aod-cd-section-products.php:425
 msgid "Nouveau produit"
 msgstr "منتج جديد"
 
-#: includes/class-aod-cd-section-products.php:424
+#: includes/class-aod-cd-section-products.php:429
 msgid "Renseignez au moins un nom et un prix."
 msgstr "أدخل على الأقل اسمًا وسعرًا."
 
-#: includes/class-aod-cd-section-products.php:425
+#: includes/class-aod-cd-section-products.php:430
 msgid "Retour à la liste"
 msgstr "العودة إلى القائمة"
 
-#: includes/class-aod-cd-section-products.php:433
+#: includes/class-aod-cd-section-products.php:438
 msgid "Informations générales"
 msgstr "معلومات عامة"
 
-#: includes/class-aod-cd-section-products.php:443
+#: includes/class-aod-cd-section-products.php:448
 msgid "Nom du produit"
 msgstr "اسم المنتج"
 
-#: includes/class-aod-cd-section-products.php:455
+#: includes/class-aod-cd-section-products.php:460
 msgid "Description"
 msgstr "الوصف"
 
-#: includes/class-aod-cd-section-products.php:477
+#: includes/class-aod-cd-section-products.php:482
 msgid "Arguments de vente (un par ligne)"
 msgstr "نقاط البيع (واحدة في كل سطر)"
 
-#: includes/class-aod-cd-section-products.php:486
-msgid ""
-"Affichés en liste à puces sur la page produit. Une ligne sans traduction "
-"arabe s’affiche en français."
-msgstr ""
-"تُعرَض كقائمة نقطية في صفحة المنتج. السطر الذي لا يملك ترجمة عربية يظهر "
-"بالفرنسية."
+#: includes/class-aod-cd-section-products.php:491
+msgid "Affichés en liste à puces sur la page produit. Une ligne sans traduction arabe s’affiche en français."
+msgstr "تُعرَض كقائمة نقطية في صفحة المنتج. السطر الذي لا يملك ترجمة عربية يظهر بالفرنسية."
 
-#: includes/class-aod-cd-section-products.php:510
+#: includes/class-aod-cd-section-products.php:515
 msgid "Cliquez pour ouvrir la liste et cochez une ou plusieurs catégories."
 msgstr "انقر لفتح القائمة وحدّد فئة واحدة أو أكثر."
 
-#: includes/class-aod-cd-section-products.php:514
+#: includes/class-aod-cd-section-products.php:519
 msgid "Nouvelle catégorie (optionnel)"
 msgstr "فئة جديدة (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:515
+#: includes/class-aod-cd-section-products.php:520
 msgid "Crée et assigne une catégorie"
 msgstr "ينشئ فئة ويعيّنها"
 
-#: includes/class-aod-cd-section-products.php:531
+#: includes/class-aod-cd-section-products.php:536
 msgid "Prix & offres"
 msgstr "الأسعار والعروض"
 
-#: includes/class-aod-cd-section-products.php:531
+#: includes/class-aod-cd-section-products.php:536
 msgid "prix, promotion, lots"
 msgstr "السعر، التخفيض، الحِزم"
 
-#: includes/class-aod-cd-section-products.php:535
+#: includes/class-aod-cd-section-products.php:540
 #, php-format
 msgid "Prix (%s)"
 msgstr "السعر (%s)"
 
-#: includes/class-aod-cd-section-products.php:537
-msgid ""
-"Si vous ajoutez des variantes, ce prix sert de prix par défaut (utilisé "
-"quand une variante n’a pas son propre prix)."
-msgstr ""
-"إذا أضفت متغيّرات، يُستخدَم هذا السعر كسعر افتراضي (عندما لا يكون للمتغيّر سعره "
-"الخاص)."
+#: includes/class-aod-cd-section-products.php:542
+msgid "Si vous ajoutez des variantes, ce prix sert de prix par défaut (utilisé quand une variante n’a pas son propre prix)."
+msgstr "إذا أضفت متغيّرات، يُستخدَم هذا السعر كسعر افتراضي (عندما لا يكون للمتغيّر سعره الخاص)."
 
-#: includes/class-aod-cd-section-products.php:540
+#: includes/class-aod-cd-section-products.php:545
 msgid "Prix promo (optionnel)"
 msgstr "سعر التخفيض (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:546
+#: includes/class-aod-cd-section-products.php:551
 msgid "Période de promotion (optionnel)"
 msgstr "فترة العرض الترويجي (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:549
+#: includes/class-aod-cd-section-products.php:554
 msgid "Début"
 msgstr "البداية"
 
-#: includes/class-aod-cd-section-products.php:551
+#: includes/class-aod-cd-section-products.php:556
 msgid "Début de la promotion"
 msgstr "بداية العرض الترويجي"
 
-#: includes/class-aod-cd-section-products.php:552
-#: includes/class-aod-cd-section-products.php:560
+#: includes/class-aod-cd-section-products.php:557
+#: includes/class-aod-cd-section-products.php:565
 msgid "Effacer la date"
 msgstr "مسح التاريخ"
 
-#: includes/class-aod-cd-section-products.php:557
+#: includes/class-aod-cd-section-products.php:562
 msgid "Fin"
 msgstr "النهاية"
 
-#: includes/class-aod-cd-section-products.php:559
+#: includes/class-aod-cd-section-products.php:564
 msgid "Fin de la promotion"
 msgstr "نهاية العرض الترويجي"
 
-#: includes/class-aod-cd-section-products.php:564
+#: includes/class-aod-cd-section-products.php:569
 msgid "La promo s’activera et s’arrêtera automatiquement à ces dates."
 msgstr "سيبدأ العرض وينتهي تلقائيًا في هذه التواريخ."
 
-#: includes/class-aod-cd-section-products.php:568
+#: includes/class-aod-cd-section-products.php:573
 #, php-format
 msgid "Prix d’achat (%s, optionnel)"
 msgstr "سعر الشراء (%s، اختياري)"
 
-#: includes/class-aod-cd-section-products.php:570
+#: includes/class-aod-cd-section-products.php:575
 msgid "Sert au calcul de la marge (non affiché au client)."
 msgstr "يُستخدَم لحساب الهامش (لا يظهر للعميل)."
 
-#: includes/class-aod-cd-section-products.php:576
+#: includes/class-aod-cd-section-products.php:581
 msgid "Offres"
 msgstr "العروض"
 
-#: includes/class-aod-cd-section-products.php:576
+#: includes/class-aod-cd-section-products.php:581
 msgid "packs « 2 produits », « 3 produits »… (optionnel)"
 msgstr "عروض «منتجان»، «3 منتجات»… (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:578
-msgid ""
-"Proposez d’acheter plusieurs unités de ce produit à un prix de lot "
-"avantageux. Indiquez le NOMBRE d’unités et le PRIX TOTAL du lot (ex. : 2 → "
-"2500, 3 → 3300). Ce total doit être inférieur au prix normal multiplié par "
-"le nombre d’unités, sinon l’offre n’apporte aucune réduction et sera "
-"ignorée. Sur la page produit, le client verra une carte « 1 produit » par "
-"défaut, puis une carte par offre ; au clic, il choisit une variante pour "
-"chaque unité."
-msgstr ""
-"اقترح شراء عدة وحدات من هذا المنتج بسعر إجمالي مُغرٍ. حدِّد عدد الوحدات والسعر "
-"الإجمالي للعرض (مثال: 2 ← 2500، 3 ← 3300). يجب أن يكون هذا الإجمالي أقل من "
-"السعر العادي مضروبًا في عدد الوحدات، وإلا فلن يقدّم العرض أي تخفيض وسيُهمَل. في "
-"صفحة المنتج، سيرى العميل بطاقة «منتج واحد» افتراضيًا، ثم بطاقة لكل عرض؛ وعند "
-"النقر يختار متغيّرًا لكل وحدة."
+#: includes/class-aod-cd-section-products.php:583
+msgid "Proposez d’acheter plusieurs unités de ce produit à un prix de lot avantageux. Indiquez le NOMBRE d’unités et le PRIX TOTAL du lot (ex. : 2 → 2500, 3 → 3300). Ce total doit être inférieur au prix normal multiplié par le nombre d’unités, sinon l’offre n’apporte aucune réduction et sera ignorée. Sur la page produit, le client verra une carte « 1 produit » par défaut, puis une carte par offre ; au clic, il choisit une variante pour chaque unité."
+msgstr "اقترح شراء عدة وحدات من هذا المنتج بسعر إجمالي مُغرٍ. حدِّد عدد الوحدات والسعر الإجمالي للعرض (مثال: 2 ← 2500، 3 ← 3300). يجب أن يكون هذا الإجمالي أقل من السعر العادي مضروبًا في عدد الوحدات، وإلا فلن يقدّم العرض أي تخفيض وسيُهمَل. في صفحة المنتج، سيرى العميل بطاقة «منتج واحد» افتراضيًا، ثم بطاقة لكل عرض؛ وعند النقر يختار متغيّرًا لكل وحدة."
 
-#: includes/class-aod-cd-section-products.php:581
+#: includes/class-aod-cd-section-products.php:586
 msgid "Nombre d’unités"
 msgstr "عدد القطع"
 
-#: includes/class-aod-cd-section-products.php:582
+#: includes/class-aod-cd-section-products.php:587
 #, php-format
 msgid "Prix total du lot (%s)"
 msgstr "السعر الإجمالي للعرض (%s)"
 
-#: includes/class-aod-cd-section-products.php:596
+#: includes/class-aod-cd-section-products.php:601
 msgid "Ajouter une offre"
 msgstr "إضافة عرض"
 
-#: includes/class-aod-cd-section-products.php:608
+#: includes/class-aod-cd-section-products.php:613
 msgid "Photos"
 msgstr "الصور"
 
-#: includes/class-aod-cd-section-products.php:608
+#: includes/class-aod-cd-section-products.php:613
 msgid "photo principale & galerie"
 msgstr "الصورة الرئيسية والمعرض"
 
-#: includes/class-aod-cd-section-products.php:611
 #: includes/class-aod-cd-section-products.php:616
+#: includes/class-aod-cd-section-products.php:621
 msgid "Photo principale"
 msgstr "الصورة الرئيسية"
 
-#: includes/class-aod-cd-section-products.php:621
+#: includes/class-aod-cd-section-products.php:626
 msgid "Galerie (photos supplémentaires)"
 msgstr "المعرض (صور إضافية)"
 
-#: includes/class-aod-cd-section-products.php:631
+#: includes/class-aod-cd-section-products.php:636
 msgid "À retirer"
 msgstr "سيُزال"
 
-#: includes/class-aod-cd-section-products.php:641
-msgid ""
-"Cliquez sur « Ajouter » (ou glissez vos fichiers) pour choisir des photos. "
-"Cliquez sur ✕ pour en retirer une."
-msgstr ""
-"انقر على «إضافة» (أو اسحب ملفاتك) لاختيار الصور. انقر على ✕ لإزالة صورة."
+#: includes/class-aod-cd-section-products.php:646
+msgid "Cliquez sur « Ajouter » (ou glissez vos fichiers) pour choisir des photos. Cliquez sur ✕ pour en retirer une."
+msgstr "انقر على «إضافة» (أو اسحب ملفاتك) لاختيار الصور. انقر على ✕ لإزالة صورة."
 
-#: includes/class-aod-cd-section-products.php:649
+#: includes/class-aod-cd-section-products.php:654
 msgid "Stock & logistique"
 msgstr "المخزون واللوجستيك"
 
-#: includes/class-aod-cd-section-products.php:654
+#: includes/class-aod-cd-section-products.php:659
 msgid "Gérer le stock"
 msgstr "إدارة المخزون"
 
-#: includes/class-aod-cd-section-products.php:666
+#: includes/class-aod-cd-section-products.php:671
 msgid "Alerte stock bas (optionnel)"
 msgstr "تنبيه انخفاض المخزون (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:671
+#: includes/class-aod-cd-section-products.php:676
 msgid "Référence / SKU (optionnel)"
 msgstr "المرجع / SKU (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:675
+#: includes/class-aod-cd-section-products.php:680
 msgid "Poids (kg, optionnel)"
 msgstr "الوزن (كغ، اختياري)"
 
-#: includes/class-aod-cd-section-products.php:676
+#: includes/class-aod-cd-section-products.php:681
 msgid "ex : 0.5"
 msgstr "مثال: 0.5"
 
-#: includes/class-aod-cd-section-products.php:684
+#: includes/class-aod-cd-section-products.php:689
 msgid "Options & variantes"
 msgstr "الخيارات والمتغيّرات"
 
-#: includes/class-aod-cd-section-products.php:684
+#: includes/class-aod-cd-section-products.php:689
 msgid "Taille, Couleur, Pointure… (optionnel)"
 msgstr "المقاس، اللون، القياس… (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:687
-msgid ""
-"Crée une section par caractéristique (Taille, Pointure, Couleur…). Pour "
-"chaque section, ajoute les valeurs que le client pourra choisir. Une section "
-"« avec photos » affiche des pastilles cliquables (couleurs, modèles…) ; "
-"chaque valeur peut ajouter un supplément de prix. Laisse vide pour un "
-"produit simple."
-msgstr ""
-"أنشئ قسمًا لكل خاصية (المقاس، القياس، اللون…). لكل قسم، أضِف القيم التي سيختار "
-"منها العميل. القسم «بصور» يعرض أزرارًا قابلة للنقر (ألوان، نماذج…)؛ ويمكن لكل "
-"قيمة إضافة زيادة في السعر. اتركه فارغًا لمنتج بسيط."
+#: includes/class-aod-cd-section-products.php:692
+msgid "Crée une section par caractéristique (Taille, Pointure, Couleur…). Pour chaque section, ajoute les valeurs que le client pourra choisir. Une section « avec photos » affiche des pastilles cliquables (couleurs, modèles…) ; chaque valeur peut ajouter un supplément de prix. Laisse vide pour un produit simple."
+msgstr "أنشئ قسمًا لكل خاصية (المقاس، القياس، اللون…). لكل قسم، أضِف القيم التي سيختار منها العميل. القسم «بصور» يعرض أزرارًا قابلة للنقر (ألوان، نماذج…)؛ ويمكن لكل قيمة إضافة زيادة في السعر. اتركه فارغًا لمنتج بسيط."
 
-#: includes/class-aod-cd-section-products.php:690
+#: includes/class-aod-cd-section-products.php:695
 msgid "Sections rapides :"
 msgstr "أقسام سريعة:"
 
-#: includes/class-aod-cd-section-products.php:691
+#: includes/class-aod-cd-section-products.php:696
 msgid "Sélectionner une taille"
 msgstr "اختر مقاسًا"
 
-#: includes/class-aod-cd-section-products.php:691
+#: includes/class-aod-cd-section-products.php:696
 msgid "Tailles S–XXL"
 msgstr "مقاسات S–XXL"
 
-#: includes/class-aod-cd-section-products.php:692
+#: includes/class-aod-cd-section-products.php:697
 msgid "Sélectionner une pointure"
 msgstr "اختر قياسًا"
 
-#: includes/class-aod-cd-section-products.php:692
+#: includes/class-aod-cd-section-products.php:697
 msgid "Pointures 35–46"
 msgstr "قياسات 35–46"
 
-#: includes/class-aod-cd-section-products.php:693
+#: includes/class-aod-cd-section-products.php:698
 msgid "Sélectionner une couleur"
 msgstr "اختر لونًا"
 
-#: includes/class-aod-cd-section-products.php:693
+#: includes/class-aod-cd-section-products.php:698
 msgid "Couleur (avec photos)"
 msgstr "اللون (بصور)"
 
-#: includes/class-aod-cd-section-products.php:709
+#: includes/class-aod-cd-section-products.php:714
 msgid "Ajouter une section"
 msgstr "إضافة قسم"
 
-#: includes/class-aod-cd-section-products.php:836
+#: includes/class-aod-cd-section-products.php:841
 msgid "ex : Sélectionner une couleur, une taille…"
 msgstr "مثال: اختر لونًا، مقاسًا…"
 
-#: includes/class-aod-cd-section-products.php:838
+#: includes/class-aod-cd-section-products.php:843
 msgid "en arabe (facultatif)"
 msgstr "بالعربية (اختياري)"
 
-#: includes/class-aod-cd-section-products.php:838
+#: includes/class-aod-cd-section-products.php:843
 msgid "Libellé de la section en arabe"
 msgstr "عنوان القسم بالعربية"
 
-#: includes/class-aod-cd-section-products.php:841
+#: includes/class-aod-cd-section-products.php:846
 msgid "Avec photos"
 msgstr "بصور"
 
-#: includes/class-aod-cd-section-products.php:843
-msgid ""
-"Affiche cette section en menu déroulant sur le formulaire de commande (idéal "
-"quand il y a beaucoup de valeurs)."
-msgstr ""
-"يعرض هذا القسم كقائمة منسدلة في نموذج الطلب (مثالي عند وجود قيم كثيرة)."
+#: includes/class-aod-cd-section-products.php:848
+msgid "Affiche cette section en menu déroulant sur le formulaire de commande (idéal quand il y a beaucoup de valeurs)."
+msgstr "يعرض هذا القسم كقائمة منسدلة في نموذج الطلب (مثالي عند وجود قيم كثيرة)."
 
-#: includes/class-aod-cd-section-products.php:845
+#: includes/class-aod-cd-section-products.php:850
 msgid "Liste déroulante"
 msgstr "قائمة منسدلة"
 
-#: includes/class-aod-cd-section-products.php:847
+#: includes/class-aod-cd-section-products.php:852
 msgid "Supprimer cette section"
 msgstr "حذف هذا القسم"
 
-#: includes/class-aod-cd-section-products.php:858
+#: includes/class-aod-cd-section-products.php:863
 msgid "Ajouter une valeur"
 msgstr "إضافة قيمة"
 
-#: includes/class-aod-cd-section-products.php:887
+#: includes/class-aod-cd-section-products.php:892
 msgid "Choisir une couleur"
 msgstr "اختر لونًا"
 
-#: includes/class-aod-cd-section-products.php:887
+#: includes/class-aod-cd-section-products.php:892
 msgid "Choisir une couleur prédéfinie"
 msgstr "اختر لونًا جاهزًا"
 
-#: includes/class-aod-cd-section-products.php:889
+#: includes/class-aod-cd-section-products.php:894
 msgid "ex : Rouge, L, 42…"
 msgstr "مثال: أحمر، L، 42…"
 
-#: includes/class-aod-cd-section-products.php:891
+#: includes/class-aod-cd-section-products.php:896
 msgid "en arabe"
 msgstr "بالعربية"
 
-#: includes/class-aod-cd-section-products.php:891
+#: includes/class-aod-cd-section-products.php:896
 msgid "Nom de la valeur en arabe"
 msgstr "اسم القيمة بالعربية"
 
-#: includes/class-aod-cd-section-products.php:895
+#: includes/class-aod-cd-section-products.php:900
 msgid "supplément"
 msgstr "زيادة"
 
-#: includes/class-aod-cd-section-products.php:897
+#: includes/class-aod-cd-section-products.php:902
 msgid "stock"
 msgstr "المخزون"
 
-#: includes/class-aod-cd-section-products.php:897
+#: includes/class-aod-cd-section-products.php:902
 msgid "Stock de cette variante"
 msgstr "مخزون هذا المتغيّر"
 
-#: includes/class-aod-cd-section-products.php:897
-msgid ""
-"Stock de cette variante. Laisser vide = stock non géré (illimité). 0 = "
-"rupture."
-msgstr ""
-"مخزون هذا المتغيّر. اتركه فارغًا = مخزون غير مُدار (غير محدود). 0 = نفاد "
-"المخزون."
+#: includes/class-aod-cd-section-products.php:902
+msgid "Stock de cette variante. Laisser vide = stock non géré (illimité). 0 = rupture."
+msgstr "مخزون هذا المتغيّر. اتركه فارغًا = مخزون غير مُدار (غير محدود). 0 = نفاد المخزون."
 
-#: includes/class-aod-cd-section-products.php:897
-msgid ""
-"Le stock se gère sur un seul axe. Videz les stocks de l’autre axe pour "
-"l’activer ici."
+#: includes/class-aod-cd-section-products.php:902
+msgid "Le stock se gère sur un seul axe. Videz les stocks de l’autre axe pour l’activer ici."
 msgstr "يُدار المخزون على محور واحد فقط. أفرغ مخزون المحور الآخر لتفعيله هنا."
 
-#: includes/class-aod-cd-section-products.php:899
+#: includes/class-aod-cd-section-products.php:904
 msgid "Supprimer cette valeur"
 msgstr "حذف هذه القيمة"
 
-#: includes/class-aod-cd-section-products.php:1053
+#: includes/class-aod-cd-section-products.php:1058
 msgid "ex : 2"
 msgstr "مثال: 2"
 
-#: includes/class-aod-cd-section-products.php:1054
+#: includes/class-aod-cd-section-products.php:1059
 msgid "ex : 2500 (pour 2)"
 msgstr "مثال: 2500 (لـ 2)"
 
-#: includes/class-aod-cd-section-products.php:1055
+#: includes/class-aod-cd-section-products.php:1060
 msgid "Supprimer cette offre"
 msgstr "حذف هذا العرض"
 
-#: includes/class-aod-cd-section-products.php:1124
+#: includes/class-aod-cd-section-products.php:1129
 msgid "Le nom du produit est obligatoire."
 msgstr "اسم المنتج إلزامي."
 
-#: includes/class-aod-cd-section-products.php:1159
+#: includes/class-aod-cd-section-products.php:1164
 msgid "Le prix promo doit être inférieur ou égal au prix normal."
 msgstr "يجب أن يكون سعر التخفيض أقل من السعر العادي أو مساويًا له."
 
-#: includes/class-aod-cd-section-products.php:1168
+#: includes/class-aod-cd-section-products.php:1173
 msgid "Cette référence (SKU) est déjà utilisée."
 msgstr "هذا المرجع (SKU) مستخدم بالفعل."
 
-#: includes/class-aod-cd-section-products.php:1341
+#: includes/class-aod-cd-section-products.php:1346
 msgid "Produit mis à jour."
 msgstr "تم تحديث المنتج."
 
-#: includes/class-aod-cd-section-products.php:1341
+#: includes/class-aod-cd-section-products.php:1346
 msgid "Produit créé."
 msgstr "تم إنشاء المنتج."
 
 #. translators: %d: nombre d'offres ignorées
-#: includes/class-aod-cd-section-products.php:1439
+#: includes/class-aod-cd-section-products.php:1444
 #, php-format
-msgid ""
-"%d offre a été ignorée : le prix total du lot doit être INFÉRIEUR au prix "
-"normal multiplié par le nombre d’unités (sinon l’offre n’apporte aucune "
-"réduction)."
-msgid_plural ""
-"%d offres ont été ignorées : le prix total du lot doit être INFÉRIEUR au "
-"prix normal multiplié par le nombre d’unités (sinon l’offre n’apporte aucune "
-"réduction)."
-msgstr[0] ""
-"تم تجاهل %d عرض: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا "
-"في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
-msgstr[1] ""
-"تم تجاهل عرض واحد: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي "
-"مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
-msgstr[2] ""
-"تم تجاهل عرضين: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا "
-"في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
-msgstr[3] ""
-"تم تجاهل %d عروض: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي "
-"مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
-msgstr[4] ""
-"تم تجاهل %d عرضًا: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي "
-"مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
-msgstr[5] ""
-"تم تجاهل %d عرض: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا "
-"في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
+msgid "%d offre a été ignorée : le prix total du lot doit être INFÉRIEUR au prix normal multiplié par le nombre d’unités (sinon l’offre n’apporte aucune réduction)."
+msgid_plural "%d offres ont été ignorées : le prix total du lot doit être INFÉRIEUR au prix normal multiplié par le nombre d’unités (sinon l’offre n’apporte aucune réduction)."
+msgstr[0] "تم تجاهل %d عرض: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
+msgstr[1] "تم تجاهل عرض واحد: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
+msgstr[2] "تم تجاهل عرضين: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
+msgstr[3] "تم تجاهل %d عروض: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
+msgstr[4] "تم تجاهل %d عرضًا: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
+msgstr[5] "تم تجاهل %d عرض: يجب أن يكون السعر الإجمالي للعرض أقل من السعر العادي مضروبًا في عدد الوحدات (وإلا فلن يقدّم العرض أي تخفيض)."
 
 #. translators: 1: nombre d'images refusées, 2: motif du refus (déjà traduit).
-#: includes/class-aod-cd-section-products.php:1451
+#: includes/class-aod-cd-section-products.php:1456
 #, php-format
 msgid "%1$d image n’a pas pu être ajoutée : %2$s"
 msgid_plural "%1$d images n’ont pas pu être ajoutées : %2$s"
@@ -3239,51 +2885,51 @@ msgstr[3] "تعذَّرت إضافة %1$d صور: %2$s"
 msgstr[4] "تعذَّرت إضافة %1$d صورة: %2$s"
 msgstr[5] "تعذَّرت إضافة %1$d صورة: %2$s"
 
-#: includes/class-aod-cd-section-products.php:1711
+#: includes/class-aod-cd-section-products.php:1716
 msgid "Produit déplacé dans la corbeille."
 msgstr "تم نقل المنتج إلى سلة المهملات."
 
-#: includes/class-aod-cd-section-products.php:1754
+#: includes/class-aod-cd-section-products.php:1857
 msgid "Le nom de la catégorie est obligatoire."
 msgstr "اسم الفئة إلزامي."
 
-#: includes/class-aod-cd-section-products.php:1782
+#: includes/class-aod-cd-section-products.php:1885
 msgid "Cette catégorie existe déjà."
 msgstr "هذه الفئة موجودة بالفعل."
 
-#: includes/class-aod-cd-section-products.php:1831
+#: includes/class-aod-cd-section-products.php:1934
 msgid "(échec de l’image)"
 msgstr "(فشل تحميل الصورة)"
 
-#: includes/class-aod-cd-section-products.php:1843
+#: includes/class-aod-cd-section-products.php:1946
 msgid "Catégorie mise à jour."
 msgstr "تم تحديث الفئة."
 
-#: includes/class-aod-cd-section-products.php:1843
+#: includes/class-aod-cd-section-products.php:1946
 msgid "Catégorie créée."
 msgstr "تم إنشاء الفئة."
 
-#: includes/class-aod-cd-section-products.php:1870
+#: includes/class-aod-cd-section-products.php:1973
 msgid "Catégorie introuvable."
 msgstr "الفئة غير موجودة."
 
-#: includes/class-aod-cd-section-products.php:1874
+#: includes/class-aod-cd-section-products.php:1977
 msgid "Suppression impossible."
 msgstr "تعذّر الحذف."
 
-#: includes/class-aod-cd-section-products.php:1876
+#: includes/class-aod-cd-section-products.php:1979
 msgid "Catégorie supprimée."
 msgstr "تم حذف الفئة."
 
-#: includes/class-aod-cd-section-products.php:1909
+#: includes/class-aod-cd-section-products.php:2012
 msgid "Aucun fichier reçu."
 msgstr "لم يتم استلام أي ملف."
 
-#: includes/class-aod-cd-section-products.php:1941
+#: includes/class-aod-cd-section-products.php:2044
 msgid "Image téléversée mais illisible."
 msgstr "تم رفع الصورة لكن تعذّرت قراءتها."
 
-#: includes/class-aod-cd-section-products.php:1973
+#: includes/class-aod-cd-section-products.php:2076
 msgid "Vidéo téléversée mais illisible."
 msgstr "تم رفع الفيديو لكن تعذّرت قراءته."
 
@@ -3323,12 +2969,8 @@ msgid "Grille des tarifs"
 msgstr "جدول الأسعار"
 
 #: includes/class-aod-cd-section-shipping.php:174
-msgid ""
-"Laissez une wilaya vide pour la rendre non livrable. Domicile = livraison à "
-"l’adresse ; Stop-desk = retrait au bureau du livreur."
-msgstr ""
-"اترك الولاية فارغة لجعلها غير قابلة للتوصيل. المنزل = التوصيل إلى العنوان؛ "
-"مكتب التوصيل = الاستلام من مكتب الناقل."
+msgid "Laissez une wilaya vide pour la rendre non livrable. Domicile = livraison à l’adresse ; Stop-desk = retrait au bureau du livreur."
+msgstr "اترك الولاية فارغة لجعلها غير قابلة للتوصيل. المنزل = التوصيل إلى العنوان؛ مكتب التوصيل = الاستلام من مكتب الناقل."
 
 #: includes/class-aod-cd-section-shipping.php:176
 msgid "Rechercher une wilaya…"
@@ -3382,8 +3024,7 @@ msgid "Connexion aux transporteurs"
 msgstr "الاتّصال بشركات التوصيل"
 
 #: includes/class-aod-cd-section-shipping.php:279
-msgid ""
-"Cliquez sur un transporteur pour saisir vos identifiants API et le connecter."
+msgid "Cliquez sur un transporteur pour saisir vos identifiants API et le connecter."
 msgstr "انقر على شركة توصيل لإدخال بيانات API وربطها."
 
 #: includes/class-aod-cd-section-shipping.php:281
@@ -3408,15 +3049,8 @@ msgid "récupère la grille officielle via l’API"
 msgstr "يجلب الجدول الرسمي عبر واجهة API"
 
 #: includes/class-aod-cd-section-shipping.php:342
-msgid ""
-"Récupérez les tarifs directement depuis l’API de votre transporteur, "
-"prévisualisez-les (avec une marge éventuelle), puis choisissez les wilayas à "
-"appliquer. Rien n’est enregistré tant que vous n’avez pas cliqué sur "
-"« Appliquer »."
-msgstr ""
-"اجلب الأسعار مباشرة من واجهة API الخاصة بشركة التوصيل، وعاينها (مع هامش "
-"اختياري)، ثم اختر الولايات المراد تطبيقها. لا يُحفظ أي شيء حتى تضغط على "
-"«تطبيق»."
+msgid "Récupérez les tarifs directement depuis l’API de votre transporteur, prévisualisez-les (avec une marge éventuelle), puis choisissez les wilayas à appliquer. Rien n’est enregistré tant que vous n’avez pas cliqué sur « Appliquer »."
+msgstr "اجلب الأسعار مباشرة من واجهة API الخاصة بشركة التوصيل، وعاينها (مع هامش اختياري)، ثم اختر الولايات المراد تطبيقها. لا يُحفظ أي شيء حتى تضغط على «تطبيق»."
 
 #: includes/class-aod-cd-section-shipping.php:355
 msgid "Aucune"
@@ -3463,19 +3097,12 @@ msgid "désactivé"
 msgstr "معطّل"
 
 #: includes/class-aod-cd-section-shipping.php:411
-msgid ""
-"Autoriser les clients à commander plusieurs produits en une seule commande "
-"(panier COD)"
+msgid "Autoriser les clients à commander plusieurs produits en une seule commande (panier COD)"
 msgstr "السماح للزبائن بطلب عدة منتجات في طلبية واحدة (سلة الدفع عند الاستلام)"
 
 #: includes/class-aod-cd-section-shipping.php:414
-msgid ""
-"Désactivé : chaque produit se commande directement depuis sa page "
-"(comportement par défaut). Dans les deux cas, le paiement reste à la "
-"livraison, sans compte client."
-msgstr ""
-"معطّل: كل منتج يُطلب مباشرة من صفحته (السلوك الافتراضي). في الحالتين، يبقى "
-"الدفع عند الاستلام، دون حساب زبون."
+msgid "Désactivé : chaque produit se commande directement depuis sa page (comportement par défaut). Dans les deux cas, le paiement reste à la livraison, sans compte client."
+msgstr "معطّل: كل منتج يُطلب مباشرة من صفحته (السلوك الافتراضي). في الحالتين، يبقى الدفع عند الاستلام، دون حساب زبون."
 
 #: includes/class-aod-cd-section-shipping.php:418
 msgid "Enregistrer le panier"
@@ -3549,12 +3176,8 @@ msgstr "تم الاتصال بنجاح بـ %s."
 #. translators: %s: nom du transporteur.
 #: includes/class-aod-cd-section-shipping.php:749
 #, php-format
-msgid ""
-"%s : identifiants enregistrés. La validité sera confirmée au premier envoi "
-"(ce transporteur ne propose pas de test en direct)."
-msgstr ""
-"%s: تم حفظ المعرّفات. سيتم التأكد من صحتها عند أول إرسال (لا توفّر شركة "
-"التوصيل هذه اختبارًا مباشرًا)."
+msgid "%s : identifiants enregistrés. La validité sera confirmée au premier envoi (ce transporteur ne propose pas de test en direct)."
+msgstr "%s: تم حفظ المعرّفات. سيتم التأكد من صحتها عند أول إرسال (لا توفّر شركة التوصيل هذه اختبارًا مباشرًا)."
 
 #: includes/class-aod-cd-section-stock.php:80
 msgid "Stock géré par variante : modifiez-le dans Produits."
@@ -3611,28 +3234,15 @@ msgid "État"
 msgstr "الحالة"
 
 #: includes/class-aod-cd-section-stock.php:529
-msgid ""
-"Vendus = quantités des commandes en cours, confirmées et terminées créées "
-"sur la période. Couverture = stock ÷ vitesse ; « ∞ » = aucune vente sur la "
-"période. « Stock bas » dès que le stock atteint le seuil d’alerte (seuil du "
-"produit, sinon seuil global WooCommerce)."
-msgstr ""
-"المبيعات = كميات الطلبات الجارية والمؤكدة والمكتملة المُنشأة خلال الفترة. "
-"التغطية = المخزون ÷ الوتيرة ؛ « ∞ » = لا مبيعات خلال الفترة. « مخزون منخفض » "
-"بمجرد بلوغ المخزون حدّ التنبيه (حدّ المنتج، وإلا الحدّ العام في ووكومرس)."
+msgid "Vendus = quantités des commandes en cours, confirmées et terminées créées sur la période. Couverture = stock ÷ vitesse ; « ∞ » = aucune vente sur la période. « Stock bas » dès que le stock atteint le seuil d’alerte (seuil du produit, sinon seuil global WooCommerce)."
+msgstr "المبيعات = كميات الطلبات الجارية والمؤكدة والمكتملة المُنشأة خلال الفترة. التغطية = المخزون ÷ الوتيرة ؛ « ∞ » = لا مبيعات خلال الفترة. « مخزون منخفض » بمجرد بلوغ المخزون حدّ التنبيه (حدّ المنتج، وإلا الحدّ العام في ووكومرس)."
 
 #: includes/class-aod-cd-section-stock.php:530
-msgid ""
-"Les produits sans gestion de stock WooCommerce sont listés « non suivi » "
-"(activez « Gérer le stock ? » sur la fiche produit pour les suivre)."
-msgstr ""
-"المنتجات دون إدارة مخزون ووكومرس تُعرض « غير متتبَّع » (فعّل « إدارة المخزون؟ » "
-"في بطاقة المنتج لمتابعتها)."
+msgid "Les produits sans gestion de stock WooCommerce sont listés « non suivi » (activez « Gérer le stock ? » sur la fiche produit pour les suivre)."
+msgstr "المنتجات دون إدارة مخزون ووكومرس تُعرض « غير متتبَّع » (فعّل « إدارة المخزون؟ » في بطاقة المنتج لمتابعتها)."
 
 #: includes/class-aod-cd-section-stock.php:532
-msgid ""
-"Après un ajustement, le classement du tableau se met à jour au rechargement "
-"de la page."
+msgid "Après un ajustement, le classement du tableau se met à jour au rechargement de la page."
 msgstr "بعد أي تعديل، يُحدَّث ترتيب الجدول عند إعادة تحميل الصفحة."
 
 #: includes/class-aod-cd-section-stock.php:572
@@ -3655,30 +3265,14 @@ msgstr "المنتجات المتابَعة"
 #. translators: %d : nombre de produits sans prix d'achat renseigné.
 #: includes/class-aod-cd-section-stock.php:581
 #, php-format
-msgid ""
-"Valeur du stock calculée au prix d’achat : %d produit sans prix d’achat "
-"renseigné est exclu du total."
-msgid_plural ""
-"Valeur du stock calculée au prix d’achat : %d produits sans prix d’achat "
-"renseigné sont exclus du total."
-msgstr[0] ""
-"قيمة المخزون محسوبة بسعر الشراء: %d منتج بدون سعر شراء مُدخَل مستبعد من "
-"المجموع."
-msgstr[1] ""
-"قيمة المخزون محسوبة بسعر الشراء: منتج واحد بدون سعر شراء مُدخَل مستبعد من "
-"المجموع."
-msgstr[2] ""
-"قيمة المخزون محسوبة بسعر الشراء: منتجان بدون سعر شراء مُدخَل مستبعدان من "
-"المجموع."
-msgstr[3] ""
-"قيمة المخزون محسوبة بسعر الشراء: %d منتجات بدون سعر شراء مُدخَل مستبعدة من "
-"المجموع."
-msgstr[4] ""
-"قيمة المخزون محسوبة بسعر الشراء: %d منتجًا بدون سعر شراء مُدخَل مستبعدًا من "
-"المجموع."
-msgstr[5] ""
-"قيمة المخزون محسوبة بسعر الشراء: %d منتج بدون سعر شراء مُدخَل مستبعد من "
-"المجموع."
+msgid "Valeur du stock calculée au prix d’achat : %d produit sans prix d’achat renseigné est exclu du total."
+msgid_plural "Valeur du stock calculée au prix d’achat : %d produits sans prix d’achat renseigné sont exclus du total."
+msgstr[0] "قيمة المخزون محسوبة بسعر الشراء: %d منتج بدون سعر شراء مُدخَل مستبعد من المجموع."
+msgstr[1] "قيمة المخزون محسوبة بسعر الشراء: منتج واحد بدون سعر شراء مُدخَل مستبعد من المجموع."
+msgstr[2] "قيمة المخزون محسوبة بسعر الشراء: منتجان بدون سعر شراء مُدخَل مستبعدان من المجموع."
+msgstr[3] "قيمة المخزون محسوبة بسعر الشراء: %d منتجات بدون سعر شراء مُدخَل مستبعدة من المجموع."
+msgstr[4] "قيمة المخزون محسوبة بسعر الشراء: %d منتجًا بدون سعر شراء مُدخَل مستبعدًا من المجموع."
+msgstr[5] "قيمة المخزون محسوبة بسعر الشراء: %d منتج بدون سعر شراء مُدخَل مستبعد من المجموع."
 
 #. translators: %d : nombre de produits non listés dans l'encart d'alertes.
 #: includes/class-aod-cd-section-stock.php:615
@@ -3834,11 +3428,8 @@ msgid "Aucun confirmateur pour le moment."
 msgstr "لا يوجد أيّ مؤكّد طلبات حاليًا."
 
 #: includes/class-aod-cd-section-team.php:131
-msgid ""
-"Créez un compte pour déléguer la confirmation des commandes, sans donner "
-"accès à toute la boutique."
-msgstr ""
-"أنشئ حسابًا لتفويض تأكيد الطلبات، دون منح صلاحية الوصول إلى المتجر بأكمله."
+msgid "Créez un compte pour déléguer la confirmation des commandes, sans donner accès à toute la boutique."
+msgstr "أنشئ حسابًا لتفويض تأكيد الطلبات، دون منح صلاحية الوصول إلى المتجر بأكمله."
 
 #: includes/class-aod-cd-section-team.php:148
 msgid "jamais connecté"
@@ -3875,13 +3466,8 @@ msgid "Modifier le confirmateur"
 msgstr "تعديل مسؤول التأكيد"
 
 #: includes/class-aod-cd-section-team.php:257
-msgid ""
-"10 caractères minimum. Laissez vide à la création pour en générer un "
-"automatiquement — il ne sera affiché qu’une seule fois, notez-le. Laissez "
-"vide en modification pour conserver le mot de passe actuel."
-msgstr ""
-"10 أحرف على الأقل. اتركه فارغًا عند الإنشاء لتوليده تلقائيًا — سيُعرض مرّة واحدة "
-"فقط، فدوّنه. اتركه فارغًا عند التعديل للإبقاء على كلمة المرور الحالية."
+msgid "10 caractères minimum. Laissez vide à la création pour en générer un automatiquement — il ne sera affiché qu’une seule fois, notez-le. Laissez vide en modification pour conserver le mot de passe actuel."
+msgstr "10 أحرف على الأقل. اتركه فارغًا عند الإنشاء لتوليده تلقائيًا — سيُعرض مرّة واحدة فقط، فدوّنه. اتركه فارغًا عند التعديل للإبقاء على كلمة المرور الحالية."
 
 #: includes/class-aod-cd-section-team.php:260
 msgid "Permissions"
@@ -3900,12 +3486,8 @@ msgid "Limiter à certains produits"
 msgstr "الحصر في منتجات معيّنة"
 
 #: includes/class-aod-cd-section-team.php:280
-msgid ""
-"Cochez les produits auxquels ce confirmateur est limité. Aucun produit coché "
-"= tous les produits."
-msgstr ""
-"حدّد المنتجات التي يقتصر عليها مسؤول التأكيد هذا. عدم تحديد أي منتج = كل "
-"المنتجات."
+msgid "Cochez les produits auxquels ce confirmateur est limité. Aucun produit coché = tous les produits."
+msgstr "حدّد المنتجات التي يقتصر عليها مسؤول التأكيد هذا. عدم تحديد أي منتج = كل المنتجات."
 
 #: includes/class-aod-cd-section-team.php:282
 msgid "Aucun produit publié pour le moment."
@@ -3953,9 +3535,7 @@ msgid "Actualiser tout"
 msgstr "تحديث الكل"
 
 #: includes/class-aod-cd-section-tracking.php:169
-msgid ""
-"Évolution des colis expédiés, récupérée automatiquement depuis le compte du "
-"transporteur."
+msgid "Évolution des colis expédiés, récupérée automatiquement depuis le compte du transporteur."
 msgstr "تطوّر الطرود المُرسَلة، يُجلب تلقائيًا من حساب شركة التوصيل."
 
 #: includes/class-aod-cd-section-tracking.php:179
@@ -3975,23 +3555,23 @@ msgid "Aucun colis expédié pour le moment."
 msgstr "لا توجد أي طرود مُرسَلة حاليًا."
 
 #: includes/class-aod-cd-section-tracking.php:182
-msgid ""
-"Le suivi apparaîtra ici dès qu’une commande sera envoyée à un transporteur."
+msgid "Le suivi apparaîtra ici dès qu’une commande sera envoyée à un transporteur."
 msgstr "سيظهر التتبّع هنا بمجرّد إرسال طلب إلى شركة توصيل."
 
+#: includes/class-aod-cd-section-orders.php:1331
 #: includes/class-aod-cd-section-tracking.php:191
-#: includes/class-aod-cd-section-tracking.php:333
+#: includes/class-aod-cd-section-tracking.php:336
 msgid "Date"
 msgstr "التاريخ"
 
 #: includes/class-aod-cd-section-tracking.php:194
-#: includes/class-aod-cd-section-tracking.php:336
-#: includes/class-aod-cd-section-tracking.php:458
+#: includes/class-aod-cd-section-tracking.php:339
+#: includes/class-aod-cd-section-tracking.php:461
 msgid "N° de suivi"
 msgstr "رقم التتبع"
 
 #: includes/class-aod-cd-section-tracking.php:196
-#: includes/class-aod-cd-section-tracking.php:338
+#: includes/class-aod-cd-section-tracking.php:341
 msgid "Dernière MAJ"
 msgstr "آخر تحديث"
 
@@ -4001,53 +3581,48 @@ msgstr "آخر تحديث"
 msgid "Bloqués (plus de %d jours)"
 msgstr "عالقة (أكثر من %d أيام)"
 
-#: includes/class-aod-cd-section-tracking.php:271
+#: includes/class-aod-cd-section-tracking.php:274
 msgid "Tous les transporteurs"
 msgstr "كل الناقلين"
 
-#: includes/class-aod-cd-section-tracking.php:280
+#: includes/class-aod-cd-section-tracking.php:283
 msgid "Tous les états"
 msgstr "كل الحالات"
 
-#: includes/class-aod-cd-section-tracking.php:347
+#: includes/class-aod-cd-section-tracking.php:350
 msgid "Voir le suivi"
 msgstr "عرض التتبع"
 
-#: includes/class-aod-cd-section-tracking.php:354
+#: includes/class-aod-cd-section-tracking.php:357
 msgid "Actualiser cette commande"
 msgstr "تحديث هذا الطلب"
 
-#: includes/class-aod-cd-section-tracking.php:429
+#: includes/class-aod-cd-section-tracking.php:432
 msgid "Jamais"
 msgstr "أبداً"
 
-#: includes/class-aod-cd-section-tracking.php:460
+#: includes/class-aod-cd-section-tracking.php:463
 msgid "État actuel"
 msgstr "الحالة الحالية"
 
-#: includes/class-aod-cd-section-tracking.php:466
-msgid ""
-"Ce transporteur ne fournit pas de suivi détaillé. Consultez son espace pour "
-"le détail."
-msgstr ""
-"لا توفر شركة التوصيل هذه تتبعًا مفصلًا. راجع فضاءها للاطلاع على التفاصيل."
+#: includes/class-aod-cd-section-tracking.php:469
+msgid "Ce transporteur ne fournit pas de suivi détaillé. Consultez son espace pour le détail."
+msgstr "لا توفر شركة التوصيل هذه تتبعًا مفصلًا. راجع فضاءها للاطلاع على التفاصيل."
 
-#: includes/class-aod-cd-section-tracking.php:467
-msgid ""
-"Aucun événement de suivi pour l’instant. Réessayez après la prochaine "
-"synchronisation."
+#: includes/class-aod-cd-section-tracking.php:470
+msgid "Aucun événement de suivi pour l’instant. Réessayez après la prochaine synchronisation."
 msgstr "لا توجد أحداث تتبع حاليًا. أعد المحاولة بعد المزامنة القادمة."
 
-#: includes/class-aod-cd-section-tracking.php:516
+#: includes/class-aod-cd-section-tracking.php:519
 msgid "Le module de suivi n’est pas actif."
 msgstr "وحدة التتبع غير مفعّلة."
 
-#: includes/class-aod-cd-section-tracking.php:535
+#: includes/class-aod-cd-section-tracking.php:538
 msgid "Suivi mis à jour."
 msgstr "تم تحديث التتبع."
 
 #. translators: %d : nombre de commandes synchronisées
-#: includes/class-aod-cd-section-tracking.php:573
+#: includes/class-aod-cd-section-tracking.php:576
 #, php-format
 msgid "%d commande synchronisée."
 msgid_plural "%d commandes synchronisées."
@@ -4059,12 +3634,10 @@ msgstr[4] "تمت مزامنة %d طلباً."
 msgstr[5] "تمت مزامنة %d طلب."
 
 #. translators: %d : nombre de colis dont le transporteur n'a pas répondu
-#: includes/class-aod-cd-section-tracking.php:576
+#: includes/class-aod-cd-section-tracking.php:579
 #, php-format
-msgid ""
-"%d colis n’a pas répondu — nouvel essai au prochain passage automatique."
-msgid_plural ""
-"%d colis n’ont pas répondu — nouvel essai au prochain passage automatique."
+msgid "%d colis n’a pas répondu — nouvel essai au prochain passage automatique."
+msgid_plural "%d colis n’ont pas répondu — nouvel essai au prochain passage automatique."
 msgstr[0] "لم يستجب أي طرد — ستُعاد المحاولة تلقائياً في المرور القادم."
 msgstr[1] "لم يستجب طرد واحد — ستُعاد المحاولة تلقائياً في المرور القادم."
 msgstr[2] "لم يستجب طردان — ستُعاد المحاولة تلقائياً في المرور القادم."
@@ -4072,7 +3645,7 @@ msgstr[3] "لم تستجب %d طرود — ستُعاد المحاولة تلق�
 msgstr[4] "لم يستجب %d طرداً — ستُعاد المحاولة تلقائياً في المرور القادم."
 msgstr[5] "لم يستجب %d طرد — ستُعاد المحاولة تلقائياً في المرور القادم."
 
-#: includes/class-aod-cd-section-tracking.php:611
+#: includes/class-aod-cd-section-tracking.php:614
 #, php-format
 msgid "Suivi — commande #%s"
 msgstr "التتبع — الطلب رقم %s"
@@ -4116,9 +3689,7 @@ msgid "Votre numéro WhatsApp"
 msgstr "رقم واتساب الخاص بك"
 
 #: includes/class-aod-cd-section-whatsapp.php:93
-msgid ""
-"Avec l’indicatif pays, sans « + » ni espaces. Algérie = 213. Ex : "
-"213550123456."
+msgid "Avec l’indicatif pays, sans « + » ni espaces. Algérie = 213. Ex : 213550123456."
 msgstr "مع رمز الدولة، دون « + » أو مسافات. الجزائر = 213. مثال: 213550123456."
 
 #: includes/class-aod-cd-section-whatsapp.php:97
@@ -4138,9 +3709,7 @@ msgid "Réglages WhatsApp enregistrés."
 msgstr "تم حفظ إعدادات واتساب."
 
 #: includes/class-aod-cd-section-whatsapp.php:142
-msgid ""
-"Cochez l’envoi, renseignez le numéro et la clé, puis enregistrez avant de "
-"tester."
+msgid "Cochez l’envoi, renseignez le numéro et la clé, puis enregistrez avant de tester."
 msgstr "فعّل الإرسال، أدخل الرقم والمفتاح، ثمّ احفظ قبل الاختبار."
 
 #: includes/class-aod-cd-section-whatsapp.php:148
@@ -4166,374 +3735,60 @@ msgstr "استجابة غير متوقّعة (HTTP %d). تحقّق من رقمك
 msgid "Poids maximal : %s par fichier."
 msgstr "الوزن الأقصى: %s لكلِّ ملف."
 
-#~ msgid "Produit enregistré, mais échec de l’image : "
-#~ msgstr "تم حفظ المنتج، لكن فشل تحميل الصورة: "
+#: includes/class-aod-cd-section-home.php:2542
+msgid "Répartition du chiffre d’affaires"
+msgstr "توزيع رقم الأعمال"
 
+#: includes/class-aod-cd-section-home.php:2565
+msgid "Autres produits"
+msgstr "منتجات أخرى"
+
+#: includes/class-aod-cd-section-home.php:2616
+msgid "Répartition du chiffre d’affaires par produit"
+msgstr "توزيع رقم الأعمال حسب المنتج"
+
+#: includes/class-aod-cd-temps.php:62
+msgid "à l’instant"
+msgstr "الآن"
+
+#. translators: %s = nombre de minutes.
+#: includes/class-aod-cd-temps.php:67
 #, php-format
-#~ msgid ""
-#~ "Taille maximale acceptée par votre hébergeur : %s. Au-delà, préférez "
-#~ "YouTube."
-#~ msgstr "الحجم الأقصى الذي يقبله مستضيفك: %s. وفيما فوق ذلك، فضّل يوتيوب."
+msgid "il y a %s min"
+msgstr "منذ %s دقيقة"
 
-#~ msgid "Note pour cette commande :"
-#~ msgstr "ملاحظة لهذا الطلب:"
-
-#~ msgid "Ajouter une note"
-#~ msgstr "إضافة ملاحظة"
-
-#~ msgid "Note"
-#~ msgstr "ملاحظة"
-
-#~ msgid "La note est vide."
-#~ msgstr "الملاحظة فارغة."
-
-#~ msgid "Note ajoutée."
-#~ msgstr "تمت إضافة الملاحظة."
-
-#~ msgid "Envoi automatique au livreur désactivé (Livraison → Transporteurs)."
-#~ msgstr "الإرسال التلقائي إلى شركة التوصيل معطّل (التوصيل ← شركات التوصيل)."
-
+#. translators: %s = nombre d'heures.
+#: includes/class-aod-cd-temps.php:72
 #, php-format
-#~ msgid "Colis créé chez le livreur ✓ Suivi : %s"
-#~ msgstr "تم إنشاء الطرد لدى شركة التوصيل ✓ رقم التتبّع: %s"
+msgid "il y a %s h"
+msgstr "منذ %s ساعة"
 
+#. translators: %s = nombre de jours.
+#: includes/class-aod-cd-temps.php:77
 #, php-format
-#~ msgid "Envoi au livreur échoué : %s"
-#~ msgstr "فشل الإرسال إلى شركة التوصيل: %s"
+msgid "il y a %s j"
+msgstr "منذ %s يوم"
 
-#~ msgid "Le colis n’a pas pu être créé chez le livreur."
-#~ msgstr "تعذّر إنشاء الطرد لدى شركة التوصيل."
-
-#~ msgid ""
-#~ "Envoyer automatiquement au livreur quand une commande passe à "
-#~ "« Confirmée »"
-#~ msgstr "الإرسال تلقائيًا إلى الناقل عندما تتحوّل حالة الطلب إلى « مؤكَّد »"
-
-#~ msgid "Livreur par défaut (envoi auto)"
-#~ msgstr "الناقل الافتراضي (الإرسال التلقائي)"
-
-#~ msgid "Le produit de ce prospect n’existe plus."
-#~ msgstr "لم يعد منتج هذا العميل المحتمل موجودًا."
-
-#~ msgid "Renommer"
-#~ msgstr "إعادة تسمية"
-
-#~ msgid "Actuel"
-#~ msgstr "الحالي"
-
-#~ msgid "Nouveau (API)"
-#~ msgstr "الجديد (API)"
-
-#~ msgid ""
-#~ "Au moins 8 caractères. Un mot de passe fort est pré-rempli ; communique-"
-#~ "le au client."
-#~ msgstr "8 أحرف على الأقل. تم تعبئة كلمة مرور قوية مسبقًا؛ أرسلها إلى العميل."
-
-#~ msgid "Couleur"
-#~ msgstr "اللون"
-
-#~ msgid "Noir"
-#~ msgstr "أسود"
-
-#~ msgid "Blanc"
-#~ msgstr "أبيض"
-
-#~ msgid "Gris"
-#~ msgstr "رمادي"
-
-#~ msgid "Gris clair"
-#~ msgstr "رمادي فاتح"
-
-#~ msgid "Gris foncé"
-#~ msgstr "رمادي غامق"
-
-#~ msgid "Beige"
-#~ msgstr "بيج"
-
-#~ msgid "Crème"
-#~ msgstr "كريمي"
-
-#~ msgid "Marron"
-#~ msgstr "بنّي"
-
-#~ msgid "Bordeaux"
-#~ msgstr "خمري"
-
-#~ msgid "Rouge"
-#~ msgstr "أحمر"
-
-#~ msgid "Rouge foncé"
-#~ msgstr "أحمر غامق"
-
-#~ msgid "Rose"
-#~ msgstr "وردي"
-
-#~ msgid "Fuchsia"
-#~ msgstr "فوشيا"
-
-#~ msgid "Corail"
-#~ msgstr "مرجاني"
-
-#~ msgid "Orange"
-#~ msgstr "برتقالي"
-
-#~ msgid "Moutarde"
-#~ msgstr "خردلي"
-
-#~ msgid "Jaune"
-#~ msgstr "أصفر"
-
-#~ msgid "Or"
-#~ msgstr "ذهبي"
-
-#~ msgid "Vert clair"
-#~ msgstr "أخضر فاتح"
-
-#~ msgid "Vert"
-#~ msgstr "أخضر"
-
-#~ msgid "Vert foncé"
-#~ msgstr "أخضر غامق"
-
-#~ msgid "Kaki"
-#~ msgstr "كاكي"
-
-#~ msgid "Turquoise"
-#~ msgstr "فيروزي"
-
-#~ msgid "Cyan"
-#~ msgstr "سماوي"
-
-#~ msgid "Bleu ciel"
-#~ msgstr "أزرق سماوي"
-
-#~ msgid "Bleu"
-#~ msgstr "أزرق"
-
-#~ msgid "Bleu marine"
-#~ msgstr "كحلي"
-
-#~ msgid "Mauve"
-#~ msgstr "بنفسجي فاتح"
-
-#~ msgid "Violet"
-#~ msgstr "بنفسجي"
-
-#~ msgid "Argent"
-#~ msgstr "فضّي"
-
-#~ msgid ""
-#~ "Livraison rapide\n"
-#~ "Garantie 1 an\n"
-#~ "Qualité premium"
-#~ msgstr ""
-#~ "توصيل سريع\n"
-#~ "ضمان سنة\n"
-#~ "جودة عالية"
-
-#~ msgid "Affichés en liste à puces sur la page produit."
-#~ msgstr "تُعرَض كقائمة نقطية في صفحة المنتج."
-
+#. translators: %s = nombre de semaines.
+#: includes/class-aod-cd-temps.php:82
 #, php-format
-#~ msgid "Le texte est enregistré, mais l’image n’a pas pu être envoyée : %s"
-#~ msgstr "تم حفظ النص، لكن تعذّر إرسال الصورة: %s"
+msgid "il y a %s sem."
+msgstr "منذ %s أسبوع"
 
-#~ msgid "Changer le mot de passe"
-#~ msgstr "تغيير كلمة المرور"
-
-#~ msgid "Confirmateurs"
-#~ msgstr "مسؤولو التأكيد"
-
-#~ msgid ""
-#~ "Aucun confirmateur pour le moment. Créez le premier compte avec le "
-#~ "formulaire ci-dessous."
-#~ msgstr "لا يوجد مسؤول تأكيد حتى الآن. أنشئ أول حساب عبر النموذج أدناه."
-
-#~ msgid "Dernier accès"
-#~ msgstr "آخر دخول"
-
+#. translators: %s = nombre de mois.
+#: includes/class-aod-cd-temps.php:87
 #, php-format
-#~ msgid "%d permission"
-#~ msgid_plural "%d permissions"
-#~ msgstr[0] "%d صلاحية"
-#~ msgstr[1] "صلاحية واحدة"
-#~ msgstr[2] "صلاحيتان"
-#~ msgstr[3] "%d صلاحيات"
-#~ msgstr[4] "%d صلاحية"
-#~ msgstr[5] "%d صلاحية"
+msgid "il y a %s mois"
+msgstr "منذ %s شهر"
 
-#~ msgid "Produits limités"
-#~ msgstr "منتجات محدودة"
-
-#~ msgid ""
-#~ "10 caractères minimum. Laissez vide à la création pour en générer un "
-#~ "automatiquement (affiché une seule fois), ou en modification pour le "
-#~ "conserver."
-#~ msgstr ""
-#~ "10 أحرف على الأقل. اتركه فارغًا عند الإنشاء لتوليد كلمة مرور تلقائيًا (تُعرض "
-#~ "مرة واحدة فقط)، أو عند التعديل للاحتفاظ بها."
-
-#~ msgid "Affectation de produits"
-#~ msgstr "إسناد المنتجات"
-
-#~ msgid "Annuler la modification"
-#~ msgstr "إلغاء التعديل"
-
-#~ msgid "Pixels & tracking"
-#~ msgstr "البكسلات والتتبّع"
-
-#~ msgid ""
-#~ "Active et renseigne le numéro + la clé, puis enregistre avant de tester."
-#~ msgstr "فعّل وأدخل الرقم والمفتاح، ثم احفظ قبل الاختبار."
-
-#~ msgid "Message test envoyé. Vérifie ton WhatsApp."
-#~ msgstr "تم إرسال رسالة الاختبار. تحقق من واتساب الخاص بك."
-
+#. translators: %s = nombre d'années.
+#: includes/class-aod-cd-temps.php:91
 #, php-format
-#~ msgid "Réponse inattendue (HTTP %d). Vérifie ton numéro et ta clé."
-#~ msgstr "استجابة غير متوقعة (HTTP %d). تحقق من رقمك ومفتاحك."
-
-#, php-format
-#~ msgid "Seuil (%s)"
-#~ msgstr "العتبة (%s)"
-
-#~ msgid "Meta (Facebook) Pixel ID"
-#~ msgstr "معرّف بيكسل ميتا (فيسبوك)"
-
-#~ msgid "Google Ads — Libellé de conversion"
-#~ msgstr "إعلانات جوجل — تسمية التحويل"
-
-#~ msgid ""
-#~ "La partie après « / » dans send_to. Sans elle, seule la balise de base "
-#~ "est posée."
-#~ msgstr "الجزء الذي يلي « / » في send_to. بدونه، يتم وضع الوسم الأساسي فقط."
-
-#~ msgid "Snapchat Pixel ID"
-#~ msgstr "معرّف بيكسل سناب شات"
-
-#~ msgid "Google Ads — ID de conversion"
-#~ msgstr "إعلانات جوجل — معرّف التحويل"
-
-#~ msgid "TikTok Pixel ID"
-#~ msgstr "معرّف بيكسل تيك توك"
-
-#~ msgid "Pixels publicitaires"
-#~ msgstr "بيكسلات الإعلانات"
-
-#~ msgid ""
-#~ "Colle l’identifiant de chaque régie. Laisse vide pour désactiver. Le "
-#~ "PageView est suivi sur tout le site ; l’achat est mesuré sur la page de "
-#~ "remerciement (une fois par commande)."
-#~ msgstr ""
-#~ "الصق معرّف كل منصة إعلانية. اتركه فارغًا للتعطيل. يتم تتبّع PageView على "
-#~ "كامل الموقع؛ ويُقاس الشراء في صفحة الشكر (مرة واحدة لكل طلب)."
-
-#~ msgid "Meta — Vérification de domaine"
-#~ msgstr "Meta — التحقّق من النطاق"
-
-#~ msgid ""
-#~ "Pour confirmer que le domaine t’appartient. Colle ici la balise <meta "
-#~ "name=\"facebook-domain-verification\" …> donnée par Meta (ou seulement "
-#~ "son code) : elle sera ajoutée automatiquement dans l’en-tête du site. "
-#~ "Puis clique « Vérifier le domaine » dans Meta."
-#~ msgstr ""
-#~ "لتأكيد ملكيتك للنطاق. الصق هنا وسم <meta name=\"facebook-domain-"
-#~ "verification\" …> الذي يوفّره Meta (أو رمزه فقط): سيُضاف تلقائيًا إلى ترويسة "
-#~ "الموقع. ثمّ اضغط « التحقّق من النطاق » في Meta."
-
-#~ msgid "Notification WhatsApp des commandes"
-#~ msgstr "إشعار واتساب بالطلبات"
-
-#~ msgid ""
-#~ "Reçois un message WhatsApp instantané à chaque nouvelle commande. Service "
-#~ "gratuit via CallMeBot."
-#~ msgstr ""
-#~ "استقبل رسالة واتساب فورية مع كل طلب جديد. خدمة مجانية عبر CallMeBot."
-
-#, php-format
-#~ msgid "Enregistre le numéro %s dans tes contacts (nom : CallMeBot)."
-#~ msgstr "احفظ الرقم %s في جهات اتصالك (الاسم: CallMeBot)."
-
-#, php-format
-#~ msgid "Sur WhatsApp, envoie-lui : %s"
-#~ msgstr "على واتساب، أرسل له: %s"
-
-#~ msgid "Tu reçois ta clé API (apikey). Colle-la ci-dessous."
-#~ msgstr "ستستقبل مفتاح API (apikey). الصقه أدناه."
-
-#~ msgid "Ton numéro WhatsApp"
-#~ msgstr "رقم واتساب الخاص بك"
-
-#~ msgid "Catégories de produits"
-#~ msgstr "فئات المنتجات"
-
-#~ msgid ""
-#~ "Créez, renommez ou supprimez les catégories qui servent à classer vos "
-#~ "produits. Choisissez une catégorie parente pour en faire une sous-"
-#~ "catégorie (par exemple une gamme rattachée à une marque). Cliquez sur la "
-#~ "vignette d’une catégorie pour lui choisir une image (affichée sur la page "
-#~ "d’accueil). Supprimer une catégorie n’efface aucun produit : les produits "
-#~ "concernés perdent simplement ce classement."
-#~ msgstr ""
-#~ "أنشئ الفئات التي تُستخدم لتصنيف منتجاتك، أو أعد تسميتها، أو احذفها. اختر "
-#~ "فئة أمًّا لجعلها فئة فرعية (مثلاً تشكيلة تابعة لعلامة تجارية). انقر على "
-#~ "مصغّرة الفئة لاختيار صورة لها (تظهر في الصفحة الرئيسية). حذف فئة لا يحذف "
-#~ "أي منتج: المنتجات المعنية تفقد هذا التصنيف فقط."
-
-#~ msgid "Prix & promotion"
-#~ msgstr "السعر والتخفيض"
-
-#~ msgid "Images"
-#~ msgstr "الصور"
-
-#~ msgid "Variantes"
-#~ msgstr "المتغيّرات"
-
-#~ msgid "Produits en stock bas"
-#~ msgstr "منتجات قليلة المخزون"
-
-#, php-format
-#~ msgid "Ruptures (%d) :"
-#~ msgstr "نفاد المخزون (%d) :"
-
-#, php-format
-#~ msgid "Stock bas (%d) :"
-#~ msgstr "مخزون منخفض (%d) :"
-
-#~ msgid ""
-#~ "Le module de livraison n’est pas actif. Activez le plugin « AOD COD "
-#~ "Form » pour suivre l’évolution des colis."
-#~ msgstr ""
-#~ "وحدة التوصيل غير مفعّلة. فعّل إضافة «AOD COD Form» لمتابعة تطور الطرود."
-
-#~ msgid ""
-#~ "Évolution des colis expédiés, récupérée automatiquement depuis le compte "
-#~ "du transporteur. La synchronisation tourne en arrière-plan ; vous pouvez "
-#~ "aussi l’actualiser à la main."
-#~ msgstr ""
-#~ "تطور الطرود المرسلة، يُجلب تلقائيًا من حساب شركة التوصيل. تعمل المزامنة في "
-#~ "الخلفية؛ ويمكنك أيضًا تحديثها يدويًا."
-
-#~ msgid ""
-#~ "Aucun colis expédié pour le moment. Le suivi apparaîtra ici dès qu’une "
-#~ "commande sera envoyée à un transporteur."
-#~ msgstr ""
-#~ "لا توجد طرود مرسلة حاليًا. سيظهر التتبع هنا بمجرد إرسال طلب إلى شركة توصيل."
-
-#~ msgid "Statistiques disponibles à la prochaine mise à jour."
-#~ msgstr "ستتوفر هذه الإحصائيات في التحديث القادم."
-
-#~ msgid "Statistiques"
-#~ msgstr "الإحصائيات"
-
-#~ msgid "7 jours"
-#~ msgstr "7 أيام"
-
-#~ msgid "30 jours"
-#~ msgstr "30 يومًا"
-
-#~ msgid "Cette année"
-#~ msgstr "هذا العام"
-
-#~ msgid "Tout"
-#~ msgstr "الكل"
+msgid "il y a %s an"
+msgid_plural "il y a %s ans"
+msgstr[0] "منذ %s سنة"
+msgstr[1] "منذ سنة"
+msgstr[2] "منذ سنتين"
+msgstr[3] "منذ %s سنوات"
+msgstr[4] "منذ %s سنة"
+msgstr[5] "منذ %s سنة"

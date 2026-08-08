@@ -20,13 +20,21 @@
  * posé). *Une garantie portée par un mécanisme disparaît avec lui ; il faut la
  * réécrire là où elle n'était pas écrite.*
  *
- * ⚠️ AUCUNE ASSERTION DE CE FICHIER N'APPELLE UN TRANSPORTEUR. Ce clone a un
- * compte Yalidine RÉEL configuré : appeler `ship_order()` sur une commande
- * confirmée y créerait un vrai colis. L'ancrage inverse de R1 passe donc par le
- * VERROU d'envoi (posé à la main) : la commande est confirmée, elle franchit la
- * garde de statut, et se fait refuser par le verrou — `aod_ship_in_progress`,
- * zéro appel réseau. C'est le seul moyen de prouver qu'on est passé au-delà d'une
- * garde sans exécuter ce qu'elle protège.
+ * ⚠️ AUCUNE ASSERTION DE CE FICHIER N'APPELLE UN TRANSPORTEUR. Un clone PEUT avoir
+ * un compte livreur réel configuré — c'était le cas ici à l'écriture — et appeler
+ * `ship_order()` sur une commande confirmée y créerait alors un vrai colis,
+ * facturé, sans retour arrière. L'ancrage inverse de R1 pose donc le VERROU
+ * d'envoi à la main : la commande est confirmée, elle franchit la garde de statut,
+ * et se fait refuser plus loin, sans un octet de réseau. C'est le seul moyen de
+ * prouver qu'on est passé au-delà d'une garde sans exécuter ce qu'elle protège.
+ *
+ * 🔁 LA PHRASE D'ORIGINE DISAIT « CE CLONE A UN COMPTE YALIDINE RÉEL CONFIGURÉ »,
+ * AU PRÉSENT DE L'INDICATIF, et c'est devenu faux sans que personne ne l'écrive :
+ * la configuration a été retirée depuis. Une assertion de ce fichier s'appuyait
+ * dessus et s'est mise à rougir (cf. la note de l'ancrage inverse, plus bas).
+ * 🚨 *Un commentaire qui décrit l'ÉTAT d'un clone se périme ; seul ce qui décrit
+ * un INVARIANT du code reste vrai. Quand on a besoin de l'état, il faut le lire
+ * au moment du test, pas l'avoir écrit une fois.*
  *
  * @package AOD_Tests
  */
@@ -105,12 +113,44 @@ AOD_Test::ok(
 	'TÉMOIN : le verrou d’envoi est posé (sinon l’ancrage déclencherait un VRAI envoi)'
 );
 
+/*
+ * 🔴 CET ANCRAGE EXIGEAIT UN CODE UNIQUE, ET IL S'EST MIS À ROUGIR SANS QUE RIEN
+ * NE CASSE (corrigé le 2026-08-07). Il attendait `aod_ship_in_progress` — le
+ * verrou — et recevait `aod_ship_no_carrier` : ce clone n'a plus de transporteur
+ * configuré, alors que le docblock de ce fichier affirme encore le contraire
+ * (« Ce clone a un compte Yalidine RÉEL configuré »). L'affirmation était vraie le
+ * jour où elle a été écrite ; la configuration a dérivé depuis, et l'assertion
+ * s'est mise à mesurer l'état du clone au lieu de l'invariant.
+ *
+ * 🚨 CE QUE L'ANCRAGE DOIT PROUVER, C'EST QU'ON A FRANCHI LA GARDE DE STATUT —
+ * rien d'autre. Or l'ordre des gardes de `ship_order()` est fixe et lisible :
+ *   commande invalide → pas COD → déjà expédiée → **STATUT** → transporteur → verrou
+ * Tout code postérieur au statut démontre donc exactement la même chose. Exiger
+ * `aod_ship_in_progress` revenait à exiger, en plus, qu'un transporteur soit
+ * configuré — une condition qui n'a rien à voir avec ce qu'on éprouve.
+ * *Une assertion qui nomme UN résultat là où la propriété en autorise plusieurs
+ * mesure le décor autour de l'invariant, pas l'invariant.*
+ *
+ * ⚠️ LA LISTE RESTE FERMÉE, et c'est ce qui garde le mordant : `aod_ship_bad_order`,
+ * `aod_ship_not_cod`, `aod_ship_already_shipped` et surtout `aod_ship_not_confirmed`
+ * en sont EXCLUS. Si la garde de statut cessait d'être franchie, le code rendu
+ * serait l'un de ceux-là et l'ancrage rougirait — ce pour quoi il existe.
+ * 🔒 Et le verrou reste posé même quand il ne sert pas à arrêter l'appel : sur un
+ * clone CONFIGURÉ, c'est lui qui empêche un colis réel de partir. Le retirer sous
+ * prétexte qu'un autre refus suffit ici ferait dépendre la sûreté du test de
+ * l'absence de configuration.
+ */
 $aod_r47_apres = $aod_r47_ship->ship_order( wc_get_order( $aod_r47_id ) );
+$aod_r47_apres_gardes = array( 'aod_ship_in_progress', 'aod_ship_no_carrier', 'aod_ship_default_unconfigured' );
+$aod_r47_apres_code   = is_wp_error( $aod_r47_apres ) ? $aod_r47_apres->get_error_code() : '';
 AOD_Test::ok(
-	is_wp_error( $aod_r47_apres ) && 'aod_ship_in_progress' === $aod_r47_apres->get_error_code(),
-	'🔴 ANCRAGE INVERSE : une fois CONFIRMÉE, elle franchit la garde de statut',
-	( is_wp_error( $aod_r47_apres ) ? 'code rendu : ' . $aod_r47_apres->get_error_code() : 'aucune erreur' )
-		. ' — attendu `aod_ship_in_progress` (le verrou, donc APRÈS la garde de statut)'
+	in_array( $aod_r47_apres_code, $aod_r47_apres_gardes, true ),
+	sprintf(
+		'🔴 ANCRAGE INVERSE : une fois CONFIRMÉE, elle franchit la garde de statut (arrêtée plus loin par « %s »)',
+		$aod_r47_apres_code
+	),
+	( '' === $aod_r47_apres_code ? 'AUCUNE erreur — un colis a pu partir' : 'code rendu : ' . $aod_r47_apres_code )
+		. ' — attendu un refus POSTÉRIEUR au statut (' . implode( ', ', $aod_r47_apres_gardes ) . ')'
 );
 
 $aod_r47_unlock->invoke( $aod_r47_ship, $aod_r47_id );

@@ -481,7 +481,10 @@ class AOD_CD_Section_Abandoned {
 		AOD_CD_Dashboard::render_date_fields( $range['from'], $range['to'] );
 		if ( $can_assign ) {
 			echo '<div class="aod-cd-field"><label for="aod-cd-f-leadconfirmer">' . esc_html__( 'Confirmateur', 'aod-client-dashboard' ) . '</label>';
-			echo '<select id="aod-cd-f-leadconfirmer" name="confirmateur">';
+			// `data-aod-select` (2026-08-06) : le composant maison, comme le filtre
+			// jumeau de Commandes et de l'Accueil. Le natif s'ouvre hors champ sur
+			// mobile — cf. la note de `AOD_CD_Section_Orders::render_filters()`.
+			echo '<select id="aod-cd-f-leadconfirmer" name="confirmateur" data-aod-select>';
 			echo '<option value="">' . esc_html__( 'Tous les confirmateurs', 'aod-client-dashboard' ) . '</option>';
 			foreach ( $confirmers as $confirmer ) {
 				echo '<option value="' . esc_attr( $confirmer->ID ) . '" ' . selected( $confirmer_filter, $confirmer->ID, false ) . '>' . esc_html( $confirmer->display_name ) . '</option>';
@@ -537,25 +540,28 @@ class AOD_CD_Section_Abandoned {
 		if ( $can_delete ) {
 			echo '<th class="aod-cd-col-check"><input type="checkbox" class="aod-cd-leadcheck-all" title="' . esc_attr__( 'Tout sélectionner', 'aod-client-dashboard' ) . '"></th>';
 		}
+		// ⚠️ Couples libellé / classe depuis le 2026-08-08, comme la jumelle de
+		// Commandes : la colonne des montants s'aligne sur sa fin, et son en-tête doit
+		// suivre. La quantité aussi — c'est un nombre, et un nombre se lit aligné.
 		$heads = array(
-			__( 'Quand', 'aod-client-dashboard' ),
-			__( 'Client', 'aod-client-dashboard' ),
-			__( 'Produit', 'aod-client-dashboard' ),
-			__( 'Wilaya', 'aod-client-dashboard' ),
-			__( 'Livraison', 'aod-client-dashboard' ),
-			__( 'Qté', 'aod-client-dashboard' ),
+			array( __( 'Quand', 'aod-client-dashboard' ), '' ),
+			array( __( 'Client', 'aod-client-dashboard' ), '' ),
+			array( __( 'Produit', 'aod-client-dashboard' ), '' ),
+			array( __( 'Wilaya', 'aod-client-dashboard' ), '' ),
+			array( __( 'Livraison', 'aod-client-dashboard' ), '' ),
+			array( __( 'Qté', 'aod-client-dashboard' ), 'aod-cd-th-total' ),
 			// Montant (43.6) — visible de TOUS ceux qui voient la page : c'est une
 			// information de vente, pas un pouvoir d'assignation. Un confirmateur
 			// qui rappelle un prospect a besoin de savoir de quelle somme il parle.
-			__( 'Montant', 'aod-client-dashboard' ),
+			array( __( 'Montant', 'aod-client-dashboard' ), 'aod-cd-th-total' ),
 		);
 		if ( $can_assign ) {
 			// Colonne « Assigné à » (43.3) — GÉRANT uniquement, même règle et même
 			// libellé que la colonne jumelle de Commandes (42.7).
-			$heads[] = __( 'Assigné à', 'aod-client-dashboard' );
+			$heads[] = array( __( 'Assigné à', 'aod-client-dashboard' ), '' );
 		}
 		foreach ( $heads as $h ) {
-			echo '<th>' . esc_html( $h ) . '</th>';
+			echo '<th' . ( '' !== $h[1] ? ' class="' . esc_attr( $h[1] ) . '"' : '' ) . '>' . esc_html( $h[0] ) . '</th>';
 		}
 		echo '</tr></thead><tbody>';
 
@@ -597,7 +603,7 @@ class AOD_CD_Section_Abandoned {
 
 		// Quand + badge d'état.
 		echo '<td data-label="' . esc_attr__( 'Quand', 'aod-client-dashboard' ) . '">';
-		echo '<span class="aod-cd-client"><b>' . esc_html( human_time_diff( $ts, $now_ts ) ) . '</b>';
+		echo '<span class="aod-cd-client"><b>' . esc_html( AOD_CD_Temps::depuis( $ts, $now_ts ) ) . '</b>';
 		echo $abandoned // phpcs:ignore WordPress.Security.EscapeOutput
 			? AOD_CD_Dashboard::pill( __( 'Abandonné', 'aod-client-dashboard' ), 'bad' )
 			: AOD_CD_Dashboard::pill( __( 'En cours', 'aod-client-dashboard' ), 'warn' );
@@ -607,10 +613,24 @@ class AOD_CD_Section_Abandoned {
 		echo '<td class="aod-cd-cell-client" data-label="' . esc_attr__( 'Client', 'aod-client-dashboard' ) . '">';
 		echo '<span class="aod-cd-client"><b>' . esc_html( '' !== trim( (string) $lead->name ) ? $lead->name : '—' ) . '</b>';
 		if ( '' !== $phone ) {
-			echo '<a class="aod-cd-client__tel" href="tel:' . esc_attr( $phone ) . '">' . esc_html( $phone ) . '</a>';
+			// 🔁 2026-08-08 — MÊME CELLULE QUE COMMANDES. Le numéro et ses deux
+			// gestes tiennent sur UN rang, Appeler et WhatsApp en icônes (libellé porté
+			// par `aria-label` + `title`, chaînes inchangées). Cette page rendait quatre
+			// lignes par prospect — nom, numéro, deux boutons, « Commander » — soit des
+			// lignes de 138 px : sept prospects remplissaient l'écran.
+			// ⚠️ Les deux tableaux partageaient déjà `.aod-cd-call-actions` ; ne
+			// corriger que Commandes en aurait fait deux composants qui se ressemblent
+			// sans plus jamais bouger ensemble — la dérive que ce dépôt paie cher.
 			echo '<span class="aod-cd-call-actions">';
-			echo '<a class="aod-cd-btn aod-cd-btn-sm" href="tel:' . esc_attr( $phone ) . '">' . AOD_CD_Icon::svg( 'phone', array( 'size' => 15 ) ) . ' ' . esc_html__( 'Appeler', 'aod-client-dashboard' ) . '</a> ';
-			echo '<a class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ghost" href="' . esc_url( 'https://wa.me/' . $wa ) . '" target="_blank" rel="noopener">' . AOD_CD_Icon::svg( 'whatsapp', array( 'size' => 15 ) ) . ' ' . esc_html__( 'WhatsApp', 'aod-client-dashboard' ) . '</a>';
+			echo '<a class="aod-cd-client__tel" href="tel:' . esc_attr( $phone ) . '">' . esc_html( $phone ) . '</a>';
+			echo '<a class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ghost aod-cd-btn--ico" href="tel:' . esc_attr( $phone ) . '"'
+				. ' aria-label="' . esc_attr__( 'Appeler', 'aod-client-dashboard' ) . '"'
+				. ' title="' . esc_attr__( 'Appeler', 'aod-client-dashboard' ) . '">'
+				. AOD_CD_Icon::svg( 'phone', array( 'size' => 15 ) ) . '</a>';
+			echo '<a class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ghost aod-cd-btn--ico" href="' . esc_url( 'https://wa.me/' . $wa ) . '" target="_blank" rel="noopener"'
+				. ' aria-label="' . esc_attr__( 'WhatsApp', 'aod-client-dashboard' ) . '"'
+				. ' title="' . esc_attr__( 'WhatsApp', 'aod-client-dashboard' ) . '">'
+				. AOD_CD_Icon::svg( 'whatsapp', array( 'size' => 15 ) ) . '</a>';
 			// « Commander » : convertit ce prospect en vraie commande (Phase 39.1).
 			// MASQUÉ (pas seulement désactivé) dès qu'il y a un téléphone ET que
 			// l'utilisateur peut agir sur les commandes. Le produit n'est PAS requis
@@ -637,7 +657,7 @@ class AOD_CD_Section_Abandoned {
 			. ( 'desk' === $lead->delivery ? esc_html__( 'Stop-desk', 'aod-client-dashboard' ) : esc_html__( 'Domicile', 'aod-client-dashboard' ) )
 			. '</td>';
 
-		echo '<td data-label="' . esc_attr__( 'Qté', 'aod-client-dashboard' ) . '">' . esc_html( (int) $lead->qty ) . '</td>';
+		echo '<td class="aod-cd-cell-qty" data-label="' . esc_attr__( 'Qté', 'aod-client-dashboard' ) . '">' . esc_html( (int) $lead->qty ) . '</td>';
 		echo '<td class="aod-cd-cell-amount" data-label="' . esc_attr__( 'Montant', 'aod-client-dashboard' ) . '">' . self::lead_amount_html( $lead ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé dans lead_amount_html() (wc_price() + esc_attr sur l'infobulle).
 
 		// « Assigné à » + sélecteur d'assignation (43.3) — GÉRANT uniquement.
@@ -654,7 +674,18 @@ class AOD_CD_Section_Abandoned {
 			// Styler le marqueur partagé aurait déplacé la colonne des deux
 			// autres pages au passage.
 			echo '<td class="aod-cd-cell-assigned aod-cd-cell-leadassign" data-label="' . esc_attr__( 'Assigné à', 'aod-client-dashboard' ) . '">';
-			echo '<span class="aod-cd-cell-leadassigned">' . AOD_CD_Roles::confirmer_label_html( $assigned ) . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé dans confirmer_label_html().
+			// 🔁 2026-08-08 — PLUS DE TIRET QUAND PERSONNE N'EST ASSIGNÉ.
+			// `confirmer_label_html( 0 )` rend un « — », et le sélecteur juste à côté
+			// affiche déjà « Non assignée » : la cellule disait donc DEUX FOIS la même
+			// chose, dont une sous forme d'un tiret qui n'apprend rien. Répété sur douze
+			// lignes, c'est ce qui faisait de cette colonne une bouillie.
+			// ⚠️ Le `<span>` reste rendu, VIDE : c'est le point d'accroche du JS, qui
+			// écrit le nom dedans après une assignation. Le supprimer casserait la mise
+			// à jour sans que rien ne le dise — la cellule resterait juste muette.
+			// ⚠️ NE PAS porter ce correctif dans `confirmer_label_html()` : sur Commandes
+			// et Suivi, la même méthode est rendue SANS sélecteur à côté. Le tiret y est
+			// le seul contenu de la cellule, et il y est juste.
+			echo '<span class="aod-cd-cell-leadassigned">' . ( $assigned ? AOD_CD_Roles::confirmer_label_html( $assigned ) : '' ) . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé dans confirmer_label_html().
 			echo $this->lead_assign_select_html( (int) $lead->id, $assigned, $confirmers ); // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé dans lead_assign_select_html().
 			echo '</td>';
 		}

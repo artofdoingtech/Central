@@ -430,13 +430,13 @@ class AOD_CD_Dashboard {
 			// On expose le SVG DÉJÀ RENDU par le catalogue plutôt qu'un nom : le JS
 			// n'a ainsi aucun moyen de fabriquer une icône hors liste, et la source
 			// de vérité reste unique (AOD_CD_Icon). Liste volontairement minimale.
-			icons: <?php echo wp_json_encode( AOD_CD_Icon::js_map( array( 'empty-tray', 'close', 'video' ) ) ); ?>
+			icons: <?php echo wp_json_encode( AOD_CD_Icon::js_map( array( 'empty-tray', 'close', 'video', 'calendar' ) ) ); // 'calendar' : le déclencheur du calendrier maison (widget-datepicker.js) remplace l'indicateur natif, qui ouvrait la fenêtre blanche du navigateur. Ajouté SUR CETTE LIGNE : `dashboard.php` est à son plafond (test-decomposition.php R1). ?>
 		};
 	</script>
 </head>
 <body class="aod-cd">
 	<aside class="aod-cd-side">
-		<div class="aod-cd-brand">
+		<div class="aod-cd-brand"><?php echo AOD_CD_Access::brand_mark(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- logo échappé + SVG du catalogue fermé. Écrit sur CETTE ligne : `dashboard.php` est à son plafond (test-decomposition.php R1). ?>
 			<span class="aod-cd-brand-name"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
 			<button type="button" class="aod-cd-navtoggle" aria-expanded="false" aria-controls="aod-cd-nav" aria-label="<?php esc_attr_e( 'Menu', 'aod-client-dashboard' ); ?>">
 				<span></span><span></span><span></span>
@@ -535,7 +535,7 @@ class AOD_CD_Dashboard {
 				<div class="aod-cd-user"><?php echo esc_html( $user->display_name ); ?></div>
 			</div>
 		</header>
-		<div class="aod-cd-content">
+		<div class="aod-cd-content" data-section="<?php echo esc_attr( $section ); ?>"><?php // `data-section` : la coque nomme la page pour la feuille et les modules. Sans lui, une mise en scène propre à une section (le bandeau de l'Accueil, sa cascade) s'appliquerait aux onze autres, ou exigerait une classe posée à la main dans chaque render(). Écrit sur CETTE ligne : `dashboard.php` est à son plafond de lignes (test-decomposition.php R1), et du chrome ne justifie pas de le relever. ?>
 			<?php if ( isset( $routable[ $section ] ) ) : ?>
 				<?php $this->render_section( $section ); ?>
 			<?php else : ?>
@@ -659,9 +659,9 @@ class AOD_CD_Dashboard {
 			}
 			echo '<input type="hidden" name="' . esc_attr( $k ) . '" value="' . esc_attr( $v ) . '">';
 		}
-		// Le placeholder n'est PAS un intitulé : il disparaît dès la première frappe.
-		echo '<input type="search" name="s" value="' . esc_attr( $value ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-label="' . esc_attr( $placeholder ) . '">';
-		echo '<button type="submit" class="aod-cd-btn aod-cd-btn-sm">' . esc_html__( 'Rechercher', 'aod-client-dashboard' ) . '</button>';
+		// Le placeholder n'est PAS un intitulé : il disparaît dès la première frappe — d'où la LOUPE (2026-08-08), qui reste. 🔒 Enveloppe + icône tiennent sur CETTE ligne à dessein : R1 de `test-decomposition.php` plafonne ce fichier à 1087 lignes et il y est EXACTEMENT ; une ligne de plus et le cliquet rougit. Le pourquoi du design est dans `dashboard.css`, à `.aod-cd-searchfield`.
+		echo '<span class="aod-cd-searchfield">' . AOD_CD_Icon::svg( 'search', array( 'size' => 16 ) ) . '<input type="search" name="s" value="' . esc_attr( $value ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-label="' . esc_attr( $placeholder ) . '"></span>';
+		echo '<button type="submit" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn-primary">' . esc_html__( 'Rechercher', 'aod-client-dashboard' ) . '</button>';
 		if ( '' !== $value ) {
 			$clear = $hidden ? add_query_arg( array_filter( $hidden, function ( $v ) { return '' !== (string) $v; } ), $base_url ) : $base_url;
 			echo ' <a class="aod-cd-btn aod-cd-btn-sm" href="' . esc_url( $clear ) . '">' . esc_html__( 'Réinitialiser', 'aod-client-dashboard' ) . '</a>';
@@ -862,6 +862,10 @@ class AOD_CD_Dashboard {
 			'assets/js/section-team.js',
 			'assets/js/section-account.js',
 			'assets/js/section-abandoned.js',
+			// Les modules qui ne sont PAS des sections (2026-08-06) : ils appartiennent
+			// à un COMPOSANT partagé, donc à aucune page. Cf. leur en-tête.
+			'assets/js/widget-datepicker.js',
+			'assets/js/widget-counters.js',
 		);
 	}
 

@@ -45,6 +45,11 @@ defined( 'ABSPATH' ) || exit;
 function aod_test_djs_modules() {
 	return array(
 		'section-whatsapp.js'  => array( 'bindWhatsappTest' ),
+		// `bindHomeCounters` RETIRÉ le 2026-08-06 : il n'a pas disparu, il a été
+		// EXTRAIT vers `widget-counters.js` sous le nom `bindCounters` — le composant
+		// KPI qu'il anime est partagé avec Stock, il n'appartenait donc pas au module
+		// de l'Accueil. R2 garde les deux bouts : la fonction doit être dans le widget
+		// et ne plus être dans la coque.
 		'section-home.js'      => array( 'bindCharts' ),
 		'section-marketing.js' => array( 'bindCapiTest', 'bindPixelCards' ),
 		'section-account.js'   => array( 'bindResetShop' ),
@@ -68,6 +73,17 @@ function aod_test_djs_modules() {
 		// ce qu'il garde. Leur disparition est gardée ailleurs, et fonctionnellement :
 		// `test-note-livreur.php` R4 (`has_action()` + `method_exists()`).
 		'section-orders.js'    => array( 'bindStatus', 'applyStatus', 'bindOrderDetail', 'initOrderEdit', 'bindOrderBulkDelete' ),
+		// 🆕 2026-08-06 — LE PREMIER MODULE QUI N'EST PAS UNE SECTION, et le nom du
+		// fichier le dit (`widget-`, pas `section-`). Le calendrier maison s'accroche
+		// à tout `<input type="date">` : six pages le chargent, aucune ne le possède.
+		// ⚠️ Il aurait pu vivre dans la COQUE au titre de « primitive partagée »
+		// (l'argument de `toast()`, `sharedModal()` et `confirmModal()`) — c'est
+		// justement pour ça qu'il n'y vit pas : ces trois-là sont des dizaines de
+		// lignes, celui-ci en fait trois cents. Le plafond R1 aurait dû monter d'un
+		// tiers pour un widget, ce qui est exactement le retour du fichier-dieu que
+		// R1 existe pour empêcher. Un module à part coûte une ligne de chargement.
+		'widget-datepicker.js' => array( 'bindDatePickers' ),
+		'widget-counters.js'  => array( 'bindCounters' ),
 	);
 }
 
@@ -211,8 +227,24 @@ AOD_Test::ok(
 	'ORDER introuvable dans la coque : le runner n’exécute plus rien — ou le motif a changé, adapter ce cliquet.'
 );
 
+/*
+ * 🔁 LE BALAYAGE PORTE SUR `*.js` ET NON PLUS SUR `section-*.js` (2026-08-06).
+ *
+ * Ce n'est pas un assouplissement, c'est le trou que le motif d'origine laissait :
+ * il recensait les `register()` des SECTIONS parce qu'à l'époque tout module en
+ * était une. Un fichier nommé autrement — `widget-datepicker.js` est le premier —
+ * pouvait enregistrer un binder sans que R3 le voie. Deux conséquences, opposées
+ * et fausses toutes les deux : son nom listé dans ORDER passait pour « jamais
+ * enregistré » (rouge à tort), et un binder enregistré SANS être dans ORDER
+ * échappait au contrôle inverse (vert à tort, alors qu'il ne tourne qu'en « hors
+ * liste » avec une erreur en console à chaque page).
+ * ⚠️ `dashboard.js` est déjà dans `$aod_djs_tout` et le glob l'y remet : les
+ * doublons sont absorbés par `array_unique()` juste en dessous. C'est voulu —
+ * exclure la coque par son nom rouvrirait une liste écrite en dur, la forme même
+ * du défaut qu'on corrige ici.
+ */
 $aod_djs_tout = $aod_djs_src;
-foreach ( glob( AOD_CD_PATH . 'assets/js/section-*.js' ) as $aod_djs_f ) {
+foreach ( glob( AOD_CD_PATH . 'assets/js/*.js' ) as $aod_djs_f ) {
 	$aod_djs_tout .= (string) file_get_contents( $aod_djs_f ) . "\n";
 }
 preg_match_all( "/register\( '(bind\w+)', /", $aod_djs_tout, $aod_djs_rm );

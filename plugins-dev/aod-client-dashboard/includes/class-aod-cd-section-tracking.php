@@ -267,7 +267,10 @@ class AOD_CD_Section_Tracking {
 		// moins un ; sinon on n'affiche qu'un menu vide.
 		if ( $carriers ) {
 			echo '<div class="aod-cd-field"><label for="aod-cd-f-carrier">' . esc_html__( 'Transporteur', 'aod-client-dashboard' ) . '</label>';
-			echo '<select id="aod-cd-f-carrier" name="transporteur">';
+			// `data-aod-select` sur les TROIS filtres de cette barre (2026-08-06) :
+			// même composant que l'Accueil et Commandes. Le natif s'ouvre hors champ
+			// sur mobile — cf. la note de `AOD_CD_Section_Orders::render_filters()`.
+			echo '<select id="aod-cd-f-carrier" name="transporteur" data-aod-select>';
 			echo '<option value="">' . esc_html__( 'Tous les transporteurs', 'aod-client-dashboard' ) . '</option>';
 			foreach ( $carriers as $cid => $carrier ) {
 				echo '<option value="' . esc_attr( $cid ) . '" ' . selected( $f_car, $cid, false ) . '>' . esc_html( $carrier->label() ) . '</option>';
@@ -276,7 +279,7 @@ class AOD_CD_Section_Tracking {
 		}
 
 		echo '<div class="aod-cd-field"><label for="aod-cd-f-state">' . esc_html__( 'État du colis', 'aod-client-dashboard' ) . '</label>';
-		echo '<select id="aod-cd-f-state" name="etat">';
+		echo '<select id="aod-cd-f-state" name="etat" data-aod-select>';
 		echo '<option value="">' . esc_html__( 'Tous les états', 'aod-client-dashboard' ) . '</option>';
 		foreach ( $states as $key => $label ) {
 			echo '<option value="' . esc_attr( $key ) . '" ' . selected( $f_st, $key, false ) . '>' . esc_html( $label ) . '</option>';
@@ -293,7 +296,7 @@ class AOD_CD_Section_Tracking {
 		// capability ici.
 		if ( $confirmers ) {
 			echo '<div class="aod-cd-field"><label for="aod-cd-f-confirmer-track">' . esc_html__( 'Confirmateur', 'aod-client-dashboard' ) . '</label>';
-			echo '<select id="aod-cd-f-confirmer-track" name="confirmateur">';
+			echo '<select id="aod-cd-f-confirmer-track" name="confirmateur" data-aod-select>';
 			echo '<option value="">' . esc_html__( 'Tous les confirmateurs', 'aod-client-dashboard' ) . '</option>';
 			foreach ( $confirmers as $confirmer ) {
 				echo '<option value="' . esc_attr( $confirmer->ID ) . '" ' . selected( $confirmer_filter, $confirmer->ID, false ) . '>' . esc_html( $confirmer->display_name ) . '</option>';
@@ -429,7 +432,7 @@ class AOD_CD_Section_Tracking {
 			return __( 'Jamais', 'aod-client-dashboard' );
 		}
 		/* translators: %s : durée écoulée (ex. « 3 heures ») */
-		return sprintf( __( 'il y a %s', 'aod-client-dashboard' ), human_time_diff( $at, time() ) );
+		return AOD_CD_Temps::depuis( $at );
 	}
 
 	/**

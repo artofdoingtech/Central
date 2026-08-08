@@ -1,5 +1,9 @@
 /* AOD Client Dashboard — interface de gestion front-end
-   Thème « Laste » : noir profond + jaune signature, typo Barlow, coins nets. */
+   Thème « Laste » : noir profond + accent signature, typo Barlow, coins nets.
+   🔁 « jaune signature » le 2026-08-08 : l'accent par défaut du template est passé
+   du jaune `#FFE21E` au pétrole `#0E5C66` (cf. AOD_CD_Customize::DEFAULT_ACCENT et
+   sa justification mesurée). Le nom de la couleur ne pouvait pas rester dans un
+   en-tête qui décrit un template dont l'accent est, par construction, réglable. */
 
 /* --- Barlow, EMBARQUÉ (Phase 20) -----------------------------------------
    Jusqu'ici cette police venait de fonts.googleapis.com. Sans réseau — le cas
@@ -59,18 +63,17 @@
 	   en ligne dans :root par render_app(). Les valeurs ci-dessous ne sont qu'un
 	   REPLI si l'injection est absente — aucune couleur d'accent client en dur
 	   ailleurs dans ce fichier, tout passe par ces variables. */
-	--cd-accent:#FFE21E;              /* accent signature (défaut template) */
-	--cd-accent-rgb:255,226,30;       /* même accent en composantes (anneaux/alpha) */
-	--cd-accent-strong:#e0c71a;       /* variante survol / renforcée */
-	--cd-accent-strong-ink:#000000;   /* encre lisible SUR --cd-accent-strong (best_ink de SA luminance) */
-	--cd-accent-ink:#000000;          /* encre lisible SUR l'accent (best_ink : noir|blanc) */
-	--cd-accent-soft:#fffbe0;         /* teinte douce (fonds discrets) — porte --cd-ink, PAS --cd-muted */
-	--cd-accent-wash:#fffdf2;         /* surface teintée portant du texte, --cd-muted compris (cf. wash()) */
-	--cd-accent-on-dark:#FFE21E;      /* accent EN TEXTE sur nos surfaces sombres (AA garanti) */
+	--cd-accent:#116048;              /* accent signature (défaut template) */
+	--cd-accent-rgb:17,96,72;         /* même accent en composantes (anneaux/alpha) */
+	--cd-accent-strong:#3c7d69;       /* variante survol / renforcée */
+	--cd-accent-strong-ink:#ffffff;   /* encre lisible SUR --cd-accent-strong (best_ink de SA luminance) */
+	--cd-accent-ink:#ffffff;          /* encre lisible SUR l'accent (best_ink : noir|blanc) */
+	--cd-accent-soft:#c1d6cf;         /* aplat d'accent DANS une carte — porte --cd-ink, PAS --cd-muted */
+	--cd-accent-wash:#d4e2de;         /* 3ᵉ cran : survol / ligne sélectionnée, porte --cd-muted (cf. wash()) */
+	--cd-accent-on-dark:#649888;      /* accent EN TEXTE sur nos surfaces sombres (AA garanti) */
 
 	--cd-ink:#181818;        /* primaire / texte fort / sections sombres */
 	--cd-ink-2:#2a2a2a;
-	--cd-yellow:var(--cd-accent);     /* alias historique → accent (20 usages) */
 	/* 🚨 46.4 — `--cd-yellow-d` (alias de `--cd-accent-strong`) A ÉTÉ SUPPRIMÉ :
 	   ZÉRO usage dans la feuille, zéro dans le PHP et le JS, et `css_vars()` ne
 	   l'émet pas non plus. Un alias que personne ne lit ne documente rien — il
@@ -85,8 +88,21 @@
 	   Conséquence assumée : il n'existe que DEUX gris de texte. Un troisième gris
 	   plus clair est mathématiquement impossible à AA — d'où `--cd-soft`, réservé
 	   au DÉCOR (bordures, puces, chevrons), jamais à du texte. */
-	--cd-muted:#666666;      /* texte secondaire — AA sur blanc, #F5F5F5, #EDEDED, teintes douces */
-	--cd-soft:#8A8A8A;       /* DÉCOR UNIQUEMENT (bordures, chevrons) — 3:1, insuffisant pour du texte */
+	/* 🔁 LES DEUX GRIS ONT DESCENDU LE 2026-08-06 (#666666 → #4f4f4f, #8A8A8A →
+	   #6f6f6f), et ce n'est pas un ajustement de goût : c'est LA condition du
+	   « pas de blanc » demandé par l'owner.
+	   Le raisonnement de 2026-08-04 tenait `--cd-muted` pour une donnée du
+	   problème et en déduisait que les surfaces ne pouvaient pas descendre sous
+	   0,92 de mélange — huit centièmes d'amplitude, donc du blanc partout. Le gris
+	   était en réalité un PARAMÈTRE : descendu, il ouvre l'amplitude à ]0,52 ; 1,0[
+	   et les cinq surfaces peuvent enfin s'échelonner. Cf. l'échelle de surfaces
+	   dans `class-aod-cd-customize.php`.
+	   🚨 La règle des DEUX gris, elle, ne bouge pas — c'est leur valeur qui bouge.
+	   `--cd-soft` reste du DÉCOR : il n'a jamais tenu AA et ne le tient pas
+	   davantage aujourd'hui. Il descend seulement pour garder ses 3:1 sur des
+	   surfaces devenues plus foncées. */
+	--cd-muted:#4f4f4f;      /* texte secondaire — AA sur les 5 crans de l'échelle et les teintes douces */
+	--cd-soft:#6f6f6f;       /* DÉCOR UNIQUEMENT (bordures, chevrons) — 3:1, insuffisant pour du texte */
 	/* Fond de page ET surface des cartes : DÉRIVÉS de l'accent (BG_MIX / CARD_MIX)
 	   et injectés en ligne par css_vars(). Les valeurs ci-dessous sont les replis,
 	   et ce sont celles que le système produit pour l'accent PAR DÉFAUT du template
@@ -94,10 +110,46 @@
 	   🚨 Le blanc pur n'est plus une surface : il est réservé aux CHAMPS de saisie,
 	   qui doivent se détacher de la carte qui les porte. Une carte remise à #fff
 	   redonnerait au réglage le poids du résultat — le défaut corrigé la veille. */
-	--cd-bg:#fffded;
-	--cd-card:#fffef5;
-	--cd-line:#e6e6e6;
-	--cd-line-2:#f0f0f0;
+	--cd-bg:#ceded9;
+	/* 🚨 `--cd-page` N'EST PAS UN DOUBLON DE `--cd-bg` (2026-08-05, demande owner :
+	   « le fond, je le sens comme s'il avait une lumière dedans »). `--cd-bg` portait
+	   DEUX rôles sous un seul nom, indiscernables parce qu'ils avaient la même
+	   valeur : le fond de l'APPLICATION (une règle : `body.aod-cd`) et la surface
+	   CREUSÉE dans les cartes (34 règles : zébrures, en-têtes de tableau, encarts,
+	   puces de code). Assombrir le premier assombrissait donc l'intérieur de toutes
+	   les cartes de `/gestion`. Les deux sont séparés ; `--cd-bg` n'a pas bougé d'un
+	   centième, et `--cd-page` vit sa vie. Cf. `PAGE_SAT` / `PAGE_LUM` / `PAGE_MIN_LUM`.
+	   ⚠️ Un composant posé DANS une carte prend `--cd-bg`. `--cd-page` ne se lit que
+	   sous l'application — s'il apparaît ailleurs, c'est que les deux rôles
+	   recommencent à se confondre. */
+	--cd-page:#cbebe2;
+	/* Second ton du fond d'application — l'AUTRE extrémité du dégradé (2026-08-07,
+	   demande owner : « un background plus moderne, dégradé en deux couleurs »).
+	   Dérivé lui aussi (le voisin FROID de l'accent, cf. PAGE2_HUE / PAGE2_SAT) :
+	   une seconde couleur écrite ici serait le goût d'UN client figé dans le
+	   template, c'est-à-dire le défaut que toute cette échelle existe pour éviter.
+	   🚨 Il partage le plancher de `--cd-page` (PAGE_MIN_LUM) parce que le texte se
+	   pose SUR TOUTE la longueur du balayage. Une lisibilité garantie à un seul
+	   bout d'un dégradé n'est pas une garantie — et c'est un trou qu'un fond plat
+	   ne pouvait pas avoir.
+	   ⚠️ Comme `--cd-page`, il ne se lit que sous l'application — une seule règle,
+	   `body.aod-cd`. S'il apparaît dans une carte, les deux rôles séparés la veille
+	   recommencent à se confondre. */
+	--cd-page-2:#b1cce2;
+	--cd-card:#e0eae7;
+	/* 5ᵉ et dernier cran : le point le plus CLAIR de l'écran, donc l'endroit où
+	   l'on écrit. Le blanc pur y a vécu jusqu'au 2026-08-06 ; le rôle reste, sa
+	   couleur descend. Cf. FIELD_MIX. */
+	--cd-field:#eef4f2;
+	/* 🔁 Les traits ont foncé avec les surfaces (#e6e6e6 → #d5d5d5, #f0f0f0 →
+	   #e2e2e2). Un trait plus CLAIR que la surface qu'il borde cesse d'être un
+	   trait : il devient un liseré lumineux. À #e6e6e6 c'était déjà le cas sur le
+	   fond de page dès le premier assombrissement — invisible, parce qu'on regarde
+	   les cartes et pas leurs bords. Gris purs (chroma 0) : `test-charte-surfaces`
+	   sépare la surface neutre, légitime en dur, de la couleur, qui vient d'un
+	   token. */
+	--cd-line:#d5d5d5;
+	--cd-line-2:#e2e2e2;
 	/* Fond de la sidebar : DÉRIVÉ de l'accent (15 % d'accent dans le neutre) et
 	   injecté en ligne par css_vars(). La valeur ci-dessous n'est qu'un repli —
 	   la teinte de marque ne peut pas être écrite ici (règle template n°1). */
@@ -157,7 +209,22 @@
 	   qu'une ombre à une seule couche lit « boîte qui flotte » au lieu de
 	   « feuille posée ». Opacités très basses : on cherche la séparation, pas
 	   l'effet. Neutre (noir alpha) : aucune couleur de client en dur. */
-	--cd-shadow-rest:0 1px 2px rgba(24,24,24,.05),0 4px 12px rgba(24,24,24,.04);
+	/* 🔁 UN LISERÉ DE LUMIÈRE A REJOINT LES DEUX COUCHES LE 2026-08-07, et il fait
+	   plus que les deux ombres réunies. Une ombre dit d'où vient l'objet ; elle ne dit
+	   pas de quoi il est fait. Le trait clair d'un pixel sur l'arête HAUTE est ce que
+	   l'œil lit comme « une feuille éclairée par le dessus » — sans lui, une carte
+	   reste un rectangle correctement décollé du fond.
+	   🚨 UN PIXEL, ET PAS UN DÉGRADÉ SUR TOUTE LA HAUTEUR. La différence n'est pas
+	   d'intensité, elle est de sûreté : cette même ombre est portée par des surfaces
+	   SOMBRES qui reçoivent de l'encre claire (`.aod-cd-btn-primary` d'un accent
+	   foncé, `.aod-cd-seg__btn.is-active` sur `--cd-ink`). Un voile blanc étalé y
+	   remonterait la luminance sous le texte et pourrait le faire tomber sous AA — et
+	   la porte `contraste` ne le verrait PAS, parce qu'elle lit `backgroundColor`,
+	   jamais l'image de fond. Elle resterait verte sur un défaut réel. Un liseré d'un
+	   pixel sur l'arête ne porte aucun texte : il est hors de tout rapport de
+	   lisibilité, par construction.
+	   Neutre (blanc alpha) : aucune couleur de client en dur. */
+	--cd-shadow-rest:inset 0 1px 0 rgba(255,255,255,.6),0 1px 2px rgba(24,24,24,.06),0 6px 18px rgba(24,24,24,.05);
 
 	/* ---- Socle d'harmonisation (étape 5.1) ---- */
 	/* Échelle typographique — 6 crans, et ce qui a le droit de ne pas s'y ranger.
@@ -205,6 +272,20 @@
 	--cd-fs-lg:17px;
 	--cd-fs-xl:20px;
 	--cd-fs-2xl:26px;
+	/* 🔁 7ᵉ CRAN AJOUTÉ LE 2026-08-07, et il faut dire pourquoi une échelle que la
+	   46.5bis avait resserrée de 20 tailles à 8 en regagne une.
+	   Le TITRE DE PAGE partageait `--cd-fs-2xl` avec le chiffre principal d'une
+	   carte de KPI. Deux rôles très différents — l'un nomme l'écran, l'autre est une
+	   donnée — au même corps : le titre ne dominait donc rien, il flottait au niveau
+	   de la première valeur venue. Ce n'est pas un manque de taille, c'est un manque
+	   de CRAN : il n'existait rien au-dessus de 26 px.
+	   ⚠️ Ce que la 46.5bis a combattu, ce sont les tailles EN DUR et les crans
+	   jamais appliqués — pas la finesse d'une échelle. Un cran de plus, déclaré ici,
+	   utilisé par une règle et gardé par R4 (« tout token déclaré a un lecteur »),
+	   est l'inverse exact du défaut qu'elle a corrigé.
+	   🔒 Il ne descend PAS sur mobile : la règle à 780 px ramène déjà le titre à
+	   `--cd-fs-xl`, et un 32 px sur 390 px de large mangerait deux lignes à lui seul. */
+	--cd-fs-3xl:32px;
 	/* Échelle d'espacement (base 4px) */
 	--cd-sp-1:4px;
 	--cd-sp-2:8px;
@@ -229,6 +310,22 @@
 	/* Rayons */
 	--cd-r-sm:8px;
 	--cd-r-md:12px;
+	/* 🔁 `--cd-r-lg:16px` EST DE RETOUR LE 2026-08-07, ET C'EST LA CONDITION QUE SA
+	   SUPPRESSION AVAIT ELLE-MÊME POSÉE. La 46.4 l'avait retiré au motif — écrit plus
+	   bas — que « la feuille ne contient AUCUN rayon de 16 px » et qu'« un token
+	   déclaré doit être utilisé » ; elle refusait explicitement de lui inventer un
+	   site d'application pour ne pas faire passer un CHANGEMENT DE DESIGN dans une
+	   étape de renommage.
+	   Le changement de design est demandé aujourd'hui, et il a 12 sites réels : les
+	   grandes surfaces (formulaire, tableau, panneau, modale, graphe, bandeau de page,
+	   tuiles d'accueil). Un rayon plus ample n'est pas un caprice — c'est ce qui
+	   distingue une SURFACE d'une boîte : à 12 px une carte de 900 px de large lit
+	   encore comme un cadre, le rapport rayon/taille étant ce que l'œil juge.
+	   ⚠️ Il ne descend PAS sur les petits objets. `.aod-cd-card` (140 px de large), les
+	   pastilles, les champs gardent `--cd-r-md`/`--cd-r-sm` : le même 16 px y mangerait
+	   les angles au lieu de les adoucir. Un cran de rayon se choisit contre la TAILLE
+	   de l'objet, jamais uniformément. */
+	--cd-r-lg:16px;
 	--cd-r-pill:999px;
 	/* 🚨 46.4 — `--cd-r-lg:16px` A ÉTÉ SUPPRIMÉ, et c'est une décision, pas un
 	   nettoyage distrait. Mesuré : la feuille ne contient AUCUN rayon de 16 px
@@ -246,8 +343,35 @@
 html,body{margin:0;padding:0}
 body.aod-cd{
 	font-family:"Barlow",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-	background:var(--cd-bg);color:var(--cd-ink);
+	background-color:var(--cd-page);color:var(--cd-ink);
+	background-image:linear-gradient(155deg,var(--cd-page) 0%,var(--cd-page-2) 100%);
+	background-repeat:no-repeat;background-attachment:fixed;
 	display:flex;min-height:100vh;font-size:var(--cd-fs-md);-webkit-font-smoothing:antialiased;
+}
+/* 🚨 `background-color` EST GARDÉ, et ce n'est pas une redondance avec le dégradé.
+   Deux raisons, dont une qui casserait une porte :
+   1. Le raccourci `background:` remet `background-color` à `transparent`. La porte
+      `contraste` (a11y-contraste.js) remonte l'arbre en lisant `backgroundColor`
+      pour savoir sur quoi un texte est posé — un `body` transparent la ferait
+      conclure sur le blanc du canevas, donc mesurer un rapport que personne n'a
+      sous les yeux. Elle serait VERTE, et sur la mauvaise couleur.
+   2. C'est le repli du dégradé lui-même (impression, `forced-colors`, moteur qui
+      refuse le `linear-gradient`) : on retombe alors sur le fond plat d'avant.
+   ⚠️ Les deux tons passant par le MÊME plancher de lisibilité, mesurer sur le
+   premier reste juste — c'est ce qui rend le point 1 acceptable et pas seulement
+   pratique.
+
+   `attachment:fixed` : le dégradé s'ancre à la FENÊTRE, pas au document. Sans lui
+   il s'étire sur toute la hauteur de la page — sur Commandes (plusieurs milliers
+   de pixels) le balayage devient si lent que le haut de l'écran lit comme un
+   aplat, et la seconde couleur n'existe qu'après un long défilement. Autrement
+   dit : le dégradé demandé disparaîtrait précisément sur les pages les plus
+   longues, celles qu'on regarde le plus.
+
+   L'angle est MIROITÉ en arabe. Un dégradé est directionnel comme une ombre :
+   laissé tel quel, la lumière viendrait du coin opposé selon la langue. */
+html[dir="rtl"] body.aod-cd{
+	background-image:linear-gradient(205deg,var(--cd-page) 0%,var(--cd-page-2) 100%);
 }
 
 /* ---- Focus visible : socle global (étape 5.8) ----
@@ -295,7 +419,17 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 
 /* ---- Barre latérale ---- */
 .aod-cd-side{
-	width:248px;flex:0 0 248px;background:var(--cd-side);color:var(--cd-side-txt);
+	/* 🎨 PROFONDEUR, PAS COULEUR (2026-08-06). La barre était un aplat parfaitement
+	   uniforme sur toute sa hauteur : lisible, mais sans matière — et c'est ce qui
+	   la faisait lire comme un bandeau posé plutôt que comme une colonne. Un voile
+	   clair en haut, une ombre en bas, tous deux ACHROMATIQUES : la teinte de marque
+	   reste celle que `side()` dérive de l'accent, on ne fait que la sculpter.
+	   🔒 Un dégradé teinté écrit ici serait une couleur de client en dur — ce que
+	   `test-charte-surfaces.php` refuse, et à raison : il faudrait le recalculer
+	   pour chaque accent au lieu de le laisser dériver. */
+	width:248px;flex:0 0 248px;
+	background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,0) 180px,rgba(0,0,0,.16)),var(--cd-side);
+	color:var(--cd-side-txt);
 	display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
 	/* 43.7 — `height:100vh` SANS `overflow-y` : tout contenu plus haut que l'écran
 	   débordait EN SILENCE, sans barre de défilement et sans moyen de l'atteindre
@@ -315,13 +449,34 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 .aod-cd-side::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.45)}
 .aod-cd-brand{
 	display:flex;align-items:center;gap:11px;
-	padding:24px 22px;font-weight:800;font-size:var(--cd-fs-xl);color:#fff;letter-spacing:.4px;
+	padding:20px 22px;font-weight:800;font-size:var(--cd-fs-xl);color:#fff;letter-spacing:.4px;
 	text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.08);
 }
-.aod-cd-brand::before{
-	content:"";width:16px;height:28px;flex:0 0 auto;background:var(--cd-yellow);
-	clip-path:polygon(0 0,100% 0,100% 70%,50% 100%,0 70%);
+/* ── La MARQUE (2026-08-06) ────────────────────────────────────────────────
+   🔁 CE BLOC REMPLACE UN `::before` EN `clip-path`, et le remplacement n'est pas
+   cosmétique : ce chevron de 16×28 était la SEULE marque possible, y compris
+   chez un client qui avait déposé son logo dans le Personnalisateur. Le logo est
+   maintenant rendu quand il existe (cf. `AOD_CD_Access::brand_mark()`), et ce
+   sceau n'est plus qu'un repli.
+   ⚠️ HAUTEUR TENUE À 32 px, contre 28 pour le chevron, et la brique perd 4 px de
+   padding en échange : la 45.5 a réglé la géométrie verticale du rail AU PIXEL,
+   et la marque pèse dans les DEUX états (repliée comme dépliée). On échange, on
+   n'ajoute pas. */
+.aod-cd-brand-mark{
+	width:32px;height:32px;flex:0 0 auto;border-radius:var(--cd-r-sm);
+	display:inline-flex;align-items:center;justify-content:center;overflow:hidden;
 }
+/* Le sceau : pastille d'accent + vitrine du catalogue. Le dégradé va de l'accent
+   à sa variante renforcée — deux tokens, zéro couleur écrite —, et l'encre est
+   `best_ink`, donc lisible pour tout accent du cube. */
+.aod-cd-brand-mark--seal{
+	background:linear-gradient(140deg,var(--cd-accent),var(--cd-accent-strong));
+	color:var(--cd-accent-ink);
+	box-shadow:0 4px 12px rgba(0,0,0,.35);
+}
+/* `contain` et non `cover` : un logo client n'est jamais carré, et `cover` le
+   rognerait — on préfère de l'air autour d'une marque entière. */
+.aod-cd-brand-logo{width:100%;height:100%;object-fit:contain;display:block}
 .aod-cd-nav{padding:16px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
 /* Intitulé de groupe de navigation (coque groupée par domaine — étape 5.3) */
 .aod-cd-navgroup{
@@ -331,6 +486,13 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	letter-spacing:.09em;color:rgba(255,255,255,.6);user-select:none;
 }
 .aod-cd-navgroup:first-child{padding-top:2px}
+/* Un filet AU-DESSUS de chaque intitulé (sauf le premier) : les six domaines se
+   suivaient sans respiration, et l'œil devait lire les majuscules pour trouver
+   la coupure. Le rail replié a le sien depuis la 45.5 — c'est exactement la
+   dérive de la Phase 46 : la bonne décision prise dans un état, jamais propagée
+   à l'autre. ⚠️ Un FILET SEUL, sans marge : l'espacement vient déjà du padding
+   de l'intitulé, et tout pixel ajouté ici pèse sur la hauteur du rail. */
+.aod-cd-navgroup:not(:first-child){border-block-start:1px solid rgba(255,255,255,.09)}
 .aod-cd-navlink{
 	display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:var(--cd-r-sm);
 	color:var(--cd-side-txt);text-decoration:none;font-weight:600;font-size:var(--cd-fs-md);
@@ -345,12 +507,38 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	           border-color .16s var(--cd-ease-out),box-shadow .16s var(--cd-ease-out),
 	           transform .12s var(--cd-ease-out);
 }
-.aod-cd-navlink:hover{background:rgba(255,255,255,.06);color:#fff}
+.aod-cd-navlink:hover{background:rgba(255,255,255,.07);color:#fff}
+/* ── Le repère de survol (2026-08-06) ──────────────────────────────────────
+   Le survol ne disait rien de la MARQUE : un voile blanc, le même pour les 13
+   entrées, sur une barre qui porte par ailleurs la couleur du client partout
+   ailleurs. Un filet d'accent pousse depuis le bord d'attaque — et il pousse en
+   HAUTEUR, pas en largeur : une barre qui s'allonge vers l'intérieur pousserait
+   le texte, celle-ci vit dans la gouttière.
+   🔒 `--cd-accent-on-dark` et pas `--cd-accent` : c'est le token calibré pour
+   l'accent posé sur nos surfaces sombres. Avec l'accent nu, un client au bleu
+   nuit aurait un repère invisible — et il ne le verrait jamais sur le clone
+   jaune où l'on développe.
+   ⚠️ Rien sur l'entrée ACTIVE : elle est déjà un aplat d'accent plein. Un filet
+   par-dessus serait de l'emphase sur de l'emphase. */
+.aod-cd-navlink::before{
+	content:"";position:absolute;inset-inline-start:0;top:50%;transform:translateY(-50%);
+	width:3px;height:0;border-radius:var(--cd-r-pill);background:var(--cd-accent-on-dark);
+	transition:height .16s var(--cd-ease-out);
+}
+.aod-cd-navlink:hover::before{height:18px}
+.aod-cd-navlink.is-active::before{height:0}
 /* Accusé de réception à l'appui. 13 entrées cliquées des dizaines de fois par
    jour : sans retour tactile, l'interface a l'air de ne pas avoir entendu. Le
    creux reste discret (2 %) — c'est un acquittement, pas une animation. */
 .aod-cd-navlink:active{transform:scale(.98)}
-.aod-cd-navlink.is-active{background:var(--cd-yellow);color:var(--cd-accent-ink);font-weight:700}
+/* L'entrée active se SOULÈVE : l'ombre portée la détache de la colonne au lieu
+   de la laisser peinte dedans. Teintée à l'accent et très basse — c'est de la
+   séparation, pas un halo. Elle existait déjà côté mobile depuis la 43.x ; elle
+   manquait au desktop, où la nav se lit pourtant toute la journée. */
+.aod-cd-navlink.is-active{
+	background:var(--cd-accent);color:var(--cd-accent-ink);font-weight:700;
+	box-shadow:0 5px 16px rgba(var(--cd-accent-rgb),.20);
+}
 /* Phase 15 — l'icône est un SVG (AOD_CD_Icon), plus un emoji. Elle hérite de
    `color` : inactive elle prend le gris du lien, active elle prend l'encre de
    l'accent. Aucune couleur ici.
@@ -358,8 +546,18 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
    orphelin (rien ne posait jamais grayscale(1)) et n'avait de sens que face à un
    emoji multicolore. */
 .aod-cd-navlink .aod-cd-i{width:20px;height:20px}
-.aod-cd-side-head{padding:16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px}
-.aod-cd-side-foot{padding:16px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px}
+/* 🚨 CES DEUX MARGES PAIENT LA PASTILLE DE DÉCONNEXION, et ce n'est pas un
+   arbitrage esthétique — c'est une contrainte mesurée. La colonne fait 100vh avec
+   `overflow-y:auto` : tout ce qu'on lui ajoute rogne l'espace des 13 entrées, et
+   au-delà elle DÉFILE. Mesuré au navigateur après la pastille : 915 px de contenu
+   pour 900 de fenêtre, **15 px de débordement** là où il n'y en avait aucun.
+   Le pied rend donc 12 px et la tête 8 — la pastille porte désormais sa propre
+   respiration, elle ne la demande plus au conteneur.
+   ⚠️ Le geste vaut pour les DEUX états (replié et déplié) : le modifier dans un
+   seul ferait glisser les entrées au dépliage, sous le curseur qui vient les
+   chercher (45.5). */
+.aod-cd-side-head{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px}
+.aod-cd-side-foot{padding:10px 16px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px}
 .aod-cd-view,.aod-cd-logout{
 	color:var(--cd-side-txt);text-decoration:none;font-size:var(--cd-fs-sm);font-weight:600;opacity:.85;
 	transition:opacity .15s var(--cd-ease-out),color .15s var(--cd-ease-out);
@@ -368,8 +566,20 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
    l'espace insécable qui suivait l'emoji. */
 .aod-cd-view{display:inline-flex;align-items:center;gap:8px}
 .aod-cd-view:hover{opacity:1;color:var(--cd-accent-on-dark)}
-.aod-cd-logout{color:#f3a0a0}
-.aod-cd-logout:hover{opacity:1;color:#ff7b7b}
+/* La déconnexion devient une pastille : posée au pied d'une colonne qui n'a plus
+   que des surfaces, un lien de texte nu y flottait.
+   ⚠️ ELLE SEULE, PAS « Voir la boutique ». Les deux se ressemblent, mais l'une
+   vit SOUS la nav et l'autre AU-DESSUS : épaissir celle du haut décalerait les
+   13 entrées vers le bas — et comme la barre se déplie au survol, le curseur
+   viendrait chercher une entrée qui a bougé. C'est le principe posé en 45.5, et
+   il se lit mal parce qu'il ne dépend pas du composant mais de sa POSITION. */
+.aod-cd-logout{
+	color:#f3a0a0;padding:8px 11px;border-radius:var(--cd-r-sm);
+	background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+	transition:opacity .15s var(--cd-ease-out),color .15s var(--cd-ease-out),
+	           background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out);
+}
+.aod-cd-logout:hover{opacity:1;color:#ff7b7b;background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.16)}
 /* ---- 43.8 — Rail replié, déplié au survol ET au focus clavier (D2 de A.20) ----
  *
  * DESKTOP UNIQUEMENT. Le hamburger mobile (`.is-open`, media query ci-dessous)
@@ -515,6 +725,12 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	   replié, la marque n'est plus que son chevron `::before` (28 px) — soit
 	   exactement ce qu'elle occupe dépliée. Zéro glissement. */
 	.aod-cd-side:not(:hover):not(:focus-within) .aod-cd-brand-name{height:0;overflow:hidden}
+	/* 🚨 LA MARQUE SE RECENTRE, exactement comme les icônes de nav en 45.1 — et pour
+	   la même raison, qu'il a fallu recalculer et pas recopier : un sceau de 32 px
+	   posé à 22 px du bord se centre en 38 sur un rail de 64, soit **6 px hors de
+	   l'axe** des 13 icônes juste en dessous. À 16 px, il occupe 16→48, centre 32.
+	   `padding-inline` et JAMAIS `padding-left` : le décalage MIROITE en arabe. */
+	.aod-cd-side:not(:hover):not(:focus-within) .aod-cd-brand{padding-inline:16px}
 	/* Même histoire pour les deux liens de service : « Voir la boutique » se repliait
 	   sur 2 lignes (56 px en AR contre 32 en FR). `nowrap` les ramène à leur hauteur
 	   dépliée — ici encore, on RÉDUIT le glissement au lieu d'en créer. */
@@ -652,6 +868,15 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	   fond et de couleur reste, et lui n'est pas du déplacement. */
 	.aod-cd-navlink:active{transform:none}
 	.aod-cd-navlink:hover::after{transform:none}
+	/* Le repère d'accent POUSSE (0 → 18 px de haut). C'est la TRANSITION qui part,
+	   jamais la hauteur — exactement comme les liserés des cartes et des tuiles en
+	   fin de fichier, et pour la raison inverse de l'intuition : neutraliser la
+	   taille laisserait le repère à 0, donc le survol cesserait de répondre. Le
+	   repère apparaît toujours, il n'a plus de trajet.
+	   ⚠️ `transform:translateY(-50%)` du sélecteur de base n'est PAS du mouvement :
+	   il CENTRE. L'annuler collerait le repère en haut du lien. */
+	.aod-cd-navlink::before,
+	.aod-cd-navlink:hover::before{transition:none}
 }
 /* Les contrôles de la zone principale sont neutralisés EN FIN DE FICHIER, pas
    ici : leurs règles sont définies plus bas, et une surcharge placée avant
@@ -676,7 +901,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 /* Sélecteur de langue FR ⇄ AR */
 .aod-cd-lang{display:inline-flex;gap:3px;background:var(--cd-bg);border:1px solid var(--cd-line);border-radius:var(--cd-r-pill);padding:3px}
 .aod-cd-lang__btn{display:inline-block;min-width:34px;text-align:center;padding:5px 11px;border-radius:var(--cd-r-pill);font-size:var(--cd-fs-sm);font-weight:700;line-height:1;text-decoration:none;color:var(--cd-muted);transition:background-color .15s var(--cd-ease-out),color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out)}
-.aod-cd-lang__btn:hover{background:var(--cd-line-2);color:var(--cd-ink)}
+.aod-cd-lang__btn:hover{background:var(--cd-accent-wash);color:var(--cd-ink)}
 .aod-cd-lang__btn.is-active{background:var(--cd-ink);color:var(--cd-accent-on-dark)}
 .aod-cd-content{padding:26px 30px}
 
@@ -690,7 +915,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 .aod-cd-tab:hover{border-color:var(--cd-accent);background:var(--cd-accent-wash)}
 .aod-cd-tab.is-active{background:var(--cd-ink);color:#fff;border-color:var(--cd-ink)}
 .aod-cd-badge{background:rgba(24,24,24,.08);border-radius:30px;padding:1px 9px;font-size:var(--cd-fs-xs);font-weight:700}
-.aod-cd-tab.is-active .aod-cd-badge{background:var(--cd-yellow);color:var(--cd-accent-ink)}
+.aod-cd-tab.is-active .aod-cd-badge{background:var(--cd-accent);color:var(--cd-accent-ink)}
 
 /* ---- Filtre statut en menu déroulant (page Commandes) ---- */
 /* Le filtre de statut de la page Commandes (.aod-cd-filterdd) a été supprimé à
@@ -698,14 +923,52 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
    sans JavaScript ni menu déroulant. */
 
 /* ---- Tableaux ---- */
-.aod-cd-tablewrap{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);overflow:hidden;overflow-x:auto}
+.aod-cd-tablewrap{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);overflow:hidden;overflow-x:auto}
 .aod-cd-table{width:100%;border-collapse:collapse;min-width:760px}
 .aod-cd-table th{
-	text-align:start;padding:14px 16px;font-size:var(--cd-fs-xs);text-transform:uppercase;letter-spacing:.8px;
+	text-align:start;padding:var(--cd-sp-3) var(--cd-sp-4);font-size:var(--cd-fs-xs);text-transform:uppercase;letter-spacing:.8px;
 	font-weight:700;color:var(--cd-muted);background:var(--cd-bg);border-bottom:1px solid var(--cd-line);
 }
-.aod-cd-table td{padding:14px 16px;border-bottom:1px solid var(--cd-line-2);vertical-align:middle}
+/* 🔢 CHIFFRES TABULAIRES DANS TOUTE CELLULE. Par défaut, Barlow rend des
+   chiffres PROPORTIONNELS : le « 1 » est plus étroit que le « 8 », donc deux
+   montants superposés ne s'alignent pas sur leurs unités. Sur une colonne de prix,
+   c'est ce qui empêche de comparer deux lignes d'un coup d'œil — le lecteur doit
+   lire chaque nombre au lieu d'en voir la forme.
+   ⚠️ Posé sur la CELLULE et pas sur une classe de nombre : les montants, les
+   quantités, les dates et les numéros de commande vivent dans des colonnes
+   différentes et n'ont aucune classe commune. Sur du texte, la propriété n'a
+   simplement aucun effet — elle ne concerne que les glyphes de chiffres. */
+.aod-cd-table td{padding:var(--cd-sp-3) var(--cd-sp-4);border-bottom:1px solid var(--cd-line-2);vertical-align:middle;font-variant-numeric:tabular-nums}
 .aod-cd-table tr:last-child td{border-bottom:0}
+/* ── DENSITÉ RESPONSIVE — les gouttières se resserrent d'un cran ──────────
+   Neuf colonnes à 16 px de chaque côté font 288 px de gouttières, soit un quart
+   de la largeur incompressible du tableau. Sur un grand écran c'est de l'air ;
+   sur un portable c'est ce qui déclenche la barre de défilement. Un cran plus bas
+   entre le point de bascule en cartes et 1 300 px : le tableau reste large tant
+   qu'il y a la place, et se resserre juste avant de déborder.
+   ⚠️ Borné par le BAS à 781 px : en dessous, le tableau n'est plus un tableau
+   mais une pile de cartes, où le rembourrage joue un tout autre rôle. */
+@media(min-width:781px) and (max-width:1300px){
+	.aod-cd-table th,
+	.aod-cd-table td{padding-inline:var(--cd-sp-3)}
+}
+/* ── La barre de défilement du tableau ─────────────────────────────
+   Neuf colonnes de données ne tiendront jamais dans toutes les fenêtres : la
+   barre finira par apparaître, et la faire disparaître à tout prix coûterait des
+   colonnes. Ce qu'on peut faire, c'est qu'elle cesse d'être une pièce du système
+   d'exploitation posée au milieu d'un écran à la charte — grise, épaisse, carrée.
+   Elle prend donc les tokens du décor, et l'épaisseur d'un filet.
+   ⚠️ `--cd-soft` est le gris de DÉCOR (bordures, puces, chevrons) : c'est sa
+   définition même, et une barre de défilement n'est rien d'autre. Jamais
+   `--cd-muted`, qui est un gris de TEXTE.
+   ⚠️ Les deux syntaxes coexistent à dessein : `scrollbar-width`/`scrollbar-color`
+   sont la norme (Firefox, et Chrome depuis la 121), `::-webkit-scrollbar` couvre
+   les Safari et les Chrome plus anciens. Aucune ne casse là où l'autre s'applique. */
+.aod-cd-tablewrap{scrollbar-width:thin;scrollbar-color:var(--cd-soft) transparent}
+.aod-cd-tablewrap::-webkit-scrollbar{height:8px}
+.aod-cd-tablewrap::-webkit-scrollbar-track{background:transparent}
+.aod-cd-tablewrap::-webkit-scrollbar-thumb{background:var(--cd-soft);border-radius:var(--cd-r-pill)}
+.aod-cd-tablewrap::-webkit-scrollbar-thumb:hover{background:var(--cd-muted)}
 /* Lignes alternées pour distinguer facilement chaque ligne (hors table
    transporteurs, dont les lignes dépliables casseraient l'alternance).
 
@@ -738,7 +1001,30 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
    Le zébrage reprend donc la teinte du FOND DE PAGE — plus sombre que la carte
    pour tout accent, par construction (BG_MIX < CARD_MIX), donc séparateur garanti
    sans dépendre de la couleur choisie par le client. */
-.aod-cd-table:not(.aod-cd-carriers) tbody tr:nth-child(even) td{background:var(--cd-bg)}
+/* Le changement de fond se FAIT, il ne saute pas (2026-08-06). Les trois états
+   ci-dessous se succédaient d'une image à l'autre ; une transition de 0,16 s les
+   rend continus. Ce n'est pas du mouvement — rien ne se déplace —, donc rien à
+   neutraliser sous `prefers-reduced-motion` : le réglage vise les trajets, pas
+   les changements de couleur (la distinction posée en tête du bloc de fin). */
+.aod-cd-table:not(.aod-cd-carriers) tbody td{transition:background-color .16s var(--cd-ease-out)}
+/* 🔴 LE ZÉBRAGE EST PARTI LE 2026-08-08, ET C'EST UNE MESURE QUI L'A DÉCIDÉ.
+   Les lignes paires étaient peintes en `--cd-bg`, le survol en `--cd-accent-wash`.
+   Relevé au navigateur sur la palette livrée : `#ceded9` contre `#d4e2de`, soit
+   **six points** sur le canal le plus écarté. Autrement dit, survoler UNE LIGNE
+   SUR DEUX ne produisait rien de visible — la moitié du tableau ne répondait pas.
+   Le défaut n'était dans aucune des deux règles : chacune est juste seule, et
+   c'est leur RENCONTRE qui était fausse. Deux tokens voisins de l'échelle
+   employés l'un comme fond permanent, l'autre comme réponse au pointeur.
+   ⚠️ On a donc retiré le fond PERMANENT plutôt que de forcer le survol : le seul
+   cran nettement plus marqué est `--cd-accent-soft`, et il est calibré pour porter
+   `--cd-ink`, PAS `--cd-muted` (cf. `wash()`). Or ces cellules sont pleines de
+   `--cd-muted` — téléphone, « Aucun transporteur », tiret d'assignation. L'y poser
+   aurait ouvert une brèche AA pour gagner un effet de survol.
+   ⚠️ Ce que le zébrage rendait — distinguer les lignes — est déjà tenu par le
+   filet `--cd-line-2` sous chaque cellule. Et le survol devient LE seul fond
+   teinté de l'écran : c'est le contraste avec ses voisines, pas sa valeur absolue,
+   qui le rend lisible. C'est précisément ce que le zébrage lui retirait.
+   ⚠️ Sans effet au pouce : le mode carte neutralise déjà l'alternance (~l.2130). */
 .aod-cd-table:not(.aod-cd-carriers) tbody tr:hover td{background:var(--cd-accent-wash)}
 .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td{background:var(--cd-accent-wash)}
 /* Survol et sélection partagent la teinte : aucun taux de mélange ne peut être à
@@ -756,6 +1042,19 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-track{color:var(--cd-ok);font-weight:700}
 /* ---- Colonne Prix (liste produits) : prix normal / promo / achat ---- */
 .aod-cd-price{display:flex;flex-direction:column;gap:2px;line-height:1.35}
+/* ── Les quatre montants s'alignent entre eux (2026-08-08) ──────────────
+   Prix barré, promo, achat, marge : quatre nombres empilés, et le seul alignement
+   qu'ils avaient venait du `min-width` du libellé. Ils COMMENÇAIENT donc au même
+   endroit et finissaient où ils pouvaient — `12,900.00` et `5,200.00` n'ayant pas
+   la même longueur, on ne pouvait comparer une marge à un prix d'achat qu'en les
+   lisant. C'est le même défaut que la colonne des totaux, à l'intérieur d'une
+   cellule : de l'argent aligné à gauche.
+   Chaque ligne devient une grille à deux colonnes ; la valeur se cale sur sa FIN
+   (donc correctement en arabe) et prend les chiffres tabulaires.
+   ⚠️ `1fr` sur la valeur et pas `auto` : sans lui la colonne se dimensionne au
+   plus large des quatre, et les lignes courtes se recollent à leur libellé. */
+.aod-cd-price>span{display:grid;grid-template-columns:auto 1fr;gap:var(--cd-sp-2);align-items:baseline}
+.aod-cd-price>span>:last-child{text-align:end;font-variant-numeric:tabular-nums}
 .aod-cd-price-tag{display:inline-block;min-width:44px;font-size:var(--cd-fs-xs);color:var(--cd-muted);text-transform:uppercase;letter-spacing:.03em}
 .aod-cd-price-was{font-size:var(--cd-fs-sm);color:var(--cd-muted)}
 .aod-cd-price-was del{color:var(--cd-muted)}
@@ -777,6 +1076,64 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 /* Pulse quand l'icône est mise à jour en direct (gris → vert après un envoi). */
 .aod-cd-cell-ship.is-ship-updated .aod-truck{animation:aod-cd-ship-pulse .9s ease}
 @keyframes aod-cd-ship-pulse{0%{transform:scale(1)}30%{transform:scale(1.35)}100%{transform:scale(1)}}
+
+/* ── UNE SEULE HAUTEUR DANS LA RANGÉE DU TABLEAU (2026-08-08, soir) ────
+   Même demande que pour la barre d'actions (« la même chose pour le tableau »),
+   et — mesuré — même cause exactement : trois contrôles voisins d'une même ligne
+   à TROIS hauteurs. « Détail » 31,0 px · pastille de statut 33,0 · liste
+   transporteur 33,6. Chacun juste dans son coin, aucun accordé à l'autre : le
+   bouton hérite du `padding` de `.aod-cd-btn-sm` (7 px) et du cran `xs`, la
+   pastille du cran `xs` avec 8 px, la liste du cran `sm` avec 8 px. Trois
+   additions indépendantes ne donnent pas trois fois le même total.
+   ⚠️ L'écart est de 2,6 px — invisible pris isolément, et c'est bien le problème :
+   sur cinq lignes de neuf colonnes, l'œil ne voit pas un chiffre, il voit que
+   « ça ne s'aligne pas » sans pouvoir dire où. C'est la définition d'un rendu
+   qui paraît bâclé sans qu'on sache le nommer.
+   🔒 34 px, et pas 32 : c'est le PLUS GRAND des trois naturels (33,6 arrondi au
+   pair). Aligner vers le bas aurait comprimé le texte de la liste ; aligner vers
+   le haut ne fait grandir personne de plus de 3 px et ne coûte AUCUNE largeur —
+   or le tableau tient à 1 314 px dans 1 316 disponibles, deux pixels de marge.
+   ⚠️ Borné à ≥ 781 px pour la raison démontrée sur la barre : le bloc mobile
+   impose `min-height:44px` avec une spécificité plus faible qu'une `height`
+   posée d'ici. Sans la borne, ces trois contrôles RÉTRÉCIRAIENT au pouce.
+   ⚠️ Les deux sélecteurs d'assignation sont dans la liste bien qu'ils rendent
+   « — » sur ce clone : ce sont les jumeaux des deux autres, et une règle posée
+   sur trois contrôles d'une famille de cinq est exactement le mode de dérive que
+   ce fichier documente ailleurs. */
+@media(min-width:781px){
+	.aod-cd-table .aod-cd-statussel-btn,
+	.aod-cd-table .aod-cd-carriersel-btn,
+	.aod-cd-table .aod-cd-assignsel-btn,
+	.aod-cd-table .aod-cd-leadassignsel-btn,
+	.aod-cd-table .aod-cd-btn-sm{height:34px;padding-block:0}
+}
+
+/* ── L'ÉTAT « Suivi » CESSE D'ÊTRE UNE IMAGE POSÉE DANS LE VIDE ────────
+   Sur toute commande non confirmée, la cellule ne portait qu'un camion gris de
+   22 px, sans cadre, sans fond, sans ligne de base commune avec ses voisins. Ce
+   n'est ni une valeur ni un contrôle : ça se lit comme une icône cassée. Le
+   fichier PHP dit d'ailleurs déjà la règle deux fois — « un état se lit, une
+   action se nomme » — mais elle n'avait été appliquée qu'à l'ACTION (le bouton
+   « Envoyer », nommé en 47.2). L'état, lui, était resté muet.
+   Il prend donc le creux de la charte et la MÊME hauteur que le reste de la
+   rangée : il redevient un objet, aligné avec la pastille de statut d'à côté.
+   🔒 AUCUNE CHAÎNE NOUVELLE, ET C'EST UNE CONTRAINTE DE LARGEUR, pas un
+   raccourci : écrire « Pas encore envoyée » en toutes lettres demandait ~60 px
+   de plus dans un tableau qui n'en a que 2 — ça rappelait la barre de défilement
+   horizontale que l'owner avait fait retirer le 2026-08-07. Le nom existe déjà
+   pour qui en a besoin : `truck_icon()` pose le libellé de l'état en `title`,
+   donc l'infobulle et les lecteurs d'écran le disent.
+   ⚠️ `:not(:has(button))` — le chip ne doit PAS s'appliquer quand la cellule
+   porte le bouton « Envoyer » / « Réessayer » : ce bouton a déjà sa peau, et
+   l'emboîter dans un second cadre ferait un bouton dans une boîte. `:has()` est
+   déjà utilisé dans ce fichier (cf. `.aod-cd-bulk-ow`). */
+@media(min-width:781px){
+	.aod-cd-cell-ship .aod-cd-ship:not(:has(button)){
+		height:34px;padding-inline:var(--cd-sp-2);
+		border-radius:var(--cd-r-pill);
+		background:var(--cd-bg);border:1px solid var(--cd-line);
+	}
+}
 
 /* ---- 47.2 : le camion est devenu un bouton nommé ------------------------- *
  * Aucune peau propre — `.aod-cd-btn.aod-cd-btn-sm` porte tout, y compris la
@@ -830,14 +1187,44 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 	margin:var(--cd-sp-3) 0 0;font-weight:600;color:var(--cd-warn);
 }
 .aod-cd-prod{display:flex;align-items:center;gap:11px}
-.aod-cd-prod img{border-radius:var(--cd-r-sm);display:block}
+/* 🔴 LE NOM DU PRODUIT ÉTAIT UN LIEN HTML NU (corrigé le 2026-08-08).
+   Le balisage rendait `<a href>` SANS AUCUNE CLASSE, et aucune règle de cette
+   feuille ne visait cet élément : il héritait donc du style par défaut du
+   navigateur — souligné, dans la couleur de lien du système. C'était le seul
+   texte de tout `/gestion` à ressembler à une page non styleée, et c'est ce qui
+   sautait aux yeux sur cette page.
+   🚨 LA DÉCISION EXISTAIT POURTANT, MAIS POUR LE POUCE SEULEMENT : le bloc
+   `@media(max-width:780px)` portait `.aod-cd-products .aod-cd-prod{font-weight:700}`.
+   Le nom était donc le libellé fort de la ligne sur téléphone, et un lien brut sur
+   ordinateur. Une règle écrite dans un seul point de rupture est une décision
+   à moitié prise — la même famille de dérive que les jumelles de sections.
+   ⚠️ Le soulignement revient AU SURVOL : c'est bien un lien, il mène à la fiche
+   produit. On lui retire son apparence par défaut, pas son affordance. */
+.aod-cd-prod__name{color:var(--cd-ink);font-weight:700;text-decoration:none}
+.aod-cd-prod__name:hover{text-decoration:underline;text-underline-offset:2px}
+/* ── La vignette est un CADRE, pas une image posée ────────────────────
+   🚨 `object-fit` valait **fill** (mesuré au navigateur), c'est-à-dire le défaut :
+   une photo non carrée est ÉCRASÉE pour entrer dans la boîte. Les trois produits
+   de ce clone sont carrés (150×150 et 100×100), donc rien ne se voyait — mais un
+   catalogue réel n'a aucune raison de l'être, et le défaut serait apparu chez le
+   premier client à charger une photo en 4:3. `cover` recadre au lieu de déformer.
+   ⚠️ Le cadre (fond + trait) n'est pas décoratif : sans lui, une image à fond
+   transparent ou l'espace réservé de WooCommerce flottent sans limite, et la
+   colonne perd son rythme — c'est ce qui faisait paraître le produit sans photo
+   différent EN NATURE des autres, et pas seulement sans image.
+   ⚠️ 48 px et non 40 : c'est une page de CATALOGUE, la photo y est une donnée.
+   Le pouce garde 34 px — sa règle est plus spécifique et vit dans son bloc. */
+.aod-cd-prod img{
+	display:block;width:48px;height:48px;flex:none;object-fit:cover;
+	border-radius:var(--cd-r-sm);border:1px solid var(--cd-line);background:var(--cd-bg);
+}
 
 /* ---- Sélecteur de statut ---- */
 /* Sélecteur de statut : menu personnalisé (le <select> natif s'ouvrait hors champ). */
 .aod-cd-statussel{position:relative;display:inline-block;max-width:185px}
 .aod-cd-statussel-btn{
 	display:inline-flex;align-items:center;gap:8px;width:100%;padding:8px 11px;
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:#fff;
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);
 	font-family:inherit;font-size:var(--cd-fs-sm);font-weight:600;color:var(--cd-ink);
 	cursor:pointer;transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out),color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);text-align:start;line-height:1.2;
 }
@@ -874,6 +1261,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-assignsel-menu,
 .aod-cd-leadassignsel-menu,
 .aod-cd-carriersel-menu,
+.aod-cd-cal,
 .aod-cd-catdd-panel{
 	padding:6px;background:var(--cd-card);overflow:auto;
 	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
@@ -892,6 +1280,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-assignsel-menu[hidden],
 .aod-cd-leadassignsel-menu[hidden],
 .aod-cd-carriersel-menu[hidden],
+.aod-cd-cal[hidden],
 .aod-cd-catdd-panel[hidden]{display:none}
 
 /* L'ouverture. Voir le commentaire de `aod-cd-pop` (section Modale) : ces
@@ -902,6 +1291,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-assignsel-menu:not([hidden]),
 .aod-cd-leadassignsel-menu:not([hidden]),
 .aod-cd-carriersel-menu:not([hidden]),
+.aod-cd-cal:not([hidden]),
 .aod-cd-catdd-panel:not([hidden]){animation:aod-cd-pop .14s var(--cd-ease-out)}
 
 .aod-cd-statussel-menu{
@@ -960,7 +1350,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-csel select{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;clip:rect(0 0 0 0);overflow:hidden}
 .aod-cd-csel-btn{
 	display:flex;align-items:center;gap:8px;width:100%;padding:11px 13px;
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:#fff;
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);
 	font-family:inherit;font-size:var(--cd-fs-md);font-weight:600;color:var(--cd-ink);
 	cursor:pointer;transition:border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);text-align:start;line-height:1.2;
 }
@@ -1046,7 +1436,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-leadassignsel-btn,
 .aod-cd-carriersel-btn{
 	display:inline-flex;align-items:center;gap:8px;width:100%;padding:8px 11px;
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:#fff;
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);
 	font-family:inherit;font-size:var(--cd-fs-sm);font-weight:600;color:var(--cd-ink);
 	cursor:pointer;transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out),color .15s var(--cd-ease-out);text-align:start;line-height:1.2;
 }
@@ -1155,10 +1545,22 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
 }
 .aod-cd-card::before{
-	content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cd-yellow);
+	content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cd-accent);
 	transform:scaleY(0);transform-origin:top;transition:transform .18s ease;
 }
-.aod-cd-card:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:#d9d9d9}
+/* 🔴 LES TROIS BORDS DE SURVOL ÉTAIENT PLUS CLAIRS QUE LE BORD AU REPOS (corrigé
+   le 2026-08-07). `#d9d9d9` et `#dcdcdc` ont été choisis quand `--cd-line` valait
+   `#e6e6e6` : ils étaient alors un cran plus FONCÉS, donc un vrai accusé de
+   réception. La ligne a foncé à `#d5d5d5` avec l'échelle de surfaces (213 contre 217
+   et 220) et l'inégalité s'est INVERSÉE sans que rien ne bouge à l'écran : survoler
+   une carte ÉCLAIRCISSAIT son contour, c'est-à-dire l'effaçait un peu. Personne ne
+   pouvait le voir — le geste rend quand même une ombre et un soulèvement, qui
+   masquaient l'inversion.
+   🚨 *Une valeur en dur accordée à un token devient fausse le jour où le token
+   bouge, et elle ne le signale jamais : elle continue d'afficher une couleur.*
+   Les trois reprennent `--cd-soft`, qui est déjà ce que `.aod-cd-member:hover`
+   utilise — le seul des quatre jumeaux qui avait été écrit avec un token. */
+.aod-cd-card:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:var(--cd-soft)}
 .aod-cd-card:hover::before{transform:scaleY(1)}
 /* Aplat, comme les pastilles de KPI (2026-08-05) : le couple (fond doux, encre
    foncée) devient (fond foncé, glyphe clair). Même composant visuel dans deux
@@ -1179,13 +1581,76 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-card-lab{margin-top:2px;color:var(--cd-ink);font-size:var(--cd-fs-xs);font-weight:700;letter-spacing:.1px}
 
 /* ---- Graphe CA (courbe SVG, sans librairie) ---- */
-.aod-cd-chartcard{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:18px 20px}
+.aod-cd-chartcard{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);padding:18px 20px}
 .aod-cd-chart-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px}
-.aod-cd-chart-title{margin:0;font-size:var(--cd-fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--cd-muted)}
+/* Même filet d'accent que `.aod-cd-form-subtitle` : c'est le même objet — un
+   intitulé de section en capitales — rendu par un autre composant. Les laisser
+   diverger donnerait deux langages pour une seule idée. */
+.aod-cd-chart-title{
+	margin:0;font-size:var(--cd-fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--cd-muted);
+	display:flex;align-items:center;gap:var(--cd-sp-2);
+}
+.aod-cd-chart-title::before{
+	content:"";flex:none;width:3px;height:1em;border-radius:var(--cd-r-pill);background:var(--cd-accent);
+}
 .aod-cd-chart-total{font-size:var(--cd-fs-sm);color:var(--cd-muted);font-weight:600}
 .aod-cd-chart-total b{color:var(--cd-ink);font-size:var(--cd-fs-md);font-weight:700;margin-inline-start:6px}
 .aod-cd-linechart{position:relative;width:100%;margin-top:2px}
 .aod-cd-linechart svg{display:block;width:100%;height:auto;max-height:270px;overflow:visible}
+/* ══ Les deux graphes de la période, côte à côte (2026-08-07) ════════════
+   La courbe dit QUAND le chiffre est arrivé, l'anneau dit D'OÙ il vient.
+   `minmax(0,…)` sur les deux colonnes, et ce n'est pas un réflexe : une piste de
+   grille vaut `auto` par défaut, donc son PLANCHER est la largeur du contenu. Le
+   SVG de la courbe ne se laisse alors pas comprimer et la carte déborde — c'est
+   le défaut classique d'une grille qui contient un graphe.
+   ⚠️ La courbe garde deux tiers : elle porte une échelle de temps, donc sa
+   lisibilité dépend de sa LARGEUR ; l'anneau, lui, est carré et n'a rien à y
+   gagner. Un partage égal aurait tassé celle qui en a besoin pour aérer celle qui
+   n'en a pas. */
+.aod-cd-charts{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--cd-sp-4);align-items:start}
+@media(max-width:900px){.aod-cd-charts{grid-template-columns:minmax(0,1fr)}}
+
+/* ── L'anneau ─────────────────────────────────────────────────
+   🎨 LES PARTS SONT UNE RAMPE DE L'ACCENT, ET C'EST LA SEULE FAÇON HONNÊTE DE
+   COLORER UN CAMEMBERT DANS UN TEMPLATE. Six teintes choisies à la main auraient
+   été le goût d'un client figé dans le code (règle n°1), et emprunter les encres
+   SÉMANTIQUES aurait été pire : du vert et du rouge sur des produits qui ne vont
+   ni bien ni mal, c'est-à-dire le vocabulaire du statut détourné pour du décor.
+   `color-mix` ramène chaque part vers l'encre — pas vers le blanc : vers le blanc,
+   les dernières parts disparaîtraient sur la carte, qui est claire.
+   🔒 ET LA COULEUR N'EST JAMAIS LE SEUL PORTEUR. Une rampe monochrome se lit mal
+   dès la 4ᵉ part, et pas du tout pour certains daltonïsmes : la légende porte le
+   NOM et le POURCENTAGE en toutes lettres, et l'anneau n'annonce que ce qu'il
+   représente. Le graphe est un résumé visuel d'une donnée qui reste du TEXTE.
+   🚨 La coupure entre deux parts est calculée côté serveur (`$vide`) et pas
+   dessinée ici : c'est elle qui garantit que deux parts voisines restent
+   distinctes MÊME quand l'accent rend deux crans de la rampe presque identiques.
+   Sans elle, un accent très sombre donnerait un disque uni. */
+.aod-cd-donut{position:relative;display:flex;align-items:center;justify-content:center;margin:var(--cd-sp-2) 0}
+.aod-cd-donut__svg{width:100%;max-width:210px;height:auto;display:block;transform:rotate(-90deg)}
+.aod-cd-donut__arc{
+	fill:none;stroke-width:16;stroke-linecap:butt;
+	stroke:color-mix(in srgb,var(--cd-accent) calc(100% - var(--part) * 17%),var(--cd-ink));
+}
+/* Le centre porte le total : c'est le nombre auquel toutes les parts se
+   rapportent, et le seul endroit où il ne peut pas être confondu avec un autre. */
+.aod-cd-donut__mid{
+	position:absolute;inset:0;display:flex;flex-direction:column;
+	align-items:center;justify-content:center;gap:2px;text-align:center;pointer-events:none;
+}
+.aod-cd-donut__midlab{font-size:var(--cd-fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--cd-muted)}
+.aod-cd-donut__midval{font-size:var(--cd-fs-md);font-weight:800;color:var(--cd-ink);line-height:1.1}
+.aod-cd-donut__legend{list-style:none;margin:var(--cd-sp-3) 0 0;padding:0;display:flex;flex-direction:column;gap:var(--cd-sp-2)}
+.aod-cd-donut__item{display:flex;align-items:center;gap:var(--cd-sp-2);font-size:var(--cd-fs-sm);min-width:0}
+.aod-cd-donut__dot{
+	flex:none;width:10px;height:10px;border-radius:var(--cd-r-pill);
+	background:color-mix(in srgb,var(--cd-accent) calc(100% - var(--part) * 17%),var(--cd-ink));
+}
+/* Le nom peut être long ; c'est LUI qui cède, jamais le pourcentage — un chiffre
+   tronqué devient un autre chiffre, un nom tronqué reste reconnaissable. */
+.aod-cd-donut__name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--cd-ink);font-weight:600}
+.aod-cd-donut__pct{flex:none;font-weight:700;color:var(--cd-muted);font-variant-numeric:tabular-nums}
+
 /* Onglets de période placés juste au-dessus du graphe */
 .aod-cd-tabs-chart{margin-top:26px;margin-bottom:10px}
 .aod-cd-grid-line{stroke:#f0f0f0;stroke-width:1}
@@ -1194,11 +1659,11 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-axis-lbl,.aod-cd-x-lbl{font-size:var(--cd-fs-xs);font-family:inherit}
 .aod-cd-area{fill:url(#aodAreaGrad)}
 .aod-cd-line{fill:none;stroke:var(--cd-ink);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
-.aod-cd-dot{fill:#fff;stroke:var(--cd-ink);stroke-width:1.8;transition:r .12s ease}
+.aod-cd-dot{fill:var(--cd-card);stroke:var(--cd-ink);stroke-width:1.8;transition:r .12s ease}
 .aod-cd-guide{stroke:var(--cd-ink);stroke-width:1;stroke-dasharray:4 4;opacity:0;transition:opacity .12s}
 .aod-cd-tip{
-	position:absolute;pointer-events:none;left:0;top:0;background:#fff;color:var(--cd-muted);
-	padding:8px 12px;border:1px solid var(--cd-line);border-inline-start:3px solid var(--cd-yellow);
+	position:absolute;pointer-events:none;left:0;top:0;background:var(--cd-field);color:var(--cd-muted);
+	padding:8px 12px;border:1px solid var(--cd-line);border-inline-start:3px solid var(--cd-accent);
 	border-radius:var(--cd-r-sm);font-size:var(--cd-fs-xs);line-height:1.45;white-space:nowrap;
 	opacity:0;transform:translate(-50%,calc(-100% - 12px));transition:opacity .12s;
 	box-shadow:0 8px 22px rgba(24,24,24,.14);z-index:2;
@@ -1211,7 +1676,22 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .aod-cd-btn{
 	display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:var(--cd-r-sm);
-	background:var(--cd-card);border:1px solid var(--cd-line);color:var(--cd-ink);text-decoration:none;
+	background-color:var(--cd-card);border:1px solid var(--cd-line);color:var(--cd-ink);text-decoration:none;
+	/* 🚨 CE VOILE NE VIT QUE SUR LES BOUTONS CLAIRS, et c'est une règle de sûreté
+	   avant d'être un choix graphique. Il est déclaré ICI, sur le bouton neutre, et
+	   TOUS les états pleins qui suivent (`.is-active` sur l'encre, `-danger` au
+	   survol, `-primary` sur l'accent) gardent volontairement le raccourci
+	   `background:` — lequel remet `background-image` à `none` et efface donc ce
+	   voile, sans qu'aucune règle n'ait à le dire.
+	   ⚠️ Pourquoi cette précaution : ces boutons-là portent de l'encre CLAIRE. Un voile
+	   blanc étalé sur leur moitié haute y remonterait la luminance sous le texte, et
+	   la porte `contraste` ne pourrait pas le voir — elle lit `backgroundColor`,
+	   jamais l'image de fond. On aurait un vert franc sur un texte réellement passé
+	   sous AA : l'inverse d'un garde-fou.
+	   Sur fond clair à encre foncée, le même voile n'entre dans aucun rapport de
+	   lisibilité : il ne fait que donner au bouton une arête haute et un pied,
+	   c'est-à-dire une épaisseur. */
+	background-image:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 62%);
 	font-family:inherit;font-weight:700;font-size:var(--cd-fs-sm);cursor:pointer;line-height:1.2;transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);
 }
 /* ── Le survol d'un bouton secondaire porte enfin la marque (2026-08-05) ────
@@ -1221,7 +1701,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    teintée dont le contraste sous `--cd-muted` est éprouvé pour TOUT accent
    (cf. `wash()`). Le bord passe à l'accent plein : c'est du décor au sens WCAG
    1.4.11, l'état de survol n'étant pas la seule façon de savoir où l'on est. */
-.aod-cd-btn:hover{border-color:var(--cd-accent);background:var(--cd-accent-wash);transform:translateY(-1px);box-shadow:var(--cd-shadow-rest)}
+.aod-cd-btn:hover{border-color:var(--cd-accent);background-color:var(--cd-accent-wash);transform:translateY(-1px);box-shadow:var(--cd-shadow-rest)}
 /* 🚨 UN SEUL PIXEL, ET C'EST DÉLIBÉRÉ. Les cartes se soulèvent de 3 px : ce sont
    des SURFACES, on les survole une par une. Un bouton vit dans une rangée de
    voisins — à 3 px, une barre d'actions ondule sous la souris. Le geste se lit
@@ -1250,7 +1730,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-carriersel-btn:not(:disabled):active,
 .aod-cd-statussel-btn:not(:disabled):active{transform:scale(.98)}
 .aod-cd-btn-primary{
-	background:var(--cd-yellow);border-color:var(--cd-yellow);color:var(--cd-accent-ink);
+	background:var(--cd-accent);border-color:var(--cd-accent);color:var(--cd-accent-ink);
 	text-transform:uppercase;letter-spacing:.5px;
 }
 /* 🔁 LE SURVOL DU BOUTON PRINCIPAL NE VIRE PLUS AU NOIR (2026-08-05). Il passait
@@ -1263,16 +1743,28 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    calibrée sur l'accent de BASE et tombe sous AA sur la variante pour 4 accents
    sur 8 — dont le turquoise de ce client (4,48:1). Cf. `class-aod-cd-customize.php`. */
 .aod-cd-btn-primary:hover{background:var(--cd-accent-strong);border-color:var(--cd-accent-strong);color:var(--cd-accent-strong-ink)}
-.aod-cd-btn-primary:disabled{opacity:.5;cursor:default}
-.aod-cd-btn-primary:disabled:hover{background:var(--cd-yellow);color:var(--cd-accent-ink)}
+/* 🔴 SEULES DEUX VARIANTES SUR TROIS DISAIENT LEUR ÉTAT DÉSACTIVÉ (2026-08-07).
+   `-primary` (opacité .5) et `-danger` (.45) avaient chacune leur règle, à deux
+   valeurs proches mais différentes ; le bouton NEUTRE, lui, n'en avait aucune — il
+   restait identique à un bouton actif, curseur compris. Or c'est justement celui
+   de la barre d'action groupée, dont la 45.2 a fait un contrôle PERMANENT
+   `disabled` à sélection vide : le cas le plus fréquent de tout `/gestion` était
+   le seul à ne rien signaler.
+   🚨 *Une règle écrite une fois par variante finit par en oublier une, et c'est
+   toujours celle qu'on regarde le moins qui manque.* Le socle porte désormais
+   l'état pour les trois ; les variantes ne gardent que ce qui leur est propre.
+   ⚠️ `pointer-events` reste actif : un bouton désactivé doit pouvoir porter un
+   `title` explicatif au survol. C'est `cursor:not-allowed` qui dit l'inaction. */
+.aod-cd-btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.aod-cd-btn:disabled:hover{transform:none;border-color:var(--cd-line);background-color:var(--cd-card)}
+.aod-cd-btn-primary:disabled:hover{background:var(--cd-accent);color:var(--cd-accent-ink)}
 .aod-cd-btn-sm{padding:7px 13px;font-size:var(--cd-fs-xs)}
 .aod-cd-btn-danger{color:var(--cd-bad);border-color:#f3c9c5}
 .aod-cd-btn-danger:hover{background:var(--cd-bad);color:#fff;border-color:var(--cd-bad)}
 .aod-cd-rowactions{white-space:nowrap}
 
 /* ---- Formulaire produit ---- */
-.aod-cd-form{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:26px;max-width:none}
-.aod-cd-form-title{margin:0 0 20px;font-size:var(--cd-fs-lg);font-weight:800;letter-spacing:-.2px}
+.aod-cd-form{background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);padding:26px;max-width:none}
 .aod-cd-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px}
 .aod-cd-col{display:flex;flex-direction:column;gap:16px}
 .aod-cd-field{display:flex;flex-direction:column;gap:6px}
@@ -1286,8 +1778,21 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-form textarea,
 .aod-cd-form select{
 	width:100%;padding:11px 13px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);
-	font-size:var(--cd-fs-md);font-family:inherit;background:#fff;color:var(--cd-ink);transition:border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out);
+	font-size:var(--cd-fs-md);font-family:inherit;background:var(--cd-field);color:var(--cd-ink);transition:border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out);
 }
+/* Un champ au repos et un champ survolé étaient IDENTIQUES : le seul retour était le
+   curseur de la souris, qui ne dit pas où commence ni où finit la zone cliquable. Le
+   trait s'assombrit d'un cran au survol — c'est du DÉCOR au sens 1.4.11 (le focus,
+   lui, garde son anneau), donc `--cd-soft` suffit et reste neutre : aucune couleur de
+   client en dur.
+   ⚠️ `:not(:focus)` est indispensable — sans lui, survoler un champ FOCALISÉ
+   écraserait son bord d'anneau par un gris, et l'indicateur de focus clignoterait au
+   passage de la souris. Deux états qui se disputent la même propriété. */
+.aod-cd-form input:hover:not(:focus),
+.aod-cd-form textarea:hover:not(:focus),
+.aod-cd-form select:hover:not(:focus),
+.aod-cd-textinput:hover:not(:focus),
+.aod-cd-date:hover:not(:focus){border-color:var(--cd-soft)}
 .aod-cd-form input:focus,.aod-cd-form textarea:focus,.aod-cd-form select:focus{
 	outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus);
 }
@@ -1305,7 +1810,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-date{
 	width:100%;padding:11px 13px;padding-right:38px;
 	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);
-	font-size:var(--cd-fs-md);font-family:inherit;background:#fff;color:var(--cd-ink);transition:border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out);
+	font-size:var(--cd-fs-md);font-family:inherit;background:var(--cd-field);color:var(--cd-ink);transition:border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out);
 }
 .aod-cd-date:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
 /* Tout le champ ouvre le calendrier (indicateur natif rendu transparent, plein cadre) */
@@ -1318,9 +1823,170 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	font-size:11px;line-height:1;cursor:pointer;transition:background-color .15s var(--cd-ease-out);
 }
 .aod-cd-date-clear:hover{background:rgba(0,0,0,.14)}
+
+/* ══ LE CALENDRIER DE /gestion (2026-08-06) ═══════════════════════════════════
+   Constat owner : « quand je clique sur un calendrier, il est blanc ».
+
+   🚨 CE BLANC-LÀ N'ÉTAIT PAS DANS CETTE FEUILLE, et c'est pour ça qu'aucune
+   phase de charte ne pouvait l'atteindre. Le sélecteur de dates d'un
+   `<input type="date">` est peint par le NAVIGATEUR, hors du document : ni une
+   règle CSS, ni `--cd-card`, ni le repli d'accent ne le touchent. Il restait
+   blanc au milieu d'un écran teinté, ignorait `prefers-reduced-motion` comme le
+   RTL, et ne pouvait porter aucune animation. La seule façon de le ramener dans
+   la charte est de ne plus l'ouvrir — d'où `widget-datepicker.js`, qui garde le
+   champ natif (valeur, `min`/`max`, saisie, soumission) et remplace la seule
+   surface qui échappait au thème.
+
+   🔒 La PEAU du panneau n'est pas écrite ici : `.aod-cd-cal` rejoint la surface
+   flottante mutualisée (fond, trait, rayon, ombre, ouverture `aod-cd-pop`) 400
+   lignes plus haut, avec les cinq menus. Écrire une septième peau, c'était la
+   dérive que la Phase 46 a passé huit étapes à fermer.                        */
+
+/* L'indicateur natif part : c'est LUI qui ouvrait la fenêtre blanche. Il n'est
+   masqué que là où le JS a pris le relais (`data-aod-cal`) — sans script, le
+   calendrier du navigateur reste, et c'est le bon repli. */
+input[data-aod-cal]::-webkit-calendar-picker-indicator{display:none}
+.aod-cd-datewrap.has-cal input[type=date]{padding-inline-end:38px}
+.aod-cd-calbtn{
+	position:absolute;inset-inline-end:5px;top:50%;transform:translateY(-50%);z-index:2;
+	display:flex;align-items:center;justify-content:center;width:28px;height:28px;
+	border:0;border-radius:var(--cd-r-sm);background:none;color:var(--cd-muted);
+	cursor:pointer;transition:color .15s var(--cd-ease-out),background-color .15s var(--cd-ease-out);
+}
+.aod-cd-calbtn:hover{color:var(--cd-ink);background:var(--cd-accent-wash)}
+.aod-cd-calbtn:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+/* Panneau ouvert : le déclencheur prend la marque. `--cd-accent-ink` et non
+   `--cd-ink` — l'encre lisible SUR l'accent est calculée par best_ink, un noir
+   en dur serait illisible dès qu'un client choisit un accent sombre. */
+.aod-cd-datewrap.is-open .aod-cd-calbtn{color:var(--cd-accent-ink);background:var(--cd-accent)}
+/* Le bouton d'effacement du formulaire produit laisse sa place au déclencheur.
+   ⚠️ Écrit en propriétés LOGIQUES, et l'ordre des trois déclarations compte : la
+   règle d'origine pose `right:8px`, qui colle le bouton du mauvais côté en arabe
+   (dette antérieure). On remet les deux bords à `auto` avant de poser le bord de
+   FIN — ce qui corrige le RTL au passage. */
+.aod-cd-datewrap.has-cal .aod-cd-date-clear{right:auto;left:auto;inset-inline-end:38px}
+
+.aod-cd-cal{
+	position:fixed;z-index:1000;width:min(304px,calc(100vw - 24px));
+	padding:var(--cd-sp-3);overflow:visible;
+}
+/* Le liseré d'accent des cartes, repris en tête du panneau : il dit que cette
+   surface appartient à la boutique — c'est très exactement ce que la fenêtre du
+   navigateur ne pouvait pas dire. STATIQUE, contrairement à celui des cartes qui
+   POUSSE au survol : celui-ci n'annonce rien, il identifie. Rien à neutraliser
+   sous `prefers-reduced-motion`, donc, et c'est voulu. */
+.aod-cd-cal::before{
+	content:"";position:absolute;inset-inline:0;top:0;height:3px;
+	background:linear-gradient(to right,var(--cd-accent),var(--cd-accent-strong));
+	border-radius:var(--cd-r-md) var(--cd-r-md) 0 0;
+}
+.aod-cd-cal__head{display:flex;align-items:center;gap:var(--cd-sp-2);margin-bottom:var(--cd-sp-3)}
+.aod-cd-cal__title{
+	flex:1 1 auto;text-align:center;font-size:var(--cd-fs-md);font-weight:800;
+	color:var(--cd-ink);text-transform:capitalize;
+}
+.aod-cd-cal__nav{
+	flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+	width:32px;height:32px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);
+	background:var(--cd-field);color:var(--cd-ink);cursor:pointer;
+	transition:border-color .15s var(--cd-ease-out),background-color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);
+}
+.aod-cd-cal__nav:hover{border-color:var(--cd-accent);background:var(--cd-accent-wash)}
+.aod-cd-cal__nav:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+.aod-cd-cal__nav:active{transform:scale(.98)}
+/* Chevron DESSINÉ (deux bordures pivotées), comme celui du select maison : le
+   catalogue d'icônes n'en contient pas, et le JS ne fabrique pas de balisage
+   d'icône. Il MIROITE en arabe — une flèche « mois précédent » qui pointerait
+   toujours vers la gauche contredirait le sens de lecture. */
+.aod-cd-cal__chev{
+	width:7px;height:7px;
+	border-left:2px solid currentColor;border-bottom:2px solid currentColor;
+	transform:rotate(45deg);
+}
+.aod-cd-cal__nav--next .aod-cd-cal__chev,
+html[dir="rtl"] .aod-cd-cal__chev{transform:rotate(225deg)}
+html[dir="rtl"] .aod-cd-cal__nav--next .aod-cd-cal__chev{transform:rotate(45deg)}
+
+.aod-cd-cal__dow,
+.aod-cd-cal__grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.aod-cd-cal__dow{margin-bottom:var(--cd-sp-1)}
+.aod-cd-cal__dow span{
+	text-align:center;font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);
+	text-transform:uppercase;letter-spacing:.04em;
+}
+.aod-cd-cal__day{
+	display:flex;align-items:center;justify-content:center;aspect-ratio:1;
+	border:0;border-radius:var(--cd-r-sm);background:none;font-family:inherit;
+	font-size:var(--cd-fs-sm);font-weight:600;color:var(--cd-ink);cursor:pointer;
+	transition:background-color .12s var(--cd-ease-out),color .12s var(--cd-ease-out);
+	animation:aod-cd-cal-day .26s var(--cd-ease-out) both;
+}
+.aod-cd-cal__day:hover{background:var(--cd-accent-wash)}
+.aod-cd-cal__day:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+/* Jour hors des bornes du champ (`min`/`max` : une promotion ne se termine pas
+   avant d'avoir commencé). `--cd-soft` est du DÉCOR et ne tient pas AA — c'est
+   ici légitime et nulle part ailleurs : WCAG 1.4.3 exempte explicitement les
+   contrôles désactivés, et l'information « indisponible » est portée par
+   `disabled`, pas par la couleur seule. */
+.aod-cd-cal__day:disabled{color:var(--cd-soft);cursor:default;background:none}
+/* Aujourd'hui : un anneau, pas un aplat — l'aplat est réservé au jour CHOISI, et
+   deux aplats côte à côte ne se distingueraient plus. */
+.aod-cd-cal__day.is-today{font-weight:800;box-shadow:inset 0 0 0 1px var(--cd-accent)}
+.aod-cd-cal__day.is-sel,
+.aod-cd-cal__day.is-sel:hover{
+	background:var(--cd-accent);color:var(--cd-accent-ink);font-weight:800;
+	animation:aod-cd-cal-pick .32s var(--cd-ease-out);
+}
+/* La grille se dépose en cascade, une RANGÉE après l'autre (six règles, pas
+   quarante-deux) : les cases vides du début de mois sont des `<span>` sans
+   animation, elles ne comptent que pour le rang. */
+.aod-cd-cal__grid>*:nth-child(-n+7){animation-delay:0s}
+.aod-cd-cal__grid>*:nth-child(n+8):nth-child(-n+14){animation-delay:.03s}
+.aod-cd-cal__grid>*:nth-child(n+15):nth-child(-n+21){animation-delay:.06s}
+.aod-cd-cal__grid>*:nth-child(n+22):nth-child(-n+28){animation-delay:.09s}
+.aod-cd-cal__grid>*:nth-child(n+29):nth-child(-n+35){animation-delay:.12s}
+.aod-cd-cal__grid>*:nth-child(n+36){animation-delay:.15s}
+/* Changement de mois : la grille entre DANS LE SENS du geste, ce qui dit d'où
+   l'on vient. Miroité en arabe, pour la même raison que le chevron. */
+.aod-cd-cal__grid.is-next{animation:aod-cd-cal-next .28s var(--cd-ease-out)}
+.aod-cd-cal__grid.is-prev{animation:aod-cd-cal-prev .28s var(--cd-ease-out)}
+html[dir="rtl"] .aod-cd-cal__grid.is-next{animation-name:aod-cd-cal-prev}
+html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
+@keyframes aod-cd-cal-day{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes aod-cd-cal-pick{0%{transform:scale(.8)}62%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes aod-cd-cal-next{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+@keyframes aod-cd-cal-prev{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+
+.aod-cd-cal__foot{
+	display:flex;justify-content:center;
+	margin-top:var(--cd-sp-3);padding-top:var(--cd-sp-3);border-top:1px solid var(--cd-line-2);
+}
+/* Le raccourci « aujourd'hui » porte la DATE du jour en toutes lettres, pas le
+   mot : le libellé est rendu par Intl dans la langue de la page, donc aucune
+   chaîne nouvelle à traduire, et il renseigne au lieu de nommer une action. */
+.aod-cd-cal__today{
+	padding:var(--cd-sp-1) var(--cd-sp-3);border:1px solid var(--cd-line);
+	border-radius:var(--cd-r-pill);background:var(--cd-bg);font-family:inherit;
+	font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);cursor:pointer;
+	transition:border-color .15s var(--cd-ease-out),background-color .15s var(--cd-ease-out),color .15s var(--cd-ease-out);
+}
+.aod-cd-cal__today:hover{border-color:var(--cd-accent);background:var(--cd-accent-wash);color:var(--cd-ink)}
+.aod-cd-cal__today:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+/* Aujourd'hui hors des bornes du champ (une promotion qui commence demain) : la
+   pastille est éteinte. Écrite APRÈS le survol, sinon celui-ci la rallumerait
+   sous le pointeur alors qu'elle ne répond plus. */
+.aod-cd-cal__today:disabled,
+.aod-cd-cal__today:disabled:hover{
+	opacity:.45;cursor:default;
+	border-color:var(--cd-line);background:var(--cd-bg);color:var(--cd-muted);
+}
+
 @media (max-width:560px){
 	.aod-cd-promo-range{flex-direction:column;align-items:stretch}
 	.aod-cd-promo-arrow{display:none}
+	/* Au pouce, le panneau prend la largeur disponible : à 304px les cases
+	   tombent à 38px de côté, sous la cible tactile de 44px (spec UX §5.3). */
+	.aod-cd-cal{width:calc(100vw - 20px);max-width:352px}
 }
 .aod-cd-check{display:flex;align-items:center;gap:8px;font-size:var(--cd-fs-md);font-weight:600;color:var(--cd-ink);cursor:pointer}
 .aod-cd-check input{width:auto;accent-color:var(--cd-ink)}
@@ -1355,7 +2021,6 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 
 /* ---- Page « Mon compte » : champs en grille pleine largeur ---- */
 .aod-cd-settings-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 26px;align-items:start}
-.aod-cd-settings-form .aod-cd-form-title,
 .aod-cd-settings-form .aod-cd-form-subtitle,
 .aod-cd-settings-form > .aod-cd-note,
 .aod-cd-settings-form .aod-cd-row2,
@@ -1426,7 +2091,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-carrier-fields .form-table td{padding:8px 0;font-size:var(--cd-fs-md);background:none}
 .aod-cd-carrier-fields .form-table input[type=text],
 .aod-cd-carrier-fields .form-table input[type=number],
-.aod-cd-carrier-fields .form-table select{box-sizing:border-box;height:40px;padding:9px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit;background:#fff;vertical-align:middle}
+.aod-cd-carrier-fields .form-table select{box-sizing:border-box;height:40px;padding:9px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit;background:var(--cd-field);vertical-align:middle}
 .aod-cd-carrier-fields .form-table input[type=text]:focus,
 .aod-cd-carrier-fields .form-table input[type=number]:focus,
 .aod-cd-carrier-fields .form-table select:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
@@ -1450,22 +2115,84 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    le clique pas. `.aod-cd-order-detail` survit en tant que CLASSE (le binder JS
    la cible), portée par un `.aod-cd-btn` ordinaire dans le rang d'actions —
    donc sans une seule déclaration à elle. */
-.aod-cd-onum{font-weight:700;font-variant-numeric:tabular-nums}
+/* Le numéro de commande devient une ÉTIQUETTE (2026-08-06) — c'est l'ancre de la
+   ligne, celui qu'on cite au téléphone et qu'on cherche des yeux dans une liste
+   de trente. Il avait exactement le poids de la wilaya à côté.
+   🔒 Contour SANS APLAT, et ce n'est pas un choix de goût : la ligne paire porte
+   `--cd-bg`, l'impaire `--cd-card`, le survol `--cd-accent-wash`. Une pastille
+   remplie disparaîtrait sur au moins un de ces trois fonds — un liseré tient sur
+   les trois, quel que soit l'accent du client. */
+.aod-cd-onum{
+	display:inline-block;padding:var(--cd-sp-1) var(--cd-sp-2);
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-pill);
+	line-height:1.1;color:var(--cd-ink);
+	font-weight:700;font-variant-numeric:tabular-nums;
+}
 
 /* ---- Modale ---- */
 .aod-cd-modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:var(--cd-sp-10) var(--cd-sp-4);overflow-y:auto}
 .aod-cd-modal[hidden]{display:none}
-.aod-cd-modal-backdrop{position:fixed;inset:0;background:rgba(24,24,24,.6)}
+/* 🎬 Le voile se FOND (2026-08-08). Il apparaissait d'un coup pendant que la
+   boîte, elle, était animée depuis la Phase 17 : la moitié la plus grande de
+   l'écran — 1 440 × 1 100 px de noir à 60 % — surgissait sans transition sous une
+   carte qui, elle, prenait son temps. C'est ce contraste qui faisait « claquer »
+   l'ouverture, pas la boîte.
+   🔒 `aod-cd-fade` ne fait QUE l'opacité : aucun déplacement, donc rien à
+   neutraliser sous `prefers-reduced-motion` — c'est précisément l'animation que
+   le bloc de mouvement réduit utilise comme repli pour tout le reste. */
+.aod-cd-modal-backdrop{position:fixed;inset:0;background:rgba(24,24,24,.6);animation:aod-cd-fade .22s var(--cd-ease-out)}
 .aod-cd-modal-box{
-	position:relative;background:#fff;border-radius:var(--cd-r-md);width:100%;max-width:640px;
-	box-shadow:0 24px 64px rgba(0,0,0,.32);z-index:1;animation:aod-cd-pop .18s ease;
+	/* La modale est une CARTE, pas un champ : elle porte des champs, elle n'en est
+	   pas un. Au 5ᵉ cran, les champs qu'elle contient ne s'en détacheraient plus. */
+	position:relative;background:var(--cd-card);border-radius:var(--cd-r-lg);width:100%;max-width:640px;
+	/* 🎬 .18s `ease` → .26s `--cd-ease-out` : c'est la MÊME animation (le nom ne
+	   change pas, donc le contrat R1 du mouvement réduit reste tenu à l'identique),
+	   jouée assez longtemps pour se voir et sur la courbe de la charte plutôt que
+	   sur celle du navigateur. À 180 ms, l'entrée était théorique. */
+	box-shadow:0 24px 64px rgba(0,0,0,.32);z-index:1;animation:aod-cd-pop .26s var(--cd-ease-out);
 }
 @keyframes aod-cd-pop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .aod-cd-modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--cd-line)}
 .aod-cd-modal-title{margin:0;font-size:var(--cd-fs-xl);font-weight:800;letter-spacing:-.2px}
-.aod-cd-modal-x{background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:var(--cd-muted);padding:0 4px;transition:color .15s var(--cd-ease-out)}
-.aod-cd-modal-x:hover{color:var(--cd-ink)}
+/* La croix devient un BOUTON et cesse d'être un caractère cliquable : 32 px de
+   surface, un creux au survol. Elle était une glyphe de 24 × 28 px sans fond —
+   on visait un « × », pas une cible.
+   🔒 `font-size:28px` est CONSERVÉ tel quel : c'est l'un des 24 littéraux
+   typographiques que la 46.5bis a délibérément laissés hors de l'échelle de
+   TEXTE (une glyphe dessinée dans une boîte, cf. le recensement de R5 dans
+   `test-charte-surfaces.php`). Le ranger sur un cran casserait son rapport au
+   cadre — et ferait rougir le recensement. */
+.aod-cd-modal-x{
+	background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:var(--cd-muted);
+	width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;
+	border-radius:var(--cd-r-sm);
+	transition:color .15s var(--cd-ease-out),background-color .15s var(--cd-ease-out);
+}
+.aod-cd-modal-x:hover{color:var(--cd-ink);background:var(--cd-bg)}
 .aod-cd-modal-body{padding:var(--cd-sp-6)}
+
+/* ── 🎬 LE CORPS ENTRE EN CASCADE (2026-08-08) ────────────────────────
+   Demande owner : « avec des animations ». La boîte entrait déjà d'un bloc — un
+   rectangle de 640 × 660 px qui apparaît d'un coup reste un rectangle qui
+   apparaît d'un coup, quelle que soit sa durée. Ses blocs entrent donc l'un
+   après l'autre : en-tête de réglages, puis les deux encarts, puis les produits,
+   puis l'historique. L'œil suit la LECTURE au lieu de subir un pavé.
+   🔒 `aod-cd-pop` est REPRIS TEL QUEL, sans nouvelle image à entretenir — et ce
+   n'est pas qu'une économie : R1 de `test-mouvement-reduit.php` compare la liste
+   des sélecteurs qui reçoivent `aod-cd-pop` à celle des sélecteurs neutralisés
+   en `aod-cd-fade`, et exige qu'elles soient RIGOUREUSEMENT égales. Inventer un
+   `aod-cd-modal-in` aurait fait sortir ce sélecteur de la première liste tout en
+   le laissant dans la seconde : rouge immédiat, et à raison.
+   ⚠️ La neutralisation est en fin de fichier, sélecteur recopié au caractère
+   près (`.aod-cd-modal-body > *`), avec les retards remis à zéro — un fondu
+   échelonné sur 200 ms reste du mouvement pour qui demande à ne pas en avoir.
+   ⚠️ `both` : chaque bloc reste à `opacity:0` pendant son retard. Sans ce mode,
+   les quatre apparaîtraient d'abord ensemble puis se ré-animeraient. */
+.aod-cd-modal-body > *{animation:aod-cd-pop .3s var(--cd-ease-out) both}
+.aod-cd-modal-body > :nth-child(2){animation-delay:.05s}
+.aod-cd-modal-body > :nth-child(3){animation-delay:.1s}
+.aod-cd-modal-body > :nth-child(4){animation-delay:.15s}
+.aod-cd-modal-body > :nth-child(n+5){animation-delay:.2s}
 .aod-cd-modal-box.aod-cd-modal-sm{max-width:440px}
 .aod-cd-textinput{width:100%;box-sizing:border-box;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);padding:11px 13px;font:inherit;resize:vertical;min-height:90px}
 .aod-cd-textinput:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
@@ -1473,7 +2200,47 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 
 /* ---- Détail commande ---- */
 .aod-cd-od-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
-.aod-cd-od-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.aod-cd-od-meta{display:flex;align-items:center;gap:var(--cd-sp-3);flex-wrap:wrap}
+
+/* ── LA RANGÉE D'EN-TÊTE S'ALIGNE (2026-08-08, soir) ──────────────────
+   Troisième surface de la journée à porter le MÊME défaut, et la démonstration
+   qu'il ne s'agit pas d'un accident local : mesuré dans le volet ouvert,
+   pastille de statut **33,0 px** · liste d'assignation **33,6** · bouton
+   « Modifier » **31,0**. Ce sont exactement les trois familles de contrôles déjà
+   recalées dans la barre groupée puis dans le tableau — mais les deux correctifs
+   précédents étaient cadrés, l'un sur `.aod-cd-bulkbar`, l'autre sur
+   `.aod-cd-table`. Le volet n'est ni l'un ni l'autre : il est resté dehors.
+   🚨 C'est la leçon, et elle vaut pour la prochaine surface : *cadrer un
+   correctif sur le conteneur où on a vu le défaut le laisse intact partout
+   ailleurs.* La cause est commune (trois composants qui additionnent chacun leur
+   `padding` à leur cran de texte), donc la correction devra un jour l'être
+   aussi — une hauteur de contrôle de la charte, pas trois recalages.
+   ⚠️ Borné à ≥ 781 px pour la raison déjà mesurée deux fois : une `height` d'ici
+   bat le `min-height:44px` du bloc mobile, qui a une spécificité plus faible. */
+@media(min-width:781px){
+	.aod-cd-od-head .aod-cd-statussel-btn,
+	.aod-cd-od-head .aod-cd-assignsel-btn,
+	.aod-cd-od-head .aod-cd-btn{height:34px;padding-block:0}
+}
+
+/* La date cesse d'être un mot posé entre deux contrôles : un filet la détache du
+   groupe « statut + assignation », qui sont des RÉGLAGES, alors qu'elle est un
+   FAIT. `inset-inline-start` — en arabe le filet passe de l'autre côté. */
+.aod-cd-od-date{position:relative;padding-inline-start:var(--cd-sp-3)}
+.aod-cd-od-date::before{
+	content:"";position:absolute;inset-block:1px;inset-inline-start:0;
+	width:1px;background:var(--cd-line);
+}
+
+/* Les deux colonnes de NOMBRES du tableau des produits s'alignent par la droite,
+   comme « Total » dans la liste des commandes (même décision, prise le
+   2026-08-07 sur `.aod-cd-cell-total`) : des montants alignés à gauche ne se
+   comparent pas d'un coup d'œil, les unités ne tombent pas sous les unités.
+   ⚠️ Cadré sur `.aod-cd-od-prods` et non sur « toute table dans une modale » :
+   le récapitulatif d'envoi transporteur en est une aussi, et ses colonnes
+   portent du texte. */
+.aod-cd-od-prods th:nth-child(n+2),
+.aod-cd-od-prods td:nth-child(n+2){text-align:end}
 .aod-cd-od-edit{margin-bottom:8px}
 .aod-cd-od-edit .aod-cd-form-foot{margin-top:18px;padding-top:16px}
 .aod-cd-od-items{display:flex;flex-direction:column;gap:12px}
@@ -1484,7 +2251,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-od-item-qty{max-width:120px}
 .aod-cd-od-item:has(.aod-cd-od-itemremove:checked){opacity:.45}
 .aod-cd-od-item:has(.aod-cd-od-itemremove:checked) .aod-cd-od-item-fields{pointer-events:none}
-.aod-cd-od-item.is-new{border-style:dashed;border-color:var(--cd-yellow)}
+.aod-cd-od-item.is-new{border-style:dashed;border-color:var(--cd-accent)}
 .aod-cd-od-itemdel{border:0;background:none;color:var(--cd-muted);font-size:12.5px;font-weight:600;cursor:pointer;padding:2px 4px}
 .aod-cd-od-itemdel:hover{color:#c0392b}
 .aod-cd-od-items-note{margin-top:10px}
@@ -1492,14 +2259,17 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-od-additem .aod-cd-field{flex:1;margin:0}
 .aod-cd-od-additem-btn{white-space:nowrap}
 .aod-cd-od-total-field{max-width:260px}
-.aod-cd-od-status{background:var(--cd-yellow);color:var(--cd-accent-ink);padding:6px 16px;border-radius:30px;font-weight:800;font-size:var(--cd-fs-sm);text-transform:uppercase;letter-spacing:.5px}
+.aod-cd-od-status{background:var(--cd-accent);color:var(--cd-accent-ink);padding:6px 16px;border-radius:30px;font-weight:800;font-size:var(--cd-fs-sm);text-transform:uppercase;letter-spacing:.5px}
 .aod-cd-od-date{color:var(--cd-muted);font-size:var(--cd-fs-sm);font-weight:600}
 .aod-cd-od-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
 .aod-cd-od-box{background:var(--cd-bg);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:16px 18px}
 .aod-cd-od-box h4{margin:0 0 11px;font-size:var(--cd-fs-xs);text-transform:uppercase;letter-spacing:.8px;font-weight:700;color:var(--cd-muted)}
 .aod-cd-od-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:var(--cd-fs-md)}
-.aod-cd-od-list a{color:var(--cd-ink);text-decoration:underline;text-decoration-color:var(--cd-yellow);text-underline-offset:2px}
-.aod-cd-od-list code{background:#fff;border:1px solid var(--cd-line);padding:2px 7px;border-radius:6px;font-size:var(--cd-fs-xs)}
+.aod-cd-od-list a{color:var(--cd-ink);text-decoration:underline;text-decoration-color:var(--cd-accent);text-underline-offset:2px}
+/* Une puce de code est un CREUX dans son encart (comme les autres `code` de la
+   feuille), pas un champ : c'est de la donnée qu'on lit, pas une zone où l'on
+   écrit. Elle vit déjà sur `--cd-bg` ailleurs — l'aligner referme une divergence. */
+.aod-cd-od-list code{background:var(--cd-bg);border:1px solid var(--cd-line);padding:2px 7px;border-radius:6px;font-size:var(--cd-fs-xs)}
 .aod-cd-od-sub{margin:22px 0 10px;font-size:var(--cd-fs-sm);font-weight:800;text-transform:uppercase;letter-spacing:.6px}
 .aod-cd-od-notes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 /* `border-inline-start` et non `border-left` : en arabe, le liseré doit passer à
@@ -1509,7 +2279,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 /* `-wash` et non `-soft` : cette note porte `.aod-cd-od-notedate` en `--cd-muted`
    (l. suivante). Sur `-soft`, un accent sombre y tombait à 4,15:1 — sous AA, sans
    que rien ne le signale, l'accent jaune par défaut masquant le cas. Cf. wash(). */
-.aod-cd-od-notes li.is-user{background:var(--cd-accent-wash);border-inline-start-color:var(--cd-yellow)}
+.aod-cd-od-notes li.is-user{background:var(--cd-accent-wash);border-inline-start-color:var(--cd-accent)}
 .aod-cd-od-notes p{margin:var(--cd-sp-1) 0 0}
 .aod-cd-od-notedate{color:var(--cd-muted);font-size:var(--cd-fs-xs);font-weight:700}
 @media(max-width:560px){.aod-cd-od-grid{grid-template-columns:1fr}}
@@ -1521,12 +2291,12 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    cartes. Étape 5.4 : call-sites migrés vers AOD_CD_Dashboard::empty_state(). */
 .aod-cd-note,.aod-cd-soon{color:var(--cd-muted)}
 .aod-cd-note{margin-top:14px;font-size:var(--cd-fs-sm);line-height:1.6}
-.aod-cd-soon{background:var(--cd-card);border:1.5px dashed var(--cd-line);border-radius:var(--cd-r-md);padding:48px;text-align:center;font-weight:600}
+.aod-cd-soon{background:var(--cd-card);border:1.5px dashed var(--cd-line);border-radius:var(--cd-r-lg);padding:48px;text-align:center;font-weight:600}
 .aod-cd-toast{
 	position:fixed;bottom:24px;inset-inline-end:24px;background:var(--cd-ink);color:#fff;
 	padding:13px 20px;border-radius:var(--cd-r-sm);box-shadow:0 10px 28px rgba(0,0,0,.22);
 	font-weight:600;opacity:0;transform:translateY(10px);transition:opacity .25s var(--cd-ease-out),transform .25s var(--cd-ease-out);z-index:50;
-	border-inline-start:4px solid var(--cd-yellow);
+	border-inline-start:4px solid var(--cd-accent);
 	/* 🚨 46.3 — INDISPENSABLE depuis que la boîte est PERMANENTE. Elle était
 	   créée à chaque message puis retirée du document ; elle vit maintenant en
 	   continu (c'est la condition pour qu'une région `aria-live` annonce quoi que
@@ -1543,7 +2313,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    (La barre latérale en menu déroulant est gérée plus haut, bloc « Sidebar
    en menu déroulant sur mobile ». Ici on ajuste uniquement la zone principale.) */
 @media(max-width:780px){
-	.aod-cd-content{padding:16px}
+	.aod-cd-content{padding:var(--cd-sp-4)}
 	.aod-cd-top{padding:14px 16px;gap:10px}
 	.aod-cd-crumb{font-size:var(--cd-fs-xs)}
 	/* La barre du haut reste sticky sous le menu : on l'empêche de coller au
@@ -1556,8 +2326,15 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	.aod-cd-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:var(--cd-sp-1);scrollbar-width:none}
 	.aod-cd-tabs::-webkit-scrollbar{display:none}
 	.aod-cd-tab{flex:0 0 auto}
-	/* Recherche : champ + boutons sur toute la largeur. */
-	.aod-cd-search input[type="search"]{max-width:none;flex:1 1 100%}
+	/* 🔁 2026-08-08 — LES RÈGLES MOBILES DE LA RECHERCHE ONT DÉMÉNAGÉ, sous le
+	   bloc `.aod-cd-search` (~l. 2760). Elles ne sont pas parties par goût du
+	   rangement : à spécificité ÉGALE, c'est l'ordre du fichier qui tranche, et le
+	   bloc de la recherche vit 430 lignes plus bas — il gagnait donc, y compris
+	   dans une media-query mobile. Mesuré : le champ restait à 42 px au pouce
+	   pendant que la règle d'ici en demandait 44, sans que rien ne le signale.
+	   🚨 Une media-query ne l'emporte PAS sur une règle de même poids écrite après
+	   elle. C'est le piège de ce fichier de 5 000 lignes : une règle mobile posée
+	   loin de son composant se relit comme appliquée alors qu'elle est morte. */
 }
 @media(max-width:480px){
 	.aod-cd-content{padding:13px}
@@ -1596,7 +2373,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	.aod-cd-table--cards tbody tr:nth-child(even) td,
 	.aod-cd-table--cards tbody tr:hover td,
 	.aod-cd-table--cards tbody tr.is-selected{background:transparent}
-	.aod-cd-table--cards tbody tr.is-selected{box-shadow:0 0 0 2px var(--cd-yellow)}
+	.aod-cd-table--cards tbody tr.is-selected{box-shadow:0 0 0 2px var(--cd-accent)}
 	.aod-cd-table--cards td{
 		display:flex;align-items:center;gap:14px;justify-content:space-between;
 		padding:10px 15px;border:0;border-bottom:1px solid var(--cd-line-2);
@@ -1682,7 +2459,6 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 		border-bottom:1px solid var(--cd-line);border-radius:10px 10px 0 0;text-align:start;
 	}
 	.aod-cd-products .aod-cd-cell-prod::before{display:none}
-	.aod-cd-products .aod-cd-prod{font-weight:700}
 	.aod-cd-products .aod-cd-prod img{width:34px;height:34px}
 	/* Actions : libellé à gauche, boutons groupés à droite (peuvent passer à la ligne). */
 	/* 45.3 — la colonne d'actions du Suivi porte désormais TROIS gestes (« Voir le
@@ -1793,15 +2569,37 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	   l'écran déborde sous la boîte (fond blanc coupé) → les notes s'affichaient hors fenêtre. */
 	.aod-cd-modal{padding:0}
 	.aod-cd-modal-box{max-width:none;min-height:100%;border-radius:0;animation:none}
-	.aod-cd-modal-head{position:sticky;top:0;background:#fff;z-index:2;padding:16px 18px}
+	.aod-cd-modal-head{position:sticky;top:0;background:var(--cd-card);z-index:2;padding:16px 18px}
 	/* marge basse confortable (+ encoche/safe-area) pour ne pas coller au bord */
 	.aod-cd-modal-body{padding:18px 18px calc(28px + env(safe-area-inset-bottom))}
 	.aod-cd-od-head{flex-wrap:wrap}
 	.aod-cd-od-edit-toggle{margin-inline-start:auto}
+	/* La croix passe à la cible tactile au pouce. Elle était une glyphe de
+	   24 × 28 px — sur mobile la modale devient une feuille PLEIN ÉCRAN, donc
+	   cette croix est la seule sortie visible du volet, et c'était la plus petite
+	   cible de l'écran. 32 px suffisent à la souris, pas au doigt. */
+	.aod-cd-modal-x{width:44px;height:44px}
 }
 
 /* ---- Couleurs / variantes (édition produit) ---- */
 .aod-cd-colors{margin-top:var(--cd-sp-6);border-top:1px solid var(--cd-line);padding-top:20px}
+/* ── Filet d'accent devant les intitulés de section (2026-08-07) ─────────────
+   Les sections de `/gestion` ouvrent sur une capitale grasse posée à nu : rien ne dit
+   où un bloc commence, sinon l'espace au-dessus de lui. Un trait de 3 px prend ce
+   rôle — c'est le repère le moins coûteux qui existe, il n'ajoute ni hauteur ni mot.
+   🎨 IL PORTE L'ACCENT, ET C'EST LÀ QUE LA COULEUR DU CLIENT A SA PLACE. Le fond
+   vient d'être apaisé (alors `PAGE_DESAT`) précisément pour que la marque cesse de
+   s'étaler sur la grande surface ; elle revient donc en petit, sur des éléments de
+   structure — c'est le même arbitrage vu de l'autre bout.
+   ⚠️ DÉCOR AU SENS 1.4.11 : le filet ne porte aucune information que le titre ne dise
+   déjà. Un accent clair qui le rendrait presque invisible ne retire donc rien —
+   c'est ce qui autorise `--cd-accent` nu, sans encre ni plancher de contraste. */
+.aod-cd-form-subtitle,
+.aod-cd-subsec__title{display:flex;align-items:center;gap:var(--cd-sp-2);flex-wrap:wrap}
+.aod-cd-form-subtitle::before,
+.aod-cd-subsec__title::before{
+	content:"";flex:none;width:3px;height:1em;border-radius:var(--cd-r-pill);background:var(--cd-accent);
+}
 .aod-cd-form-subtitle{margin:0 0 4px;font-size:var(--cd-fs-sm);font-weight:800;text-transform:uppercase;letter-spacing:.6px}
 .aod-cd-color-head,.aod-cd-color-row{
 	display:grid;grid-template-columns:52px 1.4fr 1fr .9fr .9fr 32px;
@@ -1834,14 +2632,50 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 
 /* Offres (prix par quantité) */
 .aod-cd-offers{margin-top:var(--cd-sp-6);border-top:1px solid var(--cd-line);padding-top:20px}
+/* ── LES OFFRES DEVIENNENT UN VRAI TABLEAU (2026-08-08) ───────────────
+   🔴 CE QUE MONTRAIT LA PAGE, ET CE N'EST PAS UNE QUESTION DE GOÛT : sur un
+   produit SANS offre — le cas de tout produit neuf, donc le premier écran de
+   tout nouveau clone — le bloc affichait « NOMBRE D'UNITÉS » et « PRIX TOTAL DU
+   LOT » **au-dessus de rien**, puis un bouton d'ajout décalé sous la première
+   colonne. Deux en-têtes de colonnes sans colonnes : ça ne se lit pas comme un
+   tableau vide, ça se lit comme un tableau CASSÉ.
+   Le remède tient en une règle : *un en-tête n'existe que s'il a quelque chose à
+   coiffer.* `:has(+ .aod-cd-offer-rows:empty)` le retire tant qu'aucune offre
+   n'existe — il ne reste alors que la phrase d'explication et le bouton, qui se
+   lisent enfin comme une invitation.
+   🔒 AUCUNE CHAÎNE NOUVELLE : écrire « aucune offre » en CSS via `content` aurait
+   produit du texte hors `gettext`, donc du français en dur sur un site arabe —
+   la règle n°4 du dépôt. Retirer l'en-tête dit la même chose sans rien écrire.
+   ⚠️ Les deux `padding` doivent RESTER ÉGAUX entre l'en-tête et le corps, sinon
+   les colonnes cessent de tomber l'une sous l'autre — c'est tout ce qui fait
+   tenir l'illusion de tableau, puisqu'il n'y a pas de `<table>` ici. */
 .aod-cd-offer-head,.aod-cd-offer-row{
 	display:grid;grid-template-columns:1fr 1fr 32px;gap:10px 10px;align-items:center;
 }
-.aod-cd-offer-head{margin:10px 0 6px;font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);text-transform:uppercase;letter-spacing:.4px}
+.aod-cd-offer-head{
+	margin:var(--cd-sp-3) 0 0;padding:var(--cd-sp-2) var(--cd-sp-3);
+	font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);
+	text-transform:uppercase;letter-spacing:.4px;
+	background:var(--cd-bg);border:1px solid var(--cd-line);border-bottom:0;
+	border-radius:var(--cd-r-md) var(--cd-r-md) 0 0;
+}
+.aod-cd-offer-head:has(+ .aod-cd-offer-rows:empty){display:none}
 .aod-cd-offer-head span{padding-inline-start:2px}
 .aod-cd-offer-rows{display:flex;flex-direction:column;gap:10px}
+.aod-cd-offer-rows:not(:empty){
+	padding:var(--cd-sp-3);margin-bottom:var(--cd-sp-3);
+	background:var(--cd-card);border:1px solid var(--cd-line);
+	border-radius:0 0 var(--cd-r-md) var(--cd-r-md);
+}
+/* Un filet entre deux offres, jamais avant la première. */
+.aod-cd-offer-row + .aod-cd-offer-row{border-top:1px solid var(--cd-line);padding-top:10px}
+/* 🎬 Une offre ajoutée ARRIVE au lieu d'apparaître : le bouton est en bas, la
+   ligne naît en haut de la pile — sans mouvement, on ne voit pas ce qui a changé.
+   Neutralisé en fin de fichier, sélecteur identique (R1). */
+.aod-cd-offer-row{animation:aod-cd-pop .26s var(--cd-ease-out)}
 .aod-cd-offer-row input[type=number]{
 	width:100%;padding:9px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit;
+	background:var(--cd-field);
 }
 /* Aperçu de l'économie ajouté par le JS : pleine largeur sous la ligne. */
 .aod-cd-offer-eco{grid-column:1 / -1;font-size:var(--cd-fs-sm);font-weight:700;color:var(--cd-ok)}
@@ -1883,7 +2717,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	aspect-ratio:1;border:1.5px dashed var(--cd-line);border-radius:var(--cd-r-sm);
 	background:var(--cd-bg);color:var(--cd-muted);font-family:inherit;font-size:var(--cd-fs-xs);font-weight:600;cursor:pointer;transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),color .15s var(--cd-ease-out);
 }
-.aod-cd-gal-add:hover,.aod-cd-gal-add.is-drop{border-color:var(--cd-ink);color:var(--cd-ink);background:#fff}
+.aod-cd-gal-add:hover,.aod-cd-gal-add.is-drop{border-color:var(--cd-ink);color:var(--cd-ink);background:var(--cd-field)}
 .aod-cd-gal-add.is-drop{border-style:solid}
 .aod-cd-gal-add-ic{font-size:var(--cd-fs-2xl);line-height:1;font-weight:400}
 /* Catégories : liste déroulante sous forme de bouton (multi-sélection) */
@@ -1913,18 +2747,73 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-catdd-empty{display:block;padding:10px 9px;font-size:var(--cd-fs-sm);color:var(--cd-muted)}
 
 /* ---- Recherche ---- */
-.aod-cd-search{display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+/* ── LA BARRE DE RECHERCHE (refonte du 2026-08-08, soir) ──────────────
+   Demande owner. Mesuré avant de toucher : champ **40 px**, bouton **29,8 px**,
+   onglets de statut juste à gauche **42 px** — TROIS hauteurs sur une seule
+   ligne, pour trois objets distants de 8 px. C'est le quatrième endroit de la
+   journée à porter ce défaut, après la barre groupée, le tableau et le volet de
+   détail : ce n'est plus une coïncidence, c'est l'absence d'une hauteur de
+   contrôle dans la charte.
+   Tout passe donc à **42 px** — la valeur des onglets, parce que c'est la seule
+   des trois qu'on ne peut pas changer sans toucher un composant qui vit
+   ailleurs, et parce qu'aligner sur le plus grand ne comprime aucun texte.
+
+   🔍 ET LE CHAMP GAGNE SA LOUPE. Il ne se reconnaissait qu'à son texte
+   indicatif — or un placeholder s'efface à la PREMIÈRE FRAPPE : passé ce
+   moment, plus rien ne disait que ce rectangle était une recherche, ni
+   pourquoi la liste en dessous avait changé. L'icône, elle, reste.
+   🔒 ELLE EST POSÉE EN SURIMPRESSION, pas dans une enveloppe qui remplacerait la
+   peau de l'input, et c'est un choix de PRUDENCE assumé : le champ garde sa
+   bordure, son fond et surtout SON PROPRE anneau de focus (`--cd-focus`,
+   cf. 46.1). Déplacer l'anneau sur un `:focus-within` du parent aurait été plus
+   élégant et aurait changé l'objet que la porte `contraste` inspecte pour juger
+   la visibilité au clavier — un arbitrage à faire quand cette porte peut être
+   rejouée, pas en marge d'une retouche de design.
+   ⚠️ `inset-inline-start` + `padding-inline-start` : en arabe la loupe passe à
+   droite et le retrait avec elle. Une seule des deux règles en logique
+   laisserait le texte sous l'icône.
+   ⚠️ `pointer-events:none` sur l'icône — sans ça, cliquer la loupe ne donne pas
+   le focus au champ qu'elle désigne. */
+.aod-cd-search{display:flex;gap:var(--cd-sp-2);align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.aod-cd-searchfield{
+	position:relative;display:inline-flex;align-items:center;
+	flex:1 1 auto;min-width:200px;max-width:360px;
+}
+.aod-cd-searchfield svg{
+	position:absolute;inset-inline-start:var(--cd-sp-3);
+	color:var(--cd-muted);pointer-events:none;
+	transition:color .15s var(--cd-ease-out);
+}
+.aod-cd-searchfield:focus-within svg{color:var(--cd-ink)}
 .aod-cd-search input[type="search"]{
-	flex:1;min-width:200px;max-width:360px;padding:10px 13px;font-size:var(--cd-fs-md);font-family:inherit;
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:#fff;
+	width:100%;max-width:none;height:42px;font-size:var(--cd-fs-md);font-family:inherit;
+	padding-block:0;padding-inline:calc(var(--cd-sp-3) + 16px + var(--cd-sp-2)) var(--cd-sp-3);
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);
 }
 .aod-cd-search input[type="search"]:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
+/* Le bouton rejoint la hauteur du champ qu'il valide, et prend l'accent : c'est
+   l'action de ce champ, exactement comme « Filtrer » l'est du bloc de filtres
+   juste en dessous. Les deux étaient rendus au même rang et pourtant l'un était
+   vert et l'autre gris — celui qui restait gris étant le plus utilisé des deux.
+   ⚠️ Le lien « Réinitialiser » qui le suit reste NEUTRE, et doit le rester :
+   annuler une recherche n'est pas au même rang que la lancer. */
+.aod-cd-search .aod-cd-btn{height:42px;padding-block:0}
+/* Au pouce : le champ prend toute la largeur et passe à la cible tactile. 42 px
+   suffisent à la souris, pas au doigt — et c'est le premier contrôle de l'écran.
+   🔒 CE BLOC DOIT RESTER ICI, sous les règles qu'il corrige. Il était écrit
+   ~430 lignes plus haut, avec les autres réglages mobiles, et il était MORT :
+   à spécificité égale l'ordre du fichier tranche, et une media-query n'y change
+   rien. Le champ mesurait 42 px au pouce pendant que la règle en demandait 44. */
+@media(max-width:780px){
+	.aod-cd-searchfield{max-width:none;flex:1 1 100%}
+	.aod-cd-search input[type="search"]{height:44px}
+}
 
 /* ---- Pagination ---- */
 .aod-cd-pagination{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:20px}
 .aod-cd-page{
 	min-width:38px;height:38px;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:#fff;color:var(--cd-ink);
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);color:var(--cd-ink);
 	text-decoration:none;font-size:var(--cd-fs-sm);font-weight:700;transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out);
 }
 .aod-cd-page:hover{border-color:var(--cd-ink);background:#fafafa}
@@ -1933,18 +2822,36 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 
 /* ---- Formulaire produit en accordéon (sections thématiques) ---- */
 .aod-cd-acc-form{max-width:none}
+/* 🔴 L'ACCORDÉON ÉTAIT PEINT SUR LE CRAN DES CHAMPS (corrigé le 2026-08-08).
+   `--cd-field` est le 5ᵉ cran de l'échelle, réservé aux ZONES OÙ L'ON ÉCRIT.
+   Une section de formulaire n'en est pas une : elle en CONTIENT. Résultat mesuré
+   sur la page « Modifier le produit » : le conteneur et les huit champs qu'il
+   porte avaient exactement la même couleur (`#eef4f2`), donc les champs ne se
+   détachaient plus de rien — c'est la première cause du « moche » signalé, avant
+   toute question de forme. L'accordéon prend le cran des CARTES ; les champs, qui
+   restent au cran champ, redeviennent plus clairs que ce qui les contient.
+   🚨 Deux couleurs ÉCRITES EN DUR partaient dans le même mouvement, et elles
+   dataient d'un tableau de bord blanc : `#dadada` sur la bordure ouverte et
+   `#fafafa` au survol de l'en-tête. Ni l'une ni l'autre n'est fausse au sens du
+   contraste — elles sont ACHROMATIQUES, donc aucune porte ne pouvait s'en
+   plaindre — mais poser un blanc froid sur une page verte fait exactement ce
+   qu'on lui reproche : ça jure. Elles passent aux jetons, donc à la teinte du
+   client, quel qu'il soit.
+   ⚠️ `--cd-accent-soft` sur la bordure ouverte : la section dépliée porte la
+   marque, comme la barre d'actions armée. C'est le même vocabulaire d'un bout à
+   l'autre de `/gestion` — ouvert/armé = un liseré d'accent. */
 .aod-cd-acc{
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);background:#fff;
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);background:var(--cd-card);
 	margin:0 0 12px;overflow:hidden;transition:box-shadow .15s,border-color .15s;
 }
-.aod-cd-acc[open]{box-shadow:var(--cd-shadow);border-color:#dadada;overflow:visible}
-.aod-cd-acc[open] .aod-cd-acc-sum{border-radius:var(--cd-r-md) var(--cd-r-md) 0 0}
+.aod-cd-acc[open]{box-shadow:var(--cd-shadow);border-color:var(--cd-accent-soft);overflow:visible}
+.aod-cd-acc[open] .aod-cd-acc-sum{border-radius:var(--cd-r-md) var(--cd-r-md) 0 0;background:var(--cd-bg)}
 .aod-cd-acc-sum{
 	display:flex;align-items:center;gap:11px;cursor:pointer;list-style:none;
 	padding:15px 18px;font-weight:800;font-size:var(--cd-fs-md);color:var(--cd-ink);user-select:none;
 	transition:background .15s;
 }
-.aod-cd-acc-sum:hover{background:#fafafa}
+.aod-cd-acc-sum:hover{background:var(--cd-bg)}
 .aod-cd-acc-sum::-webkit-details-marker{display:none}
 .aod-cd-acc-sum::after{
 	content:"▸";margin-inline-start:auto;color:var(--cd-soft);font-size:var(--cd-fs-sm);
@@ -1954,6 +2861,42 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-acc-ic{font-size:18px;line-height:1}
 .aod-cd-acc-sub{font-weight:500;color:var(--cd-muted);font-size:var(--cd-fs-sm)}
 .aod-cd-acc-body{padding:8px 18px 20px;border-top:1px solid var(--cd-line)}
+/* 🎬 Le contenu de la section ENTRE au dépliage. `<details>` bascule d'un coup :
+   entre le clic et l'affichage, 600 px de formulaire apparaissent sans transition,
+   et l'œil perd le fil de ce qu'il vient d'ouvrir. Le CORPS, lui, peut s'animer —
+   c'est la seule partie animable sans mesurer une hauteur en JS.
+   🔒 `aod-cd-pop` repris tel quel, et le sélecteur est recopié au caractère près
+   dans le bloc `prefers-reduced-motion` en fin de fichier : R1 de
+   `test-mouvement-reduit.php` compare les deux listes et exige qu'elles soient
+   rigoureusement égales. */
+.aod-cd-acc[open] .aod-cd-acc-body{animation:aod-cd-pop .28s var(--cd-ease-out)}
+
+/* ── UNE SEULE HAUTEUR DE CHAMP DANS LE FORMULAIRE PRODUIT ────────────
+   🔴 CINQUIÈME FOIS AUJOURD'HUI, et le pire échantillon des cinq. Mesuré sur
+   cette page : bouton catégories **36 px** · champs de variante **38** · champs
+   texte **42** · listes natives et champs de date **44**. Quatre hauteurs pour
+   une seule et même chose — un endroit où l'on saisit — et trois d'entre elles
+   se touchent dans la MÊME rangée (« Catégories » 36, « Nouvelle catégorie » 42,
+   « Statut » 44). C'est la deuxième cause du « moche », après la couleur.
+   🚨 CE CORRECTIF EST CADRÉ, ET C'EST UN PIS-ALLER ASSUMÉ. Le vrai remède est un
+   JETON DE HAUTEUR DE CONTRÔLE dans `:root`, appliqué une fois pour toutes : le
+   même défaut a été recalé séparément dans la barre groupée, le tableau, le volet
+   de détail, la recherche, et ici — cinq correctifs pour une seule cause, chacun
+   cadré sur son conteneur, chacun laissant le défaut intact ailleurs. Introduire
+   ce jeton touche des dizaines de composants et demande sa propre passe de
+   mesure ; le faire en marge d'une demande de design serait le meilleur moyen de
+   casser un écran qu'on ne regarde pas.
+   ⚠️ ≥ 781 px : au pouce, `min-height:44px` doit continuer de gagner. */
+@media(min-width:781px){
+	.aod-cd-acc-form .aod-cd-catdd-btn,
+	.aod-cd-acc-form select,
+	.aod-cd-acc-form .aod-cd-date,
+	.aod-cd-acc-form .aod-cd-opt-name,
+	.aod-cd-acc-form .aod-cd-opt-name-ar,
+	.aod-cd-acc-form .aod-cd-opt-price,
+	.aod-cd-acc-form .aod-cd-opt-stock,
+	.aod-cd-acc-form .aod-cd-offer-row input[type=number]{height:42px;padding-block:0}
+}
 .aod-cd-grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:640px){.aod-cd-grid2{grid-template-columns:1fr}}
 
@@ -1964,15 +2907,15 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	border:1.5px dashed var(--cd-line);border-radius:var(--cd-r-sm);
 }
 .aod-cd-preset{background:var(--cd-accent-soft);border-color:rgba(var(--cd-accent-rgb),.5);color:var(--cd-ink)}
-.aod-cd-preset:hover{background:var(--cd-yellow);border-color:var(--cd-yellow);color:var(--cd-accent-ink)}
+.aod-cd-preset:hover{background:var(--cd-accent);border-color:var(--cd-accent);color:var(--cd-accent-ink)}
 .aod-cd-opt-preset{background:var(--cd-accent-soft);border-color:rgba(var(--cd-accent-rgb),.5);color:var(--cd-ink)}
-.aod-cd-opt-preset:hover{background:var(--cd-yellow);border-color:var(--cd-yellow);color:var(--cd-accent-ink)}
+.aod-cd-opt-preset:hover{background:var(--cd-accent);border-color:var(--cd-accent);color:var(--cd-accent-ink)}
 
 /* ---- Sections d'options (Taille, Couleur, Pointure…) ---- */
 .aod-cd-options{margin-top:var(--cd-sp-6);border-top:1px solid var(--cd-line);padding-top:20px}
 .aod-cd-opt-sections{display:flex;flex-direction:column;gap:14px;margin-bottom:12px}
 .aod-cd-opt-section{
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:16px;background:#fcfcfc;
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:var(--cd-sp-4);background:#fcfcfc;
 }
 .aod-cd-opt-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
 .aod-cd-opt-label{
@@ -2031,9 +2974,9 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;
 }
 .aod-cd-opt-swatch:hover{border-color:var(--cd-ink)}
-.aod-cd-opt-swatch.has-color{font-size:0;color:transparent;border-color:rgba(0,0,0,.18);box-shadow:inset 0 0 0 2px #fff}
+.aod-cd-opt-swatch.has-color{font-size:0;color:transparent;border-color:rgba(0,0,0,.18);box-shadow:inset 0 0 0 2px var(--cd-field)}
 .aod-cd-palette{
-	position:fixed;z-index:1000;width:280px;max-height:300px;overflow:auto;padding:10px;background:#fff;
+	position:fixed;z-index:1000;width:280px;max-height:300px;overflow:auto;padding:10px;background:var(--cd-field);
 	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);box-shadow:0 14px 40px rgba(24,24,24,.22);
 }
 .aod-cd-palette-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--cd-sp-1)}
@@ -2061,7 +3004,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-cat-row{
 	/* thumb | nom | nom AR | parente | à la une | ordre | compteur | enregistrer | ✕ */
 	display:grid;grid-template-columns:46px 1fr 1fr 150px auto 62px auto auto 32px;gap:10px;align-items:center;
-	background:#fff;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:9px 13px;transition:border-color .15s;
+	background:var(--cd-field);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:9px 13px;transition:border-color .15s;
 }
 .aod-cd-cat-row:hover{border-color:#d6d6d6}
 .aod-cd-cat-name,.aod-cd-cat-name-ar{width:100%;padding:8px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit}
@@ -2069,7 +3012,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 /* Menu « catégorie parente » (création + chaque ligne) */
 .aod-cd-cat-parent,.aod-cd-cat-newparent{
 	padding:9px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);
-	font-size:var(--cd-fs-sm);font-family:inherit;background:#fff;color:var(--cd-ink);max-width:100%;
+	font-size:var(--cd-fs-sm);font-family:inherit;background:var(--cd-field);color:var(--cd-ink);max-width:100%;
 }
 .aod-cd-cat-parent:focus,.aod-cd-cat-newparent:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
 .aod-cd-cat-count{color:var(--cd-muted);white-space:nowrap}
@@ -2152,16 +3095,260 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
  * jour quelqu'un remet `hidden` en pensant masquer, il obtiendrait une barre
  * toujours visible — le défaut d'origine, à l'identique.                     */
 .aod-cd-bulkbar{
-	display:flex;align-items:center;gap:14px;margin:0 0 12px;
+	display:flex;align-items:stretch;gap:14px;margin:0 0 12px;
 	padding:10px 14px;background:var(--cd-card);border:1px solid var(--cd-line);
 	border-radius:var(--cd-r-sm);color:var(--cd-ink);
 }
 .aod-cd-bulkbar[hidden]{display:none}
+/* Les deux listes de la barre passent au composant maison (2026-08-06) : elles
+   étaient les dernières surfaces SYSTÈME d'un écran entièrement à la charte, et
+   c'est la barre d'action la plus visible de `/gestion`.
+   ⚠️ `.aod-cd-csel` est taillé pour une colonne de formulaire (`width:100%`) —
+   dans une rangée en `flex`, il pousserait tout le reste hors de la barre. Il
+   reprend donc sa largeur naturelle ici, avec un plancher pour que le libellé
+   d'un confirmateur ne se replie pas sur deux lignes. */
+.aod-cd-bulkbar .aod-cd-csel{flex:0 0 auto;width:auto;min-width:196px}
 .aod-cd-bulkbar-count{font-weight:700;font-size:var(--cd-fs-sm)}
 /* Sélection vide : le compteur passe au gris de TEXTE (`--cd-muted`, AA), jamais
    `--cd-soft` qui est réservé au décor. C'est le seul signal de couleur — les
    actions, elles, disent leur état par `disabled`. */
 .aod-cd-bulkbar.is-vide .aod-cd-bulkbar-count{color:var(--cd-muted)}
+
+/* ── La barre a une PEAU, et elle dit quand elle est ARMÉE (2026-08-08) ─────
+   Retour owner sur cet écran : « il écrit simple, moche ». Trois causes mesurées,
+   aucune de goût :
+
+   1. ELLE N'AVAIT PAS D'OMBRE. Le 2026-08-07, douze surfaces ont reçu
+      `--cd-shadow-rest` — cartes, tuiles, tableaux, formulaires, panneaux… et
+      `.aod-cd-bulkbar` n'était pas de la liste. Une décision appliquée à douze
+      jumeaux sur treize : la dérive de la Phase 46 dans sa forme la plus banale.
+      Elle flottait à plat au milieu d'un écran en relief. Corrigé à la source,
+      dans la liste elle-même, et pas par une règle de plus ici — sinon le
+      treizième jumeau serait devenu une exception au lieu d'un membre.
+   2. RIEN NE CHANGEAIT QUAND ON SÉLECTIONNAIT. Le seul signal était la COULEUR
+      DU COMPTEUR ; la barre restait identique, armée ou non. Or c'est la 45.2
+      qui l'a rendue permanente, en remplaçant « on ne voit pas le bouton » par
+      « on ne peut pas agir à vide ». La garantie a bien survécu — elle est dans
+      `disabled` — mais l'ÉTAT, lui, avait disparu de l'écran avec le masquage.
+      La barre porte donc maintenant la teinte de la marque dès qu'une ligne est
+      cochée : elle passe de « je suis là » à « je suis prête ».
+   3. LE COMPTEUR ÉTAIT LE PLUS PETIT TEXTE DE LA BARRE, alors qu'il en est le
+      sujet : tout ce qui suit s'applique à ce nombre-là.
+
+   ⚠️ LE FOND DE BASE RESTE `var(--cd-card)`, ET CE N'EST PAS NÉGOCIABLE : R4 de
+   `test-bulkbar-permanente.php` l'exige nommément, pour empêcher le retour du
+   bandeau noir de 45.2. L'état armé est une règle SÉPARÉE, qui ne le contredit
+   pas — elle s'ajoute quand `is-vide` tombe.
+   ⚠️ `--cd-accent-wash` et PAS `--cd-accent-soft` : c'est le seul aplat teinté
+   calibré pour porter `--cd-muted` (cf. `wash()`), et la barre en contient — le
+   libellé de la case « Écraser », les bordures des boutons neutres. Se tromper de
+   cran ici ouvre une brèche AA que rien ne signale, sur un état qu'aucune porte
+   ne photographie au repos. */
+/* 🔄 CE BLOC A ÉTÉ RÉÉCRIT LE MÊME JOUR, ET C'EST LA MESURE QUI L'A EXIGÉ.
+   Première version : l'état armé changeait le fond de `--cd-card` à
+   `--cd-accent-wash`. Mesuré au navigateur, rgb(224,234,231) → rgb(212,226,222) :
+   douze points sur un canal, huit sur les deux autres. C'est-à-dire RIEN — j'avais
+   écrit un état que personne ne peut voir, et la capture avant/après le montrait
+   sans appel. Un aplat pastel ne peut pas porter un changement d'état à lui seul :
+   il faut un TRAIT. D'où le filet d'accent, porté par `border-inline-start` (donc
+   correct en RTL sans règle miroir) et déjà réservé à 4 px à l'état vide, en
+   transparent : la barre ne se décale pas d'un pixel quand elle s'arme.
+   ⚠️ Ne pas « simplifier » en passant la largeur de 0 à 4 px : le contenu de la
+   barre sauterait de 4 px à chaque case cochée. */
+.aod-cd-bulkbar{
+	border-radius:var(--cd-r-md);border-inline-start:4px solid transparent;
+	transition:background-color .18s var(--cd-ease-out),border-color .18s var(--cd-ease-out);
+}
+.aod-cd-bulkbar:not(.is-vide){
+	background:var(--cd-accent-wash);border-color:var(--cd-accent-soft);
+	border-inline-start-color:var(--cd-accent);
+}
+.aod-cd-bulkbar-count{display:inline-flex;align-items:center;gap:var(--cd-sp-1);flex:0 0 auto}
+/* Le compteur descend en place quand la barre s'arme. `aod-cd-pop` existe déjà
+   dans la feuille (aucune image de plus à entretenir) et ne se déclenche qu'au
+   passage vide → armé, là où la classe change — pas à chaque incrément, ce qui
+   ferait sautiller un nombre qu'on est en train de lire.
+   ⚠️ C'est un DÉPLACEMENT : sa neutralisation est en fin de fichier, sélecteur
+   recopié au caractère près (cf. `test-mouvement-reduit.php`). */
+.aod-cd-bulkbar:not(.is-vide) .aod-cd-bulkbar-n{animation:aod-cd-pop .26s var(--cd-ease-out) both}
+/* Le nombre monte d'un cran et passe aux chiffres tabulaires : « 1 » et « 11 »
+   ne doivent pas faire sauter le libellé qui suit à chaque case cochée — Barlow
+   rend des chiffres proportionnels par défaut. */
+.aod-cd-bulkbar-n{font-size:var(--cd-fs-lg);line-height:1;font-variant-numeric:tabular-nums}
+
+/* ── Les gestes de la barre sont GROUPÉS (2026-08-08) ─────────────────
+   Demande owner : « sépare-moi la moitié ». La barre posait huit contrôles à
+   écart CONSTANT (14 px) : le sélecteur de confirmateur, la case « Écraser » et
+   « Assigner » ne se lisaient pas comme un seul geste, et rien ne les distinguait
+   de « Transporteur » / « Router » / « Envoyer ». À distance égale, l'œil ne voit
+   pas de groupes : il voit huit objets indépendants, et doit lire chaque libellé
+   pour reconstituer ce qui va ensemble.
+   Deux moyens, et ils se complètent :
+     · la PROXIMITÉ — 8 px à l'intérieur d'un groupe contre 14 entre les groupes,
+       hérités du `gap` de la barre. C'est le rapport qui compte, pas les valeurs ;
+     · le TRAIT — un filet vertical avant chaque groupe qui en suit un autre.
+   🔴 PREMIÈRE VERSION FAUSSE, ET LA CAPTURE L'A MONTRÉE : j'avais écrit
+   `.aod-cd-bulkgroup:not(:first-of-type)` en croyant dire « pas le premier
+   groupe ». `:first-of-type` compte les éléments du même TYPE, pas de la même
+   classe — or le compteur est lui aussi un `<span>`, donc le premier groupe est
+   le DEUXIÈME span de la barre et recevait un filet. Résultat : un trait entre le
+   compteur et les actions, là où rien ne devait séparer.
+   `.aod-cd-bulkgroup ~ .aod-cd-bulkgroup` dit exactement ce qu'on veut — un
+   groupe PRÉCÉDÉ d'un autre groupe — et reste juste quel que soit ce qui
+   s'intercale. Il l'est aussi quand le groupe « transport » est le premier de la
+   barre : un confirmateur n'a pas l'assignation, et un filet en tête ne
+   séparerait rien de rien.
+   ⚠️ `border-inline-start` — en arabe le filet doit passer de l'autre côté, et
+   c'est la même raison qui fait écrire `padding-inline-start` juste après.
+   ⚠️ Au pouce le filet disparaît : la barre y REPLIE (`flex-wrap`), donc un groupe
+   ouvre sa propre ligne — un trait vertical à sa gauche ne séparerait plus rien,
+   il pendrait dans le vide. Même raisonnement que le filet de « Supprimer ».
+
+   🔁 LE FILET DEVIENT UN PANNEAU (2026-08-08, soir). Second retour owner sur la
+   même barre : « fais-moi des espaces entre ces champs », « tu me fais des choses
+   simples ». Le filet de 1 px disait bien où finissait un groupe, mais il ne
+   donnait ni surface ni respiration : mesuré, l'écart INTÉRIEUR d'un groupe était
+   de 8 px pour un écart EXTÉRIEUR de 33 px — un rapport de 4, assez pour séparer,
+   trop serré pour que chaque contrôle ait de l'air. Le groupe prend donc le CREUX
+   de la charte (`--cd-bg`, le même que tous les encarts posés dans une carte) :
+   la hiérarchie devient lisible d'un coup d'œil — barre (carte) › panneau (creux)
+   › contrôles (champ) — au lieu de reposer sur un trait qu'il faut chercher.
+   ⚠️ Aucune couleur nouvelle : `--cd-bg` est le cran déjà dérivé de l'accent, et
+   il reste plus sombre que `--cd-card` COMME que `--cd-accent-wash` (l'ordre de
+   l'échelle est page › bg › wash › card › field). Le creux tient donc dans les
+   deux états de la barre, au repos comme armée — vérifié sur l'échelle, pas sur
+   la seule capture de l'accent du jour.
+   🎬 À l'armement le panneau s'INVERSE : il passe du creux au relief
+   (`--cd-card`, plus clair que la barre qui vient de virer au lavis d'accent).
+   C'est la même information que le filet d'accent à gauche de la barre, dite une
+   seconde fois là où l'œil est déjà posé — sur les gestes eux-mêmes.
+   ⚠️ Le panneau garde `flex-wrap` : au pouce il s'empile sans déborder, et
+   contrairement au filet il n'a RIEN à masquer en dessous de 781 px — une surface
+   reste une surface sur une ligne à elle. C'est précisément ce que le filet ne
+   savait pas faire, et pourquoi la media-query a disparu ici. */
+.aod-cd-bulkgroup{
+	display:flex;align-items:center;gap:var(--cd-sp-3);flex-wrap:nowrap;
+	padding:var(--cd-sp-2);border-radius:var(--cd-r-md);
+	background:var(--cd-bg);border:1px solid var(--cd-line);
+	transition:background-color .18s var(--cd-ease-out),border-color .18s var(--cd-ease-out);
+}
+/* Au pouce le panneau redevient sécable : à 390 px, aucun groupe ne tient sur une
+   ligne, et `nowrap` y produirait un débordement horizontal au lieu d'un repli. */
+@media(max-width:780px){
+	.aod-cd-bulkgroup{flex-wrap:wrap}
+}
+.aod-cd-bulkbar:not(.is-vide) .aod-cd-bulkgroup{
+	background:var(--cd-card);border-color:var(--cd-accent-soft);
+}
+
+/* ── UNE SEULE HAUTEUR POUR TOUTE LA RANGÉE (2026-08-08, soir) ────────
+   🔴 C'EST LE VRAI DÉFAUT DE CETTE BARRE, et il ne se voyait pas à l'œil : les
+   contrôles y vivaient à CINQ hauteurs différentes sur une même ligne. Mesuré :
+   liste 41,4 px · « Supprimer » 41,4 · « Router » 33,4 · « Assigner » 29,8 ·
+   case « Écraser » 24,0. Chacun était pourtant correct SÉPARÉMENT — c'est la
+   somme d'un `padding` de champ (11 px), d'un `padding` de bouton court
+   (`.aod-cd-btn-sm`, 7 px) et d'une case native non habillée. Personne n'avait
+   choisi ce désordre : il est le résultat de trois composants dessinés chacun
+   dans son coin puis posés côte à côte.
+   ⚠️ C'est pour ça que les retouches précédentes (peau, filet, groupes) n'ont
+   jamais suffi : elles ajoutaient du décor SUR une rangée qui ne s'alignait pas.
+   Une hauteur commune est la seule chose qui fasse lire une ligne d'outils
+   plutôt qu'un tas de contrôles.
+   🔒 `height` + `padding-block:0` — et pas un `min-height` : le `padding` vertical
+   de chaque composant DOIT être neutralisé, sinon il s'ajoute et la hauteur
+   commune redevient cinq hauteurs. `box-sizing:border-box` est global (l.342),
+   donc la bordure est comprise dedans.
+   ⚠️ 38 px : au-dessus des 36 px du champ nu, sous les 44 px de la cible tactile
+   du pouce.
+   🔴 ET C'EST POURQUOI LA RÈGLE EST BORNÉE À ≥ 781 px — mesuré à 390 px, pas
+   supposé. Le bloc mobile impose `min-height:44px` à `.aod-cd-btn`, mais il le
+   fait avec une spécificité de (0,1,0) ; `.aod-cd-bulkbar .aod-cd-csel-btn` pèse
+   (0,2,0) et une `height` ferme bat un `min-height` plus faible. Sans cette
+   borne, les deux listes de la barre RÉTRÉCISSAIENT au pouce (41 px → 38 px) —
+   une hauteur commune posée pour faire propre sur un écran large qui dégrade une
+   cible tactile sur l'autre. Le pouce garde donc exactement le rendu d'avant.
+   ⚠️ Constat DE PASSAGE, non corrigé ici parce qu'il déborde de cette barre :
+   `.aod-cd-csel-btn` ne figure dans AUCUNE des listes à 44 px du bloc mobile,
+   alors que ses deux jumeaux `.aod-cd-statussel-btn` et `.aod-cd-assignsel-btn`
+   y sont. Il est donc à ~41 px au pouce PARTOUT dans `/gestion` (filtres,
+   formulaires), et ça n'a rien à voir avec cette retouche — l'y ajouter toucherait
+   tous les écrans, ce qui demande sa propre mesure. */
+@media(min-width:781px){
+	.aod-cd-bulkbar .aod-cd-csel-btn,
+	.aod-cd-bulkbar .aod-cd-btn,
+	.aod-cd-bulkbar .aod-cd-bulk-ow{height:38px;padding-block:0}
+}
+
+/* La barre respire : 16 px entre le compteur et les panneaux, 12 px à
+   l'intérieur d'un panneau. Les DEUX valeurs montent (elles étaient à 14 et 8),
+   et le rapport reste lisible — l'écart intérieur était jusqu'ici plus serré que
+   le `padding` du moindre bouton, ce qui est précisément ce qui faisait « champs
+   collés ». */
+.aod-cd-bulkbar{gap:var(--cd-sp-4);padding:var(--cd-sp-3) var(--cd-sp-4);flex-wrap:wrap}
+/* 🔴 MESURÉ, PAS SUPPOSÉ : sans `flex-wrap` sur la BARRE, les 120 px que les
+   panneaux ajoutent faisaient replier les GROUPES sur eux-mêmes — barre à 106 px
+   de haut, sélecteur au-dessus de son propre bouton, 442 px de vide au milieu.
+   C'est l'inverse de ce qu'on veut : un groupe est l'unité INSÉCABLE (il porte un
+   geste complet), c'est la rangée qui doit céder. Le repli remonte donc d'un
+   niveau. `flex-wrap` était déjà posé dans le bloc mobile — il ne l'était pas au
+   dessus, et c'est exactement la famille de défaut que ce fichier documente
+   ailleurs : une décision appliquée à un seul des deux jumeaux.
+   La liste rétrécit dans le même mouvement, et c'est un ARBITRAGE de largeur, pas
+   un détail : la rangée débordait de **95 px** mesurés à 1440 (1 374 pour 1 279
+   disponibles), et il fallait les rendre quelque part. Ils sont pris sur le gras —
+   plancher des listes (196 → 148 px), `padding` des boutons revenu au cran
+   `.aod-cd-btn-sm`, `padding` des panneaux à 8 px — jamais sur les ÉCARTS, qui
+   sont l'objet même de la demande.
+   ⚠️ Le plancher de 196 px existait « pour qu'un nom de confirmateur ne se replie
+   pas sur deux lignes ». Il ne le peut pas : `.aod-cd-csel-text` porte
+   `white-space:nowrap` + `text-overflow:ellipsis`. Un nom trop long se tronque —
+   il ne casse pas la rangée. Le plancher ne protégeait donc rien de ce qu'il
+   annonçait, et 148 px tiennent « Transporteur… », le plus long des deux invites. */
+.aod-cd-bulkbar .aod-cd-csel{min-width:148px}
+
+/* « Supprimer » part à l'autre bout, et c'est un choix de SENS : c'est la seule
+   action irréversible de la barre, elle ne doit pas se toucher avec « Envoyer ».
+   L'espace vide sépare mieux qu'un filet de 1 px — celui-ci n'a donc plus lieu
+   d'être ici, et il est retiré au même endroit pour ne pas laisser un tiret
+   flottant au milieu du vide.
+   ⚠️ Conditionné à `.aod-cd-bulkgroup ~` : la barre des paniers abandonnés ne
+   porte QUE le compteur et « Supprimer » (aucun groupe). L'y pousser à droite
+   creuserait 1 200 px de vide entre deux objets qui se répondent — elle garde
+   donc son filet et sa proximité. Même règle, deux barres, deux résultats
+   justes : c'est la CONDITION qui porte la différence, pas une seconde règle
+   qu'il faudrait penser à maintenir. */
+@media(min-width:781px){
+	.aod-cd-bulkgroup ~ .aod-cd-order-bulk-del{margin-inline-start:auto}
+	.aod-cd-bulkgroup ~ .aod-cd-order-bulk-del::before{content:none}
+}
+
+/* ── « Écraser les assignations existantes » ─────────────────────────
+   C'était du texte nu posé entre deux contrôles : le libellé le plus LONG de la
+   barre, au même poids visuel que les boutons, sans rien qui dise que c'est une
+   OPTION du geste voisin plutôt qu'une action de plus. Il prend donc le creux de
+   la charte, comme les autres encarts posés dans une carte.
+   🚨 Et il se teinte en ROUGE une fois coché, parce qu'à ce moment-là le geste
+   change de nature : « Assigner » cesse de combler des absences et se met à
+   RETIRER des commandes à des confirmateurs. La case portait déjà
+   `accent-color:var(--cd-bad)` pour cette raison exacte, mais un carré rouge de
+   15 px est le plus petit signal de tout l'écran pour le geste le plus lourd de
+   la barre. `--cd-bad` sur `--cd-bad-soft` est le couple déjà éprouvé des
+   pastilles de statut : aucune couleur nouvelle, un contraste déjà mesuré. */
+/* 🔁 Le creux de la pastille passe de `--cd-bg` à `--cd-field` (2026-08-08, soir).
+   `--cd-bg` est devenu le fond du PANNEAU qui la contient : la pastille y aurait
+   disparu, fondue dans son propre conteneur. `--cd-field` est le cran des CHAMPS,
+   donc exactement celui du sélecteur voisin — les deux contrôles du panneau
+   parlent enfin la même surface, et la pastille ressort sur les deux états du
+   panneau (creux au repos, relief à l'armement).
+   🚨 Le mode d'échec est général : déplacer une couleur d'un cran de l'échelle
+   sans regarder ce qui vit DEDANS fait disparaître l'enfant en silence. */
+.aod-cd-bulk-ow{
+	padding-block:var(--cd-sp-1);padding-inline:var(--cd-sp-3);
+	border-radius:var(--cd-r-pill);background:var(--cd-field);
+	border:1px solid var(--cd-line);
+	transition:background-color .14s var(--cd-ease-out),color .14s var(--cd-ease-out),border-color .14s var(--cd-ease-out);
+}
+.aod-cd-bulk-ow:has(input:checked){background:var(--cd-bad-soft);color:var(--cd-bad);border-color:var(--cd-bad)}
 
 /* Montant approché d'un panier abandonné (43.6). Le « ≈ » n'est PAS décoratif :
    il dit que le supplément de variante n'est pas connu. `<abbr title>` plutôt
@@ -2232,8 +3419,51 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    de cliquer. `:not(:disabled)` ci-dessus fait le reste : ni survol, ni creux —
    un bouton désactivé ne doit pas faire semblant de répondre (même règle que
    `.aod-cd-btn`, ~l.860). */
+/* 🔄 RÉÉCRIT LE 2026-08-08, ET LE PRINCIPE D'HIER EST CONSERVÉ, PAS RENVERSÉ.
+   La règle précédente gardait l'aplat rouge à 55 % d'opacité, pour que le bouton
+   dise ce qu'il fera dès qu'une ligne sera cochée. L'intention est juste ; c'est
+   son DOSAGE qui était faux, et la capture le montre : au repos, écran vierge,
+   aucune sélection, l'élément le plus voyant de toute la page est le bouton
+   destructif. L'œil est appelé par la seule action qu'on ne veut pas encourager.
+   Il passe donc en CONTOUR : encre `--cd-bad`, bord `--cd-bad-soft`, surface de
+   la carte. Le rouge reste — il dit toujours ce que fera le bouton — mais il
+   cesse de crier, et l'aplat plein redevient ce qu'il aurait toujours dû être :
+   le signe qu'il y a quelque chose à supprimer.
+   ⚠️ `opacity` retombée à 1 : un contour déjà discret, encore transparent, glisse
+   sous AA. Mesuré pleine encre sur `--cd-card` : 5,35:1 — au-dessus du seuil.
+   ⚠️ Le survol reste bordé par `:not(:disabled)` : un bouton désactivé ne doit
+   pas faire semblant de répondre. C'est la règle d'hier, inchangée. */
 .aod-cd-order-bulk-del:disabled,
-.aod-cd-lead-bulk-del:disabled{opacity:.55;cursor:default}
+.aod-cd-lead-bulk-del:disabled{
+	cursor:default;opacity:1;
+	background:var(--cd-card);border-color:var(--cd-bad-soft);color:var(--cd-bad);
+}
+/* ── Le vide avant « Supprimer » devient une SÉPARATION ─────────────────
+   `margin-inline-start:auto` pousse l'action destructive en bout de ligne, et
+   c'est voulu : on ne met pas « Supprimer » à côté de « Assigner ». Mais mesuré à
+   1440 px, l'écart réel est de **313 px** : à cette distance, l'œil ne lit plus une
+   mise à distance délibérée, il lit une barre à moitié vide. Un filet juste avant
+   le bouton dit que la distance est un choix.
+   ⚠️ Tracé en `::before` plutôt qu'avec un élément de balisage : un séparateur
+   purement visuel n'a rien à faire dans l'arbre d'accessibilité, et le poser en
+   `<span aria-hidden>` aurait obligé les deux sections à le répéter.
+   ⚠️ `inset-inline-start` et non `left` : en arabe le bouton passe à gauche, et
+   le filet doit passer avec lui. C'est la même raison qui fait écrire
+   `margin-inline-start` deux règles plus haut.
+   ⚠️ Retiré sous 780 px : la barre y REPLIE (cf. le `flex-wrap` mobile), donc
+   « Supprimer » peut ouvrir une ligne — un filet vertical suspendu à sa gauche ne
+   séparerait alors plus rien de rien. */
+.aod-cd-order-bulk-del,
+.aod-cd-lead-bulk-del{position:relative}
+.aod-cd-order-bulk-del::before,
+.aod-cd-lead-bulk-del::before{
+	content:"";position:absolute;inset-block:0;
+	inset-inline-start:calc(var(--cd-sp-2) * -1);width:1px;background:var(--cd-line);
+}
+@media(max-width:780px){
+	.aod-cd-order-bulk-del::before,
+	.aod-cd-lead-bulk-del::before{display:none}
+}
 .aod-cd-order-bulk-del .aod-cd-bulk-ico,
 .aod-cd-lead-bulk-del .aod-cd-bulk-ico{font-size:15px;line-height:1}
 .aod-cd-order-bulk-del .aod-cd-bulkbar-btnn,
@@ -2306,7 +3536,6 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    **on commite d'abord, on éprouve ensuite** — sinon l'épreuve détruit ce qu'elle
    était censée valider, et le message de commit devient un témoignage faux. */
 .aod-cd-reset-input:focus{outline:none;border-color:var(--cd-bad);box-shadow:0 0 0 2px var(--cd-bad)}
-.aod-cd-btn-danger:disabled{opacity:.45;cursor:not-allowed}
 .aod-cd-btn-danger:disabled:hover{background:transparent;color:var(--cd-bad);border-color:var(--cd-bad)}
 .aod-cd-danger .aod-cd-form-msg{color:var(--cd-ink-2)}
 .aod-cd-danger .aod-cd-form-msg.is-bad{color:var(--cd-bad)}
@@ -2328,8 +3557,8 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 	display:inline-flex;align-items:center;gap:6px;
 	padding:3px 11px;border-radius:var(--cd-r-pill);font-size:var(--cd-fs-sm);font-weight:700;line-height:1.4;
 	color:var(--pill,#64748b);
-	background:color-mix(in srgb, var(--pill,#64748b) 14%, #fff);
-	border:1px solid color-mix(in srgb, var(--pill,#64748b) 35%, #fff);
+	background:color-mix(in srgb, var(--pill,#64748b) 14%, var(--cd-card));
+	border:1px solid color-mix(in srgb, var(--pill,#64748b) 35%, var(--cd-card));
 }
 .aod-cd-track-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pill,#64748b)}
 
@@ -2361,7 +3590,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-tl-dot{
 	position:relative;z-index:1;flex:0 0 auto;margin-top:3px;
 	width:12px;height:12px;border-radius:50%;background:var(--dot,#9ca3af);
-	box-shadow:0 0 0 3px #fff;
+	box-shadow:0 0 0 3px var(--cd-card);
 }
 .aod-cd-tl-label{font-weight:600;font-size:var(--cd-fs-md);color:var(--cd-ink)}
 .aod-cd-tl-meta{font-size:var(--cd-fs-xs);color:var(--cd-muted);margin-top:2px}
@@ -2384,8 +3613,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 }
 
 /* ---- Import des tarifs transporteur (étape 4.3) ---- */
-.aod-cd-import{margin:26px 0 8px;padding:18px;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);background:var(--cd-line-2)}
-.aod-cd-import .aod-cd-form-title{margin-top:0!important}
+.aod-cd-import{margin:26px 0 8px;padding:18px;border:1px solid var(--cd-line);border-radius:var(--cd-r-md);background:var(--cd-bg)}
 .aod-cd-import-controls{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin:14px 0}
 .aod-cd-import-controls .aod-cd-field{margin:0;min-width:180px}
 .aod-cd-import-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:6px}
@@ -2402,7 +3630,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
    droite → sens inversé. On le retourne pour qu'il pointe vers « nouveau ». */
 html[dir="rtl"] .aod-cd-imp-table td .aod-cd-imp-arrow{display:inline-block;transform:scaleX(-1)}
 .aod-cd-imp-table td .aod-cd-imp-new{font-weight:700}
-.aod-cd-imp-table td .aod-cd-imp-new.is-diff{color:var(--cd-accent-ink);background:var(--cd-yellow);border-radius:6px;padding:1px 7px}
+.aod-cd-imp-table td .aod-cd-imp-new.is-diff{color:var(--cd-accent-ink);background:var(--cd-accent);border-radius:6px;padding:1px 7px}
 @media (max-width:640px){
 	.aod-cd-import{padding:14px}
 	.aod-cd-import-controls{gap:10px}
@@ -2421,13 +3649,27 @@ html[dir="rtl"] .aod-cd-imp-table td .aod-cd-imp-arrow{display:inline-block;tran
 /* ---- En-tête de page : titre + sous-titre + actions --------------------- */
 .aod-cd-pagehead{display:flex;align-items:flex-start;gap:var(--cd-sp-4);flex-wrap:wrap;margin-bottom:var(--cd-sp-5)}
 .aod-cd-pagehead__txt{flex:1;min-width:220px}
-.aod-cd-pagehead__title{margin:0;font-size:var(--cd-fs-2xl);font-weight:800;letter-spacing:-.4px;text-wrap:balance;line-height:1.1}
-.aod-cd-pagehead__sub{margin:var(--cd-sp-1) 0 0;color:var(--cd-muted);font-size:var(--cd-fs-md)}
+.aod-cd-pagehead__title{margin:0;font-size:var(--cd-fs-3xl);font-weight:800;letter-spacing:-.6px;text-wrap:balance;line-height:1.08}
+/* Le sous-titre gagne un cran ET perd du poids : c'est l'ÉCART entre les deux qui
+   fait la hiérarchie, pas la taille du titre seule. Un titre grossi au-dessus d'un
+   sous-titre inchangé se lit comme un titre mal calibré. */
+.aod-cd-pagehead__sub{margin:var(--cd-sp-2) 0 0;color:var(--cd-muted);font-size:var(--cd-fs-md);line-height:1.5;max-width:68ch}
 .aod-cd-pagehead__actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
 /* ---- Segmented control (canonique — remplace à terme .aod-cd-tabs) ------- */
-.aod-cd-seg{display:inline-flex;background:var(--cd-bg);border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);padding:3px;gap:2px;flex-wrap:wrap;max-width:100%}
+/* 🔁 LA PISTE PASSE DU FOND CREUSÉ À LA SURFACE DE CARTE (2026-08-05). Elle prenait
+   `--cd-bg`, ce qui était juste tant que le fond de l'application avait la même
+   valeur : la piste se lisait comme un creux DANS la page. Le fond ayant foncé
+   (`--cd-page`), la garder au creux l'aurait laissée flotter à mi-chemin entre la
+   page et les cartes — ni posée, ni enfoncée. Elle devient donc une surface de
+   même niveau que les cartes, avec l'ombre au repos qui va avec : un groupe de
+   navigation POSÉ sur la page, pas un trou dedans.
+   ⚠️ Le composant sert aussi à Commandes, Suivi et Abandonnées. C'est voulu — le
+   fond a foncé partout, la piste devait suivre partout. Une correction posée sur
+   la seule page qui l'a motivée est la dérive de la Phase 46. */
+.aod-cd-seg{display:inline-flex;background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);padding:var(--cd-sp-1);gap:var(--cd-sp-1);flex-wrap:wrap;max-width:100%;box-shadow:var(--cd-shadow-rest)}
 .aod-cd-seg__btn{
+	position:relative;
 	display:inline-flex;align-items:center;gap:8px;border:0;background:none;cursor:pointer;
 	padding:8px 14px;border-radius:6px;font-family:inherit;font-size:var(--cd-fs-sm);font-weight:700;
 	color:var(--cd-muted);white-space:nowrap;transition:background-color .14s var(--cd-ease-out),color .14s var(--cd-ease-out),transform .14s var(--cd-ease-out);text-decoration:none;
@@ -2438,30 +3680,104 @@ html[dir="rtl"] .aod-cd-imp-table td .aod-cd-imp-arrow{display:inline-block;tran
    d'écart et rien ne les relie. C'est la dérive de la Phase 46 dans sa version
    inverse : une décision appliquée à deux endroits sur trois. */
 .aod-cd-seg__btn:hover{color:var(--cd-ink);background:var(--cd-accent-wash)}
-.aod-cd-seg__btn.is-active{background:var(--cd-ink);color:#fff}
+/* L'icône de l'onglet (2026-08-06) : elle RECULE au repos et reprend toute son
+   encre dès que l'onglet est survolé ou choisi. Deux états de plus sans une
+   couleur de plus — l'opacité suit `currentColor`, donc l'icône reste juste sur
+   la piste claire comme sur le pavé d'encre de l'onglet actif.
+   ⚠️ `flex:none` : sans lui, le SVG se fait comprimer par le libellé dès que la
+   piste manque de place (le cas au pouce, où les trois onglets se partagent
+   358 px) — une icône écrasée est pire que pas d'icône. */
+.aod-cd-seg__btn .aod-cd-i{flex:none;opacity:.7}
+.aod-cd-seg__btn:hover .aod-cd-i,
+.aod-cd-seg__btn.is-active .aod-cd-i{opacity:1}
+.aod-cd-seg__btn.is-active{background:var(--cd-ink);color:#fff;box-shadow:var(--cd-shadow-rest)}
+/* ── L'onglet actif porte la marque, sans devenir une surface d'accent ──────
+   Le pavé d'encre disait « c'est celui-là » mais ne disait rien de la boutique :
+   sur l'Accueil, l'accent n'apparaissait qu'au bouton « Filtrer », vingt pixels
+   plus bas. Un filet d'accent SOUS le libellé le rattache à la marque.
+   🚫 Et pas l'inverse — l'accent en APLAT sur l'onglet actif. Essayé, rejeté à la
+   capture : l'onglet et le bouton « Filtrer » deviennent deux blocs de la même
+   couleur à vingt pixels l'un de l'autre, et on ne sait plus lequel agit. La
+   navigation garde l'encre, l'action garde l'accent.
+   🔒 `--cd-accent-on-dark` et non `--cd-accent` : c'est LE token calibré pour
+   l'accent posé sur nos surfaces sombres (AA garanti pour tout accent du cube).
+   Avec `--cd-accent`, un accent foncé donnerait un filet invisible sur l'encre —
+   et personne ne le verrait sur le clone jaune où le défaut n'existe pas. */
+.aod-cd-seg__btn.is-active::after{
+	content:"";position:absolute;inset-inline:var(--cd-sp-3);inset-block-end:5px;height:2px;
+	background:var(--cd-accent-on-dark);border-radius:var(--cd-r-pill);
+	animation:aod-cd-seg-in .3s var(--cd-ease-out) .1s both;
+}
+/* Le filet se déplie depuis le bord d'attaque du texte — donc de la droite en
+   arabe. `transform-origin` doit suivre le sens de lecture, sinon le mouvement
+   part à contresens dans une langue sur deux (leçon 45.5, R3). */
+@keyframes aod-cd-seg-in{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.aod-cd-seg__btn.is-active::after{transform-origin:left}
+html[dir="rtl"] .aod-cd-seg__btn.is-active::after{transform-origin:right}
 /* Pas de règle `:focus-visible` ici : le socle (~l.158) la porte, en encre — et
    la géométrie est IDENTIQUE (2 px, offset 2 px), seule la couleur change. Cf. 46.1. */
 .aod-cd-seg__count{font-size:var(--cd-fs-xs);font-weight:700;background:rgba(24,24,24,.08);color:var(--cd-ink);padding:1px 8px;border-radius:var(--cd-r-pill);font-variant-numeric:tabular-nums}
+
+/* ── Le filtre « Non assignées » : un composant utilisé HORS de son conteneur ─
+   🔴 Retour owner : « il écrit simple, moche ». Ce n'était pas une question de
+   goût — cette pastille N'AVAIT AUCUNE SURFACE, et la raison est structurelle.
+   Elle porte `.aod-cd-seg__btn`, dont la règle commence par `border:0;
+   background:none` : c'est délibéré, parce qu'un segment est censé vivre DANS
+   `.aod-cd-seg`, la piste qui fournit la carte, le trait, le rayon et l'ombre.
+   Ici le balisage est `<div class="aod-cd-toolbar"><a class="aod-cd-seg__btn">` :
+   la piste n'existe pas, donc le bouton s'affiche nu. Il ne manquait pas de
+   design, il manquait son conteneur.
+   ⚠️ On ne l'a PAS enveloppé dans un `.aod-cd-seg` pour autant : une piste à un
+   seul segment annoncerait un choix entre plusieurs états, alors que c'est un
+   INTERRUPTEUR de filtre. Il reçoit donc sa propre peau — celle d'une pastille de
+   filtre : pleinement arrondie, posée sur la page, avec l'ombre au repos des
+   autres surfaces.
+   🚨 CE DÉFAUT ÉTAIT INVISIBLE À TOUTE PORTE, et le restera : `contraste` mesure
+   du texte sur son fond effectif (il en avait un, celui de la page), `noms`
+   mesure un nom accessible (il en a un), `rtl` mesure des débordements (il n'en
+   causait aucun). *Aucune de nos mesures ne sait dire qu'un composant a perdu son
+   conteneur* — seul un œil, ou la question « pourquoi cette classe existe-t-elle
+   dans cette feuille », le trouve. */
+.aod-cd-unassigned-toggle{
+	background:var(--cd-card);border:1px solid var(--cd-line);
+	border-radius:var(--cd-r-pill);box-shadow:var(--cd-shadow-rest);
+	color:var(--cd-ink);
+}
+.aod-cd-unassigned-toggle:hover{border-color:var(--cd-soft)}
+/* Actif = le filtre est POSÉ. Le pavé d'encre hérité de `.aod-cd-seg__btn` dit
+   déjà « c'est celui-là » ; il lui manquait un trait accordé, sans quoi la
+   pastille garde une bordure claire autour d'un fond noir — un liséré lumineux,
+   exactement le défaut nommé pour `--cd-line` plus haut dans ce fichier. */
+.aod-cd-unassigned-toggle.is-active{border-color:var(--cd-ink)}
 .aod-cd-seg__btn.is-active .aod-cd-seg__count{background:var(--cd-accent);color:var(--cd-accent-ink)}
 
 /* ---- Tuiles « à traiter » (Accueil) ------------------------------------- */
 .aod-cd-todo{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--cd-sp-3);margin-bottom:var(--cd-sp-5)}
 .aod-cd-todo-tile{
 	position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;
-	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
-	padding:var(--cd-sp-4);text-decoration:none;color:inherit;transition:border-color .18s var(--cd-ease-out),box-shadow .18s var(--cd-ease-out),color .18s var(--cd-ease-out),transform .18s var(--cd-ease-out);
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+	/* `background-color` a rejoint la liste le 2026-08-05, avec le survol teinté :
+	   une propriété animée doit être NOMMÉE ici, sinon elle bascule d'un coup
+	   pendant que ses voisines glissent — et l'écart se lit comme un défaut. */
+	padding:var(--cd-sp-4);text-decoration:none;color:inherit;transition:border-color .18s var(--cd-ease-out),box-shadow .18s var(--cd-ease-out),color .18s var(--cd-ease-out),background-color .18s var(--cd-ease-out),transform .18s var(--cd-ease-out);
 }
 .aod-cd-todo-tile::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:var(--tone,var(--cd-accent));transform:scaleY(0);transform-origin:top;transition:transform .18s}
-.aod-cd-todo-tile:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:#dcdcdc}
+.aod-cd-todo-tile:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:var(--cd-soft)}
 .aod-cd-todo-tile:hover::before{transform:scaleY(1)}
 /* Phase 15 — le glyphe prend `--tone`, la couleur d'alerte que la tuile porte
    déjà pour son nombre. Contrairement aux KPI, ces tonalités ONT une encre
    fournie par l'appelant (`'tone' => '#dc2626'`), donc lisible sur `--tone-soft`
    sans avoir à en inventer une. */
-.aod-cd-todo-tile__ic{width:40px;height:40px;flex:0 0 auto;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:var(--tone,var(--cd-accent));color:#fff}
+/* `border-radius:10px` était le dernier rayon hors échelle de la feuille — une
+   valeur entre `--cd-r-sm` (8) et `--cd-r-md` (12), donc invisible à l'œil et
+   ingérable à la relecture. Il prend le cran moyen, celui des autres pastilles. */
+.aod-cd-todo-tile__ic{width:40px;height:40px;flex:0 0 auto;border-radius:var(--cd-r-md);display:inline-flex;align-items:center;justify-content:center;background:var(--tone,var(--cd-accent));color:#fff}
 .aod-cd-todo-tile__ic .aod-cd-i{width:22px;height:22px}
 .aod-cd-todo-tile__txt{display:flex;flex-direction:column;gap:1px;min-width:0}
-.aod-cd-todo-tile__n{font-size:var(--cd-fs-xl);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+/* Le nombre EST le message d'une tuile « à traiter » : le libellé ne fait que le
+   qualifier. Il monte donc au cran des chiffres de KPI — la même donnée mérite le
+   même corps d'un bloc à l'autre, sinon l'œil croit lire deux natures d'information. */
+.aod-cd-todo-tile__n{font-size:var(--cd-fs-2xl);font-weight:800;line-height:1;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
 .aod-cd-todo-tile__l{font-size:var(--cd-fs-sm);color:var(--cd-muted);font-weight:600}
 .aod-cd-todo-tile__go{margin-inline-start:auto;color:var(--cd-soft);font-size:19px;transition:color .15s var(--cd-ease-out),transform .15s var(--cd-ease-out)}
 .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{color:var(--cd-ink);transform:translateX(2px)}
@@ -2470,10 +3786,10 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* ---- KPI (valeur + libellé + delta) ------------------------------------- */
 .aod-cd-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--cd-sp-4);margin-bottom:var(--cd-sp-5)}
 .aod-cd-kpi{
-	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
 	padding:var(--cd-sp-4) var(--cd-sp-5);display:flex;flex-direction:column;gap:10px;transition:border-color .18s var(--cd-ease-out),box-shadow .18s var(--cd-ease-out),transform .18s var(--cd-ease-out);
 }
-.aod-cd-kpi:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:#dcdcdc}
+.aod-cd-kpi:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:var(--cd-soft)}
 
 /* ── Hiérarchie de la grille de KPI (2026-08-04) ───────────────────────────
    La carte PRINCIPALE occupe deux colonnes. Huit cartes de poids identique ne
@@ -2522,7 +3838,34 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    lendemain : TOUTES les pastilles sont passées en aplat (bloc « Tonalités
    d'icône »), elle ne distinguait donc plus rien. Une règle qui répète ce que
    fait déjà le défaut se lit comme une intention, et fait hésiter le suivant. */
-.aod-cd-kpi--primary{border-inline-start:3px solid var(--cd-accent)}
+/* ── La carte principale porte enfin la teinte, pas seulement un filet ─────
+   (2026-08-07, demande owner : « designés-moi cette page ».) Le liseré de 3 px
+   était la seule marque de la carte qui commande la page : sur une grille de huit
+   cartes identiques, un trait de bord ne hiérarchise presque rien — on le voit
+   quand on le cherche.
+   🔒 `--cd-accent-wash` ET PAS `--cd-accent-soft`, et la différence est une
+   garantie, pas une nuance. Cette carte porte du `--cd-muted` (le « vs période
+   précédente », la devise) : `wash()` est précisément le seul aplat teinté dont le
+   contraste sous ce gris est éprouvé pour TOUT accent du cube, là où `soft()` est
+   documenté comme ne portant que `--cd-ink`. Les deux se ressemblent à l'œil et
+   n'ont pas le même contrat.
+   🔴 UNE LUEUR D'ANGLE A ÉTÉ ÉCRITE ICI PUIS RETIRÉE AVANT D'ÊTRE LIVRÉE, et le
+   motif mérite d'être gardé : un `radial-gradient` d'accent dans le coin haut de
+   la carte se serait posé SOUS le libellé et le chiffre. Or la porte `contraste`
+   lit `backgroundColor` et jamais l'image de fond — elle aurait donc mesuré le
+   wash, seule couleur qu'elle voit, et rendu un vert franc sur un texte réellement
+   assombri. C'est mot pour mot la précaution écrite le même jour pour le voile des
+   boutons ; l'enfreindre ici parce que c'est joli l'aurait vidée de son sens.
+   🚨 *Une règle de sûreté qu'on s'autorise à contourner « juste une fois » n'est
+   plus une règle, c'est une préférence.*
+   Ce qui la remplace ne touche AUCUN texte : un anneau autour de la pastille
+   d'icône, qui a son propre aplat opaque. Même intention — désigner la carte qui
+   commande — sans rien poser sous un caractère. */
+.aod-cd-kpi--primary{
+	border-inline-start:3px solid var(--cd-accent);
+	background:var(--cd-accent-wash);
+}
+.aod-cd-kpi--primary .aod-cd-kpi__ic{box-shadow:0 0 0 4px var(--cd-accent-soft)}
 
 /* ── Tuiles « à traiter » : le zéro se tait (2026-08-04) ───────────────────
    Une tuile à 0 n'appelle aucune action. Elle portait pourtant la même pastille
@@ -2624,12 +3967,31 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
      · un fond très légèrement creusé (#F5F5F5 → #F1F1F1), assez pour que le
        blanc se détache, pas assez pour manger la marge du texte secondaire
        (#666 sur #F1F1F1 = 5,08:1, AA demande 4,5).
-   ⚠️ Le fond reste un GRIS PUR (chroma 0). `test-charte-surfaces.php` sépare la
-   surface neutre — légitime en dur — de la couleur, qui doit venir d'un token :
-   une teinte chaude, même discrète, serait une couleur de client écrite en dur.
+   ⚠️ Le chiffre « #F5F5F5 → #F1F1F1 » ci-dessus est celui du 4 août et il ne décrit
+   plus rien : les deux surfaces sont DÉRIVÉES de l'accent depuis le lendemain (cf.
+   `BG_MIX`, et désormais `PAGE_SAT`) et le fond n'est plus un gris pur du tout. Il est gardé
+   parce que c'est le RAISONNEMENT qui vaut — on creuse juste assez pour détacher la
+   carte, jamais assez pour manger la marge du texte secondaire — et que ce
+   raisonnement est aujourd'hui tenu par un cliquet (R1 de `test-fond-accent.php`)
+   au lieu d'une valeur écrite à la main.
    Le survol n'est pas touché : il garde `--cd-shadow`, plus marqué, et le
-   contraste repos → survol reste donc lisible. */
-.aod-cd-kpi,.aod-cd-todo-tile,.aod-cd-chartcard,.aod-cd-tablewrap,.aod-cd-form{box-shadow:var(--cd-shadow-rest)}
+   contraste repos → survol reste donc lisible.
+
+   🔴 CINQ SURFACES SUR DOUZE PORTAIENT CETTE OMBRE, ET SEPT NE L'AVAIENT JAMAIS
+   REÇUE (corrigé le 2026-08-07). Le commentaire ci-dessus dit « TOUTES les cartes de
+   `/gestion` partagent la même recette » puis en équipe cinq : panneau, carte de
+   pixel, membre d'équipe, carte de statistique, encart d'alerte, bloc de page de
+   vente et « bientôt disponible » restaient plats, sur le même fond, à côté de
+   leurs voisines élevées. Ce n'est pas un oubli isolé : c'est la famille de défauts
+   que la Phase 46 a nommée — une décision juste, écrite avec sa raison, appliquée à
+   une partie des sites et à personne d'autre. Elle ne se voyait pas parce qu'on
+   regarde une page à la fois, et que chaque page a l'air cohérente avec elle-même.
+   🚨 *Une liste de sélecteurs sous un commentaire qui dit « toutes » est une
+   promesse que rien ne vérifie.* Ici l'énumération EST la règle : la seule parade
+   est de la relire en entier quand on ajoute une surface. */
+.aod-cd-kpi,.aod-cd-todo-tile,.aod-cd-chartcard,.aod-cd-tablewrap,.aod-cd-form,
+.aod-cd-panel,.aod-cd-pxcard,.aod-cd-member,.aod-cd-card,.aod-cd-alert,
+.aod-cd-lp-block,.aod-cd-soon,.aod-cd-bulkbar{box-shadow:var(--cd-shadow-rest)}
 
 /* ── Boutons ───────────────────────────────────────────────────────────────
    L'action principale portait l'accent mais restait à plat, au même niveau que
@@ -2658,10 +4020,27 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-kpi__lab{font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);text-transform:uppercase;letter-spacing:.05em}
 .aod-cd-kpi__val{font-size:var(--cd-fs-2xl);font-weight:800;line-height:1;letter-spacing:-.5px;color:var(--cd-ink);font-variant-numeric:tabular-nums}
 .aod-cd-kpi__cur{font-size:var(--cd-fs-md);font-weight:700;color:var(--cd-muted);margin-inline-start:3px}
-.aod-cd-kpi__delta{display:inline-flex;align-items:center;gap:var(--cd-sp-1);font-size:var(--cd-fs-xs);font-weight:700;font-variant-numeric:tabular-nums}
-.aod-cd-kpi__delta--up{color:var(--cd-ok)}
-.aod-cd-kpi__delta--down{color:var(--cd-bad)}
-.aod-cd-kpi__delta--flat{color:var(--cd-muted)}
+/* ── Le delta devient une PASTILLE (2026-08-07) ──────────────────────
+   Une hausse et une baisse ne se distinguaient que par la COULEUR d'un texte de
+   11,5 px. C'est le repère le plus fragile qui soit : il disparaît pour un
+   daltonïsme rouge-vert, et il se dilue dès que l'œil balaie huit cartes. Le
+   fond doux redonne à l'information une FORME, pas seulement une teinte — et la
+   flèche (↑/↓, déjà rendue par le PHP) reste le porteur non chromatique.
+   🔒 Les couples (encre, fond doux) sont EXACTEMENT ceux des pastilles de statut
+   — `--cd-ok` sur `--cd-ok-soft`, `--cd-bad` sur `--cd-bad-soft` — dont le
+   contraste est déjà mesuré par `test-contraste.php`. On ne crée aucun couple
+   nouveau : c'est ce qui rend ce changement gratuit du point de vue des portes.
+   ⚠️ Le cas PLAT garde `--cd-bg` : une absence de variation ne doit pas se
+   colorer, sinon les trois états redeviennent trois taches et le regard ne trie
+   plus rien. C'est la même règle que « le zéro se tait », deux blocs plus haut. */
+.aod-cd-kpi__delta{
+	display:inline-flex;align-items:center;gap:var(--cd-sp-1);align-self:flex-start;
+	padding:var(--cd-sp-1) var(--cd-sp-2);border-radius:var(--cd-r-pill);
+	font-size:var(--cd-fs-xs);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1;
+}
+.aod-cd-kpi__delta--up{color:var(--cd-ok);background:var(--cd-ok-soft)}
+.aod-cd-kpi__delta--down{color:var(--cd-bad);background:var(--cd-bad-soft)}
+.aod-cd-kpi__delta--flat{color:var(--cd-muted);background:var(--cd-bg)}
 .aod-cd-kpi__vs{color:var(--cd-muted);font-weight:600;font-size:var(--cd-fs-xs)}
 
 /* ---- Pastille de statut sémantique (canonique) -------------------------- */
@@ -2733,7 +4112,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 
 /* ---- Bouton : variante fantôme + état de chargement --------------------- */
 .aod-cd-btn--ghost{background:none;border-color:transparent;color:var(--cd-muted)}
-.aod-cd-btn--ghost:hover{background:var(--cd-line-2);color:var(--cd-ink);border-color:transparent}
+.aod-cd-btn--ghost:hover{background:var(--cd-accent-wash);color:var(--cd-ink);border-color:transparent}
 .aod-cd-btn.is-loading{position:relative;color:transparent!important;pointer-events:none}
 .aod-cd-btn.is-loading::after{
 	content:"";position:absolute;top:50%;left:50%;width:15px;height:15px;margin:-8px 0 0 -8px;
@@ -2772,10 +4151,72 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-client__row b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .aod-cd-client__row .aod-cd-client__tel{flex:none}
 .aod-cd-client__row .aod-cd-order-detail{flex:none;margin-inline-start:auto}
+/* ── Bouton à ICÔNE SEULE (2026-08-08) ─────────────────────────────
+   Appeler et WhatsApp ont perdu leur libellé visible (cf. le commentaire de
+   `render_order_row`). Sans règle, `.aod-cd-btn` garde son rembourrage latéral
+   prévu pour du texte : l'icône flotterait au milieu d'un bouton trop large, et
+   le gain de largeur — la raison même du changement — serait perdu.
+   Le bouton devient donc CARRÉ : on écrit sa largeur égale à sa hauteur au lieu
+   d'un rembourrage symétrique, pour qu'il reste carré quelle que soit la taille
+   du glyphe. */
+.aod-cd-btn--ico{
+	flex:none;padding-inline:0;width:32px;justify-content:center;
+}
+.aod-cd-btn--ico .aod-cd-i{margin:0}
+.aod-cd-client__row .aod-cd-btn--ico{flex:none}
 .aod-cd-client__tel{color:var(--cd-muted);font-size:var(--cd-fs-sm);font-variant-numeric:tabular-nums;text-decoration:none}
 .aod-cd-client__tel:hover{color:var(--cd-ink);text-decoration:underline}
-.aod-cd-call-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+/* 🔁 2026-08-08 — CE RANG PORTE MAINTENANT LE NUMÉRO, et l'équilibre des deux
+   rangs est une MESURE, pas une préférence. Mesuré fenêtre écrasée, la colonne
+   Client réclamait **414 px** sur 1 231 pour le tableau entier — elle à elle
+   seule un tiers de la barre de défilement dont l'owner ne veut pas.
+   🔴 J'avais d'abord tout mis sur UN rang, en pensant qu'un bouton à icône
+   prendrait moins de place. La mesure a dit l'inverse : 1 148 → 1 228 px. Fondre
+   deux rangs en un transforme un `max(rang 1, rang 2)` en une SOMME, et le gain
+   sur les libellés ne compensait pas. *Une intuition de largeur se vérifie ; en
+   flex, deux petits objets sur deux lignes coûtent moins qu'un seul sur une.*
+   Les deux rangs sont donc répartis pour que leurs minimums se ressemblent :
+   le nom (compressible, ellipse) avec « Détail » en haut, le numéro avec ses deux
+   gestes en bas. `align-items:center` aligne le numéro sur les pastilles. */
+.aod-cd-call-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+.aod-cd-call-actions .aod-cd-client__tel{margin-inline-end:var(--cd-sp-1)}
+/* ── Les montants s'alignent sur leur FIN (2026-08-08) ─────────────────
+   La colonne était à `start` comme les onze autres — par défaut, jamais par
+   décision. `0.00 د.ج` et `2,500.00 د.ج` commençaient donc au même endroit et
+   finissaient où ils pouvaient : les unités ne tombaient pas sous les unités, et
+   comparer deux lignes demandait de LIRE chaque nombre au lieu d'en voir la forme.
+   Les chiffres tabulaires posés le 07 alignent les colonnes à l'INTÉRIEUR d'un
+   nombre ; ils ne peuvent rien pour deux nombres de longueurs différentes.
+   ⚠️ `end` et non `right` : en arabe le tableau s'inverse, et la colonne doit
+   s'aligner de l'autre côté sans règle miroir.
+   ⚠️ L'en-tête suit la colonne (`.aod-cd-th-total`), sinon le libellé flotterait
+   à gauche au-dessus de nombres calés à droite — pire que le défaut d'origine. */
+/* 🔴 `.aod-cd-th-total` seul ne suffisait PAS, et la capture l'a montré : le
+   libellé restait à gauche au-dessus de nombres calés à droite. `.aod-cd-table th`
+   déclare `text-align:start` et pèse (0,1,1) contre (0,1,0) — la règle générale
+   gagnait la cascade. Le sélecteur reprend donc l'élément, comme la règle qu'il
+   doit battre. Même leçon que le bloc de mouvement réduit en fin de fichier : une
+   surcharge doit peser AU MOINS autant que ce qu'elle surcharge. */
+.aod-cd-cell-total,
+.aod-cd-cell-amount,
+.aod-cd-cell-qty,
+.aod-cd-table th.aod-cd-th-total{text-align:end}
+/* ⚠️ `.aod-cd-cell-amount` (montant d'un panier abandonné) et `.aod-cd-cell-qty`
+   rejoignent la règle le 2026-08-08. Le premier existait dans le balisage depuis
+   la 43.6 et **aucune règle CSS ne le lisait** — une classe posée pour plus tard,
+   qui n'a jamais servi à rien. Sa colonne restait donc à gauche pendant que sa
+   jumelle de Commandes s'alignait à droite : deux tableaux qui montrent la même
+   nature de donnée et ne la traitent pas pareil.
+   ⚠️ `.aod-cd-th-total` sert les DEUX tableaux, son nom vient du premier arrivé.
+   Un troisième nom pour la même décision coûterait plus qu'il ne dirait. */
 .aod-cd-cell-total{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Hiérarchie de la ligne (2026-08-06) : neuf colonnes portaient la MÊME encre,
+   donc le même poids — l'œil n'avait aucun point d'entrée. Ce qu'on lit d'abord
+   (numéro, client, total, statut) garde `--cd-ink` ; ce qu'on ne consulte qu'une
+   fois la ligne trouvée passe en `--cd-muted`, qui tient AA sur les trois fonds
+   de la table (carte, zébrure, survol). Aucun contraste n'est sacrifié : c'est
+   le gris de TEXTE, pas `--cd-soft` qui est réservé au décor. */
+.aod-cd-cell-assigned{color:var(--cd-muted)}
 
 /* ---- Tonalités d'icône des KPI ------------------------------------------ */
 /* `t-accent` = pastille SANS signification, qui prend la teinte du client.
@@ -2853,13 +4294,39 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
  * colonne « Note » n'existe plus (la note du confirmateur est un champ du volet
  * d'édition). Il était l'EXEMPLE qui justifiait la règle du `min-width` ci-dessus ;
  * la règle reste vraie, et `.aod-cd-page` la porte toujours — c'est aujourd'hui le
- * seul bouton sans libellé du tableau de bord.                               */
+ * seul bouton sans libellé du tableau de bord.
+ *
+ * 🔴 `.aod-cd-carriersel-btn` REJOINT LA LISTE LE 2026-08-08, et il n'aurait
+ * jamais dû en être absent : c'est le QUATRIÈME déclencheur de liste maison du
+ * tableau de bord, jumeau exact des trois lignes qui le précèdent (même peau,
+ * même JS, même rôle). Mesuré à 390 px avant correction : **149 × 34 px** —
+ * c'est-à-dire 10 px sous la cible tactile que la 46.6 a posée pour tous ses
+ * frères, sur le contrôle qui choisit le TRANSPORTEUR d'une commande.
+ * ⚠️ La 46.6 avait recensé 530 cibles et n'a pas vu celle-ci : elle est arrivée
+ * avec la 47.1, en octobre du même code, en recopiant la peau de ses jumeaux —
+ * mais pas leur ligne dans cette liste-ci, qui vit 2 700 lignes plus bas.
+ * *Copier un composant en copie la peau, jamais ses inscriptions ailleurs.*
+ * 🚨 IL RESTE UN CINQUIÈME MEMBRE HORS LISTE, et il est laissé tel quel
+ * SCIEMMENT : `.aod-cd-csel-btn` (le select maison générique) est à ~41 px au
+ * pouce partout où il paraît — filtres de l'Accueil, formulaires, barre
+ * d'actions groupées. L'ajouter ici est probablement juste, mais ça touche des
+ * écrans qui n'ont pas été mesurés dans cette passe ; ça mérite sa propre
+ * vérification, pas un ajout à l'aveugle en marge d'une retouche de tableau. */
 @media(max-width:780px){
 	.aod-cd-btn,
 	.aod-cd-seg__btn,
 	.aod-cd-statussel-btn,
 	.aod-cd-assignsel-btn,
+	.aod-cd-carriersel-btn,
 	.aod-cd-leadassignsel-btn{min-height:44px}
+	/* 🔁 `.aod-cd-btn--ico` REJOINT `.aod-cd-page` LE 2026-08-08, et le
+	   commentaire ci-dessus est à relire avec lui : il annonçait `.aod-cd-page`
+	   comme « le seul bouton sans libellé du tableau de bord », ce qui a cessé
+	   d'être vrai le jour où Appeler et WhatsApp sont passés en icônes. La règle
+	   qu'il énonce, elle, n'a pas bougé : le texte donne déjà 44 px de large
+	   partout ailleurs, un glyphe non. Sans cette ligne, la cible tactile ferait
+	   32 px de large — sous le seuil, et la porte `rtl` le dirait. */
+	.aod-cd-btn--ico{width:44px}
 	.aod-cd-page{height:44px;min-width:44px}
 }
 
@@ -2897,15 +4364,18 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-pxcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}
 @media(max-width:820px){.aod-cd-pxcards{grid-template-columns:1fr}}
 .aod-cd-pxcard{
-	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
 	overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease;
 }
 .aod-cd-pxcard.is-on{border-color:var(--cd-ok);box-shadow:var(--cd-shadow)}
 /* Pas de `flex-wrap` : sur « Meta — Facebook & Instagram », la pastille passait à
    la ligne sous le nom et l'en-tête devenait deux fois plus haut que les autres. */
+/* Même correctif que `.aod-cd-panel__head` (cf. sa note) : un token de TRAIT ne sert
+   pas de surface. Les deux en-têtes sont le même objet à deux endroits ; ne corriger
+   que celui qu'on regardait aurait recréé la divergence à l'identique. */
 .aod-cd-pxcard__head{
 	display:flex;align-items:center;gap:10px;
-	padding:14px 16px;border-bottom:1px solid var(--cd-line);background:var(--cd-line-2);
+	padding:14px 16px;border-bottom:1px solid var(--cd-line);background:var(--cd-bg);
 }
 .aod-cd-pxcard__ic{
 	width:34px;height:34px;flex:0 0 34px;border-radius:var(--cd-r-sm);
@@ -2919,7 +4389,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-pxcard__name{font-weight:800;font-size:var(--cd-fs-md);color:var(--cd-ink);min-width:0}
 /* La pastille se colle à la fin de la ligne — `margin-inline-start` suit le RTL. */
 .aod-cd-px-on,.aod-cd-px-off{margin-inline-start:auto;flex:0 0 auto}
-.aod-cd-pxcard__body{padding:16px}
+.aod-cd-pxcard__body{padding:var(--cd-sp-4)}
 .aod-cd-pxcard__body .aod-cd-field{margin:0}
 .aod-cd-pxcard__body .aod-cd-field + .aod-cd-field{margin-top:14px}
 
@@ -2954,13 +4424,22 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* Né de la carte WhatsApp (5.6), généralisé en 5.7 : « Profil » et « Sécurité »
    sont exactement le même objet — un en-tête titré et un corps de champs. */
 .aod-cd-panel{
-	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
 	overflow:hidden;
 }
 .aod-cd-panel--narrow{max-width:720px}
+/* 🔁 L'EN-TÊTE PRENAIT `--cd-line-2`, C'EST-À-DIRE UNE COULEUR DE TRAIT COMME
+   SURFACE (corrigé le 2026-08-07). Le token existe pour border les objets ; il se
+   trouvait avoir la bonne clarté, donc il a servi de fond — et il ne suivait plus
+   l'accent du client, seul aplat gris franc au milieu d'un écran teinté.
+   `--cd-bg` est LE token de ce rôle, et son commentaire le dit mot pour mot : « la
+   surface CREUSÉE à l'intérieur des cartes — zébrures de tableau, EN-TÊTES,
+   encarts ». Un en-tête de panneau est exactement cela.
+   🚨 *Un token choisi pour sa valeur au lieu de son rôle marche jusqu'au jour où la
+   valeur bouge — et ce jour-là, rien ne dit pourquoi c'était faux.* */
 .aod-cd-panel__head{
 	display:flex;align-items:center;gap:10px;
-	padding:14px 16px;border-bottom:1px solid var(--cd-line);background:var(--cd-line-2);
+	padding:14px 16px;border-bottom:1px solid var(--cd-line);background:var(--cd-bg);
 }
 .aod-cd-panel__ic{
 	width:34px;height:34px;flex:0 0 34px;border-radius:var(--cd-r-sm);
@@ -2968,7 +4447,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	font-size:16px;line-height:1;background:var(--cd-ok-soft);
 }
 .aod-cd-panel__name{font-weight:800;font-size:var(--cd-fs-md);color:var(--cd-ink)}
-.aod-cd-panel__body{padding:16px}
+.aod-cd-panel__body{padding:var(--cd-sp-4)}
 .aod-cd-panel__body .aod-cd-field{margin-top:14px}
 .aod-cd-panel__body > .aod-cd-field:first-child,
 .aod-cd-panel__body > .aod-cd-row2:first-child{margin-top:0}
@@ -2997,13 +4476,13 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-members{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-top:18px}
 .aod-cd-member{
 	display:flex;flex-direction:column;gap:12px;
-	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
-	padding:16px;transition:border-color .18s ease,box-shadow .18s ease;
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+	padding:var(--cd-sp-4);transition:border-color .18s ease,box-shadow .18s ease;
 }
 .aod-cd-member:hover{border-color:var(--cd-soft);box-shadow:var(--cd-shadow)}
 /* Un compte désactivé ne peut plus se connecter : la carte doit le dire au premier
    coup d'œil, pas seulement dans sa pastille. */
-.aod-cd-member.is-off{background:var(--cd-line-2)}
+.aod-cd-member.is-off{background:var(--cd-bg)}
 .aod-cd-member.is-off .aod-cd-member__av{background:var(--cd-line);color:var(--cd-muted)}
 .aod-cd-member__top{display:flex;align-items:center;gap:12px}
 .aod-cd-member__av{
@@ -3079,7 +4558,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-lp-onoff .aod-cd-note{margin-top:6px;color:var(--cd-muted)}
 
 .aod-cd-lp-blocks{display:flex;flex-direction:column;gap:var(--cd-sp-3)}
-.aod-cd-lp-block{border:1px solid var(--cd-line);border-radius:var(--cd-r-md);background:var(--cd-card);overflow:hidden}
+.aod-cd-lp-block{border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);background:var(--cd-card);overflow:hidden}
 .aod-cd-lp-head{
 	display:flex;align-items:center;gap:var(--cd-sp-2);
 	padding:var(--cd-sp-2) var(--cd-sp-3);background:var(--cd-bg);border-bottom:1px solid var(--cd-line);
@@ -3094,7 +4573,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* Cibles tactiles : 36px minimum, le gérant règle sa boutique au téléphone. */
 .aod-cd-lp-mv,.aod-cd-lp-del,.aod-cd-lp-delitem{
 	display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:#fff;
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);
 	color:var(--cd-ink);font-size:15px;line-height:1;cursor:pointer;transition:background-color .15s var(--cd-ease-out),border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out),color .15s var(--cd-ease-out);
 }
 .aod-cd-lp-mv:hover,.aod-cd-lp-del:hover,.aod-cd-lp-delitem:hover{border-color:var(--cd-ink);background:#fafafa}
@@ -3192,6 +4671,206 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-lp-on{margin-inline-start:6px;color:var(--cd-ok);font-size:10px;line-height:1}
 .aod-cd-btn.is-on{border-color:var(--cd-ink)}
 
+/* ============================================================================
+   ACCUEIL — mise en scène (2026-08-05, demande owner : « plus moderne, plus
+   designé, plus d'animations, en respectant ses couleurs »)
+
+   🎨 « EN RESPECTANT SES COULEURS » EST LA CONTRAINTE QUI DÉCIDE DE TOUT ICI.
+   Pas une seule teinte n'est écrite dans ce bloc : tout descend de l'accent du
+   Personnalisateur, via `--cd-accent-wash` (la seule surface teintée dont le
+   contrat inclut `--cd-muted`, cf. son commentaire de déclaration) et
+   `rgba(var(--cd-accent-rgb),…)` pour les traits décoratifs. Un dégradé « joli »
+   écrit en dur passerait sur ce clone et se ferait démonter par `run.sh
+   contraste` sur les six accents hostiles — ou pire, ne se ferait pas démonter
+   et sortirait le tableau de bord de la marque du client.
+
+   🔒 PORTÉE. Tout est accroché à `.aod-cd-content[data-section="home"]`, sauf ce
+   qui touche des composants que l'Accueil est SEUL à rendre (les tuiles, le
+   graphe). Les KPI, eux, servent aussi à Stock : ce qui les concerne reste donc
+   volontairement au niveau du composant — un survol qui répondrait ici et pas
+   là serait exactement la dérive que la Phase 46 a passé huit étapes à fermer.
+
+   ⚠️ TOUT CE QUI BOUGE ICI EST NEUTRALISÉ EN FIN DE FICHIER, sélecteur repris au
+   caractère près. Ce n'est pas une politesse : `test-mouvement-reduit.php` R3
+   refuse le contraire, et il a été écrit parce que la promesse en toutes lettres
+   qui tenait lieu de garde-fou a été enfreinte trois fois en un jour.
+   ========================================================================== */
+
+/* Les deux mouvements nouveaux. `aod-cd-fade` (fin de fichier) sert le reste :
+   en déclarer un troisième qui ferait la même chose serait le mode d'échec
+   nommé en 46.4 — deux noms vivants pour une seule valeur. */
+@keyframes aod-cd-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes aod-cd-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+
+/* ---- La cascade d'entrée -------------------------------------------------
+   L'écran arrivait d'un bloc : douze surfaces peintes au même instant, donc
+   aucune lecture proposée. Elles se posent maintenant dans l'ORDRE OÙ ON LES
+   LIT — l'en-tête, ce qu'il y a à traiter, les réglages, les chiffres, la
+   courbe. C'est de la hiérarchie qui se joue dans le temps, là où l'espace est
+   déjà saturé.
+   ⏱️ Le dernier retardement est BORNÉ, et c'est une borne, pas un réglage :
+   au-delà, on ne met pas en scène un tableau de bord — on fait attendre
+   quelqu'un qui vient chercher un chiffre. Le gérant ouvre ces écrans vingt fois
+   par jour. (La valeur était de 0,55 s tant que la cascade nommait ses dix
+   composants un par un ; depuis qu'elle suit la structure, la borne est le
+   PLAFOND du dernier rang — voir juste en dessous.)
+   `both` porte l'état INITIAL autant que le final : sans lui, une carte
+   retardée de 0,3 s s'affiche pleine, disparaît, puis revient. */
+/* 🔁 ÉTENDUE AUX DOUZE SECTIONS LE 2026-08-06, ET LA LISTE NOMMÉE A DISPARU.
+   Elle énumérait dix composants **de l'Accueil** avec un retard chacun. Deux
+   défauts, et le second est celui que le dépôt combat depuis la Phase 46 :
+     · onze écrans arrivaient toujours d'un bloc, alors que le composant qu'ils
+       rendent (`page_head()`, les cartes, les tableaux) est le MÊME ;
+     · toute page future — un onglet, une section — serait née hors de la liste,
+       donc sans mise en scène, sans que rien ne le signale. *Une liste écrite à
+       la main hérite des angles morts du jour où on l'a écrite.*
+   On ne nomme donc plus les composants : on suit la STRUCTURE. Chaque enfant
+   direct de la coque monte à son rang de lecture, quelle que soit la section, et
+   ça vaut pour celles qui n'existent pas encore. Vérifié sur les douze : elles
+   ont entre 2 et 7 blocs de premier niveau.
+   ⏱️ Le pas est de 0,05 s et le dernier rang est PLAFONNÉ à 0,25 s. Le plafond
+   est la vraie décision : sans lui, une page à quinze blocs ferait attendre une
+   seconde le contenu du bas. La borne d'origine (« la cascade entière tient en
+   0,55 s ») devient ainsi une propriété de la règle, plus une valeur recopiée
+   sur chaque ligne. */
+.aod-cd-content > *{animation:aod-cd-rise .42s var(--cd-ease-out) both}
+.aod-cd-content > *:nth-child(2){animation-delay:.05s}
+.aod-cd-content > *:nth-child(3){animation-delay:.10s}
+.aod-cd-content > *:nth-child(4){animation-delay:.15s}
+.aod-cd-content > *:nth-child(5){animation-delay:.20s}
+.aod-cd-content > *:nth-child(n+6){animation-delay:.25s}
+
+/* Les COLLECTIONS — le second étage, et il n'est pas décoratif. Une grille de
+   huit cartes est UN enfant direct : sans lui, les tuiles de l'Accueil, les
+   quatre chiffres de Stock, les régies de Pixels et les blocs repliables de
+   Livraison monteraient d'un seul bloc, c'est-à-dire sans cascade. Les six
+   conteneurs sont nommés (pas leurs enfants) : c'est la grille qui décide qu'elle
+   en est une, pas la carte.
+   ⚠️ `.aod-cd-tracking` n'est PAS une grille, et il est là quand même : Suivi
+   enveloppe sa page entière dans un `div`, si bien que ses blocs sont un cran
+   plus bas que partout ailleurs — le premier étage ne voyait donc qu'un seul
+   enfant et animait la page d'un bloc. Mesuré, pas supposé (relevé du squelette
+   des douze sections). C'est le prix d'une règle structurelle : elle suit le
+   balisage, donc elle expose les endroits où il diverge.
+   Les deux étages se COMPOSENT sans se doubler : le retard d'un enfant est
+   absolu depuis le chargement, pas relatif à son conteneur — la 8ᵉ carte part à
+   0,28 s qu'elle soit dans le 2ᵉ ou le 5ᵉ bloc de la page. */
+.aod-cd-todo > *,
+.aod-cd-kpis > *,
+.aod-cd-pxcards > *,
+.aod-cd-cats > *,
+.aod-cd-tracking > *,
+.aod-cd-acc-form > .aod-cd-acc{animation:aod-cd-rise .42s var(--cd-ease-out) both}
+.aod-cd-todo > *:nth-child(2),.aod-cd-kpis > *:nth-child(2),.aod-cd-pxcards > *:nth-child(2),.aod-cd-cats > *:nth-child(2),.aod-cd-tracking > *:nth-child(2),.aod-cd-acc-form > .aod-cd-acc:nth-child(2){animation-delay:.04s}
+.aod-cd-todo > *:nth-child(3),.aod-cd-kpis > *:nth-child(3),.aod-cd-pxcards > *:nth-child(3),.aod-cd-cats > *:nth-child(3),.aod-cd-tracking > *:nth-child(3),.aod-cd-acc-form > .aod-cd-acc:nth-child(3){animation-delay:.08s}
+.aod-cd-todo > *:nth-child(4),.aod-cd-kpis > *:nth-child(4),.aod-cd-pxcards > *:nth-child(4),.aod-cd-cats > *:nth-child(4),.aod-cd-tracking > *:nth-child(4),.aod-cd-acc-form > .aod-cd-acc:nth-child(4){animation-delay:.12s}
+.aod-cd-todo > *:nth-child(5),.aod-cd-kpis > *:nth-child(5),.aod-cd-pxcards > *:nth-child(5),.aod-cd-cats > *:nth-child(5),.aod-cd-tracking > *:nth-child(5),.aod-cd-acc-form > .aod-cd-acc:nth-child(5){animation-delay:.16s}
+.aod-cd-todo > *:nth-child(6),.aod-cd-kpis > *:nth-child(6),.aod-cd-pxcards > *:nth-child(6),.aod-cd-cats > *:nth-child(6),.aod-cd-tracking > *:nth-child(6),.aod-cd-acc-form > .aod-cd-acc:nth-child(6){animation-delay:.20s}
+.aod-cd-todo > *:nth-child(7),.aod-cd-kpis > *:nth-child(7),.aod-cd-pxcards > *:nth-child(7),.aod-cd-cats > *:nth-child(7),.aod-cd-tracking > *:nth-child(7),.aod-cd-acc-form > .aod-cd-acc:nth-child(7){animation-delay:.24s}
+.aod-cd-todo > *:nth-child(n+8),.aod-cd-kpis > *:nth-child(n+8),.aod-cd-pxcards > *:nth-child(n+8),.aod-cd-cats > *:nth-child(n+8),.aod-cd-tracking > *:nth-child(n+8),.aod-cd-acc-form > .aod-cd-acc:nth-child(n+8){animation-delay:.28s}
+
+/* ---- Le TABLEAU se pose LIGNE PAR LIGNE (2026-08-06) ----------------------
+   Un corps de tableau est une collection, comme une grille de cartes : ce sont
+   ses lignes qui entrent, pas le bloc.
+
+   🚨 IL FAUT DONC LE RETIRER DU PREMIER ÉTAGE, et la raison n'est pas
+   esthétique. Les deux animations sont IMBRIQUÉES : une ligne à `opacity:1`
+   dans une carte encore à `opacity:0` reste invisible — la cascade des lignes
+   serait jouée pendant que personne ne peut la voir, puis tout apparaîtrait
+   d'un coup à la fin. Pire, sur Commandes ou Produits le tableau EST le contenu
+   de la page : le faire attendre le rang 6 de la cascade retarde ce qu'on est
+   venu lire. Il arrive donc tout de suite, et se remplit.
+   ⏱️ Pas de 0,03 s (deux fois plus serré que les blocs) et plafond au rang 8 :
+   une page de 30 commandes ne peut pas défiler pendant une seconde. */
+.aod-cd-content > .aod-cd-tablewrap{animation:none}
+.aod-cd-table tbody tr{animation:aod-cd-rise .42s var(--cd-ease-out) both}
+.aod-cd-table tbody tr:nth-child(2){animation-delay:.03s}
+.aod-cd-table tbody tr:nth-child(3){animation-delay:.06s}
+.aod-cd-table tbody tr:nth-child(4){animation-delay:.09s}
+.aod-cd-table tbody tr:nth-child(5){animation-delay:.12s}
+.aod-cd-table tbody tr:nth-child(6){animation-delay:.15s}
+.aod-cd-table tbody tr:nth-child(7){animation-delay:.18s}
+.aod-cd-table tbody tr:nth-child(n+8){animation-delay:.21s}
+
+/* ---- L'en-tête devient un bandeau ---------------------------------------
+   « Bonjour <prénom> » était du texte nu posé sur le fond de page, au-dessus de
+   quatre tuiles en relief : le premier élément de l'écran était aussi le seul
+   sans forme. Il devient une surface — la seule de la page à porter la teinte du
+   client en aplat, ce qui la désigne comme l'entrée.
+   🔒 `--cd-accent-wash` et RIEN D'AUTRE comme fond. C'est le seul token de
+   surface teintée dont le contrat couvre `--cd-muted` (le sous-titre en vit), et
+   il est dérivé de l'accent par `wash()` — donc juste pour un accent sombre
+   comme pour un jaune très clair.
+   🚫 PAS de halo décoratif posé DERRIÈRE le texte, et c'est une décision.
+   Un dégradé radial d'accent en coin de bandeau donne exactement l'effet
+   recherché, mais il passe sous le sous-titre dès que la fenêtre rétrécit : on
+   troquerait une jolie page de démonstration contre un rapport de contraste qui
+   dépend de la largeur du navigateur, et qu'aucune porte ne mesure dans cet
+   état-là. Le filet d'accent, lui, vit sur une arête où aucun texte ne va. */
+/* 🔁 ÉTENDU AUX DOUZE SECTIONS LE 2026-08-06 (demande owner : « fais pour les
+   autres pages ce que tu as fait pour l'Accueil »). Le bandeau était accroché à
+   `[data-section="home"]` alors que `page_head()` — le composant unifié de la
+   Phase 5 — imprime EXACTEMENT le même balisage sur les douze sections. Le garder
+   sur une seule, c'était rejouer le défaut que la Phase 46 a passé huit étapes à
+   fermer : une décision de design appliquée une fois, et onze écrans qui en
+   divergent sans que personne ne l'ait choisi. Rien d'autre ne change — même
+   dégradé, même filet, mêmes tokens. */
+.aod-cd-content .aod-cd-pagehead{
+	position:relative;overflow:hidden;
+	background:linear-gradient(135deg,var(--cd-accent-wash),var(--cd-card));
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+	padding:var(--cd-sp-5) var(--cd-sp-6);
+	box-shadow:var(--cd-shadow-rest);
+}
+.aod-cd-content .aod-cd-pagehead::before{
+	content:"";position:absolute;inset-block-start:0;inset-inline:0;height:3px;
+	background:linear-gradient(to right,var(--cd-accent),rgba(var(--cd-accent-rgb),0));
+}
+/* Le sens de lecture emporte le filet : en arabe il part de la droite, comme le
+   texte. Un dégradé figé sur `to right` pointerait à contresens dans une langue
+   sur deux — le défaut que la 45.5 a payé au pixel près sur le rail. */
+html[dir="rtl"] .aod-cd-content .aod-cd-pagehead::before{
+	background:linear-gradient(to left,var(--cd-accent),rgba(var(--cd-accent-rgb),0));
+}
+
+/* ---- Tuiles « à traiter » : le survol prend la teinte de l'alerte --------
+   La tuile portait déjà `--tone` sur sa pastille et son liseré ; sa SURFACE
+   restait neutre au survol. Elle prend maintenant le fond doux de sa propre
+   tonalité — la même variable, à l'endroit qui manquait —, et sa pastille
+   grossit très légèrement. Aucune couleur nouvelle : `--tone-soft` est déjà
+   posé en ligne par le PHP, avec son repli d'accent. */
+.aod-cd-todo-tile:hover{background:var(--tone-soft,var(--cd-accent-soft))}
+.aod-cd-todo-tile__ic{transition:transform .18s var(--cd-ease-out)}
+.aod-cd-todo-tile:hover .aod-cd-todo-tile__ic{transform:scale(1.08)}
+
+/* ---- KPI : la carte principale porte la marque, les autres répondent -----
+   `--cd-kpi--primary` avait son liseré d'accent depuis le 2026-08-04 ; elle
+   reste une carte blanche pour tout le reste. Le dégradé la rattache à
+   l'en-tête, avec la MÊME recette (wash → carte) : les deux surfaces qui
+   comptent sur cet écran se lisent alors comme une seule famille.
+   ⚠️ La pastille des sept autres cartes ne bouge PAS de couleur : elle porte du
+   SENS (rouge = annulée, ambre = en attente). Ce qu'on leur ajoute est du
+   mouvement, pas de la teinte — l'inverse rendrait le sémantique illisible,
+   c'est écrit noir sur blanc au-dessus de `$cards`. */
+.aod-cd-kpi--primary{background:linear-gradient(135deg,var(--cd-accent-wash),var(--cd-card))}
+.aod-cd-kpi__ic{transition:transform .18s var(--cd-ease-out)}
+.aod-cd-kpi:hover .aod-cd-kpi__ic{transform:scale(1.08)}
+
+/* ---- Le graphe se DESSINE ------------------------------------------------
+   La courbe apparaissait faite. Elle se trace maintenant de gauche à droite,
+   l'aire et les points arrivant derrière elle — c'est-à-dire dans l'ordre où la
+   donnée se lit, du début de la période vers aujourd'hui.
+   🔒 Le pointillé tient grâce au `pathLength="1"` posé sur le tracé par le PHP :
+   la longueur est normalisée côté SVG, donc aucun JavaScript n'a à mesurer la
+   courbe. L'animation existe même si le script ne se charge pas, et le tracé
+   reste ENTIER si l'animation, elle, ne joue pas (`forwards` + neutralisation
+   qui rend `stroke-dasharray` à `none`). Une courbe à moitié dessinée serait un
+   graphique FAUX — c'est le seul endroit de ce bloc où le mouvement touche à de
+   la donnée, d'où la double précaution. */
+.aod-cd-line{stroke-dasharray:1;stroke-dashoffset:1;animation:aod-cd-draw 1s var(--cd-ease-out) .12s forwards}
+.aod-cd-area{animation:aod-cd-fade .5s var(--cd-ease-out) .5s both}
+.aod-cd-dot{animation:aod-cd-fade .4s var(--cd-ease-out) .85s both}
+
 /* ---- Mouvement réduit : la zone principale (Phase 16) -------------------- *
  * 🚨 CE BLOC DOIT RESTER EN FIN DE FICHIER, et ses sélecteurs doivent être
  * AUSSI SPÉCIFIQUES que ceux qu'ils annulent (d'où les `:not(:disabled)`
@@ -3240,6 +4919,15 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	   transformation — c'est donc elle qui part. Ce cas est hors du périmètre de
 	   R3 dans `test-mouvement-reduit.php`, et le test le dit. */
 	.aod-cd-csel-caret{transition:none}
+	/* Le compteur de la barre groupée (2026-08-08) : `aod-cd-pop` porte un
+	   translateY de 8 px. Le changement d'ÉTAT de la barre, lui, RESTE — c'est du
+	   fond et de la bordure, pas du trajet.
+	   🔴 J'avais d'abord écrit `animation:none`. R1 de `test-mouvement-reduit.php`
+	   l'a refusé, et sa raison est plus fine que ma règle : couper l'animation
+	   couperait aussi le FONDU, et le nombre apparaîtrait d'un coup — l'état même
+	   que la Phase 17 a corrigé. On bascule donc sur `aod-cd-fade`, qui ne fait que
+	   l'opacité : le compteur ne glisse plus, il continue d'apparaître en douceur. */
+	.aod-cd-bulkbar:not(.is-vide) .aod-cd-bulkbar-n{animation:aod-cd-fade .26s var(--cd-ease-out) both}
 	/* 🔴 QUATRE CAS DE PLUS, et ceux-là ont été trouvés par le CLIQUET, pas à l'œil
 	   — dans la minute qui a suivi son écriture. C'est l'argument de son existence :
 	   trois défauts avaient été repérés à la main, il en restait quatre.
@@ -3257,6 +4945,19 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	   instantanée. Les deux sélecteurs sont posés : celui du survol coupe l'entrée,
 	   celui du repos coupe la sortie. */
 	.aod-cd-modal-box{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* 🎬 La cascade du corps de modale, neutralisée : même sélecteur AU CARACTÈRE
+	   PRÈS que celui qui la pose (c'est ce que R1 compare), et les retards remis à
+	   zéro — un fondu échelonné sur 200 ms reste une chorégraphie. */
+	.aod-cd-modal-body > *{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* 🎬 Dépliage d'une section de formulaire produit + arrivée d'une offre.
+	   Sélecteurs recopiés au CARACTÈRE PRÈS de ceux qui posent `aod-cd-pop` —
+	   c'est la comparaison exacte que fait R1. */
+	.aod-cd-acc[open] .aod-cd-acc-body{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	.aod-cd-offer-row{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	.aod-cd-modal-body > :nth-child(2),
+	.aod-cd-modal-body > :nth-child(3),
+	.aod-cd-modal-body > :nth-child(4),
+	.aod-cd-modal-body > :nth-child(n+5){animation-delay:0s}
 	.aod-cd-order-bulk-del:not(:disabled):active,
 	.aod-cd-lead-bulk-del:not(:disabled):active{transform:none}
 	.aod-cd-card::before,
@@ -3295,6 +4996,66 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	.aod-cd-assignsel-menu:not([hidden]),
 	.aod-cd-leadassignsel-menu:not([hidden]),
 	.aod-cd-carriersel-menu:not([hidden]),
+	.aod-cd-cal:not([hidden]),
 	.aod-cd-catdd-panel:not([hidden]){animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* ── Le calendrier (2026-08-06) ────────────────────────────────────────
+	   Le panneau lui-même est traité juste au-dessus, avec les cinq menus : il
+	   partage leur ouverture, il partage donc sa neutralisation. Restent les
+	   trois mouvements qui lui sont propres, et ils partent tous les trois.
+	   ⚠️ On ne les remplace PAS par `aod-cd-fade` : cette animation-là a une
+	   liste fermée (celle des surfaces qui glissent à l'ouverture), et
+	   `test-mouvement-reduit.php` R1 compare les deux listes à l'identique — un
+	   fondu de confort ajouté ici rendrait le cliquet rouge pour une raison
+	   qui n'a rien à voir avec l'accessibilité.
+	   ⚠️ Les deux surcharges RTL sont recopiées AU CARACTÈRE PRÈS : sans elles,
+	   `html[dir="rtl"] …` (0,3,2) reprendrait la cascade sur (0,2,0) et le mois
+	   continuerait de glisser EN ARABE SEULEMENT — le défaut exact du 2026-08-05. */
+	.aod-cd-cal__day{animation:none}
+	.aod-cd-cal__day.is-sel,
+	.aod-cd-cal__day.is-sel:hover{animation:none}
+	.aod-cd-cal__grid.is-next{animation:none}
+	.aod-cd-cal__grid.is-prev{animation:none}
+	html[dir="rtl"] .aod-cd-cal__grid.is-next{animation-name:none}
+	html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:none}
+	.aod-cd-cal__nav:active{transform:none}
+	/* ── Mise en scène des pages (2026-08-05, généralisée le 2026-08-06) ────
+	   La cascade d'entrée est du DÉPLACEMENT (10 px vers le haut) : elle part
+	   entièrement. On ne la remplace pas par un fondu — l'écran est déjà là au
+	   chargement, un fondu ne servirait qu'à retarder la lecture d'un chiffre.
+	   ⚠️ Les deux sélecteurs sont repris AU CARACTÈRE PRÈS de la règle qu'ils
+	   annulent. C'est la règle en tête de bloc, et c'est aussi ce que R3 de
+	   `test-mouvement-reduit.php` mesure : une liste « allégée » perdrait la
+	   cascade sans que rien ne le signale.
+	   🔎 Et la généralisation a REMPLACÉ dix sélecteurs par deux : la même
+	   décision, écrite une fois, couvre désormais douze sections au lieu d'une —
+	   c'est-à-dire qu'on ne peut plus oublier d'y neutraliser une page. */
+	.aod-cd-content > *{animation:none}
+	.aod-cd-todo > *,
+	.aod-cd-kpis > *,
+	.aod-cd-pxcards > *,
+	.aod-cd-cats > *,
+	.aod-cd-tracking > *,
+	.aod-cd-acc-form > .aod-cd-acc{animation:none}
+	.aod-cd-table tbody tr{animation:none}
+	/* Les deux pastilles qui grossissent au survol. Le fond doux de la tuile,
+	   lui, RESTE : ce n'est pas du mouvement, et l'interface doit continuer de
+	   répondre — c'est la distinction posée en tête de ce bloc depuis la 16. */
+	.aod-cd-todo-tile:hover .aod-cd-todo-tile__ic{transform:none}
+	.aod-cd-kpi:hover .aod-cd-kpi__ic{transform:none}
+	/* 🚨 LE GRAPHE EST LE SEUL CAS OÙ « NE PAS ANIMER » NE SUFFIT PAS. Couper
+	   l'animation seule laisserait `stroke-dasharray:1` avec un offset de 1 :
+	   la courbe serait INVISIBLE, c'est-à-dire un graphique qui ment, et
+	   uniquement chez quelqu'un ayant demandé moins d'animations. Le pointillé
+	   doit donc partir AVEC elle. */
+	.aod-cd-line{animation:none;stroke-dasharray:none}
+	.aod-cd-area,.aod-cd-dot{animation:none}
+	/* Le filet de l'onglet actif se déplie (scaleX 0 → 1) : le dépliement part,
+	   le filet reste. `animation:none` suffit et NE tombe PAS dans le piège du
+	   liseré des tuiles — ici l'état sans animation est `scaleX(1)`, soit le filet
+	   entier ; là-bas c'était l'inverse (le liseré serait resté affiché au repos,
+	   donc une information fausse). La différence est dans l'état par défaut, pas
+	   dans la forme de la règle : la lire à l'envers ferait un filet permanent
+	   d'un côté ou un filet absent de l'autre. */
+	.aod-cd-seg__btn.is-active::after{animation:none}
 }
 @keyframes aod-cd-fade{from{opacity:0}to{opacity:1}}

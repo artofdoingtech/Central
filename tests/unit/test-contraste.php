@@ -129,20 +129,45 @@ AOD_Test::group( 'Contraste — wash() : les surfaces teintées portent du texte
  * gérant : quatre fonds qui se teintent de l'accent du client ET portent du texte.
  *
  * Ce qu'ils portent n'est PAS seulement `--cd-ink`. C'est tout l'intérêt du test :
- * `--cd-muted` (#666666) vit dans ces cellules — prix barré, coût, variantes,
- * numéro de suivi, date d'une note — et c'est LUI qui fixe le plancher. Une
- * vérification faite sur la seule encre principale aurait été verte à tort ;
- * c'est exactement l'erreur qui a laissé la note du gérant sous AA.
+ * `--cd-muted` vit dans ces cellules — prix barré, coût, variantes, numéro de
+ * suivi, date d'une note — et c'est LUI qui fixe le plancher. Une vérification
+ * faite sur la seule encre principale aurait été verte à tort ; c'est exactement
+ * l'erreur qui a laissé la note du gérant sous AA.
  *
  * On appelle wash(), on ne recopie PAS sa formule : une copie ne verrait ni le
  * taux réel, ni ce qu'on ajoutera demain (même règle que side()).
+ *
+ * 🚨 LES ENCRES SONT LUES DANS LA FEUILLE DEPUIS LE 2026-08-06, plus recopiées.
+ * Elles l'étaient — `'--cd-muted' => '#666666'` — et le jour où l'échelle de
+ * surfaces a fait descendre ce gris à #4f4f4f, ce test a rendu quatre ROUGES en
+ * mesurant un couple qui n'existe plus nulle part à l'écran. Le sens inverse est
+ * pire et c'est lui qu'on ferme : un gris ÉCLAIRCI aurait produit des verts tout
+ * aussi faux, et personne n'aurait su que la garantie avait cessé.
+ * *Un test qui recopie une valeur du produit ne mesure le produit que jusqu'au
+ * jour où elle change — et ne dit pas lequel.*
  */
-$aod_encres = array(
-	'--cd-ink'   => '#181818',
-	'--cd-muted' => '#666666',
-	'--cd-ok'    => '#146c2e',
-	'--cd-bad'   => '#b42318',
+$aod_css_tokens = (string) file_get_contents( AOD_CD_PATH . 'assets/css/dashboard.css' );
+
+/** Valeur d'un token de couleur, lue dans le `:root` de la feuille. */
+function aod_test_token( $nom, $css, $repli ) {
+	return preg_match( '/' . preg_quote( $nom, '/' ) . '\s*:\s*(#[0-9a-fA-F]{6})/', $css, $m )
+		? strtolower( $m[1] ) : $repli;
+}
+
+$aod_encres    = array();
+$aod_enc_vides = array();
+foreach ( array( '--cd-ink', '--cd-muted', '--cd-ok', '--cd-bad' ) as $aod_enc_nom ) {
+	$aod_encres[ $aod_enc_nom ] = aod_test_token( $aod_enc_nom, $aod_css_tokens, '' );
+	if ( '' === $aod_encres[ $aod_enc_nom ] ) {
+		$aod_enc_vides[] = $aod_enc_nom;
+	}
+}
+AOD_Test::eq(
+	'',
+	implode( ' · ', $aod_enc_vides ),
+	sprintf( 'TÉMOIN : les 4 encres sont lues dans dashboard.css (%s)', implode( ' ', $aod_encres ) )
 );
+$aod_muted = $aod_encres['--cd-muted'];
 
 $w_worst  = 21.0;
 $w_accent = '';
@@ -181,7 +206,7 @@ AOD_Test::ok(
 // le défaut du template, et le vert de référence de la documentation.
 foreach ( array( '#000000', '#111827', '#7B1E3A', '#FFE21E', '#00A651' ) as $hex ) {
 	$fond  = AOD_CD_Customize::wash( $hex );
-	$ratio = aod_test_ratio( aod_test_lum_hex( $fond ), aod_test_lum_hex( '#666666' ) );
+	$ratio = aod_test_ratio( aod_test_lum_hex( $fond ), aod_test_lum_hex( $aod_muted ) );
 	AOD_Test::ok(
 		$ratio >= 4.5,
 		sprintf( 'Accent %s : surface %s, texte secondaire à %.2f:1 ≥ AA', $hex, $fond, $ratio )
@@ -192,14 +217,17 @@ foreach ( array( '#000000', '#111827', '#7B1E3A', '#FFE21E', '#00A651' ) as $hex
  * Le témoin de la RAISON D'ÊTRE. `--cd-accent-soft` existait déjà : sans cette
  * assertion, rien n'expliquerait pourquoi on a ajouté un second token, et un
  * futur contributeur les fusionnerait de bonne foi. Elle échouerait le jour où
- * quelqu'un rapprocherait WASH_MIX de 0.86 — et c'est le but.
+ * quelqu'un donnerait un plancher à `soft()` — et c'est le but.
+ *
+ * 🔁 On appelle `soft()` depuis le 2026-08-06 au lieu de recomposer
+ * `mix(noir, 0.86)`. Le taux ayant bougé à 0.74, la version recopiée mesurait une
+ * couleur MORTE et rougissait en annonçant un doublon qui n'existait pas.
+ * 🚨 *Trois tests ont recopié une valeur du produit ce jour-là, et les trois ont
+ * rougi pour une raison inventée le jour où elle a changé. La copie ne se voit
+ * pas quand elle est juste : elle se voit quand elle est déjà fausse.*
  */
-$soft_noir = AOD_Test::call_static(
-	'AOD_CD_Customize',
-	'to_hex',
-	array( AOD_Test::call_static( 'AOD_CD_Customize', 'mix', array( array( 0, 0, 0 ), 255, 0.86 ) ) )
-);
-$soft_ratio = aod_test_ratio( aod_test_lum_hex( $soft_noir ), aod_test_lum_hex( '#666666' ) );
+$soft_noir = AOD_CD_Customize::soft( '#000000' );
+$soft_ratio = aod_test_ratio( aod_test_lum_hex( $soft_noir ), aod_test_lum_hex( $aod_muted ) );
 AOD_Test::ok(
 	$soft_ratio < 4.5,
 	sprintf( 'Pourquoi -wash existe : -soft (%s) tombe à %.2f:1 sous du texte secondaire — insuffisant', $soft_noir, $soft_ratio ),

@@ -3,7 +3,7 @@
 // bascule RTL effective en arabe. Une capture est prise pour chaque échec.
 const path = require( 'path' );
 const fs = require( 'fs' );
-const { launch, login, ok, BASE, SHOTS, SECTIONS, sectionRendue, etatDonnees } = require( './lib.js' );
+const { launch, login, ok, BASE, SHOTS, SECTIONS, sectionRendue, etatDonnees, echecReseauHorsOrigine } = require( './lib.js' );
 
 // Le domaine du cookie doit suivre l'URL réelle du clone (pas toujours localhost).
 const HOST = new URL( BASE ).hostname;
@@ -28,6 +28,34 @@ const HOST = new URL( BASE ).hostname;
 	let cellulesClient = 0;
 	const SEME = '1' === process.env.AOD_D29_SEEDED;
 	const t = ( c, m, x ) => { if ( ! ok( c, m, x ) ) { fails++; } };
+
+	/* ── TÉMOIN DE SENS du filtre de console (2026-08-07) ──────────────────────
+	 * Cette porte ne juge plus les pannes de transport venues d'un autre domaine
+	 * (cf. `echecReseauHorsOrigine()` dans lib.js). Une exemption qui ne se vérifie
+	 * pas est un trou : on éprouve donc les DEUX branches ici, à chaque passage.
+	 *
+	 * 🚨 LA SECONDE ASSERTION EST LA PLUS IMPORTANTE. La première dit « le filtre
+	 * écarte bien ce qu'il doit écarter » ; la seconde dit « il n'écarte pas le
+	 * reste ». Sans elle, un filtre devenu trop large — un `startsWith` mal écrit,
+	 * une origine qui change — rendrait la porte AVEUGLE à nos propres 404 et
+	 * verte en permanence. C'est le mode d'échec le plus coûteux d'un garde-fou :
+	 * il ne tombe pas en panne, il devient complaisant.
+	 * 🔎 Écrit après avoir échoué à produire la contre-épreuve au navigateur (la
+	 * requête témoin ne partait pas) : *quand une preuve de bout en bout se dérobe,
+	 * on rend la règle éprouvable au lieu de se contenter de la moitié qu'on sait
+	 * montrer.* */
+	t(
+		echecReseauHorsOrigine( 'https://secure.gravatar.com/avatar/x?s=26', 'Failed to load resource: net::ERR_NAME_NOT_RESOLVED' ),
+		'TÉMOIN : une panne de transport HORS origine est écartée (gravatar de la barre d’admin)',
+		'le filtre ne reconnaît plus le cas pour lequel il existe'
+	);
+	t(
+		! echecReseauHorsOrigine( `${ BASE }/wp-content/plugins/aod-client-dashboard/assets/absent.css`, 'Failed to load resource: the server responded with a status of 404' )
+			&& ! echecReseauHorsOrigine( '', 'Uncaught TypeError: x is not a function' )
+			&& ! echecReseauHorsOrigine( 'https://exemple.test/x.js', 'Uncaught ReferenceError: y is not defined' ),
+		'🔴 TÉMOIN INVERSE : un 404 À NOUS, une exception sans URL et une erreur JS tierce restent JUGÉS',
+		'le filtre s’est élargi : la porte ne verrait plus nos propres ressources manquantes'
+	);
 	fs.mkdirSync( SHOTS, { recursive: true } );
 
 	for ( const mode of [
@@ -117,10 +145,37 @@ const HOST = new URL( BASE ).hostname;
 					// Un contrôle de hauteur nulle est masqué (accordéon replié,
 					// menu fermé) : il n'est pas une cible, on ne le juge pas.
 					if ( ! b.height ) { return; }
-					if ( b.height < 44 ) {
+					/*
+					 * 🔴 ON COMPARE SUR LE MÊME QUANTUM QU'ON RAPPORTE (2026-08-07).
+					 * Cette sonde comparait `b.height < 44` — un flottant brut — mais
+					 * publiait `Math.round( b.height )`. Elle a fini par rendre, mot
+					 * pour mot : « aod-cd-btn.aod-cd-btn-sm@44px × 1 — sous 44 px ».
+					 * Un contrôle refusé pour être sous 44 px, avec 44 px affiché à
+					 * côté : le lecteur ne peut ni le croire ni agir dessus.
+					 *
+					 * 🚨 CE N'EST PAS UN RELÂCHEMENT, C'EST UNE UNITÉ. La spec (UX
+					 * §5.3) est écrite en pixels entiers, et la charte pose 44 px
+					 * comme un cran de son échelle de hauteurs — mesuré au
+					 * sous-pixel, TOUS les contrôles de /gestion rendent exactement
+					 * 44.00000 px. Le système est donc calé PILE sur le seuil, sans
+					 * la moindre marge : la plus petite perturbation de layout
+					 * (LayoutUnit de Chromium au 1/64ᵉ, apparition d'une barre de
+					 * défilement) fait passer UN contrôle à 43,99 et rougir la porte
+					 * pour un écart que personne ne peut voir ni corriger.
+					 * *Un seuil qui rougit sur un cas juste finit désactivé* (D16) —
+					 * et celui-ci rougissait de façon intermittente, ce qui est pire :
+					 * on apprend à le rejouer jusqu'à ce qu'il passe.
+					 *
+					 * ⚠️ LE MORDANT EST INTACT. Les hauteurs d'AVANT le correctif 46.6
+					 * — 30, 32, 33, 34, 38 px — restent toutes très loin sous 44 une
+					 * fois arrondies. Ce qui disparaît, c'est uniquement le bruit de
+					 * mesure d'un système posé sur la limite, jamais un vrai manque.
+					 */
+					const h = Math.round( b.height );
+					if ( h < 44 ) {
 						const cls = ( el.getAttribute( 'class' ) || '' )
 							.split( /\s+/ ).filter( ( c ) => c.startsWith( 'aod-cd' ) ).slice( 0, 2 ).join( '.' );
-						petits.push( { cls, h: Math.round( b.height ) } );
+						petits.push( { cls, h } );
 					}
 				} );
 
@@ -173,7 +228,11 @@ const HOST = new URL( BASE ).hostname;
 					const reveles = [];
 					document.querySelectorAll( '.aod-cd-carrier-panel:not([hidden]) .aod-cd-btn' ).forEach( ( el ) => {
 						const b = el.getBoundingClientRect();
-						if ( b.height && b.height < 44 ) { reveles.push( { cls: 'aod-cd-carrier-test-btn', h: Math.round( b.height ) } ); }
+						// Même quantum que la sonde principale (cf. sa note) : comparer
+						// un flottant brut ici et un arrondi là-bas ferait diverger
+						// deux mesures censées appliquer LA MÊME règle — et le jumeau
+						// oublié est le mode d'échec que ce dépôt rencontre le plus.
+						if ( b.height && Math.round( b.height ) < 44 ) { reveles.push( { cls: 'aod-cd-carrier-test-btn', h: Math.round( b.height ) } ); }
 					} );
 					return {
 						scroll: w.scrollWidth - w.clientWidth,

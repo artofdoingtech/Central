@@ -5,9 +5,17 @@
 #
 # L'audit de contraste est rejoué sur PLUSIEURS ACCENTS. C'est le cœur du sujet :
 # l'accent est choisi par le client dans le Personnalisateur, donc un contraste
-# validé avec l'accent par défaut (un jaune très clair, très contrasté) ne prouve
-# rien. Les accents ci-dessous sont choisis pour être hostiles — bleu de marque
-# banal, bordeaux, teal, rouge pur, presque-noir.
+# validé avec le seul accent par défaut ne prouve rien. Les accents ci-dessous sont
+# choisis pour être hostiles — bleu de marque banal, bordeaux, teal, rouge pur,
+# presque-noir, et jaune très clair.
+#
+# 🔁 `#FFE21E` EST ENTRÉ DANS CETTE LISTE LE 2026-08-08, le jour où il a CESSÉ
+# d'être le défaut du template (cf. AOD_CD_Customize::DEFAULT_ACCENT, passé au
+# vert `#116048` sur demande owner). Sans cet ajout, le changement d'accent
+# aurait RETIRÉ du balayage, en silence, le cas le plus hostile de tous : un
+# accent très clair et très saturé est le pire cas de l'anneau de focus et de
+# l'encre posée sur aplat. La couverture ne tenait qu'au réglage d'usine — c'est
+# fragile, et ça vient de le prouver. Elle est désormais explicite.
 #
 #   Usage :  bash tools/recette/run.sh            # tout
 #            bash tools/recette/run.sh contraste  # une seule recette
@@ -55,7 +63,7 @@ else
 	HERE_NODE="$HERE"
 fi
 
-ACCENTS=( "#1878f0" "#7B1E3A" "#0d9488" "#ff0000" "#111827" )
+ACCENTS=( "#1878f0" "#7B1E3A" "#0d9488" "#ff0000" "#111827" "#FFE21E" "#0E5C66" )
 FAILS=0
 
 wpcli() { docker compose exec -T wpcli wp "$@" >/dev/null 2>&1; }
@@ -286,10 +294,10 @@ if [ "$WHAT" = "tout" ] || [ "$WHAT" = "contraste" ]; then
 	# l'accent ATTENDU : elle lit `--cd-accent` sur la page et rougit s'il ne
 	# correspond pas — c'est-à-dire si le `theme mod set/remove` ci-dessous a
 	# échoué en silence. Sans ce témoin, « 6 accents balayés » pouvait n'en
-	# éprouver qu'un. `#FFE21E` = AOD_CD_Customize::DEFAULT_ACCENT (accent retiré).
+	# éprouver qu'un. `#116048` = AOD_CD_Customize::DEFAULT_ACCENT (accent retiré).
 	step "Contraste AA — accent par défaut"
 	use_default_accent
-	export AOD_EXPECT_ACCENT="#FFE21E"; run a11y-contraste.js; unset AOD_EXPECT_ACCENT
+	export AOD_EXPECT_ACCENT="#116048"; run a11y-contraste.js; unset AOD_EXPECT_ACCENT
 	for a in "${ACCENTS[@]}"; do
 		step "Contraste AA — accent $a"
 		wpcli theme mod set aod_cd_accent "$a"

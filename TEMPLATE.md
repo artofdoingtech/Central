@@ -529,8 +529,8 @@ WhatsApp/pixels/livraison dans `/gestion`.
 > 🎨 **Une fois l'accent du client réglé** dans le Personnalisateur, relance
 > **`bash tools/recette/run.sh contraste`**. L'accent pilote toutes les couleurs
 > de `/gestion` : une couleur de marque ordinaire peut faire passer des textes
-> sous le seuil de contraste AA que l'accent par défaut (un jaune très clair)
-> masquait. C'est une porte de recette **par clone**, pas un test de dev. Cf.
+> sous un seuil de contraste AA que l'accent par défaut tenait largement. C'est
+> une porte de recette **par clone**, pas un test de dev. Cf.
 > [`tools/recette/README.md`](tools/recette/README.md).
 
 ---

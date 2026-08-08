@@ -408,8 +408,26 @@ $aod_surf_corps = aod_test_surf_body( $aod_surf_css );
 // déclaration d'un cran dans `:root` n'est pas un littéral en dur, et un
 // commentaire qui cite « font-size:13px » pour expliquer une conversion ne doit
 // pas la faire compter (le piège déjà rencontré trois fois dans cette phase).
+// 🔁 PADDING : 143 → 139 LE 2026-08-07, ET C'EST LE CLIQUET QUI A DICTÉ LA
+// MANŒUVRE. Le camembert de l'Accueil ajoutait un `padding:0` — la remise à zéro
+// d'une `<ul>`, pas un espacement — et le compte passait à 144. Trois sorties
+// étaient possibles :
+//   · monter le plafond : c'est exactement ce que le cliquet interdit ;
+//   · écrire `padding-inline-start:0`, que le motif de comptage ne reconnaît pas.
+//     Le compte serait redevenu juste sans qu'une seule valeur en dur ait
+//     disparu. 🚨 *Contourner la MESURE au lieu de traiter ce qu'elle mesure,
+//     c'est garder le vert et perdre la garantie* — et le prochain à trouver
+//     l'astuce n'aurait plus aucune raison de s'en priver ;
+//   · payer la hausse ailleurs, ce que le message d'erreur demande mot pour mot
+//     (« descends ce plafond après avoir converti ailleurs »).
+// Retenu : les CINQ `padding:16px` NUS de la feuille passent à `var(--cd-sp-4)`.
+// La conversion est visuellement nulle par construction — 16 px EST la valeur du
+// cran — et le compte descend à 139. Le plafond suit.
+// ⚠️ Seule la forme à valeur UNIQUE a été convertie. `padding:16px 12px` n'est pas
+// un cran mais un couple : le tokeniser à moitié aurait donné une déclaration
+// illisible pour un gain de comptage nul.
 $aod_surf_plafond_fs  = 29;
-$aod_surf_plafond_pad = 143;
+$aod_surf_plafond_pad = 139;
 
 $aod_surf_n_fs  = preg_match_all( '/font-size\s*:\s*[0-9.]+px/', $aod_surf_corps );
 $aod_surf_n_pad = preg_match_all( '/padding\s*:\s*[0-9]/', $aod_surf_corps );
@@ -673,7 +691,18 @@ $aod_surf_root = isset( $aod_surf_rootm[1] ) ? $aod_surf_rootm[1] : '';
  * invisible deux fois — ni à l'écran, ni au raisonnement. C'est le premier usage
  * qui le révèle, et il est alors trop tard pour savoir depuis quand.
  */
-foreach ( array( '--cd-accent-soft', '--cd-accent-wash', '--cd-bg', '--cd-card', '--cd-accent-strong', '--cd-accent-strong-ink' ) as $aod_surf_tok ) {
+// 🔁 `--cd-page` AJOUTÉ LE 2026-08-05, le jour même où le token naît — c'est
+// exactement ce que le paragraphe ci-dessus demande (« tout token de SURFACE ajouté
+// à css_vars() doit venir ici »), appliqué sans attendre qu'un repli faux ait eu le
+// temps de mentir. Son repli est le seul du lot qui ne soit pas un simple mélange :
+// `page()` relève le résultat par paliers, donc une valeur recopiée à la main
+// diverge d'autant plus facilement.
+// 🔁 `--cd-page-2` AJOUTÉ LE 2026-08-07, le jour où le token naît — même réflexe,
+// et il est ici PLUS exposé que les autres à la dérive que ce contrôle attrape :
+// son repli n'est pas un mélange mais une rotation de teinte suivie d'un relèvement
+// par paliers. Personne ne recalcule ça de tête, donc personne ne verrait un repli
+// qui a cessé de suivre `PAGE2_HUE`.
+foreach ( array( '--cd-accent-soft', '--cd-accent-wash', '--cd-bg', '--cd-page', '--cd-page-2', '--cd-card', '--cd-field', '--cd-accent-strong', '--cd-accent-strong-ink' ) as $aod_surf_tok ) {
 	$aod_surf_php = preg_match( '/' . preg_quote( $aod_surf_tok, '/' ) . ':\s*(#[0-9a-fA-F]{6})/', $aod_surf_vars, $aod_surf_pm )
 		? strtolower( $aod_surf_pm[1] ) : '';
 	$aod_surf_cssv = preg_match( '/' . preg_quote( $aod_surf_tok, '/' ) . '\s*:\s*(#[0-9a-fA-F]{3,6})/', $aod_surf_root, $aod_surf_cm )

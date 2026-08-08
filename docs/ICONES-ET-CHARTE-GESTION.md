@@ -188,14 +188,17 @@ l'accent reste lisible **en texte sur la sidebar sombre**. Pour y arriver, il
 
 | Accent candidat | Brut sur `#181818` | Ce que `readable_on()` en fait |
 |---|---|---|
-| `#FFE21E` (jaune actuel) | 13.65:1 ✅ | **inchangé** |
+| `#FFE21E` (jaune, défaut du template → 2026-08-08) | 13.65:1 ✅ | **inchangé** |
 | `#006633` vert foncé | **2.49:1** ❌ | → `#4d9470` *(vert sauge délavé)* |
 | `#007A3D` vert moyen | **3.26:1** ❌ | → `#339564` |
 | `#009640` vert vif | 4.60:1 ⚠️ | → `#0d9b4a` |
 | `#00A651` vert clair | 5.56:1 ✅ | **inchangé** |
 
-**Le mécanisme n'a jamais été éprouvé** parce que le jaune par défaut passe très
-au-dessus du seuil. Avec un vert de club foncé, il se déclencherait et **diluerait
+**Le mécanisme n'a jamais été éprouvé** parce que le jaune — défaut du template
+jusqu'au 2026-08-08 — passe très au-dessus du seuil. ⚠️ Le défaut est désormais un
+pétrole profond (`#0E5C66`), qui **déclenche** `readable_on()` : le mécanisme est
+donc éprouvé à chaque page d'un clone neuf, et non plus seulement chez les clients
+à accent foncé. Avec un vert de club foncé, il se déclencherait et **diluerait
 la couleur de marque** à l'endroit précis où elle est la plus visible. Personne ne
 serait prévenu : le garde-fou fait exactement son travail, en silence.
 
@@ -248,11 +251,11 @@ de la sidebar rapportée à celle du neutre :
 | `#b42318` rouge | `#2f1a18` | ×1,5 |
 | `#1878f0` bleu | `#182638` | ×2,1 |
 | `#00A651` vert | `#142d21` | ×2,4 |
-| **`#FFE21E` jaune (défaut du template)** | **`#3b3619`** | **×4,0** ❌ |
+| **`#FFE21E` jaune (défaut du template jusqu'au 2026-08-08)** | **`#3b3619`** | **×4,0** ❌ |
 
-Le jaune par défaut virait au **kaki olive**, franchement plus clair que le noir
-voulu — un changement d'aspect imposé à tous les clones qui n'ont pas touché à
-leur accent. Le contraste tenait, les 4 096 assertions passaient : rien ne le
+Le jaune, alors défaut du template, virait au **kaki olive**, franchement plus
+clair que le noir voulu — un changement d'aspect imposé à tous les clones qui
+n'avaient pas touché à leur accent. Le contraste tenait, les 4 096 assertions passaient : rien ne le
 signalait.
 
 → D'où `SIDE_MAX_LUM = 0.022` : après le mélange, la sidebar est **rassombrie par
@@ -668,10 +671,19 @@ ils partagent la teinte *et* la clarté du vert sémantique.
 `#00A651` est une **valeur en base de CE clone** (`theme_mod aod_cd_accent`),
 saisie dans le Personnalisateur. Elle n'apparaît **dans aucun fichier versionné**.
 
-`DEFAULT_ACCENT` (`class-aod-cd-customize.php`) **reste `#FFE21E`** — la toucher
-ferait hériter le vert à tous les futurs clones, ce qu'interdit la règle n°1. Un
-clone neuf démarre toujours en jaune ; le gérant choisit sa couleur, et toute la
-charte suit.
+`DEFAULT_ACCENT` (`class-aod-cd-customize.php`) **ne prend pas cette valeur** — la
+toucher pour y mettre le vert de CE clone ferait hériter ce vert à tous les futurs
+clones, ce qu'interdit la règle n°1. Un clone neuf démarre sur l'accent du
+template ; le gérant choisit sa couleur, et toute la charte suit.
+
+> 🔁 **La valeur de `DEFAULT_ACCENT`, elle, a changé le 2026-08-08** : `#FFE21E`
+> → `#116048` (vert) puis `#0E5C66` (pétrole), sur demandes owner (« des couleurs qui rendent les yeux
+> plus à l'aise »). ⚠️ **Ce n'est pas une entorse à la règle n°1 et il ne faut pas
+> le lire comme un précédent** : la règle interdit d'inscrire la couleur d'UN
+> client dans le template, pas de choisir le réglage d'usine qu'aucun client n'a
+> demandé. Le geste interdit reste exactement celui décrit ci-dessus — y écrire
+> `#00A651` parce que ce clone-ci l'utilise. La justification mesurée du nouveau
+> défaut est dans la constante elle-même.
 
 Vérifié après application : porte `contraste` à **0 occurrence sous AA**.
 

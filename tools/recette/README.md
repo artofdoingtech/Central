@@ -22,6 +22,23 @@ Prérequis : la stack Docker du clone tourne, et Chromium est présent
 (`npx playwright install chromium`, ou `AOD_CHROMIUM=/chemin/vers/chrome`).
 L'URL et le compte admin sont lus dans le `.env` du clone — rien n'est codé en dur.
 
+> 🐌 **Clone lent (Windows / macOS) : `AOD_RECETTE_NAV_TIMEOUT`.** Playwright
+> abandonne une navigation à **30 s**. Sur un bind-mount Windows, une page de
+> `/gestion` met 6 à 12 s (TEMPLATE.md §3 — c'est la métadonnée, pas le code) :
+> une pointe ×3 suffit à faire mourir la porte d'un coup, *à une page différente
+> à chaque fois*. Symptôme : `page.goto: Timeout 30000ms exceeded`, jamais deux
+> fois sur la même section. Dans ce cas :
+> `AOD_RECETTE_NAV_TIMEOUT=120000 bash tools/recette/run.sh rtl`.
+> ⚠️ Ne règle QUE le seuil d'abandon d'une navigation — aucune assertion n'est
+> touchée, et le défaut reste 30 s pour tout le monde. Si une porte échoue
+> *toujours au même endroit*, ce n'est PAS ce problème : ne pose pas la variable,
+> lis le message.
+> 🔎 Le clic de **connexion** en fait partie, et c'est contre-intuitif : il
+> soumet un formulaire, donc `page.click()` attend la navigation qu'il déclenche.
+> Son délai est celui du serveur, pas celui du bouton. Il gardait 30 s en dur
+> pendant que le `waitForNavigation()` d'à côté suivait le réglage — la porte
+> mourait alors à l'étape 1, avec un message qui accusait un clic.
+
 ### Sous quelle identité une porte tourne-t-elle ? (Phase 22.1)
 
 `login( page )` utilise le compte du `.env`. Pour un autre compte :
@@ -161,14 +178,21 @@ quand le site est mort, ou quand le refus vient d'ailleurs.
 
 ## Le piège n° 1 : l'accent
 
-**`run.sh` rejoue l'audit de contraste sur six accents**, pas un seul. C'est
+**`run.sh` rejoue l'audit de contraste sur sept accents**, pas un seul. C'est
 essentiel, et voici pourquoi.
 
 L'accent de `/gestion` est choisi par le client dans le Personnalisateur
-(`aod_cd_accent`). L'accent **par défaut** est un jaune très clair, donc très
-contrasté : il **masque** des fautes de contraste qu'un accent ordinaire — un
-bleu de marque, un bordeaux — révèle immédiatement. Un audit vert sur l'accent
-par défaut ne prouve donc rien du tout sur les clones réels.
+(`aod_cd_accent`). Un accent **confortable** — celui du template en est un —
+tient largement AA partout, et **masque** ainsi des fautes qu'un accent ordinaire,
+ou extrême, révèle immédiatement. Un audit vert sur le seul accent par défaut ne
+prouve donc rien du tout sur les clones réels.
+
+> 🔁 **Le défaut du template n'est plus `#FFE21E` depuis le 2026-08-08**
+> (pétrole `#0E5C66`, cf. `AOD_CD_Customize::DEFAULT_ACCENT`). Le jaune très clair
+> a été **ajouté à la liste hostile** le même jour : c'est le pire cas de l'anneau
+> de focus et de l'encre posée sur aplat, et cette couverture ne tenait jusque-là
+> qu'au hasard du réglage d'usine. Un changement de goût ne doit pas retirer une
+> mesure — d'où sept accents au lieu de six.
 
 C'est exactement comme ça qu'on a trouvé, entre autres, que l'encre posée *sur*
 l'accent tombait à 4,21:1 (sous AA) pour un bleu banal comme `#1878f0`, et que

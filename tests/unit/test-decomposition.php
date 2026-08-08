@@ -213,7 +213,24 @@ AOD_Test::group( 'Décomposition 30 — R1 : le fichier-dieu ne regrossit pas' )
 // qu'il n'avait pas tenté : « 5 envoyée(s), 0 en échec » sur un lot de 30
 // interrompu à la 5ᵉ — exact, et lu comme « tout est parti ». La phrase manquante
 // est consommée par `lancerLot()`, qui n'a aucun autre endroit où lire une chaîne.
-$aod_decomp_plafond = 1083;
+//
+// REMONTÉE ASSUMÉE 1083 → 1087 (+4, chantier du 2026-08-06) :
+// `dashboard_scripts()` gagne DEUX modules — `widget-datepicker.js` (le
+// calendrier maison) et `widget-counters.js` (le décompte des nombres, extrait de
+// `section-home.js` parce que le composant KPI qu'il anime est partagé avec
+// Stock) — plus deux lignes de commentaire disant pourquoi ces modules ne sont
+// PAS des sections. Même rang COQUE que les remontées ci-dessus, et la plus
+// contrainte de toutes : R4 de `test-decomposition-js.php` EXIGE que tout fichier
+// de `assets/js/` figure dans cette liste — un module non listé serait une
+// section morte en silence. Il n'y a donc pas d'autre endroit où l'écrire.
+// 🔎 Et le compte NET du dépôt descend : `section-home.js` perd 85 lignes en
+// rendant `bindCounters`. Ce plafond garde une COQUE, pas un total.
+// 🔎 Ce qui n'a PAS coûté de ligne, et c'est la contrepartie : les deux autres
+// besoins PHP du calendrier (l'icône `calendar` exposée au JS, et le tout du
+// bilinguisme) sont entrés SANS en ajouter — la première sur la ligne existante
+// de `js_map()`, le second nulle part, les noms de mois et de jours venant
+// d'`Intl` dans la langue de la page plutôt que de douze chaînes à traduire.
+$aod_decomp_plafond = 1087;
 
 $aod_decomp_fichier = AOD_CD_PATH . 'includes/class-aod-cd-dashboard.php';
 $aod_decomp_lignes  = is_readable( $aod_decomp_fichier ) ? count( file( $aod_decomp_fichier ) ) : -1;

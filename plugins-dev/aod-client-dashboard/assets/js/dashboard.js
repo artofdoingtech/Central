@@ -754,7 +754,7 @@
 	var ORDER = [
 		'bindNavToggle', 'bindStatus', 'bindProducts', 'bindCategories',
 		'bindCatDropdown', 'bindPromoRange', 'bindGallery', 'bindColorPalette',
-		'bindCharts', 'bindSelects', 'bindAccordionForms', 'bindSettingsForms',
+		'bindCharts', 'bindCounters', 'bindSelects', 'bindDatePickers', 'bindAccordionForms', 'bindSettingsForms',
 		'bindShippingFree', 'bindCarrierRows', 'bindCarrierTest',
 		'bindShippingSearch', 'bindImportFees', 'bindWhatsappTest',
 		'bindCapiTest', 'bindPixelCards', 'bindOrderDetail',

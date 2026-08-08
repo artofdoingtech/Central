@@ -219,7 +219,14 @@ class AOD_CD_Section_Orders {
 		AOD_CD_Dashboard::render_date_fields( $range['from'], $range['to'] );
 		if ( $can_assign ) {
 			echo '<div class="aod-cd-field"><label for="aod-cd-f-confirmer">' . esc_html__( 'Confirmateur', 'aod-client-dashboard' ) . '</label>';
-			echo '<select id="aod-cd-f-confirmer" name="confirmateur">';
+			// `data-aod-select` AJOUTÉ LE 2026-08-06. Ce filtre ouvrait la liste du
+			// SYSTÈME pendant que le MÊME filtre, sur l'Accueil, ouvrait le composant
+			// maison — la correction du 2026-08-05 s'était arrêtée à la page qu'on
+			// regardait. Or le composant existe pour une raison mesurée, écrite dans
+			// `bindSelects()` : le `<select>` natif s'ouvre hors champ sur mobile,
+			// c'est-à-dire sur la majorité du trafic. Même barre, même geste, même
+			// widget — et les cinq filtres des autres sections suivent.
+			echo '<select id="aod-cd-f-confirmer" name="confirmateur" data-aod-select>';
 			echo '<option value="">' . esc_html__( 'Tous les confirmateurs', 'aod-client-dashboard' ) . '</option>';
 			foreach ( $confirmers as $confirmer ) {
 				echo '<option value="' . esc_attr( $confirmer->ID ) . '" ' . selected( $confirmer_filter, $confirmer->ID, false ) . '>' . esc_html( $confirmer->display_name ) . '</option>';
@@ -359,7 +366,19 @@ class AOD_CD_Section_Orders {
 				// naît pas d'un changement de peau : il devient VISIBLE.
 				// Sa première option (« Assigner à… ») n'est pas un nom : un
 				// lecteur d'écran annonce le libellé du contrôle, pas sa valeur.
-				echo '<select class="aod-cd-order-bulk-assign-select" aria-label="' . esc_attr__( 'Assigner la sélection à un confirmateur', 'aod-client-dashboard' ) . '">';
+				// 🔁 2026-08-08 — LES GESTES SONT REGROUPÉS (demande owner : « sépare-moi
+				// la moitié »). La barre alignait jusqu'ici huit contrôles d'affilée, à
+				// écart constant : rien ne disait que le sélecteur, la case « Écraser » et
+				// le bouton « Assigner » forment UN geste, ni que « Transporteur »,
+				// « Router » et « Envoyer » en forment un autre. À écart égal, l'œil lit
+				// huit objets indépendants — la proximité est ce qui fait le groupe, et il
+				// n'y en avait aucune.
+				// ⚠️ Le JS atteint chaque contrôle par `bar.querySelector( '.classe' )`
+				// (vérifié, onze occurrences) : ce sont des recherches par DESCENDANCE,
+				// donc envelopper ne casse aucune liaison. Si un jour l'une d'elles passe
+				// à `children` ou à `nextElementSibling`, elle cassera ici — d'où cette note.
+				echo '<span class="aod-cd-bulkgroup">';
+				echo '<select class="aod-cd-order-bulk-assign-select" data-aod-select aria-label="' . esc_attr__( 'Assigner la sélection à un confirmateur', 'aod-client-dashboard' ) . '">';
 				echo '<option value="">' . esc_html__( 'Assigner à…', 'aod-client-dashboard' ) . '</option>';
 				foreach ( AOD_CD_Roles::eligible_confirmers( array(), true ) as $confirmer ) {
 					echo '<option value="' . esc_attr( $confirmer->ID ) . '">' . esc_html( $confirmer->display_name ) . '</option>';
@@ -377,9 +396,16 @@ class AOD_CD_Section_Orders {
 				echo '<input type="checkbox" class="aod-cd-order-bulk-overwrite" id="aod-cd-order-bulk-ow">';
 				echo '<label for="aod-cd-order-bulk-ow">' . esc_html__( 'Écraser les assignations existantes', 'aod-client-dashboard' ) . '</label>';
 				echo '</span>';
-				echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-order-bulk-assign aod-cd-bulk-act" disabled>'
+				// 🔁 2026-08-08 (soir) — le bouton qui CONCLUT le groupe prend l'accent.
+				// Chaque panneau de la barre se lit désormais « je choisis, puis je
+				// valide » : sans bouton principal, les trois contrôles d'un groupe
+				// avaient exactement le même poids et rien ne disait lequel déclenche.
+				// Les deux finisseurs (celui-ci et « Envoyer au transporteur ») vivent
+				// dans des panneaux DIFFÉRENTS : ils ne se disputent pas le regard.
+				echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn-primary aod-cd-order-bulk-assign aod-cd-bulk-act" disabled>'
 					. esc_html__( 'Assigner', 'aod-client-dashboard' )
 					. '</button>';
+				echo '</span>';
 			}
 			// Routage groupé (47.1). `<select>` NATIF, comme celui de
 			// l'assignation juste au-dessus, et pour la même raison : ce bandeau
@@ -396,10 +422,17 @@ class AOD_CD_Section_Orders {
 			// possible. Le geste unitaire, lui, LUI est ouvert — c'est le
 			// périmètre voulu, et le handler reste gardé par la cap, pas par le
 			// rendu.
+			// Groupe TRANSPORT — il enveloppe les deux gestes de livraison : choisir le
+			// transporteur (47.1) puis déclencher l'envoi (47.2). Ils étaient rendus par
+			// deux `if` consécutifs, ce qui était juste au sens des permissions mais les
+			// laissait visuellement aussi éloignés l'un de l'autre que du reste.
+			if ( $can_carrier ) {
+				echo '<span class="aod-cd-bulkgroup">';
+			}
 			if ( $can_carrier && class_exists( 'AOD_Shipping' ) ) {
 				$bulk_carriers = AOD_Shipping::instance()->configured();
 				if ( ! empty( $bulk_carriers ) ) {
-					echo '<select class="aod-cd-order-bulk-carrier-select" aria-label="' . esc_attr__( 'Router la sélection vers un transporteur', 'aod-client-dashboard' ) . '">';
+					echo '<select class="aod-cd-order-bulk-carrier-select" data-aod-select aria-label="' . esc_attr__( 'Router la sélection vers un transporteur', 'aod-client-dashboard' ) . '">';
 					echo '<option value="">' . esc_html__( 'Transporteur…', 'aod-client-dashboard' ) . '</option>';
 					foreach ( $bulk_carriers as $bulk_cid => $bulk_carrier ) {
 						echo '<option value="' . esc_attr( $bulk_cid ) . '">' . esc_html( $bulk_carrier->label() ) . '</option>';
@@ -415,10 +448,14 @@ class AOD_CD_Section_Orders {
 			// redemander ici écraserait des choix ligne à ligne sans le dire.
 			// La fenêtre de confirmation, elle, NOMME le transporteur de chacune.
 			if ( $can_carrier ) {
-				echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-order-bulk-ship aod-cd-bulk-act" disabled>'
+				// Finisseur du panneau TRANSPORT (cf. la note sur « Assigner »).
+				echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn-primary aod-cd-order-bulk-ship aod-cd-bulk-act" disabled>'
 					. '<span class="aod-cd-bulk-ico" aria-hidden="true">' . AOD_CD_Icon::svg( 'shipping', array( 'size' => 16 ) ) . '</span> '
 					. esc_html__( 'Envoyer au transporteur', 'aod-client-dashboard' )
 					. '</button>';
+			}
+			if ( $can_carrier ) {
+				echo '</span>';
 			}
 			if ( $can_delete ) {
 				echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-order-bulk-del aod-cd-bulk-act" disabled>'
@@ -439,22 +476,29 @@ class AOD_CD_Section_Orders {
 		// « Assigné à » (42.7) rejoint ce tableau seulement pour le gérant : un
 		// confirmateur n'a ni le sélecteur ni le nom de l'assigné dans la modale
 		// (cf. render_order_detail) — la colonne suit la même règle.
+		// ⚠️ Chaque en-tête est un COUPLE libellé / classe depuis le 2026-08-08. La
+		// classe n'est pas décorative : la colonne des montants s'aligne sur sa fin
+		// (cf. `.aod-cd-cell-total` dans dashboard.css), et un en-tête resté à gauche
+		// au-dessus de nombres calés à droite serait pire que l'alignement d'origine.
+		// Les autres colonnes gardent une classe vide plutôt qu'une liste à deux
+		// formes : un `foreach` qui doit deviner s'il tient une chaîne ou un couple
+		// est un piège pour la colonne qu'on ajoutera ensuite.
 		$headers = array(
-			__( 'N°', 'aod-client-dashboard' ),
-			__( 'Client', 'aod-client-dashboard' ),
-			__( 'Wilaya', 'aod-client-dashboard' ),
-			__( 'Total', 'aod-client-dashboard' ),
-			__( 'Statut', 'aod-client-dashboard' ),
+			array( __( 'N°', 'aod-client-dashboard' ), '' ),
+			array( __( 'Client', 'aod-client-dashboard' ), '' ),
+			array( __( 'Wilaya', 'aod-client-dashboard' ), '' ),
+			array( __( 'Total', 'aod-client-dashboard' ), 'aod-cd-th-total' ),
+			array( __( 'Statut', 'aod-client-dashboard' ), '' ),
 		);
 		// « Transporteur » (47.1) AVANT « Suivi » : on choisit la destination,
 		// puis on regarde où en est le colis. L'inverse mettrait la décision
 		// après son résultat.
 		if ( $can_carrier ) {
-			$headers[] = __( 'Transporteur', 'aod-client-dashboard' );
+			$headers[] = array( __( 'Transporteur', 'aod-client-dashboard' ), '' );
 		}
-		$headers[] = __( 'Suivi', 'aod-client-dashboard' );
+		$headers[] = array( __( 'Suivi', 'aod-client-dashboard' ), '' );
 		if ( $can_assign ) {
-			$headers[] = __( 'Assigné à', 'aod-client-dashboard' );
+			$headers[] = array( __( 'Assigné à', 'aod-client-dashboard' ), '' );
 		}
 		// 47.3 — la colonne « Note » a disparu d'ici. Elle portait un bouton par
 		// ligne qui ouvrait une invite et écrivait dans l'HISTORIQUE WooCommerce —
@@ -462,7 +506,7 @@ class AOD_CD_Section_Orders {
 		// transporteur. La note du confirmateur a désormais une destination : elle
 		// vit dans le volet d'édition de la modale et voyage avec le colis.
 		foreach ( $headers as $h ) {
-			echo '<th>' . esc_html( $h ) . '</th>';
+			echo '<th' . ( '' !== $h[1] ? ' class="' . esc_attr( $h[1] ) . '"' : '' ) . '>' . esc_html( $h[0] ) . '</th>';
 		}
 		echo '</tr></thead><tbody>';
 
@@ -532,22 +576,45 @@ class AOD_CD_Section_Orders {
 		// `title` : l'ellipse CSS tronque à l'affichage (le nom est le seul élément
 		// compressible du rang) — le nom entier doit rester atteignable.
 		echo '<b title="' . esc_attr( '' !== $name ? $name : '—' ) . '">' . esc_html( '' !== $name ? $name : '—' ) . '</b>';
-		if ( $phone ) {
-			echo '<a class="aod-cd-client__tel" href="tel:' . esc_attr( $phone ) . '">' . esc_html( $phone ) . '</a>';
-		}
+		// La classe `.aod-cd-order-detail` est CONSERVÉE : c'est elle que cible
+		// `bindOrderDetail` (`section-orders.js`). Changer l'élément qui la porte ne
+		// touche donc pas une ligne de JS.
+		echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-order-detail" data-order="' . esc_attr( $order->get_id() ) . '">' . AOD_CD_Icon::svg( 'orders', array( 'size' => 15 ) ) . ' ' . esc_html__( 'Détail', 'aod-client-dashboard' ) . '</button>';
 		// La classe `.aod-cd-order-detail` est CONSERVÉE : c'est elle que cible
 		// `bindOrderDetail` (`section-orders.js`, `querySelectorAll`). Changer
 		// l'élément qui la porte ne touche donc pas une ligne de JS — et si le JS
 		// devait changer, c'est que le contrat aurait bougé sans qu'on le veuille.
-		echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-order-detail" data-order="' . esc_attr( $order->get_id() ) . '">' . AOD_CD_Icon::svg( 'orders', array( 'size' => 15 ) ) . ' ' . esc_html__( 'Détail', 'aod-client-dashboard' ) . '</button>';
+		// 🔁 2026-08-08 — APPELER / WHATSAPP REJOIGNENT CE RANG, EN ICÔNES SEULES.
+		// Ils vivaient dans un second rang, en toutes lettres. Deux mesures l'ont
+		// fait tomber, et aucune n'est une question de goût :
+		//   · LARGEUR — le tableau réclamait 1 148 px incompressibles, donc une barre
+		//     de défilement horizontale dès qu'on descend sous ~1 250 px de fenêtre.
+		//     « Appeler » + « WhatsApp » écrits pesaient à eux seuls ~190 px de ce
+		//     minimum, sur une colonne qui en réclamait déjà pour le nom et le numéro.
+		//   · HAUTEUR — le second rang portait la ligne à 94 px. Trois commandes
+		//     remplissaient l'écran.
+		// ⚠️ LE LIBELLÉ N'EST PAS PERDU, IL CHANGE DE PORTEUR : `aria-label` le donne
+		// aux lecteurs d'écran, `title` le rend au survol. La porte `noms` vérifie
+		// qu'aucun contrôle n'est sans nom accessible — c'est elle qui garde cette
+		// promesse, pas ma vigilance. Les chaînes sont les MÊMES : rien à retraduire.
+		// ⚠️ Un bouton sans libellé doit être élargi au pouce : ils rejoignent la
+		// liste `min-width:44px` de dashboard.css, dont le commentaire annonçait
+		// jusqu'ici `.aod-cd-page` comme « le seul bouton sans libellé ».
 		echo '</span>';
-		// RANG 2 — Appeler / WhatsApp. Rendu SEULEMENT s'il y a un téléphone : un
-		// rang vide n'ajouterait qu'une gouttière et une hauteur pour rien.
+		// RANG 2 — le NUMÉRO et les deux gestes qu'on en fait. Rendu seulement s'il
+		// y a un téléphone : un rang vide n'ajouterait qu'une gouttière.
 		if ( $phone ) {
 			$wa = AOD_CD_Section_Abandoned::wa_number( $phone );
 			echo '<span class="aod-cd-call-actions">';
-			echo '<a class="aod-cd-btn aod-cd-btn-sm" href="tel:' . esc_attr( $phone ) . '">' . AOD_CD_Icon::svg( 'phone', array( 'size' => 15 ) ) . ' ' . esc_html__( 'Appeler', 'aod-client-dashboard' ) . '</a> ';
-			echo '<a class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ghost" href="' . esc_url( 'https://wa.me/' . $wa ) . '" target="_blank" rel="noopener">' . AOD_CD_Icon::svg( 'whatsapp', array( 'size' => 15 ) ) . ' ' . esc_html__( 'WhatsApp', 'aod-client-dashboard' ) . '</a>';
+			echo '<a class="aod-cd-client__tel" href="tel:' . esc_attr( $phone ) . '">' . esc_html( $phone ) . '</a>';
+			echo '<a class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ghost aod-cd-btn--ico" href="tel:' . esc_attr( $phone ) . '"'
+				. ' aria-label="' . esc_attr__( 'Appeler', 'aod-client-dashboard' ) . '"'
+				. ' title="' . esc_attr__( 'Appeler', 'aod-client-dashboard' ) . '">'
+				. AOD_CD_Icon::svg( 'phone', array( 'size' => 15 ) ) . '</a>';
+			echo '<a class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ghost aod-cd-btn--ico" href="' . esc_url( 'https://wa.me/' . $wa ) . '" target="_blank" rel="noopener"'
+				. ' aria-label="' . esc_attr__( 'WhatsApp', 'aod-client-dashboard' ) . '"'
+				. ' title="' . esc_attr__( 'WhatsApp', 'aod-client-dashboard' ) . '">'
+				. AOD_CD_Icon::svg( 'whatsapp', array( 'size' => 15 ) ) . '</a>';
 			echo '</span>';
 		}
 		echo '</span></td>';
@@ -3108,7 +3175,12 @@ class AOD_CD_Section_Orders {
 
 		// Produits (vue lecture).
 		echo '<h4 class="aod-cd-od-sub">' . esc_html__( 'Produits', 'aod-client-dashboard' ) . '</h4>';
-		echo '<table class="aod-cd-table" style="min-width:0"><thead><tr>';
+		// `aod-cd-od-prods` : ce tableau-ci porte deux colonnes de NOMBRES (Qté,
+		// Total) qui doivent s'aligner par la droite, comme celles de la liste des
+		// commandes. Sans classe, la seule prise CSS était « toute `.aod-cd-table`
+		// dans un corps de modale » — ce qui aurait aussi repeint le récapitulatif
+		// d'envoi transporteur, dont les colonnes sont du texte.
+		echo '<table class="aod-cd-table aod-cd-od-prods" style="min-width:0"><thead><tr>';
 		echo '<th>' . esc_html__( 'Article', 'aod-client-dashboard' ) . '</th><th>' . esc_html__( 'Qté', 'aod-client-dashboard' ) . '</th><th>' . esc_html__( 'Total', 'aod-client-dashboard' ) . '</th>';
 		echo '</tr></thead><tbody>';
 		foreach ( $order->get_items() as $item ) {

@@ -95,6 +95,48 @@ function scanPhp( html ) {
 // appellent `login()` : à faire d'un seul geste, pas au détour d'une étape qui
 // s'interdit de les modifier.
 // eslint-disable-next-line no-unused-vars -- `state` : voir le bloc ci-dessus.
+/**
+ * Le seuil d'abandon d'une NAVIGATION, en ms. Défaut : celui de Playwright.
+ *
+ * Un seul corps, deux appelants — `launch()` (toutes les `page.goto`) et le clic
+ * de connexion, qui EST une navigation. Recopier le `process.env` aux deux
+ * endroits, c'est se garantir qu'un jour l'un des deux ne suivra plus l'autre.
+ *
+ * @return {number}
+ */
+function seuilNavigation() {
+	return Number( process.env.AOD_RECETTE_NAV_TIMEOUT ) || 30000;
+}
+
+/**
+ * Une ligne de console est-elle une panne de TRANSPORT sur une ressource qui
+ * n'est pas la nôtre ?
+ *
+ * 🚨 EXPORTÉ, ET C'EST LE POINT. Ce prédicat décide de ce qu'une porte accepte de
+ * ne PAS juger : c'est exactement le genre de règle qui doit pouvoir être mise au
+ * rouge. Enfermé dans `launch()`, il n'aurait été éprouvable que par le hasard
+ * d'un réseau qui tombe — autant dire jamais, et jamais au bon moment.
+ * `rtl-mobile.js` en éprouve les DEUX branches à chaque passage.
+ *
+ * ⚠️ L'URL NE VIENT PAS DU TEXTE. Chromium écrit « Failed to load resource:
+ * net::ERR_… » sans URL et porte la ressource dans `location()`. Une première
+ * écriture la cherchait dans le message : elle n'aurait rien filtré du tout, tout
+ * en ayant l'air de fonctionner. *Un filtre qui ne matche jamais est
+ * indiscernable d'un filtre correct, tant que le cas ne se représente pas.*
+ *
+ * @param {string} url    URL portée par `location()` de la ligne de console.
+ * @param {string} texte  Texte du message.
+ * @param {string} [base] Origine du clone (défaut : celle de la recette).
+ * @returns {boolean} true = à écarter (panne réseau externe), false = à juger.
+ */
+function echecReseauHorsOrigine( url, texte, base ) {
+	const origine = base || BASE;
+	if ( ! url || url.startsWith( origine ) ) { return false; }
+	// Uniquement les pannes de TRANSPORT. Une erreur JS venue d'un script tiers
+	// resterait, elle, un vrai signal — et rien ne dit qu'il n'y en aura jamais.
+	return /Failed to load resource|net::ERR_/.test( texte || '' );
+}
+
 async function launch( { width = 1440, height = 900, state = true } = {} ) {
 	const exe = chromiumPath();
 	if ( ! exe ) {
@@ -105,12 +147,88 @@ async function launch( { width = 1440, height = 900, state = true } = {} ) {
 	const browser = await chromium.launch( { executablePath: exe } );
 	const ctx = await browser.newContext( { viewport: { width, height } } );
 	const page = await ctx.newPage();
+	/*
+	 * ⏱️ LE SEUL SEUIL RÉGLABLE : celui de la NAVIGATION (2026-08-06).
+	 *
+	 * 🚨 POURQUOI. Playwright abandonne une navigation à 30 s. Sur un clone
+	 * Windows/macOS, une page de `/gestion` met 6 à 12 s — pas à cause du code
+	 * mais des métadonnées du bind-mount (TEMPLATE.md §3, facteur 75 sur `stat()`).
+	 * Il suffit d'une pointe ×3 pour que `page.goto` rende une TimeoutError, et la
+	 * porte meurt d'un coup : les sections déjà auditées passent, les suivantes ne
+	 * sont jamais regardées. Mesuré ici trois fois de suite, sur trois pages
+	 * DIFFÉRENTES (`/account`, `/shipping`, `/abandoned`) — la signature d'une
+	 * pointe machine, pas d'une régression. C'est le visage d'outillage de la dette
+	 * `D16` (« porte flanchée une fois, non reproductible »).
+	 *
+	 * 🔒 LE DÉFAUT NE BOUGE PAS : 30 s, celui de Playwright. Sans la variable, rien
+	 * ne change pour personne — un clone Linux ne doit pas hériter d'une patience
+	 * taillée pour un bind-mount lent.
+	 *
+	 * ⚠️ ET SEULEMENT LA NAVIGATION, à dessein. `setDefaultTimeout()` couvre aussi
+	 * les attentes de sélecteur, dont certaines servent à CONCLURE (« l'élément
+	 * n'apparaît pas ») : les allonger rendrait les portes interminables sans rien
+	 * mesurer de plus. Un délai de navigation, lui, n'est pas une mesure — c'est un
+	 * seuil d'abandon.
+	 */
+	page.setDefaultNavigationTimeout( seuilNavigation() );
 	const console_ = [];
+	/*
+	 * (Le prédicat vit hors de `launch()` — cf. `echecReseauHorsOrigine()` — pour
+	 * qu'une porte puisse l'ÉPROUVER au lieu d'en recopier la formule. Sa raison
+	 * d'être est écrite là-bas.)
+	 *
+	 * 🔴 LES ÉCHECS RÉSEAU HORS ORIGINE NE SONT PLUS DES ÉCHECS DE PORTE
+	 * (2026-08-07), et ce filtre est né d'un rouge intermittent qu'il a fallu
+	 * mesurer trois fois avant de comprendre.
+	 *
+	 * Mesuré : `/gestion/home/` émet EXACTEMENT UNE requête hors origine —
+	 * `secure.gravatar.com`, l'avatar 26 px de la barre d'administration
+	 * WordPress. Or TEMPLATE.md §3 énonce que cette pile n'a « pas d'internet
+	 * sortant fiable par défaut ». Quand le DNS ne répond pas, Chromium écrit
+	 * `net::ERR_NAME_NOT_RESOLVED` en console, et la porte — qui traque les
+	 * erreurs console pour attraper NOS erreurs PHP et JS — rougissait sur la
+	 * connectivité de la machine.
+	 * 🚨 Trois symptômes différents en une soirée (`ERR_NAME_NOT_RESOLVED`,
+	 * `ERR_NETWORK_CHANGED`, `ERR_NETWORK_IO_SUSPENDED`), sur trois pages
+	 * différentes, tous pour la même cause : *un rouge intermittent apprend à
+	 * rejouer la porte jusqu'à ce qu'elle passe, et c'est ainsi qu'on cesse de la
+	 * lire.*
+	 *
+	 * ⚠️ LE FILTRE EST ÉTROIT ET IL DOIT LE RESTER. Il ne laisse passer QUE les
+	 * échecs de chargement d'une ressource dont l'URL n'est pas la nôtre. Une
+	 * erreur PHP, une exception JS, un 404 sur un de NOS fichiers, un avertissement
+	 * de console : tout cela porte l'origine du clone (ou aucune URL) et continue
+	 * de faire rougir. On distingue « le réseau de la machine a hoqueté » de « le
+	 * produit est cassé » — jamais on ne se tait sur le second.
+	 * 🔎 Et on ne se tait pas non plus sur le premier : les lignes écartées sont
+	 * conservées dans `console_horsOrigine`, pour qu'un lecteur puisse voir ce que
+	 * la porte a choisi de ne pas juger.
+	 *
+	 * 📌 CE QUE CE FILTRE NE CORRIGE PAS, et qui mérite un arbitrage produit :
+	 * `/gestion` — un espace conçu pour remplacer wp-admin et fonctionner hors
+	 * ligne — envoie tout de même le hachage de l'e-mail du gérant à un tiers à
+	 * chaque chargement. C'est la barre d'admin de WordPress, pas notre code, mais
+	 * c'est notre page. Masquer cette barre sur `/gestion` retirerait aussi une
+	 * navigation à l'administrateur : ce n'est pas une décision d'outillage.
+	 */
+	const console_horsOrigine = [];
+	/*
+	 * ⚠️ L'URL N'EST PAS DANS LE TEXTE, et une première écriture de ce filtre la
+	 * cherchait là — elle n'aurait donc RIEN filtré, tout en ayant l'air de le
+	 * faire. Chromium écrit « Failed to load resource: net::ERR_… » sans URL et
+	 * porte la ressource fautive dans `location()`. *Un filtre qui ne matche
+	 * jamais est indiscernable d'un filtre qui marche, tant que le cas ne se
+	 * représente pas.*
+	 */
 	page.on( 'console', ( m ) => {
-		if ( m.type() === 'error' || m.type() === 'warning' ) { console_.push( `[${ m.type() }] ${ m.text() }` ); }
+		if ( m.type() !== 'error' && m.type() !== 'warning' ) { return; }
+		const url = ( m.location && m.location() && m.location().url ) || '';
+		const ligne = `[${ m.type() }] ${ m.text() }${ url ? ' <- ' + url : '' }`;
+		if ( echecReseauHorsOrigine( url, m.text() ) ) { console_horsOrigine.push( ligne ); return; }
+		console_.push( ligne );
 	} );
 	page.on( 'pageerror', ( e ) => console_.push( `[pageerror] ${ e.message }` ) );
-	return { browser, ctx, page, console_, BASE, SHOTS, scanPhp };
+	return { browser, ctx, page, console_, console_horsOrigine, BASE, SHOTS, scanPhp };
 }
 
 // Sous quelle identité la recette tourne-t-elle RÉELLEMENT ? Rend le `user_login`
@@ -188,7 +306,16 @@ async function login( page, { user = USER, pass = PASS } = {} ) {
 	// MOMENT où elle se reproduit. D'où ce bloc : il ne masque rien, il ne réessaie
 	// pas — il **fait parler l'échec**.
 	try {
-		await Promise.all( [ page.waitForNavigation(), page.click( '#wp-submit' ) ] );
+		// ⏱️ Le clic porte le seuil de NAVIGATION, pas celui d'une action ordinaire
+		// (2026-08-06). `page.click()` n'attend pas seulement que le bouton soit
+		// cliquable : il attend que la navigation qu'il déclenche se stabilise. Son
+		// délai est donc celui du SERVEUR, pas celui du widget — et il valait 30 s
+		// en dur pendant que `waitForNavigation()`, juste à côté, suivait le
+		// réglage. Sur un clone lent, la porte mourait ici avec un message qui
+		// désignait un clic (« page.click: Timeout ») pour un défaut de temps de
+		// réponse : le pire endroit possible, puisque c'est l'étape 1 de toutes les
+		// portes. Mesuré ici : `titre="Loading …/wp-admin/"` — la page chargeait.
+		await Promise.all( [ page.waitForNavigation(), page.click( '#wp-submit', { timeout: seuilNavigation() } ) ] );
 	} catch ( e ) {
 		// 🚨 La capture peut échouer elle-même — c'est le cas quand la page est
 		// justement bloquée, donc le cas le plus probable ici. Ne l'annoncer QUE si
@@ -479,4 +606,4 @@ async function confirmerMaison( page, timeout = 5000 ) {
 	await page.waitForTimeout( 400 );
 }
 
-module.exports = { launch, login, whoAmI, scanPhp, ok, BASE, SHOTS, SECTIONS, PURGE_VERROUS_COD, sectionRendue, etatDonnees, garerSouris, chercheDansPages, confirmerMaison };
+module.exports = { launch, login, whoAmI, scanPhp, ok, BASE, SHOTS, SECTIONS, PURGE_VERROUS_COD, sectionRendue, etatDonnees, garerSouris, chercheDansPages, confirmerMaison, echecReseauHorsOrigine };

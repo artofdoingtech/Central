@@ -34,7 +34,32 @@ if ( ! $aod_ma_socle ) {
 	return;
 }
 
-/** Wilaya de test : on prend la PREMIÈRE réellement tarifée sur ce clone. */
+/**
+ * Wilaya de test : la PREMIÈRE réellement tarifée sur ce clone, et à défaut une
+ * tarifée pour l'occasion.
+ *
+ * 🔴 CE TÉMOIN A ÉTÉ ROUGE PENDANT DES JOURS, ET IL AVAIT RAISON. Il empruntait
+ * sa donnée au clone : sans tarif saisi, `price_for()` rend 0 partout, toutes les
+ * sommes valaient 0 = 0, et le fichier entier devenait vrai par vacuité. Le témoin
+ * a fait exactement son travail — refuser de laisser passer un vert vide — mais il
+ * ne laissait aucune issue : un clone neuf, où PERSONNE n'a encore saisi de tarif,
+ * est un état parfaitement normal, pas une anomalie à signaler tous les jours.
+ * 🚨 *Un cliquet qui rougit sur un état normal du produit finit ignoré (leçon
+ * D16), et il emporte avec lui les 20 assertions qu'il gardait.*
+ *
+ * La sortie est celle que `D33` a déjà tranchée pour la porte `landing` : *une
+ * porte qui emprunte sa donnée au clone dépend de ce que le gérant a saisi en
+ * dernier* — donc elle sème son propre témoin jetable. Ici on ne sème QUE si le
+ * vivier est vide : sur un clone configuré, les assertions continuent de porter
+ * sur de vrais tarifs, ce qui est strictement mieux qu'une valeur inventée.
+ *
+ * ⚠️ L'option est restaurée à l'octet près en fin de fichier, et la restauration
+ * est ASSERTÉE — un test qui laisse un tarif derrière lui modifierait la boutique
+ * du gérant, et le suivant le lirait comme une donnée réelle.
+ */
+$aod_ma_prix_avant = get_option( AOD_COD_Data::OPTION_PRICES, null );
+$aod_ma_seme       = false;
+
 $aod_ma_wilaya = 0;
 for ( $aod_ma_i = 1; $aod_ma_i <= 58; $aod_ma_i++ ) {
 	if ( AOD_COD_Data::price_for( $aod_ma_i, 'home' ) > 0 ) {
@@ -42,7 +67,44 @@ for ( $aod_ma_i = 1; $aod_ma_i <= 58; $aod_ma_i++ ) {
 		break;
 	}
 }
-AOD_Test::ok( $aod_ma_wilaya > 0, sprintf( 'TÉMOIN : une wilaya tarifée existe sur ce clone (n° %d)', $aod_ma_wilaya ), 'sans tarif, toutes les assertions de somme seraient vraies par vacuité' );
+
+if ( ! $aod_ma_wilaya ) {
+	// Deux modes tarifés : `desk` ≠ `home` est indispensable, plusieurs assertions
+	// plus bas distinguent les deux. Des valeurs égales rendraient ces
+	// comparaisons vraies sans rien prouver — la vacuité déplacée d'un cran.
+	$aod_ma_semis = (array) get_option( AOD_COD_Data::OPTION_PRICES, array() );
+	$aod_ma_semis[16] = array( 'home' => 600, 'desk' => 350 );
+	update_option( AOD_COD_Data::OPTION_PRICES, $aod_ma_semis );
+	$aod_ma_seme   = true;
+	$aod_ma_wilaya = ( AOD_COD_Data::price_for( 16, 'home' ) > 0 ) ? 16 : 0;
+
+	// 🚨 PURGE ARMÉE ICI, ET PAS APRÈS L'ASSERTION QUI SUIT. Une première écriture
+	// la posait plus bas, donc APRÈS le `return` du cas « le semis lui-même a
+	// échoué » : le seul chemin où le tarif reste en base était précisément celui
+	// qui ne le nettoyait pas. C'est la leçon D26 (« un témoin ne doit jamais
+	// survivre à l'interruption de son test ») prise en défaut par sa propre
+	// application — le nettoyage doit être armé au moment de l'écriture, jamais
+	// une ligne plus tard.
+	register_shutdown_function(
+		function () use ( $aod_ma_prix_avant ) {
+			if ( null === $aod_ma_prix_avant ) {
+				delete_option( AOD_COD_Data::OPTION_PRICES );
+			} else {
+				update_option( AOD_COD_Data::OPTION_PRICES, $aod_ma_prix_avant );
+			}
+		}
+	);
+}
+
+AOD_Test::ok(
+	$aod_ma_wilaya > 0,
+	sprintf(
+		'TÉMOIN : une wilaya tarifée est disponible (n° %d, %s)',
+		$aod_ma_wilaya,
+		$aod_ma_seme ? 'semée par le test — ce clone n’en avait aucune' : 'saisie sur ce clone'
+	),
+	'sans tarif, toutes les assertions de somme seraient vraies par vacuité — et le semis lui-même a échoué'
+);
 
 if ( ! $aod_ma_wilaya ) {
 	return;
@@ -220,3 +282,19 @@ try {
 
 AOD_Test::group( 'Montant abandon 43.6 — nettoyage' );
 AOD_Test::ok( ! wc_get_product( $aod_ma_pid_s ) && ! wc_get_product( $aod_ma_pid_v ), 'Les 2 produits jetables ont bien disparu' );
+
+// Restauration du vivier de tarifs. Elle est ASSERTÉE et pas seulement exécutée :
+// un test qui laisse un tarif derrière lui change la boutique du gérant, et le
+// prochain lecteur — humain ou cliquet — le prendra pour une donnée réelle.
+if ( $aod_ma_seme ) {
+	if ( null === $aod_ma_prix_avant ) {
+		delete_option( AOD_COD_Data::OPTION_PRICES );
+	} else {
+		update_option( AOD_COD_Data::OPTION_PRICES, $aod_ma_prix_avant );
+	}
+	AOD_Test::eq(
+		'0',
+		(string) AOD_COD_Data::price_for( 16, 'home' ),
+		'Le tarif semé est retiré : le clone retrouve exactement son vivier d’avant'
+	);
+}

@@ -1050,14 +1050,39 @@ class AOD_CD_Section_Home {
 		// Segmented control canonique (étape 5.4) — remplace .aod-cd-tabs. La
 		// navigation reste en GET (paramètre `onglet`), sans JavaScript.
 		echo '<div class="aod-cd-seg" role="group" aria-label="' . esc_attr__( 'Onglets de statistiques', 'aod-client-dashboard' ) . '">';
+		/*
+		 * 🎨 CHAQUE ONGLET PORTE UNE ICÔNE (2026-08-06, retour owner : « ce sont des
+		 * écritures simples »). Le constat est juste : trois libellés nus posés dans
+		 * une piste se lisent comme du TEXTE, pas comme un choix — le seul signal
+		 * était l'encre de l'onglet actif, donc rien du tout sur les deux autres.
+		 *
+		 * 🔒 L'icône est associée au SLUG, JAMAIS au libellé. Le libellé est traduit :
+		 * une table indexée dessus ne rendrait plus rien en arabe, et personne ne le
+		 * verrait sur un clone français.
+		 *
+		 * Les trois redisent ce que la page montre déjà juste en dessous — `money`
+		 * est l'icône du KPI « Chiffre d'affaires », `check` celle des commandes
+		 * confirmées, `shipping` le camion de la livraison. Aucune icône nouvelle :
+		 * le catalogue est fermé, et un onglet qui emprunterait un glyphe inédit
+		 * dirait autre chose que la donnée qu'il ouvre.
+		 * ⚠️ Un slug hors table ne casse rien : `''` est rendu, l'onglet reste un
+		 * libellé nu. C'est le comportement voulu si un 4ᵉ onglet apparaît sans
+		 * qu'on ait tranché son icône — il ne doit pas hériter de celle du voisin.
+		 */
+		$icones = array(
+			'revenus'      => 'money',
+			'confirmation' => 'check',
+			'livraison'    => 'shipping',
+		);
 		foreach ( $tabs as $slug => $label ) {
 			$cls = 'aod-cd-seg__btn' . ( $slug === $active ? ' is-active' : '' );
 			$url = $this->home_url_args( array_merge( $qs, array( 'onglet' => $slug ) ) );
 			printf(
-				'<a class="%s" href="%s"%s>%s</a>',
+				'<a class="%1$s" href="%2$s"%3$s>%4$s<span>%5$s</span></a>', // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- %4$s : SVG d'un catalogue FERMÉ, nom d'icône littéral du dépôt ; wp_kses_post() mangerait ses attributs. Le libellé (%5$s) passe par esc_html().
 				esc_attr( $cls ),
 				esc_url( $url ),
 				$slug === $active ? ' aria-current="true"' : '',
+				isset( $icones[ $slug ] ) ? AOD_CD_Icon::svg( $icones[ $slug ], array( 'size' => 16 ) ) : '',
 				esc_html( $label )
 			);
 		}
@@ -1307,8 +1332,18 @@ class AOD_CD_Section_Home {
 
 		$this->render_kpis( $cards );
 
-		// Graphe du CA dans le temps (courbe SVG).
+		/*
+		 * Les deux graphes de la période, côte à côte : la courbe dit QUAND le
+		 * chiffre est arrivé, l'anneau dit D'OÙ il vient.
+		 * ⚠️ L'enveloppe n'est pas décorative : c'est elle qui porte la grille, donc
+		 * l'empilement sur mobile. Sans elle il faudrait donner une largeur à chaque
+		 * carte, et le jour où un troisième graphe arrive, la règle serait à réécrire
+		 * à deux endroits.
+		 */
+		echo '<div class="aod-cd-charts">';
 		$this->render_stats_chart( $d['bins'] );
+		$this->render_stats_donut( $d['top'], isset( $d['prod_rev'] ) ? (float) $d['prod_rev'] : 0.0 );
+		echo '</div>';
 
 		// Top-produits de la période (par CA généré).
 		echo '<h2 class="aod-cd-form-subtitle aod-cd-blocktitle">' . esc_html__( 'Top produits', 'aod-client-dashboard' ) . '</h2>';
@@ -1868,7 +1903,7 @@ class AOD_CD_Section_Home {
 			echo '</tr></thead><tbody>';
 			foreach ( array_slice( $d['blocked'], 0, 20 ) as $b ) {
 				/* translators: %s : durée écoulée (ex. « 3 heures »). */
-				$ago = sprintf( __( 'il y a %s', 'aod-client-dashboard' ), human_time_diff( $b['last'], time() ) );
+				$ago = AOD_CD_Temps::depuis( $b['last'] );
 				echo '<tr><td data-label="' . esc_attr( $cols_bl[0] ) . '"><strong>#' . esc_html( $b['number'] ) . '</strong></td>'
 					. '<td data-label="' . esc_attr( $cols_bl[1] ) . '">' . esc_html( $this->carrier_label( (string) $b['carrier'] ) ) . '</td>'
 					. '<td data-label="' . esc_attr( $cols_bl[2] ) . '">' . $this->delivery_pill( $b['status'] ) . '</td>' // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé dans la méthode.
@@ -2435,7 +2470,12 @@ class AOD_CD_Section_Home {
 
 		// Aire dégradée + courbe.
 		echo '<path class="aod-cd-area" d="' . esc_attr( $area ) . '"/>';
-		echo '<path class="aod-cd-line" d="' . esc_attr( $line ) . '"/>';
+		// `pathLength="1"` NORMALISE la longueur du tracé à 1 : le pointillé qui le
+		// fait se dessiner (`stroke-dasharray:1`, cf. dashboard.css) tient alors en
+		// CSS pur, sans mesurer la courbe au JavaScript. C'est ce qui permet à
+		// l'animation d'exister même si le script ne se charge pas — et de
+		// disparaître proprement en mouvement réduit, où la feuille la neutralise.
+		echo '<path class="aod-cd-line" pathLength="1" d="' . esc_attr( $line ) . '"/>';
 
 		// Repère vertical (déplacé par le JS au survol).
 		echo '<line class="aod-cd-guide" x1="' . (int) $pl . '" y1="' . (int) $pt . '" x2="' . (int) $pl . '" y2="' . esc_attr( $r( $base_y ) ) . '"/>';
@@ -2455,6 +2495,135 @@ class AOD_CD_Section_Home {
 		echo '</svg>';
 		echo '<div class="aod-cd-tip" aria-hidden="true"></div>';
 		echo '</div>'; // .aod-cd-linechart
+		echo '</div>'; // .aod-cd-chartcard
+	}
+
+	/** Nombre de produits nommés dans le camembert ; le reste est agrégé. */
+	const DONUT_PARTS = 5;
+
+	/**
+	 * Affiche la RÉPARTITION du chiffre d'affaires par produit (anneau SVG).
+	 *
+	 * Le compagnon de la courbe : celle-ci dit QUAND le chiffre est arrivé, celui-ci
+	 * dit D'OÙ il vient. Aucune requête nouvelle — les deux se servent du même
+	 * agrégat de période, déjà calculé et déjà mis en cache.
+	 *
+	 * 🚨 LE DÉNOMINATEUR EST `prod_rev`, ET SÛREMENT PAS `revenue`. Les deux existent
+	 * dans le même tableau et ne mesurent pas la même chose : `revenue` est le total
+	 * des commandes (frais de livraison compris, et restreint au produit filtré le
+	 * cas échéant), tandis que `prod_rev` est la somme des LIGNES de produit — la
+	 * seule grandeur dont les parts de ce graphe sont des morceaux. Rapporter des
+	 * lignes à un total de commandes donnerait des pourcentages qui ne font pas 100,
+	 * sans que rien ne le signale : un camembert faux s'affiche parfaitement.
+	 *
+	 * 🔴 ET C'EST LA MÊME RAISON QUI A FAIT ÉCARTER LE DÉCOUPAGE « PAR ÉTAT DE
+	 * COMMANDE », qui semblait pourtant le candidat naturel (encaissées / en attente
+	 * / annulées, trois nombres déjà à l'écran). Mesuré dans `stats_data()` :
+	 * `nb_pending` est un INSTANTANÉ TOUTES PÉRIODES (`count_status( 'pending', ''
+	 * … )`, argument de date volontairement vide), quand `nb_paid` et `nb_cancel`
+	 * sont bornés à la période. Les trois parts n'auraient donc pas partagé de
+	 * dénominateur. Le fichier le savait déjà — c'est pour ça qu'aucun delta n'est
+	 * affiché sur cette carte — mais rien n'empêchait de l'oublier une part plus
+	 * loin. *Trois nombres côte à côte sur un écran n'ont pas, pour autant, le droit
+	 * d'être additionnés.*
+	 *
+	 * ⚠️ La part « Autres » n'est pas cosmétique : `$top` est tronqué à 10 produits
+	 * en amont, et on n'en nomme que DONUT_PARTS. Sans elle, l'anneau serait
+	 * incomplet tout en ayant l'air entier.
+	 *
+	 * @param array $top      Produits triés par CA décroissant (cf. stats_data()).
+	 * @param float $prod_rev CA des lignes de produit sur la période.
+	 */
+	protected function render_stats_donut( $top, $prod_rev ) {
+		$prod_rev = (float) $prod_rev;
+
+		echo '<div class="aod-cd-chartcard aod-cd-donutcard">';
+		echo '<div class="aod-cd-chart-head">';
+		echo '<h2 class="aod-cd-chart-title">' . esc_html__( 'Répartition du chiffre d’affaires', 'aod-client-dashboard' ) . '</h2>';
+		echo '</div>';
+
+		if ( $prod_rev <= 0 || empty( $top ) ) {
+			echo AOD_CD_Dashboard::empty_state( 'chart', __( 'Aucune vente sur cette période.', 'aod-client-dashboard' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- empty_state() rend un SVG du catalogue FERMÉ AOD_CD_Icon et échappe son libellé ; l'échapper ici retirerait le balisage.
+			echo '</div>';
+			return;
+		}
+
+		// Parts nommées, puis le reliquat. `array_slice` est sûr sur un tableau plus
+		// court que la découpe : un clone à deux produits rend deux parts.
+		$parts = array();
+		$somme = 0.0;
+		foreach ( array_slice( $top, 0, self::DONUT_PARTS ) as $row ) {
+			$rev = (float) $row['rev'];
+			if ( $rev <= 0 ) {
+				continue;
+			}
+			$parts[] = array( 'name' => (string) $row['name'], 'rev' => $rev );
+			$somme  += $rev;
+		}
+		$reste = $prod_rev - $somme;
+		if ( $reste > 0.005 ) {
+			$parts[] = array( 'name' => __( 'Autres produits', 'aod-client-dashboard' ), 'rev' => $reste );
+		}
+		if ( empty( $parts ) ) {
+			echo AOD_CD_Dashboard::empty_state( 'chart', __( 'Aucune vente sur cette période.', 'aod-client-dashboard' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- même dérogation que ci-dessus.
+			echo '</div>';
+			return;
+		}
+
+		/*
+		 * Géométrie : un seul cercle par part, tracé au `stroke-dasharray`. C'est la
+		 * technique la plus courte qui reste NETTE à toute taille (pas de `path`
+		 * calculé en trigonométrie, donc pas d'arrondi qui laisse un cheveu blanc
+		 * entre deux parts), et elle se prête au responsive sans JavaScript.
+		 * Le SVG est en `viewBox` : toutes les longueurs ci-dessous sont des unités
+		 * de dessin, jamais des pixels — la carte peut faire 260 ou 420 px de large.
+		 */
+		$rayon = 45.0;
+		$circ  = 2 * M_PI * $rayon;
+		$vide  = 1.4; // Coupure entre deux parts, en unités de contour.
+
+		$svg    = '';
+		$lignes = '';
+		$depart = 0.0;
+		$i      = 0;
+		foreach ( $parts as $p ) {
+			$pct = ( $p['rev'] / $prod_rev ) * 100;
+			$len = max( 0.0, ( $circ * $pct / 100 ) - $vide );
+
+			$svg .= '<circle class="aod-cd-donut__arc" cx="60" cy="60" r="' . esc_attr( (string) $rayon ) . '"'
+				. ' style="--part:' . (int) min( $i, self::DONUT_PARTS ) . '"'
+				. ' stroke-dasharray="' . esc_attr( number_format( $len, 2, '.', '' ) . ' ' . number_format( $circ - $len, 2, '.', '' ) ) . '"'
+				. ' stroke-dashoffset="' . esc_attr( number_format( -$depart, 2, '.', '' ) ) . '"/>';
+
+			$lignes .= '<li class="aod-cd-donut__item">'
+				. '<span class="aod-cd-donut__dot" style="--part:' . (int) min( $i, self::DONUT_PARTS ) . '" aria-hidden="true"></span>'
+				. '<span class="aod-cd-donut__name">' . esc_html( $p['name'] ) . '</span>'
+				. '<span class="aod-cd-donut__pct">' . esc_html( number_format_i18n( $pct, 1 ) . ' %' ) . '</span>'
+				. '</li>';
+
+			$depart += $circ * $pct / 100;
+			$i++;
+		}
+
+		/*
+		 * 🔒 `role="img"` + un nom : sans lui, un lecteur d'écran annonce « graphique »
+		 * et s'arrête. La LISTE en dessous porte la donnée complète (nom, part), donc
+		 * l'anneau n'a pas à la répéter — il annonce ce qu'il représente, et le détail
+		 * se lit dans le texte, qui est du vrai texte et non une image de texte.
+		 */
+		echo '<div class="aod-cd-donut">';
+		echo '<svg class="aod-cd-donut__svg" viewBox="0 0 120 120" role="img" aria-label="'
+			. esc_attr__( 'Répartition du chiffre d’affaires par produit', 'aod-client-dashboard' ) . '">';
+		echo $svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG assemblé ci-dessus : chaque attribut variable passe par esc_attr(), les nombres par number_format() ; l'échapper ici rendrait le balisage en texte.
+		echo '</svg>';
+		echo '<div class="aod-cd-donut__mid"><span class="aod-cd-donut__midlab">' . esc_html__( 'Total', 'aod-client-dashboard' ) . '</span>'
+			. '<b class="aod-cd-donut__midval">' . wp_kses_post( wc_price( $prod_rev ) ) . '</b></div>';
+		echo '</div>';
+
+		echo '<ul class="aod-cd-donut__legend">';
+		echo $lignes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- même assemblage : `name` passe par esc_html(), la part par esc_html( number_format_i18n() ).
+		echo '</ul>';
+
 		echo '</div>'; // .aod-cd-chartcard
 	}
 

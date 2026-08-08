@@ -30,7 +30,20 @@
  *     → remplit **Commandes abandonnées**, colonne « Montant » comprise ;
  *   · une **page de vente** activée sur ce produit → charge `aod-landing.css`,
  *     que la porte `mouvement` audite et ne trouvait jamais (2ᵉ symptôme de D29,
- *     côté public).
+ *     côté public) ;
+ *   · 1 **confirmateur** jetable → remplit **Équipe**.
+ *
+ * 🔴 CE DERNIER POINT MANQUAIT, ET LA LISTE CI-DESSUS ANNONÇAIT QUAND MÊME « les
+ * 6 sections creuses » (ajouté le 2026-08-07). Elle en couvrait cinq. La section
+ * Équipe restait donc vide à chaque passage, `run.sh rtl` rougissait en
+ * permanence sur « 1 creuse(s) : team », et la ligne d'à côté affirmait « Les 12
+ * sections portent du contenu ». C'est exactement le patron que ce dépôt a déjà
+ * nommé ailleurs : *un commentaire qui annonce une classe entière au-dessus d'une
+ * liste incomplète est une promesse que personne ne vérifie* — et ici la promesse
+ * était contredite par la porte elle-même, tous les jours, sans que ce soit lu
+ * autrement que comme « l'échec habituel ».
+ * 🚨 Un rouge permanent finit par devenir le décor du rapport (leçon D16) : il ne
+ * signale plus rien, et il masque le prochain.
  *
  * 🚨 PURGE CIBLÉE, JAMAIS PAR STATUT NI PAR TYPE (leçon D26). Un clone en service
  * porte de VRAIES commandes et de VRAIS prospects. `cleanup` ne touche qu'aux
@@ -101,15 +114,37 @@ function aod_d29_cleanup() {
 		$n_lead = (int) $wpdb->query( $wpdb->prepare( "DELETE FROM $table WHERE token LIKE %s", $wpdb->esc_like( AOD_D29_TOKEN ) . '%' ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- $table = $wpdb->prefix (nom contrôlé) ; le prepare() borne le motif. Table custom : pas d'API WP.
 	}
 
-	return array( $n_cmd, $n_prod, $n_lead );
+	// Confirmateur jetable : retrouvé par la MARQUE portée en méta d'utilisateur,
+	// jamais par rôle. 🚨 Purger « tous les aod_confirmateur » effacerait l'équipe
+	// RÉELLE du gérant sur un clone en service — c'est la leçon D26 transposée aux
+	// comptes, et c'est le pire endroit possible pour l'oublier : une commande
+	// supprimée se retrouve en corbeille, un utilisateur non.
+	$n_user = 0;
+	if ( ! function_exists( 'wp_delete_user' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/user.php';
+	}
+	foreach ( get_users( array(
+		'meta_key'   => AOD_D29_MARK, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- purge de fixtures, hors chemin utilisateur.
+		'meta_value' => '1',          // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- idem.
+		'fields'     => 'ID',
+	) ) as $uid ) {
+		// Revérification avant suppression, comme pour les commandes.
+		if ( '1' === (string) get_user_meta( (int) $uid, AOD_D29_MARK, true ) ) {
+			wp_delete_user( (int) $uid );
+			++$n_user;
+		}
+	}
+
+	return array( $n_cmd, $n_prod, $n_lead, $n_user );
 }
 
 if ( 'cleanup' === $aod_d29_action ) {
-	list( $c, $p, $l ) = aod_d29_cleanup();
+	list( $c, $p, $l, $u ) = aod_d29_cleanup();
 	WP_CLI::log( "D29CLEAN=1" );
 	WP_CLI::log( "D29CLEAN_CMD={$c}" );
 	WP_CLI::log( "D29CLEAN_PROD={$p}" );
 	WP_CLI::log( "D29CLEAN_LEAD={$l}" );
+	WP_CLI::log( "D29CLEAN_USER={$u}" );
 	return;
 }
 
@@ -240,7 +275,53 @@ if ( class_exists( 'AOD_COD_Leads' ) && method_exists( 'AOD_COD_Leads', 'table' 
 	$aod_d29_lead = (int) $wpdb->insert_id;
 }
 
+/* ------------------------------------------------ 6) Confirmateur (Équipe) */
+
+/*
+ * Un compte au rôle `AOD_CD_ROLE_CONFIRMER` suffit : la section Équipe liste
+ * `get_users( array( 'role' => AOD_CD_ROLE_CONFIRMER ) )`, sans autre condition.
+ *
+ * ⚠️ AUCUNE CAPABILITY N'EST ACCORDÉE, et c'est délibéré. `add_role()` pose déjà
+ * le socle du rôle ; y ajouter des permissions « pour que la carte soit plus
+ * remplie » sèmerait un compte PLUS puissant que le défaut du produit, et les
+ * portes qui parcourent `/gestion` en confirmateur (`run.sh confirmateur`)
+ * mesureraient alors un périmètre que personne ne configure jamais ainsi.
+ * La fixture doit ressembler à ce que le gérant crée, pas à ce qui arrange le test.
+ *
+ * 🔒 Mot de passe aléatoire et jamais journalisé : ce compte n'est pas fait pour
+ * qu'on s'y connecte — les portes qui ont besoin d'une session confirmateur
+ * créent la leur. Un mot de passe fixe écrit ici finirait recopié dans un clone
+ * en production.
+ */
+$aod_d29_uid   = 0;
+$aod_d29_login = 'recette_d29_confirmateur';
+$aod_d29_exist = get_user_by( 'login', $aod_d29_login );
+if ( $aod_d29_exist ) {
+	// Reliquat d'un passage interrompu AVANT que la marque ne soit posée : on ne
+	// le réutilise pas en aveugle, on le remarque pour que le cleanup l'emporte.
+	$aod_d29_uid = (int) $aod_d29_exist->ID;
+	update_user_meta( $aod_d29_uid, AOD_D29_MARK, '1' );
+} else {
+	$aod_d29_uid = wp_insert_user( array(
+		'user_login'   => $aod_d29_login,
+		'user_email'   => 'recette-d29@localhost.invalid',
+		'user_pass'    => wp_generate_password( 24, true, true ),
+		'display_name' => 'Confirmateur D29 (recette)',
+		'first_name'   => 'Confirmateur',
+		'last_name'    => 'D29',
+		'role'         => AOD_CD_ROLE_CONFIRMER,
+	) );
+	if ( is_wp_error( $aod_d29_uid ) ) {
+		WP_CLI::error( 'Confirmateur témoin non créé : ' . $aod_d29_uid->get_error_message() );
+	}
+	$aod_d29_uid = (int) $aod_d29_uid;
+	// La marque AVANT toute autre écriture : si le script s'interrompt ici, le
+	// cleanup du passage suivant retrouvera quand même le compte.
+	update_user_meta( $aod_d29_uid, AOD_D29_MARK, '1' );
+}
+
 WP_CLI::log( 'D29=1' );
+WP_CLI::log( 'D29_UID=' . (int) $aod_d29_uid );
 WP_CLI::log( 'D29_PID=' . (int) $aod_d29_pid );
 WP_CLI::log( 'D29_OID=' . (int) $aod_d29_o1->get_id() );
 WP_CLI::log( 'D29_OID_SHIP=' . (int) $aod_d29_o3->get_id() );
