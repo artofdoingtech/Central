@@ -2976,6 +2976,15 @@ msgid "Grille des tarifs"
 msgstr "جدول الأسعار"
 
 #: includes/class-aod-cd-section-shipping.php:174
+#. Le marqueur COURT porté par une ligne dont les deux prix sont vides. Il reprend
+#. mot pour mot le « non livrable » de la note ci-dessous — c'est le même état,
+#. dit une fois en phrase et une fois en étiquette ; deux mots différents pour une
+#. seule notion feraient croire à deux notions.
+#: includes/class-aod-cd-section-shipping.php:227
+msgid "Non livrable"
+msgstr "غير قابلة للتوصيل"
+
+#: includes/class-aod-cd-section-shipping.php:174
 msgid "Laissez une wilaya vide pour la rendre non livrable. Domicile = livraison à l’adresse ; Stop-desk = retrait au bureau du livreur."
 msgstr "اترك الولاية فارغة لجعلها غير قابلة للتوصيل. المنزل = التوصيل إلى العنوان؛ مكتب التوصيل = الاستلام من مكتب الناقل."
 
@@ -3585,6 +3594,14 @@ msgstr "آخر تحديث"
 #. translators: %d : nombre de jours sans nouvel événement de suivi
 #: includes/class-aod-cd-section-tracking.php:245
 #, php-format
+#. Le marqueur porté par UNE ligne de colis immobile. Même racine que le libellé
+#. du filtre juste au-dessus (« عالقة ») : c'est le même état, dit au singulier
+#. sur la ligne et au pluriel dans le menu — un autre mot laisserait croire à
+#. deux notions différentes.
+#: includes/class-aod-cd-section-tracking.php:352
+msgid "Bloqué"
+msgstr "عالق"
+
 msgid "Bloqués (plus de %d jours)"
 msgstr "عالقة (أكثر من %d أيام)"
 

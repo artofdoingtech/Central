@@ -181,11 +181,20 @@ class AOD_CD_Section_Shipping {
 									<th><?php esc_html_e( 'Wilaya', 'aod-client-dashboard' ); ?></th>
 									<th><?php printf( esc_html__( 'Domicile (%s)', 'aod-client-dashboard' ), esc_html( $symbol ) ); ?></th>
 									<th><?php printf( esc_html__( 'Stop-desk (%s)', 'aod-client-dashboard' ), esc_html( $symbol ) ); ?></th>
+									<?php
+									// 🔴 CETTE CASE COCHE LES 58 WILAYAS, ET SON NOM ACCESSIBLE ÉTAIT
+									// « Livraison gratuite » — exactement le libellé de la colonne.
+									// Rien, ni à l'œil ni au lecteur d'écran, ne distinguait l'INTITULÉ
+									// d'un geste qui offre la livraison à tout le pays d'un clic.
+									// Le nom réutilise « Tout cocher / décocher », déjà employé pour le
+									// même geste dans `class-aod-cd-dashboard.php` : même action, même
+									// mot — et pas une chaîne de plus à traduire.
+									?>
 									<th class="aod-cd-free-col">
-										<label class="aod-cd-free-head">
-											<input type="checkbox" class="aod-cd-free-all">
+										<span class="aod-cd-free-head">
+											<input type="checkbox" class="aod-cd-free-all" aria-label="<?php esc_attr_e( 'Tout cocher / décocher', 'aod-client-dashboard' ); ?>">
 											<span><?php esc_html_e( 'Livraison gratuite', 'aod-client-dashboard' ); ?></span>
-										</label>
+										</span>
 									</th>
 								</tr></thead>
 								<tbody>
@@ -208,10 +217,38 @@ class AOD_CD_Section_Shipping {
 											'free' => sprintf( __( '%1$s — %2$s', 'aod-client-dashboard' ), $lbl_free, $wname ),
 										);
 										?>
+										<?php
+										// 🚨 « VIDE » N'EST PAS « PAS ENCORE REMPLI » — C'EST UNE DÉCISION.
+										// La note au-dessus du tableau le dit : « Laissez une wilaya vide
+										// pour la rendre non livrable ». Une ligne blanche signifie donc
+										// « nous ne vendons pas dans cette wilaya » — et c'est l'unique
+										// état que l'œil ne sait pas lire, puisqu'il s'écrit par l'absence.
+										// Sur un clone neuf, les 58 lignes sont dans cet état : la boutique
+										// ne livre nulle part, et seule une ligne de 13 px le disait.
+										// Le marqueur ci-dessous est rendu par CSS quand les DEUX prix sont
+										// vides. Il est en `display:none` autrement — donc absent de l'arbre
+										// d'accessibilité tant qu'il ne s'applique pas, jamais annoncé à tort.
+										// ⚠️ Le `placeholder` n'est pas décoratif : c'est LUI qui rend l'état
+										// détectable en CSS (`:placeholder-shown`), sans une ligne de script
+										// et sans compteur qui se périmerait à la première frappe. Le tiret
+										// est aussi ce qu'on écrit dans une grille tarifaire pour « pas de
+										// prix » — il dit la même chose à l'œil et à la feuille de style.
+										?>
 										<tr>
-											<td class="aod-cd-cell-wilaya" data-label="<?php esc_attr_e( 'Wilaya', 'aod-client-dashboard' ); ?>"><?php echo esc_html( $wname ); ?></td>
-											<td data-label="<?php echo esc_attr( $lbl_home ); ?>"><input type="number" min="0" step="any" name="home[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['home'] ); ?>" value="<?php echo isset( $prices[ $code ]['home'] ) ? esc_attr( $prices[ $code ]['home'] ) : ''; ?>"></td>
-											<td data-label="<?php echo esc_attr( $lbl_desk ); ?>"><input type="number" min="0" step="any" name="desk[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['desk'] ); ?>" value="<?php echo isset( $prices[ $code ]['desk'] ) ? esc_attr( $prices[ $code ]['desk'] ) : ''; ?>"></td>
+											<?php
+											// 🔢 LE NUMÉRO EST UN NOM, PAS UNE DÉCORATION. En Algérie une
+											// wilaya s'appelle par son code autant que par son nom — « je suis
+											// de 16 » veut dire Alger. Les deux méritent donc des rôles
+											// typographiques distincts : le code en chiffres à chasse fixe,
+											// pour qu'on puisse descendre 01 → 58 sans que les noms, de
+											// longueurs très inégales, ne fassent tanguer la colonne.
+											// ⚠️ Le séparateur reste dans le DOM : `textContent` est inchangé
+											// pour qui le lirait entier, et la lecture à voix haute ne devient
+											// pas « zéro un Adrar ».
+											?>
+											<td class="aod-cd-cell-wilaya" data-label="<?php esc_attr_e( 'Wilaya', 'aod-client-dashboard' ); ?>"><span class="aod-cd-w-code"><?php echo esc_html( sprintf( '%02d', $code ) ); ?></span> - <span class="aod-cd-w-name"><?php echo esc_html( $w['name'] ); ?></span><span class="aod-cd-ship-off"><?php esc_html_e( 'Non livrable', 'aod-client-dashboard' ); ?></span></td>
+											<td data-label="<?php echo esc_attr( $lbl_home ); ?>"><input type="number" min="0" step="any" placeholder="—" name="home[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['home'] ); ?>" value="<?php echo isset( $prices[ $code ]['home'] ) ? esc_attr( $prices[ $code ]['home'] ) : ''; ?>"></td>
+											<td data-label="<?php echo esc_attr( $lbl_desk ); ?>"><input type="number" min="0" step="any" placeholder="—" name="desk[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['desk'] ); ?>" value="<?php echo isset( $prices[ $code ]['desk'] ) ? esc_attr( $prices[ $code ]['desk'] ) : ''; ?>"></td>
 											<td class="aod-cd-free-col" data-label="<?php echo esc_attr( $lbl_free ); ?>"><input type="checkbox" class="aod-cd-free-one" name="free[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['free'] ); ?>" value="1" <?php checked( ! empty( $prices[ $code ]['free'] ) ); ?>></td>
 										</tr>
 									<?php endforeach; ?>

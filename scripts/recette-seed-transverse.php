@@ -250,7 +250,17 @@ $aod_d29_o3->update_meta_data( '_aod_ship_carrier', 'yalidine' );
 $aod_d29_o3->update_meta_data( '_aod_ship_tracking', 'D29-RECETTE-0001' );
 $aod_d29_o3->update_meta_data( '_aod_ship_status', 'in_transit' );
 $aod_d29_o3->update_meta_data( '_aod_ship_status_label', 'En transit' );
-$aod_d29_o3->update_meta_data( '_aod_ship_status_at', current_time( 'mysql' ) );
+// 🔴 `time()`, PAS `current_time( 'mysql' )` — corrigé le 2026-08-09.
+// `_aod_ship_status_at` est documenté « Timestamp (UNIX) » sur la constante
+// (`AOD_Carrier::META_STATUS_AT`) et TOUS les écrivains de production y mettent
+// `time()` (`class-aod-ship-tracking.php` l.393). Le lecteur fait donc un
+// `(int)` dessus : appliqué à « 2026-08-09 13:01:17 », il rend **2026**, soit
+// 2026 secondes après 1970. La colonne « Dernière MAJ » de Suivi commande
+// affichait « il y a 57 ans » sur le témoin même de la recette.
+// 🚨 Une fixture qui écrit un format que le produit n'écrit jamais ne prépare
+// pas un cas : elle en invente un. Toute porte qui lirait cette colonne
+// mesurerait une valeur impossible — verte ou rouge, elle ne prouverait rien.
+$aod_d29_o3->update_meta_data( '_aod_ship_status_at', time() );
 $aod_d29_o3->save();
 
 // 3) Prospect complet — remplit « Commandes abandonnées », colonne Montant

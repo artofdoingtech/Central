@@ -2109,6 +2109,27 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
 	box-shadow:0 -6px 18px rgba(0,0,0,.06);
 }
+/* 🔴 LA BARRE COLLANTE MANGE LA FIN DE TOUT DÉFILEUR INTERNE — mesuré sur la
+   grille des 58 wilayas : boîte de défilement jusqu'à y1229, barre posée sur
+   y832-900 (le bas de la fenêtre), soit **68 px** de tableau sous la barre, une
+   ligne et demie. On peut faire défiler jusqu'à la 58ᵉ wilaya sans jamais la voir
+   entièrement, et c'est le geste normal — c'est ainsi qu'on atteint la fin.
+   ⚠️ J'AVAIS ÉCARTÉ CE DÉFAUT à la première mesure, en comparant la barre au haut
+   de la boîte au lieu du bas de la FENÊTRE. La capture l'a rattrapé. *Une mesure
+   qui ne prend pas le bon repère innocente aussi bien qu'elle accuse.*
+   La réserve est posée DANS le défileur : sa dernière ligne peut alors remonter
+   au-dessus du bord bas, donc au-dessus de la barre. La régler sur le conteneur
+   ne servirait à rien — la barre survole la fenêtre, pas la boîte.
+   ⚠️ La règle nomme la CONDITION (un défileur interne dans un formulaire à pied
+   collant), pas la page : elle couvre du même coup le tableau des transporteurs
+   juste en dessous, et le prochain qui naîtra. C'est exactement la famille
+   « corrigé sur un jumeau, pas sur l'autre » que la revue de la Phase 47 a
+   comptée huit fois. */
+.aod-cd-acc-form .aod-cd-scroll{padding-bottom:var(--cd-sp-6)}
+@media(min-width:781px){
+	.aod-cd-acc-form .aod-cd-scroll{padding-bottom:76px}
+}
+
 /* Sous-section d'un bloc d'accordéon (ex. « Offres » dans « Prix & offres »). */
 .aod-cd-subsec{margin-top:22px;padding-top:18px;border-top:1px dashed var(--cd-line)}
 .aod-cd-subsec__title{
@@ -2138,14 +2159,102 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 /* Sections plus hautes : on exploite la hauteur de l'écran (avec plancher confortable). */
 .aod-cd-scroll{max-height:min(72vh,760px);min-height:460px;overflow-y:auto;border:1px solid var(--cd-line);border-radius:var(--cd-r-md)}
 .aod-cd-pricetable{min-width:0}
-.aod-cd-pricetable th,.aod-cd-pricetable td{padding-top:13px;padding-bottom:13px;font-size:var(--cd-fs-md)}
-.aod-cd-pricetable th{position:sticky;top:0;z-index:1;background:#fafafa}
+/* ── 📏 NEUF WILAYAS SUR CINQUANTE-HUIT ────────────────────────────────
+   MESURÉ : lignes de **69 px**, tableau de **4049 px**, dans une fenêtre de
+   défilement de **648**. On voyait donc **9 des 58 wilayas** à la fois : vérifier
+   la couverture du pays demandait six écrans de défilement, et comparer le tarif
+   d'Alger à celui de Tamanrasset était impossible sans mémoriser.
+   La hauteur ne venait pas du contenu — deux champs et une case — mais de 13 px
+   de marge haute et basse autour d'un champ déjà haut de 40. Les champs passent
+   au cran COMPACT de la charte (`--cd-ctl-h-sm`), la ligne tombe à ~48 px et
+   **14 wilayas** tiennent à l'écran.
+   ⚠️ Desktop seulement : sous 680 px le tableau devient des cartes (plus bas), où
+   la cible tactile de 44 px doit continuer de gagner. */
+.aod-cd-pricetable th,.aod-cd-pricetable td{padding-top:6px;padding-bottom:6px;font-size:var(--cd-fs-md)}
+@media(min-width:681px){
+	.aod-cd-pricetable input[type=number]{height:var(--cd-ctl-h-sm);padding-block:0}
+}
+/* 🔴 `#fafafa` ÉTAIT ÉCRIT EN DUR ICI — le QUATRIÈME gris froid de la semaine,
+   après `#fafafa` et `#dadada` dans l'accordéon produit et `#d6d6d6` sur les
+   lignes de catégories. Toujours le même profil : achromatique, donc aucune porte
+   de contraste ne peut s'en plaindre — et pourtant un gris de tableau de bord
+   BLANC posé sur une page teintée jure, différemment chez chaque client puisque
+   la teinte dépend de l'accent. En-tête COLLANT de surcroît : il reste à l'écran
+   pendant tout le défilement des 58 lignes, c'est le pire endroit pour ça.
+   🚨 Quatre occurrences en une semaine, toutes trouvées à l'œil et jamais par une
+   porte : c'est le profil d'un défaut qui mérite un cliquet, pas une vigilance. */
+.aod-cd-pricetable th{position:sticky;top:0;z-index:1;background:var(--cd-bg)}
+/* ── 🔢 DES CHIFFRES QUI S'EMPILENT, PAS DES MOTS QUI SE SUIVENT ───────
+   La seule amélioration typographique qui compte dans une grille tarifaire, et
+   elle ne coûte aucun cran de l'échelle — donc rien au recensement de R5.
+   · `tabular-nums` : par défaut, la plupart des polices donnent au « 1 » une
+     chasse plus étroite qu'au « 8 ». Sur 58 lignes, « 1 200 » et « 850 » ne
+     tombent alors pas sur les mêmes colonnes de chiffres, et comparer deux
+     tarifs demande de LIRE au lieu de VOIR. La chasse fixe range les unités
+     sous les unités.
+   · `text-align:right` : un nombre s'aligne par ses unités, c'est ainsi qu'on
+     lit une colonne de prix depuis toujours. Le tiret du placeholder tombe donc
+     là où tomberont les chiffres — l'absence s'aligne avec la présence.
+
+   🔴 ET C'EST `right`, PAS `end` — J'AVAIS ÉCRIT L'INVERSE, avec une raison qui
+   sonnait juste : « la propriété logique suit la langue ». Elle suit la langue,
+   et c'est précisément le problème. Les chiffres, eux, ne basculent PAS : ils
+   s'écrivent de gauche à droite en arabe comme en français. En RTL, `end` se
+   résout à GAUCHE, donc « 1200 » et « 900 » s'alignaient par leur PREMIER
+   chiffre — le 1 sous le 9 — et les unités redevenaient irrégulières. On
+   annulait au rendu arabe le seul bénéfice de `tabular-nums`.
+   🚨 *Une propriété logique est la bonne réponse pour du TEXTE ; pour une colonne
+   de nombres, l'alignement des unités est physique et ne bascule pas.* Vu
+   seulement en regardant la capture arabe — la mesure disait `end`, et `end`
+   était bien appliqué : c'était la RÈGLE qui était fausse, pas son application. */
 .aod-cd-pricetable input{width:100%;max-width:170px;padding:9px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit}
+.aod-cd-pricetable input[type=number]{font-variant-numeric:tabular-nums;text-align:right;font-weight:600}
+/* Le code de wilaya : chasse fixe pour qu'on descende 01 → 58 le long d'une
+   colonne stable, encre atténuée pour qu'il situe sans voler la vedette au nom.
+   Le nom, lui, prend le poids — c'est lui qu'on cherche neuf fois sur dix. */
+.aod-cd-w-code{font-variant-numeric:tabular-nums;color:var(--cd-muted);font-weight:600}
+.aod-cd-w-name{font-weight:700}
 .aod-cd-pricetable input:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
 .aod-cd-free-col{text-align:center;white-space:nowrap}
 .aod-cd-pricetable td.aod-cd-free-col input,
 .aod-cd-free-head input{width:18px;height:18px;margin:0;cursor:pointer;accent-color:var(--cd-ink)}
-.aod-cd-free-head{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.aod-cd-free-head{display:inline-flex;align-items:center;gap:8px}
+
+/* ── 🗺️ L'ABSENCE EST UNE DÉCISION, ET ELLE SE VOIT ────────────────────
+   « Laissez une wilaya vide pour la rendre non livrable » — la note le dit, la
+   grille ne le montrait pas. Une ligne blanche ne se lit pas « je ne vends pas
+   là » : elle se lit « je n'ai pas fini ». Sur ce clone, les 58 lignes étaient
+   dans cet état, donc la boutique ne livrait NULLE PART, et le seul indice était
+   « Wilayas livrées : 0 / 58 » en 13 px dans l'en-tête d'accordéon.
+   🎯 LE PARI DE CETTE PAGE, ET IL EST ASSUMÉ : on marque le VIDE, pas le rempli.
+   L'inverse serait l'usage — souligner ce qui est fait — mais ici le travail qui
+   reste, ce sont les trous : c'est vers eux que l'œil doit aller. Une wilaya sans
+   prix est une wilaya où l'on ne peut pas vendre.
+   ⚠️ Pas d'alarme, pas de rouge : ne pas livrer le grand sud est un choix
+   légitime, pas une erreur. Le marqueur est neutre, en gris de texte AA.
+   ⚠️ `:has()` sur les DEUX prix : une wilaya livrée à domicile mais pas en
+   stop-desk reste livrée. Marquer la ligne dès qu'UN champ manque serait faux.
+   ⚠️ `display:none` au repos, pas un masquage visuel : le marqueur ne doit pas
+   être annoncé par un lecteur d'écran sur les lignes où il ne s'applique pas.
+
+   🔴 ET LA CASE « GRATUITE » FAIT PARTIE DU CRITÈRE — défaut attrapé en relisant
+   le serveur, pas en regardant l'écran. `render()` compte une wilaya comme livrée
+   si `home` **OU** `desk` **OU** `free` est posé (l.110-112). Ma règle n'en
+   regardait que deux : une wilaya livrée GRATUITEMENT, sans prix saisi, aurait
+   porté « Non livrable » juste sous un compteur qui la comptait livrée. Deux
+   affirmations contraires sur le même écran, et c'est le marqueur — le plus gros,
+   le plus proche — qu'on aurait cru.
+   🚨 *Un état visuel dérivé doit être dérivé de la MÊME règle que le chiffre qu'il
+   accompagne ; sinon on n'ajoute pas une information, on ouvre une contradiction.*
+   ⓘ Le besoin, lui, était déjà connu : le commentaire de `$served` dit « vitale et
+   illisible dans un tableau de 58 lignes ». Elle avait été remontée dans le
+   sous-titre ; elle redescend maintenant sur la ligne qui la porte. */
+.aod-cd-ship-off{display:none}
+.aod-cd-pricetable tbody tr:has(input[name^="home"]:placeholder-shown):has(input[name^="desk"]:placeholder-shown):not(:has(.aod-cd-free-one:checked)) .aod-cd-ship-off{
+	display:inline-block;margin-inline-start:8px;font-size:var(--cd-fs-xs);font-weight:700;
+	letter-spacing:.03em;text-transform:uppercase;color:var(--cd-muted);
+}
+.aod-cd-pricetable tbody tr:has(input[name^="home"]:placeholder-shown):has(input[name^="desk"]:placeholder-shown):not(:has(.aod-cd-free-one:checked)) .aod-cd-cell-wilaya{color:var(--cd-muted)}
 /* Les badges maison `.aod-cd-ok-badge` / `.aod-cd-off-badge` ont disparu (5.6) :
    le statut d'un transporteur utilise la pastille partagée `.aod-cd-pill`. */
 
@@ -4220,6 +4329,59 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 .aod-cd-filters .aod-cd-field{flex:1 1 170px;min-width:150px}
 .aod-cd-filters .aod-cd-filters-actions{flex:0 0 auto;min-width:0}
 .aod-cd-filters-btns{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* ── ⏳ LE COLIS IMMOBILE SE DÉSIGNE ───────────────────────────────────
+   Le marqueur se pose SOUS la pastille d'état, pas à côté : la pastille dit OÙ
+   en est le colis, le marqueur dit DEPUIS COMBIEN DE TEMPS il n'en bouge plus.
+   Deux faits différents, donc deux lignes — les mettre côte à côte les ferait
+   lire comme un seul état de plus, et la colonne n'a pas la place (le tableau
+   occupe 1314 px dans un conteneur de 1316 : deux pixels de marge, la même
+   contrainte dure que sur Commandes).
+   ⚠️ Ton d'AVERTISSEMENT, pas d'erreur : un colis bloqué n'est pas une panne,
+   c'est un dossier à relancer. `--cd-warn` porte exactement ce registre, et il
+   est déjà celui de « En cours de livraison » deux lignes plus haut — même
+   famille de sens, même couleur, aucune convention nouvelle à apprendre.
+   ⚠️ Pas d'accent ici : l'accent est la couleur du CLIENT, il ne peut pas dire
+   « attention » — chez l'un il serait rouge, chez l'autre vert tendre. */
+.aod-cd-track-stuck{
+	display:block;margin-top:4px;font-size:var(--cd-fs-xs);font-weight:700;
+	letter-spacing:.03em;text-transform:uppercase;color:var(--cd-warn);
+}
+/* 🔴 J'avais écrit `var(--cd-warn-ink, var(--cd-muted))`. `--cd-warn-ink`
+   N'EXISTE PAS : le repli aurait donc pris `--cd-muted`, et le marqueur serait
+   né gris, indiscernable du texte secondaire, sans qu'aucune porte ne bronche —
+   un repli CSS ne signale jamais qu'il a servi. Le jeton d'encre de la charte
+   s'appelle `--cd-warn` (#8a4708). *Un `var()` avec repli sur un nom inventé est
+   une faute qui s'affiche comme une intention.* */
+
+/* ── 📐 UNE BARRE DE FILTRES, UN SEUL RANG ────────────────────────────
+   Mesuré sur Suivi commande, quatre champs et un bouton sur une ligne :
+   intitulés « Transporteur »/« État du colis » à **y270**, « Du »/« Au » à
+   **y267** ; menus déroulants à **44 px**, champs de date à **44**, bouton
+   « Filtrer » à **38** et posé **6 px plus bas** que ce qu'il filtre.
+   Trois valeurs pour un geste unique — huitième occurrence de ce défaut cette
+   semaine, et la charte a un jeton pour ça depuis hier.
+   🔒 La règle porte sur `.aod-cd-filters`, le composant PARTAGÉ : Commandes,
+   Commandes abandonnées et Suivi montrent la même barre, et corriger la seule
+   page qu'on regarde est exactement la famille de défauts que la revue de la
+   Phase 47 a comptée huit fois.
+   ⚠️ L'intitulé est ramené à une hauteur de ligne fixe : c'est LUI qui décalait
+   les deux dates de 3 px, parce que « Du » et « État du colis » ne se replient
+   pas de la même façon. Aligner les contrôles sans fixer l'intitulé aurait
+   déplacé le défaut d'un cran au lieu de le fermer.
+   ⚠️ ≥ 781 px : au pouce, `min-height:44px` doit continuer de gagner. */
+@media(min-width:781px){
+	.aod-cd-filters .aod-cd-field > label{display:block;line-height:18px;margin-bottom:6px}
+	.aod-cd-filters .aod-cd-field input:not([type=checkbox]):not([type=radio]),
+	.aod-cd-filters .aod-cd-field select,
+	.aod-cd-filters .aod-cd-csel-btn,
+	/* 🔴 `.aod-cd-filters-btns .aod-cd-btn` NE SUFFISAIT PAS, et la mesure l'a dit :
+	   quatre contrôles à 42 px, un cinquième resté à 38. Sur Suivi commande, le
+	   bouton « Filtrer » est enfant DIRECT de `.aod-cd-field.aod-cd-filters-actions`
+	   — il n'y a pas de `.aod-cd-filters-btns` autour, contrairement à Commandes.
+	   Deux pages, deux emballages, une même barre : viser l'emballage laissait la
+	   moitié du composant dehors. On vise donc le bouton DANS la barre. */
+	.aod-cd-filters .aod-cd-btn{height:var(--cd-ctl-h);padding-block:0}
+}
 /* Raccourci de période actif : même code visuel que les onglets. */
 .aod-cd-btn.is-active{background:var(--cd-ink);color:#fff;border-color:var(--cd-ink)}
 .aod-cd-btn.is-active:hover{background:var(--cd-ink);color:#fff}

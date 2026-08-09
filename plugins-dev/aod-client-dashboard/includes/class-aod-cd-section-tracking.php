@@ -337,7 +337,23 @@ class AOD_CD_Section_Tracking {
 		echo '<td data-label="' . esc_attr__( 'Client', 'aod-client-dashboard' ) . '">' . esc_html( $client ? $client : '—' ) . '</td>';
 		echo '<td data-label="' . esc_attr__( 'Transporteur', 'aod-client-dashboard' ) . '">' . esc_html( $cname ) . '</td>';
 		echo '<td data-label="' . esc_attr__( 'N° de suivi', 'aod-client-dashboard' ) . '">' . ( '' !== $tracking ? '<code class="aod-cd-trackcode">' . esc_html( $tracking ) . '</code>' : '—' ) . '</td>';
-		echo '<td class="aod-cd-track-pillcell" data-label="' . esc_attr__( 'État du colis', 'aod-client-dashboard' ) . '">' . $this->tracking_pill_html( $order ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		// 🚨 « BLOQUÉ » EXISTAIT DÉJÀ DANS LE PRODUIT, ET NULLE PART À L'ÉCRAN.
+		// Le filtre « Bloqués (plus de N jours) » sait isoler ces colis depuis
+		// toujours ; la LISTE, elle, ne les distinguait pas — il fallait donc
+		// soupçonner le problème pour le chercher, alors que c'est le seul fait de
+		// cette page sur lequel on peut encore agir. Un colis immobile depuis trois
+		// semaines, c'est un client qu'on perd et un remboursement qui vient.
+		// ⚠️ Le marqueur est dérivé de LA MÊME RÈGLE que le filtre (état non
+		// terminal + horodatage antérieur au seuil) — c'est la leçon de la grille
+		// des wilayas, où un critère visuel divergent aurait contredit le compteur
+		// posé juste au-dessus. Un état dérivé d'une autre règle que le chiffre
+		// qu'il accompagne n'ajoute pas une information : il ouvre une contradiction.
+		$bloque = $this->is_tracking_blocked( $order );
+		echo '<td class="aod-cd-track-pillcell' . ( $bloque ? ' is-bloque' : '' ) . '" data-label="' . esc_attr__( 'État du colis', 'aod-client-dashboard' ) . '">' . $this->tracking_pill_html( $order ); // phpcs:ignore WordPress.Security.EscapeOutput
+		if ( $bloque ) {
+			echo '<span class="aod-cd-track-stuck">' . esc_html__( 'Bloqué', 'aod-client-dashboard' ) . '</span>';
+		}
+		echo '</td>';
 		echo '<td class="aod-cd-track-atcell" data-label="' . esc_attr__( 'Dernière MAJ', 'aod-client-dashboard' ) . '">' . esc_html( $this->tracking_updated_at( $order ) ) . '</td>';
 		if ( $can_assign ) {
 			echo '<td class="aod-cd-cell-assigned" data-label="' . esc_attr__( 'Assigné à', 'aod-client-dashboard' ) . '">' . AOD_CD_Section_Orders::assigned_confirmer_label( $order ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé dans assigned_confirmer_label().
@@ -357,6 +373,37 @@ class AOD_CD_Section_Tracking {
 		echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-track-refresh" data-order="' . esc_attr( $order->get_id() ) . '" title="' . esc_attr__( 'Actualiser cette commande', 'aod-client-dashboard' ) . '">' . AOD_CD_Icon::svg( 'refresh', array( 'size' => 15 ) ) . '</button>';
 		echo '</td>';
 		echo '</tr>';
+	}
+
+	/**
+	 * Ce colis est-il BLOQUÉ ? — le pendant PHP du filtre « bloques ».
+	 *
+	 * 🚨 CE CORPS DOIT RESTER LE JUMEAU EXACT du `meta_query` de `render()`
+	 * (état NOT IN terminaux + `META_STATUS_AT` < seuil). Les deux ne peuvent pas
+	 * partager le même code — l'un interroge SQL, l'autre un objet déjà chargé —
+	 * mais ils partagent la CONSTANTE et la liste des états terminaux, qui sont
+	 * les deux seuls endroits où la règle peut changer. Si l'une bouge, les deux
+	 * suivent ; c'est ce qui empêche la ligne de dire l'inverse du filtre.
+	 *
+	 * ⚠️ UN HORODATAGE ABSENT (0) COMPTE COMME BLOQUÉ, et c'est un choix, pas un
+	 * oubli : `0 < seuil` est vrai en SQL, donc le filtre range déjà ces colis
+	 * parmi les bloqués. On pourrait trouver plus juste de les en exclure — un
+	 * colis parti il y a deux minutes et jamais synchronisé n'est pas immobile
+	 * depuis sept jours — mais diverger du filtre pour avoir raison tout seul
+	 * afficherait deux vérités sur le même écran. La ligne rend alors
+	 * « Jamais » en dernière MAJ à côté de « Bloqué », ce qui décrit exactement
+	 * la situation : la synchronisation n'a jamais tourné.
+	 *
+	 * @param WC_Order $order Commande.
+	 * @return bool
+	 */
+	protected function is_tracking_blocked( $order ) {
+		$status = (string) $order->get_meta( AOD_Carrier::META_STATUS );
+		if ( in_array( $status, AOD_Carrier::tracking_terminal_statuses(), true ) ) {
+			return false;
+		}
+		$at = (int) $order->get_meta( AOD_Carrier::META_STATUS_AT );
+		return $at < ( time() - ( self::TRACK_BLOCKED_DAYS * DAY_IN_SECONDS ) );
 	}
 
 	/**

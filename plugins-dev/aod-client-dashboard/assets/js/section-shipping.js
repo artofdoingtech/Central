@@ -143,8 +143,22 @@
 			if ( ! table ) { return; }
 			var rows = Array.prototype.slice.call( table.querySelectorAll( 'tbody > tr' ) );
 			rows.forEach( function ( row ) {
-				var cell = row.querySelector( 'td' );
-				var hit  = ! q || norm( cell ? cell.textContent : '' ).indexOf( q ) !== -1;
+				// 🔴 NE PAS CHERCHER DANS TOUTE LA CELLULE. Elle contient désormais le
+				// marqueur « Non livrable », rendu sur chaque wilaya sans tarif : le
+				// lire rendrait sa présence CHERCHABLE, donc taper « livr » ferait
+				// ressortir les 58 lignes au lieu d'en filtrer aucune. On interroge le
+				// code et le nom, qui sont les deux façons dont on désigne une wilaya
+				// (« 16 » vaut « Alger »).
+				// ⚠️ Le repli sur la cellule entière couvre un rendu servi depuis le
+				// cache navigateur, antérieur aux deux <span> — même précaution que le
+				// champ arabe des catégories.
+				var cell = row.querySelector( '.aod-cd-cell-wilaya' ) || row.querySelector( 'td' );
+				var code = row.querySelector( '.aod-cd-w-code' );
+				var name = row.querySelector( '.aod-cd-w-name' );
+				var txt  = ( code || name )
+					? ( ( code ? code.textContent : '' ) + ' ' + ( name ? name.textContent : '' ) )
+					: ( cell ? cell.textContent : '' );
+				var hit  = ! q || norm( txt ).indexOf( q ) !== -1;
 				row.hidden = ! hit;
 			} );
 		};
