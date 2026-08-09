@@ -286,6 +286,18 @@
 	   🔒 Il ne descend PAS sur mobile : la règle à 780 px ramène déjà le titre à
 	   `--cd-fs-xl`, et un 32 px sur 390 px de large mangerait deux lignes à lui seul. */
 	--cd-fs-3xl:32px;
+	/* La FAMILLE DES CODES (2026-08-09). Barlow habille tout le tableau de bord, et
+	   c'est juste pour de la prose — mais une partie du contenu de `/gestion` n'est
+	   pas de la prose : ce sont des identifiants qu'on COLLE depuis un autre écran
+	   (ID de pixel, jeton, code de conversion, code ISO d'une devise). Sur une
+	   proportionnelle, `1234567890` et `l1I0O` se relisent mal, et une coquille dans
+	   un jeton de 200 caractères ne se voit pas. Une chasse fixe donne à chaque
+	   glyphe la même boîte : on compare deux lignes à l'œil, on repère un caractère
+	   en trop.
+	   🔒 AUCUN TÉLÉCHARGEMENT : uniquement des piles système. Le tableau de bord
+	   sert des gérants sur mobile DZ (TEMPLATE.md §1-6) ; ajouter une seconde
+	   famille web pour quatorze champs coûterait plus cher que le gain. */
+	--cd-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
 	/* Échelle d'espacement (base 4px) */
 	--cd-sp-1:4px;
 	--cd-sp-2:8px;
@@ -5203,6 +5215,70 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	display:flex;align-items:center;gap:10px;
 	padding:14px 16px;border-bottom:1px solid var(--cd-line);background:var(--cd-bg);
 }
+
+/* ---- La carte se REPLIE (2026-08-09) ------------------------------------
+   Huit formulaires ouverts en permanence pour un ou deux qu'un gérant remplit :
+   2 235 px sur bureau, 3 747 px sur mobile, à balayer pour trouver la régie qu'on
+   vient configurer. Chaque carte est désormais un `<details>` et son en-tête le
+   `<summary>` — on clique la régie, elle s'ouvre.
+
+   🔒 `<details>` NATIF, ET PAS DU JS. Trois raisons, dans cet ordre : les champs
+   d'un panneau fermé restent dans le DOM, donc `Enregistrer les pixels` continue
+   d'envoyer TOUT le formulaire (une carte repliée n'efface rien) ; le clavier et
+   les lecteurs d'écran connaissent déjà l'élément, sans un attribut à tenir à
+   jour ; et c'est l'accordéon que Livraison emploie (`.aod-cd-acc`) — en inventer
+   un second, c'est se garantir qu'ils divergeront.
+
+   📖 CE QUI EST OUVERT AU CHARGEMENT : les cartes CONFIGURÉES. Une page qui
+   n'ouvre rien oblige à chercher ce qu'on a déjà réglé ; une page qui ouvre tout
+   est celle qu'on vient de quitter. L'état par défaut dit donc l'état réel — sur
+   un clone neuf, rien n'est réglé, donc rien n'est ouvert, et la page tient en
+   huit lignes. */
+.aod-cd-pxcard > .aod-cd-pxcard__head{cursor:pointer;list-style:none;-webkit-user-select:none;user-select:none}
+.aod-cd-pxcard > .aod-cd-pxcard__head::-webkit-details-marker{display:none}
+/* Le chevron est un GLYPHE et pivote seul — même raison que `.aod-cd-note-fold` :
+   faire pivoter la ligne entière la ferait déborder de la carte. */
+.aod-cd-pxcard > .aod-cd-pxcard__head::after{
+	content:"›";flex:none;display:inline-block;font-size:var(--cd-fs-lg);line-height:1;
+	font-weight:700;color:var(--cd-soft);transition:transform .18s var(--cd-ease-out);
+}
+.aod-cd-pxcard[open] > .aod-cd-pxcard__head::after{transform:rotate(90deg);color:var(--cd-ink)}
+/* Un en-tête cliquable dont rien ne bouge au survol ne dit pas qu'il est
+   cliquable — c'est le défaut déjà corrigé sur les champs (« le seul retour était
+   le curseur »). La réponse porte sur le CHEVRON, jamais sur le fond : le fond de
+   cet en-tête est la couleur de la régie, et la repeindre au survol effacerait la
+   seule chose qui distingue Meta de TikTok. */
+.aod-cd-pxcard > .aod-cd-pxcard__head:hover::after{color:var(--cd-ink)}
+.aod-cd-pxcard > .aod-cd-pxcard__head:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+/* 🎬 Le CORPS entre au dépliage. `<details>` bascule d'un coup : entre le clic et
+   l'affichage, 300 px de formulaire apparaissent sans transition et l'œil perd ce
+   qu'il vient d'ouvrir. C'est la seule partie animable sans mesurer une hauteur
+   en JS — exactement le raisonnement de `.aod-cd-acc-body`, et le même mouvement.
+   🔒 Le sélecteur est recopié AU CARACTÈRE PRÈS dans le bloc
+   `prefers-reduced-motion` en fin de fichier : R1 de `test-mouvement-reduit.php`
+   compare les deux listes et exige qu'elles soient rigoureusement égales. */
+.aod-cd-pxcard[open] > .aod-cd-pxcard__body{animation:aod-cd-pop .28s var(--cd-ease-out)}
+
+/* 🔴 EN ARABE, LE CHEVRON OUVERT POINTAIT VERS LE HAUT — et pas seulement ici.
+   MESURÉ, pas déduit : `›` (U+203A) ET `▸` (U+25B8) sont tous deux MIROITÉS par
+   l'algorithme bidi (même glyphe rendu en `dir=ltr` puis `dir=rtl`, images
+   comparées octet à octet : différentes dans les deux cas). Fermé, c'est
+   exactement ce qu'on veut — le chevron désigne le sens de lecture, donc la
+   gauche en RTL. Mais `rotate(90deg)` est une rotation ABSOLUE : appliquée à un
+   glyphe déjà retourné, elle l'envoie vers le HAUT au lieu du bas. Un indicateur
+   d'ouverture qui pointe vers le haut sur une carte ouverte ne se tait pas, il
+   ment.
+   🚨 LA RÈGLE ÉTAIT ÉCRITE TROIS FOIS — l'accordéon de Livraison, le repli des
+   notes, et la carte de régie ci-dessus — donc le défaut aussi. Les trois sont
+   corrigés par CE bloc et pas par trois retouches : c'est le mode de dérive que
+   la Phase 46 a nommé, et le corriger une fois de plus au même endroit qu'on
+   l'introduit est la seule façon de ne pas le rejouer.
+   ⚠️ Placé APRÈS les trois règles d'origine, et chacune gagne `[dir="rtl"]` :
+   sans cet attribut la spécificité serait égale et l'ordre du fichier déciderait
+   par accident. */
+[dir="rtl"] .aod-cd-acc[open] .aod-cd-acc-sum::after,
+[dir="rtl"] .aod-cd-note-fold[open]>summary::before,
+[dir="rtl"] .aod-cd-pxcard[open] > .aod-cd-pxcard__head::after{transform:rotate(-90deg)}
 .aod-cd-pxcard__ic{
 	width:34px;height:34px;flex:0 0 34px;border-radius:var(--cd-r-sm);
 	display:inline-flex;align-items:center;justify-content:center;
@@ -5216,8 +5292,21 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* La pastille se colle à la fin de la ligne — `margin-inline-start` suit le RTL. */
 .aod-cd-px-on,.aod-cd-px-off{margin-inline-start:auto;flex:0 0 auto}
 .aod-cd-pxcard__body{padding:var(--cd-sp-4)}
-.aod-cd-pxcard__body .aod-cd-field{margin:0}
-.aod-cd-pxcard__body .aod-cd-field + .aod-cd-field{margin-top:14px}
+/* ⚠️ `> *` et non `.aod-cd-field` : la remise à zéro valait (0,2,0) et écrasait le
+   ressort ci-dessous, à (0,1,0) — mesuré, l'espace ne revenait pas. Les deux
+   règles se disputaient la même propriété ; elles sont désormais à la même
+   spécificité, et c'est l'ordre qui tranche. */
+.aod-cd-pxcard__body > *{margin:0}
+/* 🔁 L'ESPACEMENT PORTAIT SUR `.aod-cd-field + .aod-cd-field`, ET IL S'EFFONDRAIT
+   DÈS QU'AUTRE CHOSE S'INTERCALAIT (2026-08-09). Un jeton CAPI enregistré fait
+   apparaître la case « Effacer le jeton » ENTRE deux champs : la sélection
+   d'adjacence ne s'appliquait plus, et « Effacer le jeton enregistré » se
+   retrouvait collé au libellé du champ suivant — on lisait la case comme
+   appartenant au code d'événement test.
+   🚨 Le défaut ne se voyait que sur un clone AYANT un jeton enregistré, c'est-à-
+   dire jamais ici : la règle a donc vécu dans un état qu'aucune capture ne
+   montrait. `> * + *` ne suppose plus RIEN de la nature du voisin. */
+.aod-cd-pxcard__body > * + *{margin-top:var(--cd-sp-4)}
 
 /* ---- Couleurs de marque par régie (Phase 41) ----------------------------- */
 /* Une carte de « Pixels & Tracking » porte la couleur de la régie qu'elle
@@ -5245,6 +5334,98 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* Spécificité (0,3,0) pour battre `.aod-cd-pxcard__ic.t-blue` (0,2,0) quel que soit
    l'ordre du fichier — la carte garde son `t-*` comme repli neutre inoffensif. */
 .aod-cd-pxcard.aod-cd-pxcard--brand .aod-cd-pxcard__ic{background:var(--px-brand);color:var(--px-brand-ink)}
+
+/* ---- Les ÉTAGES de « Pixels & Tracking » (2026-08-09) --------------------
+   La page montrait HUIT cartes de poids égal, et elle mentait par cette égalité :
+   Meta y figurait deux fois, TikTok deux fois, Snapchat deux fois — même icône,
+   même liseré de marque, même pastille — et la devise de reporting, qui n'est pas
+   une régie, portait le même encadré qu'elles. Rien ne disait laquelle était « la
+   carte Meta », ni pourquoi il y en avait deux.
+   Le dispositif structurel encode donc ce qui est VRAI de ce contenu : une
+   conversion suit un CHEMIN — d'abord le navigateur de l'acheteur, puis, en
+   second recours, le serveur. Deux étages nommés, un troisième pour le réglage
+   qui n'appartient à aucun des deux. Pas de numérotation : ce n'est pas une
+   procédure à dérouler dans l'ordre, c'est un trajet à deux voies. */
+.aod-cd-settings-form > .aod-cd-pxstage{grid-column:1 / -1;min-width:0}
+.aod-cd-pxstage + .aod-cd-pxstage{margin-top:var(--cd-sp-6)}
+.aod-cd-pxstage__head{display:flex;align-items:flex-start;gap:var(--cd-sp-3)}
+.aod-cd-pxstage__ic{
+	flex:0 0 34px;width:34px;height:34px;border-radius:var(--cd-r-md);
+	display:inline-flex;align-items:center;justify-content:center;
+	background:var(--cd-accent-soft);color:var(--cd-ink);
+}
+.aod-cd-pxstage__txt{min-width:0}
+.aod-cd-pxstage__t{margin:0;font-size:var(--cd-fs-lg);font-weight:800;color:var(--cd-ink);line-height:1.25}
+/* 78ch : au-delà, l'œil perd la ligne suivante. Le sous-titre de l'étage porte
+   l'explication qui vivait, mot pour mot, dans les TROIS cartes CAPI. */
+.aod-cd-pxstage__s{margin:5px 0 0;font-size:var(--cd-fs-sm);line-height:1.6;color:var(--cd-muted);max-width:78ch}
+.aod-cd-pxstage__foot{margin:var(--cd-sp-3) 0 0;font-size:var(--cd-fs-sm);line-height:1.5;color:var(--cd-muted)}
+.aod-cd-pxstage .aod-cd-pxcards{margin-top:var(--cd-sp-4)}
+
+/* `align-items:start` : sans lui, une carte à UN champ s'étirait à la hauteur de
+   sa voisine à deux — TikTok mesurait 311 px pour ~150 px de vide encadré. Un bas
+   irrégulier dans une grille de cartes se lit comme un choix ; un vide bordé se
+   lit comme une page inachevée. */
+.aod-cd-pxcards{align-items:start}
+/* La carte de la devise n'est pas une marque : ni liseré, ni en-tête teinté, ni
+   pastille actif/inactif — son titre vit dans l'intitulé de l'étage. Et deux
+   champs courts (un code ISO, un taux) sur toute la largeur d'un écran de bureau
+   seraient deux rubans vides : la carte est bornée, son corps les range côte à
+   côte. */
+.aod-cd-pxcard--plain{max-width:720px}
+/* ⚠️ `margin-top:0` DANS la requête de média, pas à côté : sous 681 px la grille
+   redevient une colonne, et l'espacement entre deux champs empilés est le seul
+   qui les sépare. Écrit dehors, il aurait collé les deux champs sur mobile —
+   c'est-à-dire exactement là où on ne le regarde pas. */
+@media(min-width:681px){
+	.aod-cd-pxcard__body--2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--cd-sp-4)}
+	.aod-cd-pxcard__body--2 > * + *{margin-top:0}
+}
+/* Le rang d'action d'une carte CAPI (bouton de test + verdict) — remplace un
+   `style=` en dur qui était répété trois fois, et qui a donc trois fois failli
+   diverger. */
+.aod-cd-pxcard__act{display:flex;gap:var(--cd-sp-3);align-items:center;flex-wrap:wrap;margin-top:var(--cd-sp-4)}
+.aod-cd-px-clear{display:flex;gap:var(--cd-sp-2);align-items:center}
+/* L'aide sous un champ PORTE LES INSTRUCTIONS de cette page (« Gestionnaire
+   d'événements → Paramètres → ID du pixel ») : c'est le texte qu'on vient
+   chercher, et il était le plus petit de l'écran. Il monte d'un cran ici, et ici
+   seulement — ailleurs `.aod-cd-help` légende, elle n'explique pas. */
+.aod-cd-pxcard__body .aod-cd-help{font-size:var(--cd-fs-sm);line-height:1.55}
+/* `display:block` : l'état « un jeton est enregistré » et le chemin pour en
+   générer un neuf sont deux informations, pas une phrase. Sur la même ligne, le
+   gras se lisait comme le début du mode d'emploi. */
+.aod-cd-pxcard__body .aod-cd-help strong{display:block;color:var(--cd-ink);font-weight:700}
+
+/* ---- Les CHAMPS DE CODE --------------------------------------------------
+   Tout ce que cette page demande est un identifiant COLLÉ depuis un autre écran :
+   un ID de pixel, un jeton, un code de conversion, un code ISO de devise. Ce
+   n'est pas de la prose, et une proportionnelle le dessert — `l1I0O` s'y
+   confondent, et une coquille dans un jeton ne se voit pas. Chasse fixe, chiffres
+   tabulaires, zéro barré : chaque glyphe occupe la même boîte, deux lignes se
+   comparent à l'œil.
+   🔴 `direction:ltr` N'EST PAS COSMÉTIQUE. En arabe, la page passe en RTL et le
+   champ avec elle : le curseur naît à droite, et un code collé s'aligne du
+   mauvais bord. Un identifiant latin n'a pas de sens d'écriture arabe — il garde
+   le sien. C'est pourquoi le marqueur de substitution du jeton a dû cesser d'être
+   une phrase (cf. la note dans class-aod-cd-section-marketing.php) : une consigne
+   traduite en arabe, forcée en LTR, aurait été le défaut inverse.
+   ⚠️ `.aod-cd-form input.aod-cd-code` et non `.aod-cd-code` : le socle des champs
+   pose `font-family:inherit` sur `.aod-cd-form input[type=text]`, soit (0,2,1).
+   Une classe seule vaut (0,1,0) — mesuré, la police restait Barlow sans qu'aucune
+   erreur ne le dise. */
+.aod-cd-form input.aod-cd-code{
+	font-family:var(--cd-mono);letter-spacing:.03em;
+	font-variant-numeric:tabular-nums slashed-zero;
+	direction:ltr;text-align:left;
+}
+.aod-cd-code--up{text-transform:uppercase}
+/* `opacity:1` : Firefox applique par défaut une opacité au marqueur, qui ferait
+   retomber `--cd-muted` sous le seuil AA. */
+.aod-cd-code::placeholder{color:var(--cd-muted);opacity:1;letter-spacing:.02em}
+/* Le cadenas dit « secret » AVANT qu'on ait lu l'intitulé — et il tient dans la
+   ligne d'intitulé plutôt que d'ajouter un rang. */
+.aod-cd-field--secret > .aod-cd-label{display:flex;align-items:center;gap:6px}
+.aod-cd-field--secret > .aod-cd-label .aod-cd-i{flex:none;color:var(--cd-muted)}
 
 /* ---- Panneau générique (WhatsApp, Mon compte) ---------------------------- */
 /* Né de la carte WhatsApp (5.6), généralisé en 5.7 : « Profil » et « Sécurité »
@@ -5846,6 +6027,14 @@ html[dir="rtl"] .aod-cd-content .aod-cd-pagehead::before{
 	   Sélecteurs recopiés au CARACTÈRE PRÈS de ceux qui posent `aod-cd-pop` —
 	   c'est la comparaison exacte que fait R1. */
 	.aod-cd-acc[open] .aod-cd-acc-body{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* 🎬 Dépliage d'une carte de régie (Pixels & Tracking) — même élément que
+	   ci-dessus à un autre endroit, donc même traitement, sélecteur recopié au
+	   caractère près. */
+	.aod-cd-pxcard[open] > .aod-cd-pxcard__body{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* Le chevron de la carte PIVOTE à l'ouverture. C'est la TRANSITION qui part,
+	   jamais la rotation : `transform:none` remettrait le chevron à l'horizontale
+	   sur une carte ouverte — l'indicateur mentirait au lieu de se taire. */
+	.aod-cd-pxcard > .aod-cd-pxcard__head::after{transition:none}
 	.aod-cd-offer-row{animation:aod-cd-fade .14s var(--cd-ease-out)}
 	/* 🎬 Cascade des lignes de catégories : même sélecteur AU CARACTÈRE PRÈS que
 	   celui qui pose `aod-cd-pop`, retards remis à zéro. */

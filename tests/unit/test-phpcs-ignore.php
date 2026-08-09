@@ -60,7 +60,17 @@ defined( 'ABSPATH' ) || exit;
 function aod_test_pcs_census() {
 	return array(
 		'WordPress.Security.EscapeOutput'         => array(
-			'n'        => 163,
+			// 163 → 160 le 2026-08-09 (refonte de « Pixels & Tracking »). ⬇️ Une BAISSE,
+			// et elle n'achète aucune dérogation nouvelle : les trois cartes CAPI
+			// (Meta / TikTok / Snapchat) étaient trois blocs jumeaux recopiés, portant
+			// chacun le MÊME jeu d'annotations sur les mêmes appels (`AOD_CD_Icon::svg`,
+			// `AOD_CD_Dashboard::pill`). Une seule boucle les rend désormais, donc un
+			// seul jeu. Deux dérogations apparaissent en regard sur le helper `stage_open()`
+			// — l'icône du catalogue fermé et le bloc déjà échappé qu'il rend — soit un
+			// solde de −3. 🚨 Ce que ça vaut au-delà du chiffre : trois copies d'une même
+			// dérogation, c'est trois endroits où la relire, et deux où oublier de la
+			// corriger. Le census n'a jamais su dire ça — il compte, il ne déduplique pas.
+			'n'        => 160,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
@@ -451,7 +461,12 @@ AOD_Test::eq(
 // `WordPress.DB` larges (dette D14) en sniffs précis, chacune AVEC sa raison. Le
 // plancher suit la réalité : le baisser est un progrès, le remonter exige de venir
 // écrire ici pourquoi.
-$aod_pcs_plancher_sans_raison = 132;
+// Descendu 132 → 124 le 2026-08-09, et sans avoir documenté une seule annotation :
+// la refonte de « Pixels & Tracking » a remplacé trois blocs CAPI recopiés par une
+// boucle, emportant huit dérogations nues avec les copies. C'est le seul progrès
+// que ce plancher enregistre sans effort — supprimer la duplication supprime les
+// dérogations en double.
+$aod_pcs_plancher_sans_raison = 124;
 
 $aod_pcs_sans_raison = array();
 foreach ( $aod_pcs_all as $a ) {

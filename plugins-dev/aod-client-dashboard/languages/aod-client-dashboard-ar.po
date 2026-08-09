@@ -1868,12 +1868,20 @@ msgid "Inactif"
 msgstr "غير نشط"
 
 #: includes/class-aod-cd-section-marketing.php:198
-msgid "Meta — API de Conversion (CAPI)"
-msgstr "ميتا — واجهة برمجة التحويلات (CAPI)"
+msgid "Meta"
+msgstr "ميتا"
 
 #: includes/class-aod-cd-section-marketing.php:203
-msgid "Envoie aussi vos achats à Meta depuis le serveur (Facebook/Instagram), en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées par iOS ou les bloqueurs de pub. La déduplication est automatique. Nécessite l’ID du pixel Meta ci-dessus."
-msgstr "يُرسل مشترياتك إلى ميتا من الخادم أيضًا (فيسبوك/إنستغرام)، إضافةً إلى بكسل المتصفّح: لن تفقد بعد الآن التحويلات التي يحجبها نظام iOS أو مانعات الإعلانات. إزالة التكرار تلقائية. يتطلّب معرّف بكسل ميتا أعلاه."
+msgid "Le pixel du navigateur"
+msgstr "بكسل المتصفّح"
+
+#: includes/class-aod-cd-section-marketing.php:203
+msgid "L’envoi depuis le serveur"
+msgstr "الإرسال من الخادم"
+
+#: includes/class-aod-cd-section-marketing.php:203
+msgid "En plus du pixel du navigateur, vos achats partent aussi de votre serveur : vous ne perdez plus les conversions bloquées par iOS ou par un bloqueur de publicité. La déduplication est automatique, et chaque envoi exige l’ID du pixel correspondant ci-dessus."
+msgstr "إضافةً إلى بكسل المتصفّح، تُرسَل مشترياتك من خادمك أيضًا: لن تفقد بعد الآن التحويلات التي يحجبها نظام iOS أو مانع الإعلانات. إزالة التكرار تلقائية، وكلّ إرسال يتطلّب معرّف البكسل المقابل أعلاه."
 
 #: includes/class-aod-cd-section-marketing.php:205
 #: includes/class-aod-cd-section-marketing.php:239
@@ -1884,8 +1892,8 @@ msgstr "رمز الوصول (سرّي)"
 #: includes/class-aod-cd-section-marketing.php:206
 #: includes/class-aod-cd-section-marketing.php:240
 #: includes/class-aod-cd-section-marketing.php:274
-msgid "•••••••• enregistré — laisser vide pour le conserver"
-msgstr "•••••••• محفوظ — اتركه فارغًا للإبقاء عليه"
+msgid "Un jeton est enregistré. Laissez le champ vide pour le conserver."
+msgstr "يوجد رمز محفوظ. اترك الحقل فارغًا للإبقاء عليه."
 
 #: includes/class-aod-cd-section-marketing.php:207
 msgid "Gestionnaire d’événements Meta → Paramètres → Conversions API → Générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
@@ -1918,14 +1926,6 @@ msgstr "اختبار الاتصال"
 msgid "Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller."
 msgstr "يستخدم الاختبار الرمز المحفوظ: احفظ أولًا إن كنت قد لصقته للتو."
 
-#: includes/class-aod-cd-section-marketing.php:232
-msgid "TikTok — API de Conversion (Events API)"
-msgstr "تيك توك — واجهة برمجة التحويلات (Events API)"
-
-#: includes/class-aod-cd-section-marketing.php:237
-msgid "Envoie aussi vos achats à TikTok depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel TikTok ci-dessus."
-msgstr "يُرسل مشترياتك إلى تيك توك من الخادم أيضًا، إضافةً إلى بكسل المتصفّح: لن تفقد بعد الآن التحويلات المحجوبة من جهة المتصفّح. إزالة التكرار تلقائية. يتطلّب معرّف بكسل تيك توك أعلاه."
-
 #: includes/class-aod-cd-section-marketing.php:241
 msgid "TikTok Ads → Outils → Événements → gérer l’Events API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."
 msgstr "TikTok Ads ← الأدوات ← الأحداث ← إدارة Events API ← إنشاء رمز وصول. اتركه فارغًا للاكتفاء ببكسل المتصفّح وحده."
@@ -1937,14 +1937,6 @@ msgstr "رمز حدث الاختبار (مطلوب للاختبار)"
 #: includes/class-aod-cd-section-marketing.php:252
 msgid "TikTok Ads → Événements → onglet « Test ». Requis pour le bouton « Tester » ci-dessous (l’événement de test n’entre pas dans vos statistiques). À vider une fois validé."
 msgstr "TikTok Ads ← الأحداث ← تبويب «اختبار». مطلوب لزر «اختبار» أدناه (لا يدخل حدث الاختبار في إحصاءاتك). أفرِغه بعد التحقّق."
-
-#: includes/class-aod-cd-section-marketing.php:266
-msgid "Snapchat — API de Conversion"
-msgstr "سناب شات — واجهة برمجة التحويلات"
-
-#: includes/class-aod-cd-section-marketing.php:271
-msgid "Envoie aussi vos achats à Snapchat depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel Snapchat ci-dessus."
-msgstr "يُرسل مشترياتك إلى سناب شات من الخادم أيضًا، إضافةً إلى بكسل المتصفّح: لن تفقد بعد الآن التحويلات المحجوبة من جهة المتصفّح. إزالة التكرار تلقائية. يتطلّب معرّف بكسل سناب شات أعلاه."
 
 #: includes/class-aod-cd-section-marketing.php:275
 msgid "Snapchat Ads → Gestionnaire d’événements → Conversions API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul."

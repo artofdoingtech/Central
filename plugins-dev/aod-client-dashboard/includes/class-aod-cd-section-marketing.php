@@ -111,6 +111,37 @@ class AOD_CD_Section_Marketing {
 		return '' !== $posted ? sanitize_text_field( $posted ) : (string) $existing;
 	}
 
+	/**
+	 * Ouvre un ÉTAGE de la page : un titre, une phrase, puis des cartes.
+	 *
+	 * 🧭 La page décrit un CHEMIN DE SIGNAL, pas une liste de marques. Une
+	 * conversion part du navigateur de l'acheteur (le pixel) et, en second
+	 * recours, du serveur (l'API de conversion). Sans ces deux intitulés, Meta
+	 * apparaissait deux fois, TikTok deux fois, Snapchat deux fois — même icône,
+	 * même liseré, même pastille — et rien ne disait laquelle était « la carte
+	 * Meta ». Nommer l'étage rend le doublon lisible au lieu de le supprimer :
+	 * ce sont bien deux réglages distincts de la même régie.
+	 *
+	 * `<h3>` et non `<h2>` : `page_head()` occupe déjà le rang 2 de la page.
+	 *
+	 * @param string $ic  Clé d'icône (catalogue fermé AOD_CD_Icon).
+	 * @param string $t   Titre de l'étage.
+	 * @param string $sub Phrase d'introduction (peut être vide).
+	 * @return string
+	 */
+	protected static function stage_open( $ic, $t, $sub = '' ) {
+		$out  = '<section class="aod-cd-pxstage">';
+		$out .= '<div class="aod-cd-pxstage__head">';
+		$out .= '<span class="aod-cd-pxstage__ic" aria-hidden="true">' . AOD_CD_Icon::svg( $ic, array( 'size' => 18 ) ) . '</span>';
+		$out .= '<div class="aod-cd-pxstage__txt">';
+		$out .= '<h3 class="aod-cd-pxstage__t">' . esc_html( $t ) . '</h3>';
+		if ( '' !== $sub ) {
+			$out .= '<p class="aod-cd-pxstage__s">' . esc_html( $sub ) . '</p>';
+		}
+		$out .= '</div></div>';
+		return $out;
+	}
+
 	public function render() {
 		$s = $this->pixels_settings();
 
@@ -159,154 +190,183 @@ class AOD_CD_Section_Marketing {
 			),
 		);
 
+		// Les trois régies qui savent AUSSI recevoir depuis le serveur. Une seule
+		// boucle, et pas trois blocs jumeaux : ces cartes ne diffèrent que par le
+		// nom de la clé et l'existence d'un code d'événement test. Écrites trois
+		// fois, elles avaient déjà commencé à diverger — Snapchat n'a pas de bloc
+		// « Effacer » à la même place que les deux autres si on l'oublie une fois.
+		$capis = array(
+			array(
+				'key'        => 'meta_capi_token',
+				'name'       => __( 'Meta', 'aod-client-dashboard' ),
+				'ic'         => 'meta',
+				'tone'       => 'blue',
+				'brand'      => 'meta',
+				// 🔤 `ph` = la FORME du jeton, quand on la connaît. Meta préfixe les
+				// siens par `EAA` — c'est une vraie aide au collage. TikTok et
+				// Snapchat n'ont pas de préfixe documenté ici, et leur marqueur
+				// valait `...`, qui ne montre aucune forme : en chasse fixe il se
+				// lit « . . . » et, à côté du `••••••••` d'un jeton enregistré, il
+				// se confondait avec un état. Vide plutôt qu'inventé.
+				'ph'         => 'EAAG...',
+				'token_help' => __( 'Gestionnaire d’événements Meta → Paramètres → Conversions API → Générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul.', 'aod-client-dashboard' ),
+				'test_key'   => 'meta_test_event_code',
+				'test_label' => __( 'Code d’événement test (optionnel)', 'aod-client-dashboard' ),
+				'test_help'  => __( 'Pour voir vos achats arriver dans le Gestionnaire d’événements → onglet « Test des événements ». À vider une fois validé.', 'aod-client-dashboard' ),
+			),
+			array(
+				'key'        => 'tiktok_capi_token',
+				'name'       => __( 'TikTok', 'aod-client-dashboard' ),
+				'ic'         => 'tiktok',
+				'tone'       => 'slate',
+				'brand'      => 'tiktok',
+				'ph'         => '',
+				'token_help' => __( 'TikTok Ads → Outils → Événements → gérer l’Events API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul.', 'aod-client-dashboard' ),
+				'test_key'   => 'tiktok_test_event_code',
+				'test_label' => __( 'Code d’événement test (requis pour tester)', 'aod-client-dashboard' ),
+				'test_help'  => __( 'TikTok Ads → Événements → onglet « Test ». Requis pour le bouton « Tester » ci-dessous (l’événement de test n’entre pas dans vos statistiques). À vider une fois validé.', 'aod-client-dashboard' ),
+			),
+			array(
+				'key'        => 'snapchat_capi_token',
+				'name'       => __( 'Snapchat', 'aod-client-dashboard' ),
+				'ic'         => 'snapchat',
+				'tone'       => 'slate',
+				'brand'      => 'snapchat',
+				'ph'         => '',
+				'token_help' => __( 'Snapchat Ads → Gestionnaire d’événements → Conversions API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul.', 'aod-client-dashboard' ),
+				'test_key'   => '', // Snapchat ne propose pas de code d'événement test.
+				'test_label' => '',
+				'test_help'  => '',
+			),
+		);
+
 		echo AOD_CD_Dashboard::page_head( // phpcs:ignore WordPress.Security.EscapeOutput
 			__( 'Pixels & Tracking', 'aod-client-dashboard' ), // Même libellé que la barre latérale.
 			__( 'Une carte par régie : collez l’identifiant, laissez vide pour désactiver.', 'aod-client-dashboard' )
 		);
 		?>
 		<form class="aod-cd-form aod-cd-settings-form" data-action="aod_cd_save_pixels">
-			<p class="aod-cd-note"><?php esc_html_e( 'Le PageView est suivi sur tout le site ; l’achat est mesuré sur la page de remerciement (une fois par commande).', 'aod-client-dashboard' ); ?></p>
 
+			<?php
+			echo self::stage_open( // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le helper.
+				'marketing',
+				__( 'Le pixel du navigateur', 'aod-client-dashboard' ),
+				__( 'Le PageView est suivi sur tout le site ; l’achat est mesuré sur la page de remerciement (une fois par commande).', 'aod-client-dashboard' )
+			);
+			?>
 			<div class="aod-cd-pxcards">
 				<?php foreach ( $platforms as $p ) :
 					$on = '' !== trim( (string) $s[ $p['fields'][0][0] ] ); ?>
-					<div class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--<?php echo esc_attr( $p['brand'] ); ?><?php echo $on ? ' is-on' : ''; ?>">
-						<div class="aod-cd-pxcard__head">
+					<details class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--<?php echo esc_attr( $p['brand'] ); ?><?php echo $on ? ' is-on' : ''; ?>"<?php echo $on ? ' open' : ''; ?>>
+						<summary class="aod-cd-pxcard__head">
 							<span class="aod-cd-pxcard__ic t-<?php echo esc_attr( $p['tone'] ); ?>" aria-hidden="true"><?php echo AOD_CD_Icon::svg( $p['ic'], array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé. ?></span>
 							<span class="aod-cd-pxcard__name"><?php echo esc_html( $p['name'] ); ?></span>
 							<span class="aod-cd-px-on"<?php echo $on ? '' : ' hidden'; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Actif', 'aod-client-dashboard' ), 'ok' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 							<span class="aod-cd-px-off"<?php echo $on ? ' hidden' : ''; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Inactif', 'aod-client-dashboard' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-						</div>
+						</summary>
 						<div class="aod-cd-pxcard__body">
 							<?php foreach ( $p['fields'] as $i => $f ) :
 								list( $key, $label, $ph, $desc ) = $f; ?>
 								<label class="aod-cd-field">
 									<span class="aod-cd-label"><?php echo esc_html( $label ); ?></span>
-									<input type="text" class="<?php echo 0 === $i ? 'aod-cd-px-id' : ''; ?>" name="<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $s[ $key ] ); ?>" placeholder="<?php echo esc_attr( $ph ); ?>">
+									<input type="text" class="aod-cd-code<?php echo 0 === $i ? ' aod-cd-px-id' : ''; ?>" name="<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $s[ $key ] ); ?>" placeholder="<?php echo esc_attr( $ph ); ?>">
 									<span class="aod-cd-help"><?php echo esc_html( $desc ); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
-					</div>
+					</details>
 				<?php endforeach; ?>
 			</div>
+			</section>
 
-			<?php $capi_on = '' !== trim( (string) $s['meta_capi_token'] ); ?>
-			<div class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--meta<?php echo $capi_on ? ' is-on' : ''; ?>" style="margin-top:var(--cd-sp-4)">
-				<div class="aod-cd-pxcard__head">
-					<span class="aod-cd-pxcard__ic t-blue" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'meta', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<span class="aod-cd-pxcard__name"><?php esc_html_e( 'Meta — API de Conversion (CAPI)', 'aod-client-dashboard' ); ?></span>
-					<span class="aod-cd-px-on"<?php echo $capi_on ? '' : ' hidden'; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Actif', 'aod-client-dashboard' ), 'ok' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<span class="aod-cd-px-off"<?php echo $capi_on ? ' hidden' : ''; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Inactif', 'aod-client-dashboard' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-				</div>
-				<div class="aod-cd-pxcard__body">
-					<p class="aod-cd-note"><?php esc_html_e( 'Envoie aussi vos achats à Meta depuis le serveur (Facebook/Instagram), en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées par iOS ou les bloqueurs de pub. La déduplication est automatique. Nécessite l’ID du pixel Meta ci-dessus.', 'aod-client-dashboard' ); ?></p>
-					<label class="aod-cd-field">
-						<span class="aod-cd-label"><?php esc_html_e( 'Jeton d’accès (secret)', 'aod-client-dashboard' ); ?></span>
-						<input type="password" name="meta_capi_token" value="" autocomplete="off" placeholder="<?php echo $capi_on ? esc_attr__( '•••••••• enregistré — laisser vide pour le conserver', 'aod-client-dashboard' ) : 'EAAG...'; ?>">
-						<span class="aod-cd-help"><?php esc_html_e( 'Gestionnaire d’événements Meta → Paramètres → Conversions API → Générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul.', 'aod-client-dashboard' ); ?></span>
-					</label>
-					<?php if ( $capi_on ) : ?>
-						<label class="aod-cd-check" style="display:flex;gap:8px;align-items:center;margin-block:var(--cd-sp-2)">
-							<input type="checkbox" name="meta_capi_token_clear" value="1">
-							<span><?php esc_html_e( 'Effacer le jeton enregistré', 'aod-client-dashboard' ); ?></span>
-						</label>
-					<?php endif; ?>
-					<label class="aod-cd-field">
-						<span class="aod-cd-label"><?php esc_html_e( 'Code d’événement test (optionnel)', 'aod-client-dashboard' ); ?></span>
-						<input type="text" name="meta_test_event_code" value="<?php echo esc_attr( $s['meta_test_event_code'] ); ?>" placeholder="TEST12345">
-						<span class="aod-cd-help"><?php esc_html_e( 'Pour voir vos achats arriver dans le Gestionnaire d’événements → onglet « Test des événements ». À vider une fois validé.', 'aod-client-dashboard' ); ?></span>
-					</label>
-					<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:var(--cd-sp-3)">
-						<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-capi-test" data-platform="meta"><?php esc_html_e( 'Tester la connexion', 'aod-client-dashboard' ); ?></button>
-						<span class="aod-cd-capi-test-msg" aria-live="polite"></span>
-					</div>
-					<p class="aod-cd-help"><?php esc_html_e( 'Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller.', 'aod-client-dashboard' ); ?></p>
-				</div>
+			<?php
+			echo self::stage_open( // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le helper.
+				'locked',
+				__( 'L’envoi depuis le serveur', 'aod-client-dashboard' ),
+				__( 'En plus du pixel du navigateur, vos achats partent aussi de votre serveur : vous ne perdez plus les conversions bloquées par iOS ou par un bloqueur de publicité. La déduplication est automatique, et chaque envoi exige l’ID du pixel correspondant ci-dessus.', 'aod-client-dashboard' )
+			);
+			?>
+			<div class="aod-cd-pxcards">
+				<?php foreach ( $capis as $c ) :
+					$capi_on = '' !== trim( (string) $s[ $c['key'] ] ); ?>
+					<details class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--<?php echo esc_attr( $c['brand'] ); ?><?php echo $capi_on ? ' is-on' : ''; ?>"<?php echo $capi_on ? ' open' : ''; ?>>
+						<summary class="aod-cd-pxcard__head">
+							<span class="aod-cd-pxcard__ic t-<?php echo esc_attr( $c['tone'] ); ?>" aria-hidden="true"><?php echo AOD_CD_Icon::svg( $c['ic'], array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé. ?></span>
+							<span class="aod-cd-pxcard__name"><?php echo esc_html( $c['name'] ); ?></span>
+							<span class="aod-cd-px-on"<?php echo $capi_on ? '' : ' hidden'; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Actif', 'aod-client-dashboard' ), 'ok' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+							<span class="aod-cd-px-off"<?php echo $capi_on ? ' hidden' : ''; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Inactif', 'aod-client-dashboard' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+						</summary>
+						<div class="aod-cd-pxcard__body">
+							<label class="aod-cd-field aod-cd-field--secret">
+								<span class="aod-cd-label"><?php echo AOD_CD_Icon::svg( 'locked', array( 'size' => 13 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé. ?><?php esc_html_e( 'Jeton d’accès (secret)', 'aod-client-dashboard' ); ?></span>
+								<?php
+								/* 🔤 LE MARQUEUR DE SUBSTITUTION MONTRE LA FORME ATTENDUE, IL N'INSTRUIT PAS.
+								   Il portait « •••••••• enregistré — laisser vide pour le conserver » :
+								   une phrase entière, donc traduite, donc EN ARABE sur un site arabe —
+								   dans un champ que `.aod-cd-code` force en LTR pour que les jetons ne
+								   se retournent pas. L'instruction descend d'un cran, à sa place, dans
+								   l'aide ; le marqueur ne garde que les points, qui n'ont pas de sens
+								   d'écriture. */
+								?>
+								<input type="password" class="aod-cd-code" name="<?php echo esc_attr( $c['key'] ); ?>" value="" autocomplete="off" placeholder="<?php echo $capi_on ? '••••••••' : esc_attr( $c['ph'] ); ?>">
+								<span class="aod-cd-help">
+									<?php if ( $capi_on ) : ?>
+										<strong><?php esc_html_e( 'Un jeton est enregistré. Laissez le champ vide pour le conserver.', 'aod-client-dashboard' ); ?></strong>
+									<?php endif; ?>
+									<?php echo esc_html( $c['token_help'] ); ?>
+								</span>
+							</label>
+							<?php if ( $capi_on ) : ?>
+								<label class="aod-cd-check aod-cd-px-clear">
+									<input type="checkbox" name="<?php echo esc_attr( $c['key'] ); ?>_clear" value="1">
+									<span><?php esc_html_e( 'Effacer le jeton enregistré', 'aod-client-dashboard' ); ?></span>
+								</label>
+							<?php endif; ?>
+							<?php if ( '' !== $c['test_key'] ) : ?>
+								<label class="aod-cd-field">
+									<span class="aod-cd-label"><?php echo esc_html( $c['test_label'] ); ?></span>
+									<input type="text" class="aod-cd-code" name="<?php echo esc_attr( $c['test_key'] ); ?>" value="<?php echo esc_attr( $s[ $c['test_key'] ] ); ?>" placeholder="TEST12345">
+									<span class="aod-cd-help"><?php echo esc_html( $c['test_help'] ); ?></span>
+								</label>
+							<?php endif; ?>
+							<div class="aod-cd-pxcard__act">
+								<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-capi-test" data-platform="<?php echo esc_attr( $c['brand'] ); ?>"><?php esc_html_e( 'Tester la connexion', 'aod-client-dashboard' ); ?></button>
+								<span class="aod-cd-capi-test-msg" aria-live="polite"></span>
+							</div>
+						</div>
+					</details>
+				<?php endforeach; ?>
 			</div>
+			<p class="aod-cd-pxstage__foot"><?php esc_html_e( 'Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller.', 'aod-client-dashboard' ); ?></p>
+			</section>
 
-			<?php $tt_capi_on = '' !== trim( (string) $s['tiktok_capi_token'] ); ?>
-			<div class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--tiktok<?php echo $tt_capi_on ? ' is-on' : ''; ?>" style="margin-top:var(--cd-sp-4)">
-				<div class="aod-cd-pxcard__head">
-					<span class="aod-cd-pxcard__ic t-slate" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'tiktok', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<span class="aod-cd-pxcard__name"><?php esc_html_e( 'TikTok — API de Conversion (Events API)', 'aod-client-dashboard' ); ?></span>
-					<span class="aod-cd-px-on"<?php echo $tt_capi_on ? '' : ' hidden'; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Actif', 'aod-client-dashboard' ), 'ok' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<span class="aod-cd-px-off"<?php echo $tt_capi_on ? ' hidden' : ''; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Inactif', 'aod-client-dashboard' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-				</div>
-				<div class="aod-cd-pxcard__body">
-					<p class="aod-cd-note"><?php esc_html_e( 'Envoie aussi vos achats à TikTok depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel TikTok ci-dessus.', 'aod-client-dashboard' ); ?></p>
-					<label class="aod-cd-field">
-						<span class="aod-cd-label"><?php esc_html_e( 'Jeton d’accès (secret)', 'aod-client-dashboard' ); ?></span>
-						<input type="password" name="tiktok_capi_token" value="" autocomplete="off" placeholder="<?php echo $tt_capi_on ? esc_attr__( '•••••••• enregistré — laisser vide pour le conserver', 'aod-client-dashboard' ) : '...'; ?>">
-						<span class="aod-cd-help"><?php esc_html_e( 'TikTok Ads → Outils → Événements → gérer l’Events API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul.', 'aod-client-dashboard' ); ?></span>
-					</label>
-					<?php if ( $tt_capi_on ) : ?>
-						<label class="aod-cd-check" style="display:flex;gap:8px;align-items:center;margin-block:var(--cd-sp-2)">
-							<input type="checkbox" name="tiktok_capi_token_clear" value="1">
-							<span><?php esc_html_e( 'Effacer le jeton enregistré', 'aod-client-dashboard' ); ?></span>
-						</label>
-					<?php endif; ?>
-					<label class="aod-cd-field">
-						<span class="aod-cd-label"><?php esc_html_e( 'Code d’événement test (requis pour tester)', 'aod-client-dashboard' ); ?></span>
-						<input type="text" name="tiktok_test_event_code" value="<?php echo esc_attr( $s['tiktok_test_event_code'] ); ?>" placeholder="TEST12345">
-						<span class="aod-cd-help"><?php esc_html_e( 'TikTok Ads → Événements → onglet « Test ». Requis pour le bouton « Tester » ci-dessous (l’événement de test n’entre pas dans vos statistiques). À vider une fois validé.', 'aod-client-dashboard' ); ?></span>
-					</label>
-					<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:var(--cd-sp-3)">
-						<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-capi-test" data-platform="tiktok"><?php esc_html_e( 'Tester la connexion', 'aod-client-dashboard' ); ?></button>
-						<span class="aod-cd-capi-test-msg" aria-live="polite"></span>
-					</div>
-					<p class="aod-cd-help"><?php esc_html_e( 'Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller.', 'aod-client-dashboard' ); ?></p>
-				</div>
-			</div>
-
-			<?php $sc_capi_on = '' !== trim( (string) $s['snapchat_capi_token'] ); ?>
-			<div class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--snapchat<?php echo $sc_capi_on ? ' is-on' : ''; ?>" style="margin-top:var(--cd-sp-4)">
-				<div class="aod-cd-pxcard__head">
-					<span class="aod-cd-pxcard__ic t-slate" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'snapchat', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<span class="aod-cd-pxcard__name"><?php esc_html_e( 'Snapchat — API de Conversion', 'aod-client-dashboard' ); ?></span>
-					<span class="aod-cd-px-on"<?php echo $sc_capi_on ? '' : ' hidden'; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Actif', 'aod-client-dashboard' ), 'ok' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<span class="aod-cd-px-off"<?php echo $sc_capi_on ? ' hidden' : ''; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Inactif', 'aod-client-dashboard' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-				</div>
-				<div class="aod-cd-pxcard__body">
-					<p class="aod-cd-note"><?php esc_html_e( 'Envoie aussi vos achats à Snapchat depuis le serveur, en plus du pixel du navigateur : vous ne perdez plus les conversions bloquées côté navigateur. La déduplication est automatique. Nécessite l’ID du pixel Snapchat ci-dessus.', 'aod-client-dashboard' ); ?></p>
-					<label class="aod-cd-field">
-						<span class="aod-cd-label"><?php esc_html_e( 'Jeton d’accès (secret)', 'aod-client-dashboard' ); ?></span>
-						<input type="password" name="snapchat_capi_token" value="" autocomplete="off" placeholder="<?php echo $sc_capi_on ? esc_attr__( '•••••••• enregistré — laisser vide pour le conserver', 'aod-client-dashboard' ) : '...'; ?>">
-						<span class="aod-cd-help"><?php esc_html_e( 'Snapchat Ads → Gestionnaire d’événements → Conversions API → générer un jeton d’accès. Laisser vide pour garder le pixel du navigateur seul.', 'aod-client-dashboard' ); ?></span>
-					</label>
-					<?php if ( $sc_capi_on ) : ?>
-						<label class="aod-cd-check" style="display:flex;gap:8px;align-items:center;margin-block:var(--cd-sp-2)">
-							<input type="checkbox" name="snapchat_capi_token_clear" value="1">
-							<span><?php esc_html_e( 'Effacer le jeton enregistré', 'aod-client-dashboard' ); ?></span>
-						</label>
-					<?php endif; ?>
-					<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:var(--cd-sp-3)">
-						<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-capi-test" data-platform="snapchat"><?php esc_html_e( 'Tester la connexion', 'aod-client-dashboard' ); ?></button>
-						<span class="aod-cd-capi-test-msg" aria-live="polite"></span>
-					</div>
-					<p class="aod-cd-help"><?php esc_html_e( 'Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller.', 'aod-client-dashboard' ); ?></p>
-				</div>
-			</div>
-
-			<div class="aod-cd-pxcard" style="margin-top:var(--cd-sp-4)">
-				<div class="aod-cd-pxcard__head">
-					<span class="aod-cd-pxcard__ic t-slate" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'conversion', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<span class="aod-cd-pxcard__name"><?php esc_html_e( 'Devise de reporting', 'aod-client-dashboard' ); ?></span>
-				</div>
-				<div class="aod-cd-pxcard__body">
-					<p class="aod-cd-note"><?php esc_html_e( 'Meta refuse le dinar algérien : la valeur de vos achats n’est pas comptée dans vos publicités. Déclarez une devise reconnue et son taux pour rendre cette valeur mesurable. Laissez vide pour ne rien changer.', 'aod-client-dashboard' ); ?></p>
+			<?php
+			/* La devise n'est PAS une cinquième régie. Elle vivait pourtant dans la
+			   même grille de marques, avec le même encadré et la même icône ronde :
+			   au balayage, elle se lisait comme un canal publicitaire de plus. Elle
+			   a désormais son propre étage, sans liseré de marque et sans pastille
+			   actif/inactif — trois signaux qui ne veulent rien dire pour elle. */
+			echo self::stage_open( // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le helper.
+				'money',
+				__( 'Devise de reporting', 'aod-client-dashboard' ),
+				__( 'Meta refuse le dinar algérien : la valeur de vos achats n’est pas comptée dans vos publicités. Déclarez une devise reconnue et son taux pour rendre cette valeur mesurable. Laissez vide pour ne rien changer.', 'aod-client-dashboard' )
+			);
+			?>
+			<div class="aod-cd-pxcard aod-cd-pxcard--plain">
+				<div class="aod-cd-pxcard__body aod-cd-pxcard__body--2">
 					<label class="aod-cd-field">
 						<span class="aod-cd-label"><?php esc_html_e( 'Devise (code à 3 lettres)', 'aod-client-dashboard' ); ?></span>
-						<input type="text" name="report_currency" value="<?php echo esc_attr( $s['report_currency'] ); ?>" placeholder="USD" maxlength="3" style="text-transform:uppercase">
+						<input type="text" class="aod-cd-code aod-cd-code--up" name="report_currency" value="<?php echo esc_attr( $s['report_currency'] ); ?>" placeholder="USD" maxlength="3">
 						<span class="aod-cd-help"><?php esc_html_e( 'Ex. USD, EUR — une devise que les régies reconnaissent.', 'aod-client-dashboard' ); ?></span>
 					</label>
 					<label class="aod-cd-field">
 						<span class="aod-cd-label"><?php esc_html_e( 'Taux : 1 DZD = ?', 'aod-client-dashboard' ); ?></span>
-						<input type="number" step="0.0001" min="0" name="report_rate" value="<?php echo esc_attr( $s['report_rate'] ); ?>" placeholder="0.0075">
+						<input type="number" class="aod-cd-code" step="0.0001" min="0" name="report_rate" value="<?php echo esc_attr( $s['report_rate'] ); ?>" placeholder="0.0075">
 						<span class="aod-cd-help"><?php esc_html_e( 'Combien vaut 1 dinar dans la devise choisie (ex. 0,0075 pour le dollar).', 'aod-client-dashboard' ); ?></span>
 					</label>
 				</div>
 			</div>
+			</section>
 
 			<div class="aod-cd-form-foot aod-cd-savebar">
 				<button type="submit" class="aod-cd-btn aod-cd-btn-primary"><?php esc_html_e( 'Enregistrer les pixels', 'aod-client-dashboard' ); ?></button>
