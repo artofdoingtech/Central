@@ -538,7 +538,7 @@ class AOD_CD_Section_Abandoned {
 
 		echo '<div class="aod-cd-tablewrap"><table class="aod-cd-table aod-cd-table--cards"><thead><tr>';
 		if ( $can_delete ) {
-			echo '<th class="aod-cd-col-check"><input type="checkbox" class="aod-cd-leadcheck-all" title="' . esc_attr__( 'Tout sélectionner', 'aod-client-dashboard' ) . '"></th>';
+			echo '<th class="aod-cd-col-check"><label class="aod-cd-checkwrap"><input type="checkbox" class="aod-cd-leadcheck-all" title="' . esc_attr__( 'Tout sélectionner', 'aod-client-dashboard' ) . '"></label></th>';
 		}
 		// ⚠️ Couples libellé / classe depuis le 2026-08-08, comme la jumelle de
 		// Commandes : la colonne des montants s'aligne sur sa fin, et son en-tête doit
@@ -598,7 +598,7 @@ class AOD_CD_Section_Abandoned {
 		echo '<tr>';
 
 		if ( $can_delete ) {
-			echo '<td class="aod-cd-col-check"><input type="checkbox" class="aod-cd-leadcheck" value="' . esc_attr( (int) $lead->id ) . '" title="' . esc_attr__( 'Sélectionner ce prospect', 'aod-client-dashboard' ) . '"></td>';
+			echo '<td class="aod-cd-col-check"><label class="aod-cd-checkwrap"><input type="checkbox" class="aod-cd-leadcheck" value="' . esc_attr( (int) $lead->id ) . '" title="' . esc_attr__( 'Sélectionner ce prospect', 'aod-client-dashboard' ) . '"></label></td>';
 		}
 
 		// Quand + badge d'état.

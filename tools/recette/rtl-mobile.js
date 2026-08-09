@@ -20,6 +20,9 @@ const HOST = new URL( BASE ).hostname;
 	let tablesTotal = 0;
 	// 46.6 — cibles tactiles réellement mesurées, sur les DEUX passages mobiles.
 	let ciblesTotal = 0;
+	// 46.6bis — les cases/radios sont comptées A PART : leur regle juge les DEUX
+	// dimensions, celle des boutons seulement la hauteur (cf. la sonde).
+	let casesTotal = 0;
 	// D32 — panneaux de transporteur réellement DÉPLIÉS par la porte. Un tableau
 	// n'est mesuré dans son état ouvert que si quelque chose s'est ouvert : sans ce
 	// compteur, un clic devenu inopérant rendrait le vert du tableau fermé.
@@ -179,6 +182,48 @@ const HOST = new URL( BASE ).hostname;
 					}
 				} );
 
+				/* 🔴 46.6bis — LES CASES À COCHER ÉTAIENT HORS PÉRIMÈTRE (2026-08-09).
+				 * La liste ci-dessus énumère des BOUTONS. Aucune case, aucun bouton
+				 * radio. La porte publiait donc « 350 cibles mesurées, 0 échec »
+				 * pendant que **66 cases sur 87** tenaient sous 44 px à 390 px —
+				 * dont les 58 de la colonne « Livraison gratuite » (18×18) et celles
+				 * qui arment la SUPPRESSION GROUPÉE de Commandes et Abandonnées.
+				 * 🚨 La porte ne mentait pas : ses 350 mesures étaient exactes. C'est
+				 * son PÉRIMÈTRE qui laissait un trou, et un grand nombre affiché à
+				 * côté d'un trou rassure plus qu'il n'informe. *Avant de croire une
+				 * porte verte, lire ce qu'elle énumère.*
+				 *
+				 * ⚠️ SONDE SÉPARÉE, à dessein. Celle des boutons est calibrée au
+				 * sous-pixel (cf. le pavé ci-dessus : tout /gestion rend 44.00000) et
+				 * ne juge que la HAUTEUR — légitime pour un bouton, qui est toujours
+				 * large. Une case est petite dans les DEUX sens : il faut mesurer les
+				 * deux, et mélanger les deux règles dans une seule boucle aurait
+				 * abîmé une calibration durement acquise.
+				 *
+				 * ⚠️ ON MESURE LA CIBLE, PAS LE CHAMP. Une case de 16 px dans un
+				 * `<label>` de 44 est parfaitement atteignable — cliquer l'étiquette
+				 * bascule le champ, nativement. Juger le champ nu ferait rougir des
+				 * cas corrects, et un cliquet qui rougit à tort finit désactivé (D16).
+				 * On remonte donc au `<label>` englobant, puis au `label[for]`, puis
+				 * au champ seulement s'il n'a ni l'un ni l'autre. */
+				const cases = [];
+				document.querySelectorAll( 'body.aod-cd input[type=checkbox], body.aod-cd input[type=radio]' ).forEach( ( el ) => {
+					let cible = el.closest( 'label' );
+					if ( ! cible && el.id ) {
+						cible = document.querySelector( 'label[for="' + el.id + '"]' );
+					}
+					if ( ! cible ) { cible = el; }
+					const b = cible.getBoundingClientRect();
+					if ( ! b.height || ! b.width ) { return; }
+					const w = Math.round( b.width );
+					const h = Math.round( b.height );
+					if ( w < 44 || h < 44 ) {
+						const cls = ( el.getAttribute( 'class' ) || '' )
+							.split( /\s+/ ).filter( ( c ) => c.startsWith( 'aod-cd' ) ).slice( 0, 2 ).join( '.' );
+						cases.push( { cls: cls || '(sans classe)', w, h } );
+					}
+				} );
+
 				return {
 					racine,
 					dir: de.getAttribute( 'dir' ) || getComputedStyle( document.body ).direction,
@@ -188,6 +233,8 @@ const HOST = new URL( BASE ).hostname;
 					worst,
 					tables,
 					petits,
+					cases,
+					casesTotal: document.querySelectorAll( 'body.aod-cd input[type=checkbox], body.aod-cd input[type=radio]' ).length,
 					cibles: document.querySelectorAll(
 						'body.aod-cd a.aod-cd-btn, body.aod-cd button.aod-cd-btn, body.aod-cd .aod-cd-seg__btn,'
 						+ ' body.aod-cd .aod-cd-page, body.aod-cd .aod-cd-statussel-btn,'
@@ -307,11 +354,15 @@ const HOST = new URL( BASE ).hostname;
 			 * sans appliquer la même règle — c'est voulu, et c'est écrit. */
 			const jugeCibles = mode.w <= 780;
 			const petits = jugeCibles ? ( r.petits || [] ) : [];
-			if ( jugeCibles ) { ciblesTotal += r.cibles || 0; }
+			// 46.6bis — même règle mobile-seulement que les boutons : sur desktop une
+			// case de 16 px visée à la souris est un choix de densité, pas un défaut.
+			const cases = jugeCibles ? ( r.cases || [] ) : [];
+			if ( jugeCibles ) { ciblesTotal += r.cibles || 0; casesTotal += r.casesTotal || 0; }
 
 			const okPage = r.racine && rendue === s && php.length === 0 && console_.length === 0 && overflow <= 2
 				&& tablesLarges.length === 0
 				&& petits.length === 0
+				&& cases.length === 0
 				&& ( ! mode.ar || r.dir === 'rtl' );
 
 			if ( okPage ) {
@@ -330,6 +381,13 @@ const HOST = new URL( BASE ).hostname;
 				for ( const p of petits ) { vus[ `${ p.cls }@${ p.h }px` ] = ( vus[ `${ p.cls }@${ p.h }px` ] || 0 ) + 1; }
 				for ( const [ k, n ] of Object.entries( vus ) ) {
 					console.log( `        cible    : ${ k } × ${ n } — sous 44 px au pouce (spec UX §5.3)` );
+				}
+			}
+			if ( cases.length ) {
+				const vues = {};
+				for ( const c of cases ) { vues[ `${ c.cls }@${ c.w }×${ c.h }` ] = ( vues[ `${ c.cls }@${ c.w }×${ c.h }` ] || 0 ) + 1; }
+				for ( const [ k, n ] of Object.entries( vues ) ) {
+					console.log( `        case     : ${ k } × ${ n } — cible sous 44 px au pouce. Envelopper la case d'un <label class="aod-cd-checkwrap"> plutot que de grossir la case.` );
 				}
 			}
 			for ( const t of tablesLarges ) {
@@ -396,6 +454,23 @@ const HOST = new URL( BASE ).hostname;
 		ciblesTotal >= 100,
 		`🔴 46.6 : ${ ciblesTotal } cible(s) tactile(s) réellement mesurée(s) à 390 px`,
 		ciblesTotal >= 100 ? '' : 'moins de 100 : le sélecteur ne trouve plus les contrôles — un audit vide n\'est pas un audit vert'
+	) ) {
+		fails++;
+	}
+
+	/* 46.6bis — témoin de couverture des CASES, et il vaut son pesant : c'est
+	 * exactement le trou que cette étape ferme. La sonde des boutons publiait
+	 * « 350 cibles, 0 échec » alors que 66 cases sur 87 tenaient sous 44 px — elle
+	 * ne les énumérait simplement pas. Sans le compteur ci-dessous, un sélecteur
+	 * devenu faux rendrait `cases` vide sur les deux passages mobiles et
+	 * reproduirait le MÊME vert, à la même place.
+	 * Plancher à 60 : mesuré à 174 sur les deux passages (87 par passage, dont
+	 * les 58 de la colonne « Livraison gratuite »). */
+	console.log( `Cases à cocher mesurées (2 passages mobiles) : ${ casesTotal }` );
+	if ( ! ok(
+		casesTotal >= 60,
+		`🔴 46.6bis : ${ casesTotal } case(s)/radio(s) réellement mesurée(s) à 390 px`,
+		casesTotal >= 60 ? '' : 'moins de 60 : le sélecteur ne trouve plus les cases — c’est le trou même que cette sonde ferme'
 	) ) {
 		fails++;
 	}

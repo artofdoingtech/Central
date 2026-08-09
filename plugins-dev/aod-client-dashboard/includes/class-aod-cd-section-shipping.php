@@ -192,7 +192,7 @@ class AOD_CD_Section_Shipping {
 									?>
 									<th class="aod-cd-free-col">
 										<span class="aod-cd-free-head">
-											<input type="checkbox" class="aod-cd-free-all" aria-label="<?php esc_attr_e( 'Tout cocher / décocher', 'aod-client-dashboard' ); ?>">
+											<label class="aod-cd-checkwrap"><input type="checkbox" class="aod-cd-free-all" aria-label="<?php esc_attr_e( 'Tout cocher / décocher', 'aod-client-dashboard' ); ?>"></label>
 											<span><?php esc_html_e( 'Livraison gratuite', 'aod-client-dashboard' ); ?></span>
 										</span>
 									</th>
@@ -249,7 +249,7 @@ class AOD_CD_Section_Shipping {
 											<td class="aod-cd-cell-wilaya" data-label="<?php esc_attr_e( 'Wilaya', 'aod-client-dashboard' ); ?>"><span class="aod-cd-w-code"><?php echo esc_html( sprintf( '%02d', $code ) ); ?></span> - <span class="aod-cd-w-name"><?php echo esc_html( $w['name'] ); ?></span><span class="aod-cd-ship-off"><?php esc_html_e( 'Non livrable', 'aod-client-dashboard' ); ?></span></td>
 											<td data-label="<?php echo esc_attr( $lbl_home ); ?>"><input type="number" min="0" step="any" placeholder="—" name="home[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['home'] ); ?>" value="<?php echo isset( $prices[ $code ]['home'] ) ? esc_attr( $prices[ $code ]['home'] ) : ''; ?>"></td>
 											<td data-label="<?php echo esc_attr( $lbl_desk ); ?>"><input type="number" min="0" step="any" placeholder="—" name="desk[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['desk'] ); ?>" value="<?php echo isset( $prices[ $code ]['desk'] ) ? esc_attr( $prices[ $code ]['desk'] ) : ''; ?>"></td>
-											<td class="aod-cd-free-col" data-label="<?php echo esc_attr( $lbl_free ); ?>"><input type="checkbox" class="aod-cd-free-one" name="free[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['free'] ); ?>" value="1" <?php checked( ! empty( $prices[ $code ]['free'] ) ); ?>></td>
+											<td class="aod-cd-free-col" data-label="<?php echo esc_attr( $lbl_free ); ?>"><label class="aod-cd-checkwrap"><input type="checkbox" class="aod-cd-free-one" name="free[<?php echo esc_attr( $code ); ?>]" aria-label="<?php echo esc_attr( $aria['free'] ); ?>" value="1" <?php checked( ! empty( $prices[ $code ]['free'] ) ); ?>></label></td>
 										</tr>
 									<?php endforeach; ?>
 								</tbody>

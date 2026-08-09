@@ -3793,6 +3793,52 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 /* ---- Commandes : sélection multiple + suppression groupée ---- */
 .aod-cd-col-check{width:38px;text-align:center;padding-left:10px;padding-right:6px}
 .aod-cd-col-check input[type="checkbox"]{width:16px;height:16px;cursor:pointer;accent-color:var(--cd-ink);margin:0;vertical-align:middle}
+/* ── ☑️ 16 × 16 PX POUR UNE SUPPRESSION GROUPÉE, AU POUCE ─────────────
+   Mesuré à 390 px sur Commandes abandonnées : **13 cases de 16 × 16**. C'est
+   sous le plancher de 24 px de WCAG 2.2 AA (2.5.8), très loin des 44 px que la
+   Phase 46.6 s'est fixés pour cet écran — et ces cases arment la SUPPRESSION
+   GROUPÉE. Se tromper de ligne ici efface un prospect.
+   🚨 ET LA PORTE NE POUVAIT PAS LE VOIR. Le relevé des cibles tactiles de
+   `rtl-mobile.js` (l.191) énumère `a.aod-cd-btn`, `button.aod-cd-btn`, les
+   segments, la pagination et les trois menus déroulants maison. Aucune case à
+   cocher. Les 350 cibles qu'elle mesure sont donc justes ; c'est son PÉRIMÈTRE
+   qui laissait un trou, et un trou pile sur le contrôle le plus destructeur.
+   *Une porte qui compte 350 cibles rassure autant qu'elle mesure — encore
+   faut-il regarder ce qu'elle n'énumère pas.*
+   Le `<label>` autour de la case (4 points d'appel : lignes ET « tout
+   sélectionner », sur Commandes ET Abandonnées) porte la zone tactile sans
+   grossir la case : cliquer un label bascule son champ nativement, aucune ligne
+   de script. La case garde 16 px à l'écran, sa cible passe à 44.
+   ⚠️ Les quatre sites d'un coup : ne traiter que la page qu'on regarde est la
+   famille de défauts que la revue de la Phase 47 a comptée huit fois. */
+.aod-cd-checkwrap{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+@media(max-width:780px){
+	.aod-cd-checkwrap{min-width:44px;min-height:44px;margin:-12px -14px}
+	/* ── L'AUDIT A TROUVÉ 66 CIBLES, PAS 13 ───────────────────────────────
+	   Après avoir corrigé les cases de sélection, j'ai balayé les DOUZE sections
+	   à 390 px plutôt que de m'arrêter à celle que je regardais. Résultat :
+	   **66 cases ou boutons radio sous 44 px sur 87**, dont
+	   · 58 + 1 sur Livraison — toute la colonne « Livraison gratuite », à 18×18 ;
+	   · 4 sur Catégories — l'étiquette fait 310 px de LARGE et 16 de HAUT, donc
+	     facile à viser horizontalement et ratable verticalement : la largeur ne
+	     rachète pas la hauteur, un pouce n'est pas un curseur ;
+	   · 1 sur Commandes (« Écraser les assignations », 15×15) et 1 sur WhatsApp.
+	   🚨 Mon premier correctif en couvrait 4 sur 70. *Corriger les occurrences
+	   qu'on a vues, c'est traiter l'échantillon ; seul le balayage donne le
+	   dénominateur.* Et c'est le balayage qui manquait à la porte, pas la règle.
+	   ⚠️ `min-height` seul sur les étiquettes déjà larges : leur largeur est
+	   correcte, y toucher casserait l'alignement du texte qu'elles portent. */
+	.aod-cd-cat-home-wrap,
+	.aod-cd-check{min-height:44px}
+	/* ⓘ « Écraser les assignations » est un cas À PART, et l'audit le comptait mal :
+	   sa case porte un `<label for>` SÉPARÉ, donc du texte cliquable à côté d'elle.
+	   Ma sonde cherchait `closest('label')` et ne trouvait rien — elle mesurait
+	   donc la case nue (15×15) en ignorant l'étiquette qui double la cible. Le
+	   défaut est réel mais plus petit qu'annoncé : on peut déjà viser le texte.
+	   On donne quand même son rang au rang entier. */
+	.aod-cd-bulk-ow{min-height:44px;align-items:center}
+	.aod-cd-bulk-ow label{display:inline-flex;align-items:center;min-height:44px}
+}
 /* `.is-selected` est remonté auprès du zébrage et du survol (~l.313) : les trois
    états d'une même ligne se règlent au même endroit, à la même spécificité. Ici,
    il perdait contre le zébrage et peignait le mauvais élément. */

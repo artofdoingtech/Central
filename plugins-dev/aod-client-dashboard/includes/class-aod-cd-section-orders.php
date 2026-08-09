@@ -468,7 +468,7 @@ class AOD_CD_Section_Orders {
 
 		echo '<div class="aod-cd-tablewrap"><table class="aod-cd-table aod-cd-table--cards"><thead><tr>';
 		if ( $can_delete ) {
-			echo '<th class="aod-cd-col-check"><input type="checkbox" class="aod-cd-ordercheck-all" title="' . esc_attr__( 'Tout sélectionner', 'aod-client-dashboard' ) . '"></th>';
+			echo '<th class="aod-cd-col-check"><label class="aod-cd-checkwrap"><input type="checkbox" class="aod-cd-ordercheck-all" title="' . esc_attr__( 'Tout sélectionner', 'aod-client-dashboard' ) . '"></label></th>';
 		}
 		// Tableau priorisé (étape 5.4) : 7 colonnes au lieu de 13. Les colonnes
 		// secondaires (date, commune, articles, prix produit, prix livraison) sont
@@ -541,7 +541,7 @@ class AOD_CD_Section_Orders {
 
 		echo '<tr>';
 		if ( $can_delete ) {
-			echo '<td class="aod-cd-col-check"><input type="checkbox" class="aod-cd-ordercheck" value="' . esc_attr( $order->get_id() ) . '" title="' . esc_attr__( 'Sélectionner cette commande', 'aod-client-dashboard' ) . '"></td>';
+			echo '<td class="aod-cd-col-check"><label class="aod-cd-checkwrap"><input type="checkbox" class="aod-cd-ordercheck" value="' . esc_attr( $order->get_id() ) . '" title="' . esc_attr__( 'Sélectionner cette commande', 'aod-client-dashboard' ) . '"></label></td>';
 		}
 		// 45.3 — le n° redevient du TEXTE. C'était un `<button>` souligné en accent :
 		// une affordance cachée (rien ne dit qu'un numéro s'ouvre), un nom
