@@ -2425,6 +2425,13 @@ msgstr "إظهار في الصفحة الرئيسية"
 msgid "Ordre d’affichage sur l’accueil"
 msgstr "ترتيب العرض في الصفحة الرئيسية"
 
+#. L'intitulé COURT de la colonne, au-dessus du champ dont l'`aria-label` est la
+#. phrase complète ci-dessus : même notion, deux longueurs — l'en-tête n'a que
+#. 62 px, la phrase entière y serait coupée.
+#: includes/class-aod-cd-section-products.php:150
+msgid "Ordre"
+msgstr "الترتيب"
+
 #. translators: %s: nom actuel de la catégorie.
 #: includes/class-aod-cd-section-products.php:114
 #: includes/class-aod-cd-section-products.php:184

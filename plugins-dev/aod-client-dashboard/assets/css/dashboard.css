@@ -1079,11 +1079,36 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
    plus large des quatre, et les lignes courtes se recollent à leur libellé. */
 .aod-cd-price>span{display:grid;grid-template-columns:auto 1fr;gap:var(--cd-sp-2);align-items:baseline}
 .aod-cd-price>span>:last-child{text-align:end;font-variant-numeric:tabular-nums}
-.aod-cd-price-tag{display:inline-block;min-width:44px;font-size:var(--cd-fs-xs);color:var(--cd-muted);text-transform:uppercase;letter-spacing:.03em}
-.aod-cd-price-was{font-size:var(--cd-fs-sm);color:var(--cd-muted)}
+/* ── UN SEUL NOMBRE EST FORT (2026-08-09) ─────────────────────────────
+   🚨 CE BLOC ÉTAIT UN LIVRE DE COMPTES, et c'était le centre de gravité de la
+   page. Quatre lignes — Prix, Promo, Achat, Marge — au même rang typographique,
+   chacune précédée de son libellé en capitales, dans une colonne de 197 px. À
+   côté, le PRODUIT (le sujet de l'écran) tenait dans une vignette de 48 px et une
+   ligne de texte. La comptabilité criait, le produit chuchotait.
+   Or le gérant lit dans cet ordre : *qu'est-ce que c'est* → *ça se vend
+   combien* → *je gagne quoi*. La page disait l'inverse.
+   Trois rangs, désormais, au lieu de quatre lignes égales :
+     1. le prix DE VENTE — gros, chiffres tabulaires, encre pleine ;
+     2. le prix barré — petit, gris : il ne sert qu'à faire lire la remise ;
+     3. achat et marge — cran le plus petit, derrière un filet : c'est du
+        back-office, ça ne se lit pas en balayant une liste.
+   🔒 AUCUNE COULEUR NOUVELLE ET AUCUNE CHAÎNE TOUCHÉE. Les libellés restent
+   ÉMIS — le commentaire de `render_price_cell()` explique pourquoi : chaque
+   ligne est une grille libellé/valeur, et une ligne sans libellé ferait tomber
+   son montant dans la colonne des libellés. Ils descendent seulement au gris de
+   DÉCOR : ils cessent d'être une colonne qui parle pour devenir une gouttière.
+   ⚠️ `--cd-fs-lg` sur le prix et `tabular-nums` : sur une liste, des montants
+   qui ne tombent pas les uns sous les autres se comparent à l'œil, pas d'un coup
+   d'œil. Barlow rend des chiffres proportionnels par défaut. */
+.aod-cd-price-tag{display:inline-block;min-width:44px;font-size:var(--cd-fs-xs);color:var(--cd-soft);text-transform:uppercase;letter-spacing:.03em;font-weight:600}
+.aod-cd-price-was{font-size:var(--cd-fs-xs);color:var(--cd-muted)}
 .aod-cd-price-was del{color:var(--cd-muted)}
-.aod-cd-price-now{font-size:var(--cd-fs-md);font-weight:700;color:var(--cd-ink)}
-.aod-cd-price-cost{font-size:var(--cd-fs-xs);color:var(--cd-muted)}
+.aod-cd-price-now{font-size:var(--cd-fs-lg);font-weight:800;color:var(--cd-ink);font-variant-numeric:tabular-nums}
+/* Le filet ouvre le rang « back-office ». `:first-child` pour ne pas le poser
+   quand le coût est la seule ligne présente (produit sans prix d'achat saisi,
+   cas le plus courant sur un clone neuf). */
+.aod-cd-price-cost{font-size:var(--cd-fs-xs);color:var(--cd-muted);padding-top:var(--cd-sp-1);border-top:1px solid var(--cd-line)}
+.aod-cd-price-cost:first-child{border-top:0;padding-top:0}
 .aod-cd-price-margin{font-size:var(--cd-fs-xs);font-weight:600;color:var(--cd-ok)}
 .aod-cd-price-margin--neg{color:var(--cd-bad)}
 .aod-cd-price-pct{font-weight:400;opacity:.8}
@@ -1239,9 +1264,48 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
    ⚠️ 48 px et non 40 : c'est une page de CATALOGUE, la photo y est une donnée.
    Le pouce garde 34 px — sa règle est plus spécifique et vit dans son bloc. */
 .aod-cd-prod img{
-	display:block;width:48px;height:48px;flex:none;object-fit:cover;
-	border-radius:var(--cd-r-sm);border:1px solid var(--cd-line);background:var(--cd-bg);
+	display:block;width:64px;height:64px;flex:none;object-fit:cover;
+	border-radius:var(--cd-r-md);border:1px solid var(--cd-line);background:var(--cd-bg);
 }
+/* ── LE PRODUIT REDEVIENT LE SUJET DE SA PROPRE LIGNE (2026-08-09) ────
+   48 → 64 px, et le nom monte d'un cran. Ce n'est pas un agrandissement de
+   confort : sur `/gestion/products/`, la vignette est CE QUE LE GÉRANT BALAYE.
+   Il ne lit pas « Casque sans fil AURA ANC 40 — réduction de bruit active », il
+   reconnaît un casque. À 48 px, dans une colonne de 505 px, l'image était plus
+   petite que le bloc de comptabilité d'à côté — l'écran donnait donc le premier
+   rang au chiffre et le second à la marchandise.
+   ⚠️ La règle mobile (34 px) reste en place et doit le rester : au pouce, la
+   ligne devient une carte empilée et une vignette de 64 px y mangerait la
+   moitié de la hauteur utile.
+   ⚠️ Le rayon passe à `--cd-r-md` pour suivre la taille — un rayon de 8 px sur
+   une boîte de 64 px se lit presque carré, et la charte n'a qu'une famille de
+   rayons depuis la 46.4 : c'est le cran, pas une valeur libre. */
+.aod-cd-prod{gap:var(--cd-sp-3)}
+/* ⚠️ Cadré sur `.aod-cd-products` : la page Stock partage `.aod-cd-cell-prod`
+   mais empile SOUS le nom deux à trois sous-lignes (variantes, composants de
+   pack, note d'inventaire). Un nom au cran `lg` y ferait une ligne de tableau
+   deux fois plus haute pour la même information. */
+.aod-cd-products .aod-cd-prod__name{font-size:var(--cd-fs-lg);line-height:1.25}
+
+/* ── STOCK : le catalogue se reconnaît, et son nombre se lit (2026-08-09) ──
+   La cellule produit porte une PILE (nom + variantes + note), pas une ligne :
+   la vignette s'aligne donc en HAUT, jamais au centre — centrée sur trois
+   lignes, elle flotterait au milieu du texte au lieu de le débuter.
+   `min-width:0` sur la colonne de texte : sans lui, une longue liste de
+   variantes refuse de se replier et pousse le tableau au défilement. */
+.aod-cd-cell-prod .aod-cd-prod{align-items:flex-start}
+.aod-cd-prod__txt{min-width:0;flex:1 1 auto}
+/* Le stock est le sujet de la page ; il était au corps de texte, dans une
+   colonne parmi sept. Il monte d'un cran, en chiffres tabulaires — une colonne
+   de nombres qui ne tombent pas les uns sous les autres ne se compare pas.
+   L'indice « géré par variante », lui, redescend : c'est une note sur la
+   PROVENANCE du nombre, pas une seconde valeur. */
+.aod-cd-cell-stockn{font-size:var(--cd-fs-lg);font-weight:800;font-variant-numeric:tabular-nums}
+.aod-cd-cell-stockn .aod-cd-stock-variant-hint{font-size:var(--cd-fs-xs);font-weight:400;display:block}
+/* Les autres colonnes chiffrées gardent leur rang mais s'alignent : seuil,
+   vendus, vitesse, couverture. */
+.aod-cd-stock-cover,
+.aod-cd-cell-stockn ~ td{font-variant-numeric:tabular-nums}
 
 /* ---- Sélecteur de statut ---- */
 /* Sélecteur de statut : menu personnalisé (le <select> natif s'ouvrait hors champ). */
@@ -2350,7 +2414,33 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    bord, et le passer en flex partout déplacerait des libellés que personne n'a
    mesurés. */
 .aod-cd-od-boxform .aod-cd-label{display:flex;align-items:center;gap:6px}
-.aod-cd-od-boxform .aod-cd-label svg{flex:none;color:var(--cd-muted)}
+.aod-cd-od-boxform .aod-cd-label svg{flex:none;color:var(--cd-soft)}
+
+/* ── LES INTITULÉS SE TAISENT, LES VALEURS PARLENT (2026-08-09) ───────
+   Retour owner : « les icônes sont moches ». Elles l'étaient, mais pas toutes
+   seules — c'est l'ASSEMBLAGE qui l'était. Un intitulé de champ était rendu en
+   CAPITALES, graisse 700, interlettrage +0,4 px : à côté, un dessin au trait de
+   14 px paraît maigre et mal posé, et l'œil lit d'abord le libellé alors que ce
+   qui compte est ce qu'on a SAISI dedans. Six libellés qui crient au-dessus de
+   six champs, c'est un formulaire qui hurle son propre plan.
+   Ils repassent donc en casse normale, graisse 600, en gris de texte : le
+   contenu du champ (encre pleine) redevient l'élément le plus fort de la carte.
+   🔒 Les chaînes ne changent PAS — « Nom du client », « Téléphone » sont déjà
+   écrites en casse normale dans le PHP ; c'est `text-transform` qui les mettait
+   en capitales. Rien à retraduire.
+   ⚠️ Cadré sur le formulaire d'édition, PAS sur `.aod-cd-label` en général : ce
+   sélecteur habille tout `/gestion`, et calmer d'un coup les intitulés de douze
+   sections est une décision de charte, pas une retouche de volet. À proposer
+   séparément, avec ses mesures.
+   ⚠️ Les titres de carte (« Client », « Livraison ») gardent leurs capitales :
+   eux SONT le plan, et c'est leur rôle de le dire.
+   🎨 L'icône descend à `--cd-soft` (décor) et remonte à l'accent quand le champ
+   prend le focus — cf. la règle `:focus-within`. Au repos elle accompagne, elle
+   ne dispute rien au libellé ; en cours de saisie elle devient le repère. */
+.aod-cd-od-edit .aod-cd-label{
+	text-transform:none;letter-spacing:0;
+	font-weight:600;color:var(--cd-muted);
+}
 /* L'icône suit l'intitulé quand le champ prend le focus — elle fait partie du
    même signal (cf. la règle `:focus-within` sur `.aod-cd-label`). */
 .aod-cd-od-boxform .aod-cd-field:focus-within > .aod-cd-label svg{color:var(--cd-accent)}
@@ -2404,6 +2494,35 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    cartes. Étape 5.4 : call-sites migrés vers AOD_CD_Dashboard::empty_state(). */
 .aod-cd-note,.aod-cd-soon{color:var(--cd-muted)}
 .aod-cd-note{margin-top:14px;font-size:var(--cd-fs-sm);line-height:1.6}
+
+/* ── LE BLOC DE RÉFÉRENCE (2026-08-09) ────────────────────────────────
+   🚨 LA MESURE QUI COMMANDE TOUT LE RESTE : les trois notes sous le tableau de
+   stock étaient rendues sur **1 314 px**. À ce cran de texte, ça fait plus de
+   180 signes par ligne — deux à trois fois ce qu'un œil suit sans perdre le
+   retour à la ligne. Le texte n'était pas mauvais ; sa largeur le rendait
+   pénible à lire, et c'est ce qu'on voyait.
+   `max-width` en `ch` et non en px, à dessein : l'unité est la largeur du « 0 »
+   de la police EN COURS. En arabe, où les glyphes ne mesurent pas la même chose,
+   une largeur en pixels donnerait une autre longueur de ligne — le `ch` tient la
+   même promesse dans les deux langues.
+   ⚠️ `--cd-bg` (le creux) et pas `--cd-card` : ce bloc n'est pas une carte de
+   plus dans la pile, c'est un RETRAIT — il doit s'enfoncer, pas se poser.
+   ⚠️ Le liseré est en `border-inline-start` : en arabe il passe à droite tout
+   seul, comme celui des notes du volet de commande. */
+.aod-cd-legend{
+	display:flex;gap:var(--cd-sp-3);align-items:flex-start;
+	margin-top:var(--cd-sp-5);padding:var(--cd-sp-4);
+	background:var(--cd-bg);border-radius:var(--cd-r-md);
+	border-inline-start:3px solid var(--cd-accent-soft);
+}
+.aod-cd-legend__ic{flex:none;color:var(--cd-soft);line-height:0;margin-top:2px}
+.aod-cd-legend__body{min-width:0;max-width:78ch}
+/* Le premier paragraphe ne « commence » pas plus bas que l'icône : la marge
+   haute de `.aod-cd-note` est celle qui sépare deux notes, pas celle qui ouvre
+   le bloc. Entre elles, l'écart se resserre — trois définitions du même sujet
+   se lisent en série, pas comme trois blocs indépendants. */
+.aod-cd-legend__body .aod-cd-note{margin-top:var(--cd-sp-2)}
+.aod-cd-legend__body .aod-cd-note:first-child{margin-top:0}
 .aod-cd-soon{background:var(--cd-card);border:1.5px dashed var(--cd-line);border-radius:var(--cd-r-lg);padding:48px;text-align:center;font-weight:600}
 .aod-cd-toast{
 	position:fixed;bottom:24px;inset-inline-end:24px;background:var(--cd-ink);color:#fff;
@@ -3125,36 +3244,340 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 .aod-cd-cat-create:hover{transform:none;box-shadow:none;border-color:var(--cd-line)}
 .aod-cd-cat-create__title{margin:0;font-size:var(--cd-fs-lg);font-weight:800;letter-spacing:-.2px}
 .aod-cd-cat-create__help{margin:10px 0 0}
-.aod-cd-cat-new{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 0}
-.aod-cd-cat-new input{flex:1;min-width:160px;padding:11px 13px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit}
+/* ── ✍️ « NOUVELLE CATÉGORIE » : UNE LIGNE VIERGE DU TABLEAU ───────────
+   Le formulaire portait les MÊMES six champs que les lignes d'en dessous, dans un
+   ORDRE DIFFÉRENT et sans un seul intitulé. Deux moitiés du même écran qui
+   parlaient deux langues : on saisissait « à l'aveugle » en haut ce qu'on relisait
+   en colonnes nommées en bas.
+   Il devient une grille dont les quatre pistes reprennent celles de la liste, avec
+   des intitulés dans la MÊME voix typographique que l'en-tête de colonnes
+   (`--cd-fs-xs`, 700, capitales, même interlettrage). Ce qu'on tape ici tombe donc
+   visuellement là où ça atterrira une fois la catégorie créée.
+   ⚠️ `align-items:end` : les quatre contrôles s'alignent par le BAS, pas par le
+   haut — sans quoi un intitulé qui passerait sur deux lignes (l'arabe est plus
+   long dans deux cas sur quatre) décalerait son champ tout seul. */
+.aod-cd-cat-new{
+	display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 200px 88px;
+	gap:var(--cd-sp-3);align-items:end;margin:14px 0 0;
+}
+.aod-cd-catf{display:flex;flex-direction:column;gap:6px;min-width:0}
+.aod-cd-catf__lab{font-size:var(--cd-fs-xs);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--cd-muted)}
+.aod-cd-cat-new input,.aod-cd-cat-new select{width:100%;min-width:0}
+.aod-cd-cat-new input{padding:11px 13px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit}
 .aod-cd-cat-new input:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
-.aod-cd-cat-newparent{flex:0 1 200px}
+/* Le rang de conclusion : la décision à gauche, l'action au bout. La marge
+   automatique pousse le bouton à la fin LOGIQUE de la ligne — donc à gauche en
+   arabe, sans une seule règle RTL à écrire. */
+.aod-cd-cat-new__foot{grid-column:1/-1;display:flex;align-items:center;gap:var(--cd-sp-3);flex-wrap:wrap}
+.aod-cd-cat-new__foot .aod-cd-btn{margin-inline-start:auto}
+/* 🔴 QUATRE CONTRÔLES SUR UN RANG, DEUX HAUTEURS — la septième fois que ce défaut
+   sort dans cette feuille, et la première fois qu'un jeton existait déjà pour
+   l'empêcher. Mesuré : les deux champs texte et le champ d'ordre à **42 px**, le
+   menu « parente » et le bouton à **38**. Aligner les intitulés au-dessus a rendu
+   l'écart visible d'un coup — il était là avant, noyé dans un flex sans repère.
+   `--cd-ctl-h` est le rang FORMULAIRE de la charte, celui que les lignes de la
+   liste ont reçu hier : les deux moitiés de l'écran tombent enfin sur le même.
+   ⚠️ ≥ 681 px seulement, comme partout : au pouce, `min-height:44px` doit
+   continuer de gagner (cf. le commentaire du jeton dans `:root`). */
+@media(min-width:681px){
+	.aod-cd-cat-new .aod-cd-cat-newname,
+	.aod-cd-cat-new .aod-cd-cat-newname-ar,
+	.aod-cd-cat-new .aod-cd-cat-newparent,
+	.aod-cd-cat-new .aod-cd-cat-newhome-order,
+	.aod-cd-cat-new__foot .aod-cd-btn{height:var(--cd-ctl-h);padding-block:0}
+}
+@media(max-width:680px){
+	/* Au pouce, quatre pistes deviennent quatre champs empilés : deux champs texte
+	   côte à côte sur 390 px se rognaient mutuellement (« Nom de la nouvelle ca »,
+	   « m en arabe »). L'action reste au pied, pleine largeur. */
+	.aod-cd-cat-new{grid-template-columns:minmax(0,1fr)}
+	/* 🔴 LE MÊME DÉFAUT QUE SUR LES LIGNES, REPRODUIT DANS LE FORMULAIRE — et je
+	   venais de le corriger vingt lignes plus haut. Au pouce, « + Ajouter » prend
+	   toute la largeur ; il ne peut donc plus partager sa ligne avec la case, et
+	   l'enroulement du flex le renvoyait AVANT elle. On proposait de valider
+	   au-dessus de la décision qu'on valide.
+	   🚨 C'est la famille « une décision appliquée à un jumeau et pas à l'autre »
+	   que la revue de la Phase 47 a comptée huit fois. Elle se reproduit ici DANS
+	   LA MÊME SÉANCE, sur la même page, à deux blocs d'écart : corriger l'endroit
+	   où on a vu le défaut ne suffit jamais.
+	   La colonne rend l'ordre du DOM, qui est le bon : la décision, puis l'acte. */
+	.aod-cd-cat-new__foot{flex-direction:column;align-items:stretch;flex-wrap:nowrap}
+	.aod-cd-cat-new__foot .aod-cd-btn{width:100%;justify-content:center;margin-inline-start:0}
+}
+/* 🎬 Les lignes arrivent l'une après l'autre. La liste entrait déjà d'un bloc
+   (`aod-cd-rise`, cascade des sections) : un rectangle de N lignes qui monte
+   d'un coup reste un rectangle. Décalées de 40 ms, elles se lisent dans l'ordre
+   où on les parcourra.
+   🔒 `aod-cd-pop` réutilisé, jamais une image nouvelle : R1 de
+   `test-mouvement-reduit.php` compare la liste des sélecteurs qui reçoivent
+   `aod-cd-pop` à celle des neutralisations en `aod-cd-fade`, et exige l'égalité
+   stricte. Le sélecteur est donc recopié au caractère près en fin de fichier.
+   ⚠️ Plafonné au 6ᵉ rang : au-delà, une boutique à trente catégories ferait
+   attendre plus d'une seconde avant d'afficher la dernière. Une cascade qui
+   dure plus longtemps que la patience n'est plus une cascade, c'est un délai. */
+.aod-cd-cat-list > *{animation:aod-cd-pop .26s var(--cd-ease-out) both}
+.aod-cd-cat-list > :nth-child(2){animation-delay:.04s}
+.aod-cd-cat-list > :nth-child(3){animation-delay:.08s}
+.aod-cd-cat-list > :nth-child(4){animation-delay:.12s}
+.aod-cd-cat-list > :nth-child(5){animation-delay:.16s}
+.aod-cd-cat-list > :nth-child(n+6){animation-delay:.2s}
 .aod-cd-cat-list{display:flex;flex-direction:column;gap:8px}
-.aod-cd-cat-row{
+/* ── LA LISTE REDEVIENT UN BLOC, COMME SA VOISINE ─────────────────────
+   Les lignes flottaient à même le fond de page pendant que le formulaire de
+   création, juste au-dessus, était posé dans une carte. Deux moitiés du même
+   écran, deux traitements : l'œil lisait « un bloc, puis des restes ».
+   La carte leur donne un bord commun — et c'est elle qui porte l'en-tête de
+   colonnes, qui n'aurait aucun sens flottant dans le vide. */
+.aod-cd-cat-panel{margin-top:var(--cd-sp-4)}
+/* 🔴 DEUX LISERÉS D'ACCENT POUR DEUX SENS DIFFÉRENTS, À 4 PX L'UN DE L'AUTRE.
+   `.aod-cd-card:hover::before` pousse un liseré d'accent sur le bord de TOUTE
+   carte survolée — c'est le vocabulaire « cette carte est une cible ». Mesuré ici
+   au survol d'un champ de ligne : `scaleY(0)` → `scaleY(1)` sur le panneau.
+   Or dans CE panneau, un liseré d'accent vient de recevoir un sens précis et
+   exclusif : « cette catégorie est en vitrine ». Le même trait, à quelques pixels,
+   pour « la souris est quelque part par là » vide le premier de son sens — et le
+   panneau n'est pas une cible : on ne clique pas dessus, on clique DEDANS.
+   🚨 C'est le motif que la Phase 46 a nommé : une règle générale correcte qui
+   devient fausse dans le seul endroit où elle rencontre une règle particulière.
+   Elle ne s'annule QU'ICI, et le survol des lignes garde son propre signal.
+   🔴 ET MA PREMIÈRE VERSION A ÉTÉ REFUSÉE, JUSTEMENT. J'avais écrit
+   `.aod-cd-cat-panel:hover::before{transform:scaleY(0)}` — annuler un mouvement
+   PAR un mouvement. R3 de `test-mouvement-reduit.php` l'a vu tout de suite : elle
+   recense les déplacements posés sur `:hover`/`:active` et exige que chacun sache
+   s'abstenir, et celui-là n'était neutralisé nulle part. Le cliquet avait raison
+   sur le fond, pas seulement sur la forme : une transformation au survol reste
+   une transformation au survol, même quand sa valeur est l'identité — elle aurait
+   demandé sa propre neutralisation, pour rendre un liseré que personne ne veut.
+   `content:none` retire le pseudo-élément : il n'y a plus de trait du tout, donc
+   plus rien à animer ni à neutraliser. *Quand on doit annuler une décoration,
+   on la supprime — on ne lui superpose pas une seconde règle.* */
+.aod-cd-cat-panel::before{content:none}
+/* ── 🚨 UNE GRILLE, PAS NEUF COLONNES QUI FLOTTENT ────────────────────
+   MESURÉ, trois lignes à 1440 px : `1re 318px · 2e 318px` mais `3e 313px`.
+   Les colonnes ne tombaient pas en face d'une ligne à l'autre, et la cause était
+   du CONTENU passé en géométrie — trois pistes sur neuf valaient `auto` :
+   le compteur (« 1 produit » 62px / « 0 produits » 70px), la case d'accueil
+   (135px en FR, autre chose dans chaque langue) et le bouton. Chaque ligne se
+   dessinait donc d'après SON texte, et le décalage grandit à mesure que la
+   boutique se remplit — c'est le genre de défaut qui ne se voit qu'à trois lignes.
+   Toutes les pistes sont désormais DÉTERMINÉES. Les deux noms prennent le reste
+   en `minmax(0,1fr)` : sans le `0`, un champ ne peut pas descendre sous sa largeur
+   intrinsèque et rendrait la grille plus large que la carte.
+   ⚠️ 150px → 200px sur « parente » : c'est le vrai correctif du libellé rogné.
+   J'ai annoncé ce défaut réglé la veille en réservant 30px pour le chevron natif ;
+   il l'était pour le CHEVRON, pas pour le TEXTE — « — Catégorie principale — »
+   demande ~150px de glyphes, la piste en offrait 150 chevron et retraits compris,
+   donc la coupe restait. *Corriger la moitié d'une cause et mesurer l'autre
+   moitié, c'est déclarer vert ce qu'on n'a pas regardé.* */
+.aod-cd-cat-row,.aod-cd-cat-head{
 	/* thumb | nom | nom AR | parente | à la une | ordre | compteur | enregistrer | ✕ */
-	display:grid;grid-template-columns:46px 1fr 1fr 150px auto 62px auto auto 32px;gap:10px;align-items:center;
+	display:grid;grid-template-columns:46px minmax(0,1fr) minmax(0,1fr) 200px 72px 62px 88px 88px 32px;gap:10px;align-items:center;
+}
+.aod-cd-cat-row{
 	background:var(--cd-field);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);padding:9px 13px;transition:border-color .15s;
 }
-.aod-cd-cat-row:hover{border-color:#d6d6d6}
-.aod-cd-cat-name,.aod-cd-cat-name-ar{width:100%;padding:8px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit}
+/* 🚨 `#d6d6d6` ÉTAIT ÉCRIT EN DUR (corrigé le 2026-08-09) — troisième gris froid
+   trouvé cette semaine, après `#fafafa` et `#dadada` dans l'accordéon produit.
+   Aucun n'est faux au sens du contraste : ils sont ACHROMATIQUES, donc aucune
+   porte ne peut s'en plaindre. Mais un gris de tableau de bord BLANC posé sur une
+   page teintée jure, et il jurera différemment chez chaque client puisque la
+   teinte, elle, dépend de l'accent. `--cd-soft` est le gris de décor de la
+   charte : il suit. */
+.aod-cd-cat-row:hover{border-color:var(--cd-soft)}
+
+/* ── 🎬 LA LIGNE QU'ON MODIFIE SE DÉSIGNE (2026-08-09) ─────────────────
+   Trois lignes identiques, six champs chacune, aucun intitulé : en cliquant dans
+   un champ on ne sait plus quelle catégorie on est en train de changer — et le
+   bouton « Enregistrer » de la ligne voisine est à 10 px du bon.
+   La ligne active prend donc le liseré d'accent et se détache d'un cran. C'est le
+   MÊME vocabulaire que la barre d'actions groupée quand elle s'arme : dans tout
+   `/gestion`, un liseré d'accent veut dire « c'est ici que ça se passe ».
+   ⚠️ `:focus-within` et pas `:hover` : la souris survole ce qu'elle traverse, le
+   focus dit ce qu'on ÉDITE. Le survol garde son propre signal, plus faible.
+   ⚠️ Aucune `transform` ici — seulement des couleurs et une ombre. Rien à
+   neutraliser sous `prefers-reduced-motion` : ce n'est pas du déplacement.
+
+   🔴 PREMIÈRE VERSION REFUSÉE PAR LE CLIQUET, ET IL AVAIT RAISON. J'avais écrit
+   `box-shadow:0 0 0 3px rgba(var(--cd-accent-rgb),.14)` — un halo bâti sur
+   l'accent, sur un sélecteur `:focus-within`. R1 de `test-chrome-conformite.php`
+   l'a rougi immédiatement : *aucun indicateur de focus ne doit dépendre de la
+   couleur choisie par le client*, sous peine de disparaître chez celui qui la
+   prend pâle. C'est la règle que la Phase 46 a dû faire respecter QUATRE fois
+   dans ce même fichier, et je venais de la casser une cinquième.
+   L'ombre passe donc à `--cd-shadow` (élévation neutre). L'accent reste sur la
+   BORDURE, en supplément : l'indicateur qui compte pour l'accessibilité est
+   l'anneau `--cd-focus` du champ lui-même, qui est accent-indépendant par
+   construction. La ligne ne fait que redire, plus largement, ce que le champ
+   dit déjà. */
+.aod-cd-cat-row{
+	position:relative;
+	transition:border-color .15s var(--cd-ease-out),box-shadow .15s var(--cd-ease-out),background-color .2s var(--cd-ease-out);
+}
+.aod-cd-cat-row:focus-within{
+	border-color:var(--cd-accent);
+	box-shadow:var(--cd-shadow);
+	background:var(--cd-card);
+}
+
+/* ── ⭐ LA VITRINE SE VOIT — c'est la question de la page ──────────────
+   Cette page ne sert pas à « remplir des champs » : elle sert à répondre à
+   « QUELLES catégories sont en vitrine sur l'accueil, et DANS QUEL ORDRE ». La
+   réponse existait — une case cochée de 16 px et un nombre dans un champ nu,
+   au milieu de sept autres contrôles. Il fallait lire ligne à ligne pour la
+   reconstituer, sur une page dont c'est le seul enjeu.
+   Une catégorie en vitrine porte donc trois marques d'un coup : un liseré
+   d'accent, un fond tiré vers l'accent, et son rang promu en pastille. Trois
+   états qui disent la même chose valent mieux qu'un, quand celui qu'on a
+   demande d'être cherché.
+   ⚠️ `:has()` et pas une classe posée par le JS : l'état SUIT la case,
+   immédiatement, sans qu'aucun script n'ait à y penser — et il est donc juste
+   aussi dans le <template> cloné à la création. C'est le même mécanisme que
+   `.aod-cd-offer-head:has(+ .aod-cd-offer-rows:empty)` plus bas.
+   ⚠️ Le liseré est un DISQUE arrondi de bout en bout : `border-radius:999px`
+   n'a pas de côté, donc rien à mirroiter en arabe — un rayon composé
+   (`0 3px 3px 0`) aurait mis les coins ronds du mauvais côté en RTL, et cette
+   feuille a déjà payé ce défaut deux fois.
+   ⚠️ Le liseré POUSSE (scaleY 0 → 1), comme celui des cartes et des tuiles. Sa
+   neutralisation sous `prefers-reduced-motion` coupe donc la TRANSITION, jamais
+   la transformation : `transform:none` vaut identité, donc scaleY(1), et le
+   liseré resterait allumé sur TOUTES les lignes — un mouvement remplacé par une
+   information fausse. C'est écrit en toutes lettres dans le bloc de fin de
+   fichier ; je m'y range plutôt que de le redécouvrir. */
+.aod-cd-cat-row::before{
+	content:"";position:absolute;inset-block:9px;inset-inline-start:5px;width:3px;border-radius:999px;
+	background:var(--cd-accent);transform:scaleY(0);transition:transform .2s var(--cd-ease-out);
+}
+.aod-cd-cat-row:has(.aod-cd-cat-home:checked)::before{transform:scaleY(1)}
+.aod-cd-cat-row:has(.aod-cd-cat-home:checked){background:var(--cd-accent-wash);border-color:var(--cd-accent-soft)}
+/* Le rang devient une pastille : c'est un CLASSEMENT, pas une saisie parmi
+   d'autres. Bordure et fond d'accent, chiffre appuyé et chasse fixe — deux rangs
+   voisins doivent se comparer d'un coup d'œil, pas se déchiffrer. */
+.aod-cd-cat-row:has(.aod-cd-cat-home:checked) .aod-cd-cat-home-order{
+	background:var(--cd-accent-soft);border-color:var(--cd-accent);font-weight:700;font-variant-numeric:tabular-nums;
+}
+/* 🔴 ET SON REVERS, qui est un vrai défaut de l'écran actuel : une catégorie
+   PAS en vitrine affiche quand même un ordre — « 0 » sur la troisième ligne de
+   la capture. Ce nombre ne veut alors rien dire : il classe dans une liste où
+   la catégorie ne figure pas. Il s'efface à moitié tant que la case est vide.
+   ⚠️ On atténue, on ne DÉSACTIVE pas : `disabled` empêcherait de préparer un
+   rang avant de cocher, ce qui est un geste légitime — et un champ désactivé
+   sort de l'ordre de tabulation. */
+.aod-cd-cat-row:not(:has(.aod-cd-cat-home:checked)) .aod-cd-cat-home-order{opacity:.5}
+.aod-cd-cat-home-order{transition:opacity .2s var(--cd-ease-out),background-color .2s var(--cd-ease-out),border-color .2s var(--cd-ease-out)}
+
+/* ── UNE SEULE HAUTEUR, ET LE GESTE QUOTIDIEN REPREND SON RANG ────────
+   🔴 MESURE QUI RETOURNE LA PAGE : le formulaire de CRÉATION (en haut, utilisé
+   de loin en loin) portait des contrôles de **42 px** ; les lignes d'ÉDITION —
+   celles qu'on touche tous les jours — étaient à **36**, leur menu à **38**, et
+   leur bouton « Enregistrer » à **29,8**, soit le plus petit contrôle de tout
+   l'écran pour l'action la plus fréquente de la ligne. Le confort était donné au
+   geste rare et refusé au geste courant.
+   Tout passe au rang FORMULAIRE de la charte (`--cd-ctl-h`) : la page entière
+   tombe sur un seul rythme, création comprise.
+   ⚠️ ≥ 781 px comme partout : au pouce, `min-height:44px` doit continuer de
+   gagner (cf. le commentaire du jeton dans `:root`). */
+@media(min-width:781px){
+	.aod-cd-cat-row .aod-cd-cat-name,
+	.aod-cd-cat-row .aod-cd-cat-name-ar,
+	.aod-cd-cat-row .aod-cd-cat-parent,
+	.aod-cd-cat-row .aod-cd-cat-home-order,
+	.aod-cd-cat-row .aod-cd-btn{height:var(--cd-ctl-h);padding-block:0}
+}
+.aod-cd-cat-name,.aod-cd-cat-name-ar{width:100%;padding:8px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit;background:var(--cd-field)}
 .aod-cd-cat-name:focus,.aod-cd-cat-name-ar:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
 /* Menu « catégorie parente » (création + chaque ligne) */
+/* 🔴 LE TEXTE PASSAIT SOUS LE CHEVRON. Mesuré : 150 px de large pour l'option
+   « — Catégorie principale — », avec 11 px de retrait de chaque côté — or la
+   flèche native du navigateur se dessine DANS la boîte, sur ~20 px à la fin, et
+   rien ne la réservait. Le dernier tiret du libellé disparaissait dessous.
+   `padding-inline` dissocie les deux côtés : 11 px au début, 30 px à la fin. En
+   arabe, la propriété logique met d'elle-même la réserve du bon côté — c'est
+   aussi de ce côté-là que le navigateur pose sa flèche en RTL.
+   🔴 ET CE N'ÉTAIT QUE LA MOITIÉ DE LA CAUSE — j'ai annoncé le défaut réglé alors
+   qu'il ne l'était pas. La réserve libère le chevron, elle ne crée pas de place :
+   à 150 px moins 41 px de retraits, il restait 109 px pour ~150 px de glyphes, et
+   le libellé restait coupé (« — Catégorie princi| »). La piste est passée à
+   200 px dans la grille ci-dessus ; c'est LÀ qu'était le correctif.
+   *Traiter la cause qu'on a vue puis regarder le symptôme sans le remesurer, c'est
+   se déclarer vert sur ce qu'on n'a pas ouvert.* */
 .aod-cd-cat-parent,.aod-cd-cat-newparent{
-	padding:9px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);
+	padding-block:9px;padding-inline:11px 30px;
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);
 	font-size:var(--cd-fs-sm);font-family:inherit;background:var(--cd-field);color:var(--cd-ink);max-width:100%;
 }
 .aod-cd-cat-parent:focus,.aod-cd-cat-newparent:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
-.aod-cd-cat-count{color:var(--cd-muted);white-space:nowrap}
+/* `justify-self` : sans lui la grille ÉTIRE la pastille sur toute sa piste, et
+   « 1 produit » se lit dans un aplat de 88 px à moitié vide — une pastille est un
+   objet qui épouse son texte, sinon c'est une cellule grise. */
+.aod-cd-cat-count{color:var(--cd-muted);white-space:nowrap;justify-self:start}
+
+/* ── 🏷️ L'EN-TÊTE DE COLONNES — ce que la page ne disait à personne ──────
+   Neuf contrôles nus par ligne, aucun intitulé, et deux nombres VOISINS : le
+   champ « 1 » et la pastille « 1 produit ». Le premier est un RANG sur l'accueil,
+   le second un COMPTE de produits — rien ne les distinguait à l'œil, et se
+   tromper de champ change l'ordre de la page d'accueil du client.
+   Il partage la grille de la ligne (règle unique plus haut) : c'est la seule
+   façon qu'un intitulé reste en face de sa colonne quand la fenêtre bouge.
+   ⚠️ `--cd-soft` est un gris de DÉCOR (3:1), interdit pour du texte : on prend
+   `--cd-muted`, AA sur les cinq crans de l'échelle. */
+.aod-cd-cat-head{
+	padding:0 13px var(--cd-sp-2);
+	font-size:var(--cd-fs-xs);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--cd-muted);
+}
+.aod-cd-cat-head > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Un intitulé se pose comme le contrôle qu'il nomme. La case d'accueil et le
+   champ d'ordre sont CENTRÉS dans leur piste ; leurs deux intitulés restés à
+   gauche décrochaient de quelques pixels — assez pour qu'« ORDRE » semble
+   désigner la colonne d'à côté, ce qui est exactement ce que l'en-tête est là
+   pour empêcher. `nth-child` et pas une classe : ces deux <span> n'ont pas
+   d'autre rôle que leur rang dans la grille. */
+.aod-cd-cat-head > :nth-child(5),
+.aod-cd-cat-head > :nth-child(6){text-align:center}
+/* La liste vide affiche un état vide pleine largeur : des intitulés au-dessus de
+   rien annonceraient des colonnes qui n'existent pas. */
+.aod-cd-cat-panel:has(.aod-cd-cat-empty) .aod-cd-cat-head{display:none}
+
+/* ── 🧹 LA MÊME PHRASE, TROIS FOIS, DANS UNE COLONNE QUI PORTE SON NOM ──
+   « Afficher sur l'accueil » était répété sur CHAQUE ligne — 135 px de texte
+   identique par catégorie, à côté d'une case de 16 px, pendant que le menu
+   « parente » manquait de 50 px juste à côté. L'en-tête dit désormais « Accueil »
+   une fois pour toutes : la ligne ne garde que sa case.
+   🚨 `clip`, JAMAIS `display:none` : ce <span> EST le nom accessible de la case
+   (il n'a pas d'`aria-label`). Le retirer du flux le laisse dans l'arbre
+   d'accessibilité ; le retirer de l'affichage rendrait la case muette — c'est la
+   leçon du rail replié de la 45.5, même piège, autre composant.
+   ⚠️ Ligne SEULEMENT (`.aod-cd-cat-row`), jamais le formulaire de création : lui
+   n'a pas d'en-tête au-dessus, sa case perdrait son intitulé pour de bon.
+   ⚠️ Au-dessus de 680 px seulement — c'est le point où la ligne quitte la grille
+   pour un flex empilé (plus bas), donc où l'en-tête cesse d'exister. */
+@media(min-width:681px){
+	.aod-cd-cat-row .aod-cd-cat-home-wrap{justify-content:center}
+	.aod-cd-cat-row .aod-cd-cat-home-txt{
+		position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+	}
+}
+@media(max-width:680px){
+	.aod-cd-cat-head{display:none}
+}
 /* Réglage « Afficher sur l'accueil » + ordre (9.1) — ligne ET formulaire de création */
 .aod-cd-cat-home-wrap{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:var(--cd-fs-sm);color:var(--cd-muted);white-space:nowrap;line-height:1.2}
 .aod-cd-cat-home{flex:none;width:16px;height:16px;margin:0;cursor:pointer;accent-color:var(--cd-ink)}
 .aod-cd-cat-home-order{width:100%;padding:8px 9px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit;text-align:center}
 .aod-cd-cat-home-order:focus{outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus)}
-/* Le formulaire de création est un flex où `.aod-cd-cat-new input{flex:1;min-width:160px}`
-   s'appliquerait sinon à la case et au champ ordre : on les recadre. */
-.aod-cd-cat-new .aod-cd-cat-home-wrap{flex:0 0 auto}
+/* 🔴 TROIS RECADRAGES DEVENUS FAUX AVEC LE PASSAGE EN GRILLE, dont un DANGEREUX.
+   Ils existaient parce que le formulaire était un flex HORIZONTAL et que
+   `.aod-cd-cat-new input{flex:1;min-width:160px}` débordait sur la case et le
+   champ d'ordre. Ce flex n'existe plus : les champs vivent maintenant dans des
+   `.aod-cd-catf`, qui sont des colonnes.
+   🚨 Or `flex-basis` s'applique à l'axe PRINCIPAL — dans une colonne, c'est la
+   HAUTEUR. `flex:0 0 74px` sur le champ d'ordre ne l'aurait plus étroitci : il
+   l'aurait rendu haut de 74 px, seul contrôle difforme de la carte. Le même
+   littéral, au même endroit, veut dire autre chose selon la direction du
+   conteneur — et rien ne le signale.
+   Seule la case garde un recadrage, et pour une raison qui tient toujours : elle
+   vit dans le rang de conclusion, qui est resté un flex horizontal. */
+.aod-cd-cat-new__foot .aod-cd-cat-home-wrap{flex:0 0 auto}
 .aod-cd-cat-new .aod-cd-cat-newhome{flex:none;width:16px;height:16px;min-width:0;padding:0}
-.aod-cd-cat-new .aod-cd-cat-newhome-order{flex:0 0 74px;min-width:0}
 /* Vignette image de la catégorie (cliquable → choisir une image) */
 .aod-cd-cat-thumb{
 	position:relative;width:46px;height:46px;border-radius:var(--cd-r-sm);
@@ -3163,9 +3586,30 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 }
 .aod-cd-cat-thumb:hover{border-color:var(--cd-ink)}
 .aod-cd-cat-thumb.is-loading{opacity:.5;pointer-events:none}
-.aod-cd-cat-thumb-img{width:100%;height:100%;object-fit:cover;display:block}
+.aod-cd-cat-thumb-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s var(--cd-ease-out)}
 .aod-cd-cat-thumb-ph{font-size:18px;opacity:.5;line-height:1}
-.aod-cd-cat-thumb.has-img .aod-cd-cat-thumb-ph{display:none}
+/* ── 📷 « CLIQUEZ SUR LA VIGNETTE » — la page le PROMET, elle ne le MONTRE pas ──
+   L'aide sous le formulaire dit « Cliquez sur la vignette d'une catégorie pour
+   lui choisir une image ». Une fois l'image posée, la vignette devient une photo
+   comme une autre : plus d'icône, plus d'indice, seul le curseur trahit qu'elle
+   est encore cliquable — et le curseur n'existe pas au pouce. On ne découvre donc
+   qu'on peut REMPLACER une image qu'en ayant lu la phrase, et en s'en souvenant.
+   Au survol, la photo recule d'un cran derrière un voile d'accent et l'icône
+   d'appareil photo revient. L'affordance rejoint enfin la promesse.
+   ⚠️ Le voile est bâti sur `--cd-accent-rgb`, jamais sur un gris : il change avec
+   la marque du client, comme tout le reste de cet écran.
+   ⚠️ L'icône est `aria-hidden` et le champ de fichier porte déjà son intitulé :
+   c'est un indice visuel, il n'ajoute ni ne retire rien au lecteur d'écran.
+   ⚠️ Le zoom est du DÉPLACEMENT — il est neutralisé en fin de fichier. Le voile
+   et le retour de l'icône, eux, restent : l'élément continue de répondre. */
+.aod-cd-cat-thumb.has-img .aod-cd-cat-thumb-ph{
+	position:absolute;inset:0;display:grid;place-items:center;margin:0;
+	background:rgba(var(--cd-accent-rgb),.72);color:#fff;opacity:0;
+	transition:opacity .18s var(--cd-ease-out);
+}
+.aod-cd-cat-thumb.has-img:hover .aod-cd-cat-thumb-ph,
+.aod-cd-cat-thumb.has-img:focus-within .aod-cd-cat-thumb-ph{opacity:1}
+.aod-cd-cat-thumb.has-img:hover .aod-cd-cat-thumb-img{transform:scale(1.08)}
 .aod-cd-cat-imgdel{
 	/* `right` en dur casserait le placement en RTL : on ancre à la fin logique. */
 	position:absolute;top:-6px;inset-inline-end:-6px;width:20px;height:20px;border:0;border-radius:50%;
@@ -3187,9 +3631,54 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 	.aod-cd-cat-name-ar{order:4;flex:1 1 100%;width:auto}
 	.aod-cd-cat-parent{order:5;flex:1 1 100%}
 	/* La ligne « à la une » + ordre passe sous « parente » (comme le nom AR). */
-	.aod-cd-cat-home-wrap{order:6;flex:0 0 auto}
-	.aod-cd-cat-home-order{order:7;flex:0 0 74px;width:auto}
+	/* 🔴 CES DEUX RÈGLES FUYAIENT SUR LE FORMULAIRE DE CRÉATION DEPUIS LE DÉBUT.
+	   Écrites nues, elles atteignent toute `.aod-cd-cat-home-wrap` de la page — donc
+	   AUSSI la case « Afficher sur l'accueil » du bloc « Nouvelle catégorie », qui
+	   n'est pas dans une ligne et n'a jamais eu de raison de porter un rang 6.
+	   Mesuré au pouce : la case à `order:6` contre `order:0` pour le bouton, donc
+	   « + Ajouter » AU-DESSUS de la décision qu'il valide. Le même défaut que sur
+	   les lignes, au même écran, dû à une portée manquante — et j'ai d'abord
+	   accusé `flex-basis`, à tort : la mesure a démenti mon diagnostic avant que je
+	   ne l'écrive dans le produit.
+	   🚨 *Un `order` sans portée ne réordonne pas un composant, il réordonne une
+	   classe — partout où elle se trouve.* */
+	.aod-cd-cat-row .aod-cd-cat-home-wrap{order:6;flex:0 0 auto}
+	.aod-cd-cat-row .aod-cd-cat-home-order{order:7;flex:0 0 74px;width:auto}
 	.aod-cd-cat-count{display:none}
+	/* 🔴 « ENREGISTRER » ARRIVAIT EN DEUXIÈME, AU-DESSUS DE TROIS CHAMPS QU'IL
+	   ENREGISTRE. Au pouce l'ordre lu était : vignette · nom · **Enregistrer ✕** ·
+	   nom arabe · parente · accueil · ordre. On proposait donc de valider avant
+	   d'avoir montré ce qu'on validait — et « ✕ Supprimer » se retrouvait à
+	   portée de pouce au MILIEU du formulaire, entre deux champs de saisie.
+	   Personne ne l'avait écrit : c'est un effet de bord. Les quatre champs
+	   déplacés plus bas ont reçu un `order` explicite (4 → 7) tandis que les deux
+	   boutons gardaient le défaut, **0** — donc devant. *Ordonner une partie des
+	   frères d'un flex, c'est ordonner les autres sans le vouloir.*
+	   Ils repassent en fin de ligne, à leur rang de conclusion. */
+	.aod-cd-cat-save{order:8}
+	/* Le geste destructeur se tient à l'écart du geste courant : poussé au bout de
+	   la ligne par la marge automatique, il n'est plus à 10 px du pouce qui
+	   enregistre. La distance EST la protection, au doigt. */
+	.aod-cd-cat-del{order:9;margin-inline-start:auto}
+	/* 🔴 `flex:0 0 74px` PERDAIT CONTRE LA LARGEUR INTRINSÈQUE DU CHAMP. Mesuré :
+	   basis 74 px, `flex-grow:0`… et 178 px rendus. Un `<input type="number">` a une
+	   taille de contenu par défaut (~178 px), et `min-width:auto` — la valeur
+	   initiale d'un objet flex — interdit de descendre en dessous. La base était
+	   donc ignorée en silence : le champ mangeait la ligne et poussait les deux
+	   boutons à la suivante. *Une base flex ne borne rien tant que le plancher
+	   intrinsèque n'est pas levé.* */
+	.aod-cd-cat-home-order{min-width:0}
+	/* La case prend sa propre ligne : sinon les trois objets suivants (rang, action,
+	   suppression) ne tiennent plus ensemble et se coupent n'importe où.
+	   🔴 PORTÉE À `.aod-cd-cat-row`, ET CE N'EST PAS UNE PRÉCAUTION. Écrite nue,
+	   cette règle atteignait AUSSI la case du formulaire de création — même classe,
+	   autre conteneur. Là-bas le pied est une COLONNE : `flex-basis:100%` s'y lit en
+	   HAUTEUR, et combiné à `flex-wrap` il poussait la case dans une seconde colonne,
+	   donc SOUS le bouton. Mesuré : case à y692, bouton à y636. On revenait très
+	   exactement au défaut qu'on venait de corriger, par le correctif lui-même.
+	   🚨 `flex-basis` change de sens avec la direction du conteneur — c'est la
+	   DEUXIÈME fois aujourd'hui que ce piège mord sur cette page. */
+	.aod-cd-cat-row .aod-cd-cat-home-wrap{flex:1 1 100%}
 }
 
 /* ---- Commandes : sélection multiple + suppression groupée ---- */
@@ -5150,6 +5639,27 @@ html[dir="rtl"] .aod-cd-content .aod-cd-pagehead::before{
 	   c'est la comparaison exacte que fait R1. */
 	.aod-cd-acc[open] .aod-cd-acc-body{animation:aod-cd-fade .14s var(--cd-ease-out)}
 	.aod-cd-offer-row{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* 🎬 Cascade des lignes de catégories : même sélecteur AU CARACTÈRE PRÈS que
+	   celui qui pose `aod-cd-pop`, retards remis à zéro. */
+	.aod-cd-cat-list > *{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	.aod-cd-cat-list > :nth-child(2),
+	.aod-cd-cat-list > :nth-child(3),
+	.aod-cd-cat-list > :nth-child(4),
+	.aod-cd-cat-list > :nth-child(5),
+	.aod-cd-cat-list > :nth-child(n+6){animation-delay:0s}
+	/* 🎬 Vitrine (2026-08-09) — le liseré d'une catégorie « à la une » POUSSE, comme
+	   celui des cartes et des tuiles quinze lignes plus haut. On coupe donc la
+	   TRANSITION, jamais la transformation : `transform:none` vaut identité, donc
+	   scaleY(1), et le liseré s'allumerait sur TOUTES les lignes — y compris celles
+	   qui ne sont pas en vitrine. On échangerait un mouvement contre une
+	   information fausse, sur le seul renseignement que la page existe pour donner.
+	   L'état reste donc lisible, il arrive juste sans pousser. */
+	.aod-cd-cat-row::before{transition:none}
+	/* Le zoom de la vignette au survol est du DÉPLACEMENT : il part. Le voile
+	   d'accent et le retour de l'icône restent — la vignette continue de dire
+	   qu'elle est cliquable, elle ne bouge plus. */
+	.aod-cd-cat-thumb.has-img:hover .aod-cd-cat-thumb-img{transform:none}
+	.aod-cd-cat-thumb-img{transition:none}
 	.aod-cd-modal-body > :nth-child(2),
 	.aod-cd-modal-body > :nth-child(3),
 	.aod-cd-modal-body > :nth-child(4),

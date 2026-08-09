@@ -102,35 +102,105 @@ class AOD_CD_Section_Products {
 			<div class="aod-cd-card aod-cd-cat-create">
 				<div class="aod-cd-card-body">
 					<h3 class="aod-cd-cat-create__title"><?php esc_html_e( 'Nouvelle catégorie', 'aod-client-dashboard' ); ?></h3>
+					<?php
+					// 🚨 CE FORMULAIRE EST UNE LIGNE VIERGE DU TABLEAU D'EN DESSOUS — il
+					// doit donc en parler la langue. Il portait les MÊMES six champs, dans
+					// un ORDRE DIFFÉRENT (accueil et ordre avant « parente », alors que la
+					// liste les met après) et sans le moindre intitulé : six contrôles nus
+					// dont seul le fantôme du placeholder disait la fonction — et un
+					// placeholder disparaît à la première frappe, c'est-à-dire au moment
+					// exact où on aurait besoin de le relire.
+					// Les intitulés reprennent MOT POUR MOT ceux de l'en-tête de colonnes,
+					// dans le MÊME ordre : ce qu'on saisit ici tombe visuellement là où ça
+					// atterrira en bas. Aucune chaîne nouvelle — ce sont les mêmes msgid,
+					// donc les mêmes traductions arabes.
+					// ⚠️ Les `aria-label` de ces quatre champs SONT RETIRÉS, à dessein : le
+					// <label> qui les enveloppe donne désormais le nom accessible, et un
+					// `aria-label` l'écraserait par un texte DIFFÉRENT de l'intitulé lu à
+					// l'écran — c'est précisément ce que WCAG 2.5.3 interdit (« Label in
+					// Name »), et ça casse la commande vocale : on dit ce qu'on voit.
+					?>
 					<form class="aod-cd-cat-new" id="aod-cd-cat-new">
-						<input type="text" name="cat_name" class="aod-cd-cat-newname" placeholder="<?php esc_attr_e( 'Nom de la nouvelle catégorie', 'aod-client-dashboard' ); ?>" aria-label="<?php esc_attr_e( 'Nom de la nouvelle catégorie', 'aod-client-dashboard' ); ?>" required>
-						<?php // Le pendant arabe — facultatif : sans lui, le visiteur AR lit le nom français. ?>
-						<input type="text" name="cat_name_ar" class="aod-cd-cat-newname-ar" dir="rtl" lang="ar" placeholder="<?php esc_attr_e( 'Nom en arabe (facultatif)', 'aod-client-dashboard' ); ?>" aria-label="<?php esc_attr_e( 'Nom de la nouvelle catégorie en arabe', 'aod-client-dashboard' ); ?>">
-						<label class="aod-cd-cat-home-wrap">
-							<input type="checkbox" class="aod-cd-cat-newhome">
-							<span class="aod-cd-cat-home-txt"><?php esc_html_e( 'Afficher sur l’accueil', 'aod-client-dashboard' ); ?></span>
+						<label class="aod-cd-catf">
+							<span class="aod-cd-catf__lab"><?php esc_html_e( 'Nom', 'aod-client-dashboard' ); ?></span>
+							<input type="text" name="cat_name" class="aod-cd-cat-newname" placeholder="<?php esc_attr_e( 'Nom de la nouvelle catégorie', 'aod-client-dashboard' ); ?>" required>
 						</label>
-						<input type="number" class="aod-cd-cat-newhome-order" min="0" step="1" value="0" aria-label="<?php esc_attr_e( 'Ordre d’affichage sur l’accueil', 'aod-client-dashboard' ); ?>">
-						<select class="aod-cd-cat-newparent" aria-label="<?php esc_attr_e( 'Catégorie parente', 'aod-client-dashboard' ); ?>">
-							<option value="0"><?php esc_html_e( '— Catégorie principale —', 'aod-client-dashboard' ); ?></option>
-							<?php $this->render_parent_options( $terms, 0 ); ?>
-						</select>
-						<button type="submit" class="aod-cd-btn aod-cd-btn-primary">+ <?php esc_html_e( 'Ajouter', 'aod-client-dashboard' ); ?></button>
+						<?php // Le pendant arabe — facultatif : sans lui, le visiteur AR lit le nom français. ?>
+						<label class="aod-cd-catf">
+							<span class="aod-cd-catf__lab"><?php esc_html_e( 'Nom en arabe', 'aod-client-dashboard' ); ?></span>
+							<input type="text" name="cat_name_ar" class="aod-cd-cat-newname-ar" dir="rtl" lang="ar" placeholder="<?php esc_attr_e( 'Nom en arabe (facultatif)', 'aod-client-dashboard' ); ?>">
+						</label>
+						<label class="aod-cd-catf">
+							<span class="aod-cd-catf__lab"><?php esc_html_e( 'Catégorie parente', 'aod-client-dashboard' ); ?></span>
+							<select class="aod-cd-cat-newparent">
+								<option value="0"><?php esc_html_e( '— Catégorie principale —', 'aod-client-dashboard' ); ?></option>
+								<?php $this->render_parent_options( $terms, 0 ); ?>
+							</select>
+						</label>
+						<label class="aod-cd-catf">
+							<span class="aod-cd-catf__lab"><?php esc_html_e( 'Ordre', 'aod-client-dashboard' ); ?></span>
+							<input type="number" class="aod-cd-cat-newhome-order" min="0" step="1" value="0">
+						</label>
+						<?php
+						// La case et l'action se posent sur leur propre rang, au pied du
+						// formulaire : « afficher sur l'accueil » est une DÉCISION sur la
+						// catégorie, pas un sixième champ de saisie — et le bouton qui
+						// conclut ne doit pas se retrouver coincé entre deux champs, comme
+						// il l'était au pouce.
+						?>
+						<div class="aod-cd-cat-new__foot">
+							<label class="aod-cd-cat-home-wrap">
+								<input type="checkbox" class="aod-cd-cat-newhome">
+								<span class="aod-cd-cat-home-txt"><?php esc_html_e( 'Afficher sur l’accueil', 'aod-client-dashboard' ); ?></span>
+							</label>
+							<button type="submit" class="aod-cd-btn aod-cd-btn-primary">+ <?php esc_html_e( 'Ajouter', 'aod-client-dashboard' ); ?></button>
+						</div>
 					</form>
-					<p class="aod-cd-note aod-cd-cat-create__help"><?php esc_html_e( 'Choisissez une catégorie parente pour en faire une sous-catégorie (par exemple une gamme rattachée à une marque). Cliquez sur la vignette d’une catégorie pour lui choisir une image, affichée sur la page d’accueil.', 'aod-client-dashboard' ); ?></p>
+					<?php
+					// La limite d'envoi appartient à la PHRASE qui demande l'image, pas au
+					// couloir entre deux blocs : elle y flottait, hors de toute carte, en
+					// gris minuscule — elle se lisait comme un débris de gabarit. C'est une
+					// contrainte, donc elle se pose contre l'instruction qu'elle contraint.
+					?>
+					<p class="aod-cd-note aod-cd-cat-create__help"><?php esc_html_e( 'Choisissez une catégorie parente pour en faire une sous-catégorie (par exemple une gamme rattachée à une marque). Cliquez sur la vignette d’une catégorie pour lui choisir une image, affichée sur la page d’accueil.', 'aod-client-dashboard' ); ?> <?php echo AOD_CD_Upload::limit_note(); // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le composant. ?></p>
 				</div>
 			</div>
 
-			<p><?php echo AOD_CD_Upload::limit_note(); // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le composant. ?></p>
-			<div class="aod-cd-cat-list">
-				<?php if ( empty( $terms ) ) : ?>
+			<div class="aod-cd-card aod-cd-cat-panel">
+				<div class="aod-cd-card-body">
 					<?php
-					// La classe `aod-cd-cat-empty` est un contrat JS : dashboard.js la
-					// supprime à la création d'une catégorie. Elle doit rester enfant
-					// direct de la liste.
-					echo AOD_CD_Dashboard::empty_state( 'categories', __( 'Aucune catégorie pour le moment.', 'aod-client-dashboard' ), __( 'Créez-en une ci-dessus pour commencer à classer vos produits.', 'aod-client-dashboard' ), 'aod-cd-cat-empty' ); // phpcs:ignore WordPress.Security.EscapeOutput
+					// 🚨 EN-TÊTE DE COLONNES — la seule chose qui manquait vraiment.
+					// Neuf contrôles nus par ligne, et deux nombres côte à côte : « 1 » et
+					// « 1 produit ». Rien ne disait que le premier est un RANG d'affichage
+					// sur l'accueil et le second un COMPTE. Les `aria-label` des contrôles le
+					// disaient déjà au lecteur d'écran ; l'œil, lui, n'avait rien.
+					// ⚠️ `aria-hidden` à dessein : chaque contrôle porte DÉJÀ son nom
+					// accessible (`aria-label`), donc annoncer l'en-tête le dirait deux fois.
+					// C'est un repère visuel, pas une structure de tableau.
+					// ⚠️ Hors de `.aod-cd-cat-list` : la liste est un contrat JS
+					// (`list.appendChild`, `.aod-cd-cat-empty` enfant direct, cascade
+					// `:nth-child`). Un en-tête dedans décalerait les trois.
 					?>
-				<?php else :
+					<div class="aod-cd-cat-head" aria-hidden="true">
+						<span></span>
+						<span><?php esc_html_e( 'Nom', 'aod-client-dashboard' ); ?></span>
+						<span><?php esc_html_e( 'Nom en arabe', 'aod-client-dashboard' ); ?></span>
+						<span><?php esc_html_e( 'Catégorie parente', 'aod-client-dashboard' ); ?></span>
+						<span><?php esc_html_e( 'Accueil', 'aod-client-dashboard' ); ?></span>
+						<span><?php esc_html_e( 'Ordre', 'aod-client-dashboard' ); ?></span>
+						<span><?php esc_html_e( 'Produits', 'aod-client-dashboard' ); ?></span>
+						<span></span>
+						<span></span>
+					</div>
+					<div class="aod-cd-cat-list">
+						<?php if ( empty( $terms ) ) : ?>
+							<?php
+							// La classe `aod-cd-cat-empty` est un contrat JS : dashboard.js la
+							// supprime à la création d'une catégorie. Elle doit rester enfant
+							// direct de la liste.
+							echo AOD_CD_Dashboard::empty_state( 'categories', __( 'Aucune catégorie pour le moment.', 'aod-client-dashboard' ), __( 'Créez-en une ci-dessus pour commencer à classer vos produits.', 'aod-client-dashboard' ), 'aod-cd-cat-empty' ); // phpcs:ignore WordPress.Security.EscapeOutput
+							?>
+						<?php else :
 					foreach ( $terms as $t ) {
 						$img_id  = (int) get_term_meta( $t->term_id, 'thumbnail_id', true );
 						$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'thumbnail' ) : '';
@@ -146,6 +216,8 @@ class AOD_CD_Section_Products {
 						$this->render_category_row( $t->term_id, $t->name, (int) $t->count, $img_url ? $img_url : '', (int) $t->parent, $terms, $name_ar, $home, $home_order );
 					}
 				endif; ?>
+					</div>
+				</div>
 			</div>
 			<template id="aod-cd-cat-row-tpl"><?php $this->render_category_row( 0, '', 0, '', 0, $terms, '', false, 0 ); ?></template>
 		</div>
@@ -308,7 +380,16 @@ class AOD_CD_Section_Products {
 			// « Dupliquer » AVANT « Supprimer » : les deux agissent sur la ligne, mais
 			// l'un est réversible et l'autre non — on ne met pas une action anodine
 			// après l'action destructrice, à portée de clic de celle-ci.
-			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-dup-product" data-product="' . esc_attr( $p->get_id() ) . '" data-name="' . esc_attr( $p->get_name() ) . '">' . esc_html__( 'Dupliquer', 'aod-client-dashboard' ) . '</button> ';
+			// 🔁 2026-08-09 — « Dupliquer » passe en FANTÔME. Les trois actions de la
+			// ligne étaient rendues au même poids : trois boutons bordés identiques,
+			// répétés sur chaque produit, dans une colonne qui prenait 367 px — 28 % du
+			// tableau. Rien ne disait lequel est le geste courant. Or ils ne sont pas du
+			// même rang : « Éditer » est ce qu'on fait dix fois par jour, « Dupliquer »
+			// ce qu'on fait en créant une variante de temps en temps. Le fantôme dit
+			// « disponible, pas attendu » — et rend son poids à « Éditer » sans avoir à
+			// peindre quoi que ce soit en accent, ce qui aurait mis une tache verte sur
+			// chaque ligne de la liste.
+			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ghost aod-cd-dup-product" data-product="' . esc_attr( $p->get_id() ) . '" data-name="' . esc_attr( $p->get_name() ) . '">' . esc_html__( 'Dupliquer', 'aod-client-dashboard' ) . '</button> ';
 			// 🔁 2026-08-08 — « Supprimer » passe à l'ICÔNE SEULE. Mesuré : la colonne
 			// « Actions » occupait **409 px** sur 1 316, soit presque autant que la
 			// colonne du produit lui-même — quatre boutons écrits pour des gestes qu'on

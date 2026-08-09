@@ -760,7 +760,7 @@ class AOD_CD_Section_Orders {
 
 		$html  = '<div class="aod-cd-carriersel' . ( '' === $choice ? ' is-inherited' : '' ) . '" data-order="' . esc_attr( $order->get_id() ) . '" data-value="' . esc_attr( $choice ) . '">';
 		$html .= '<button type="button" class="aod-cd-carriersel-btn" aria-haspopup="listbox" aria-expanded="false">';
-		$html .= AOD_CD_Icon::svg( 'shipping', array( 'size' => 14 ) );
+		$html .= AOD_CD_Icon::svg( 'shipping', array( 'size' => 15 ) );
 		$html .= '<span class="aod-cd-carriersel-text">' . esc_html( $eff_label ) . '</span>';
 		$html .= $caret . '</button>';
 		$html .= '<div class="aod-cd-carriersel-menu" role="listbox" hidden>';
@@ -838,7 +838,7 @@ class AOD_CD_Section_Orders {
 
 		$html  = '<div class="aod-cd-assignsel" data-order="' . esc_attr( $order_id ) . '" data-value="' . esc_attr( $current_id ) . '">';
 		$html .= '<button type="button" class="aod-cd-assignsel-btn" aria-haspopup="listbox" aria-expanded="false">';
-		$html .= AOD_CD_Icon::svg( 'user', array( 'size' => 14 ) );
+		$html .= AOD_CD_Icon::svg( 'user', array( 'size' => 15 ) );
 		$html .= '<span class="aod-cd-assignsel-text">' . esc_html( $current_label ) . '</span>';
 		$html .= $caret . '</button>';
 		$html .= '<div class="aod-cd-assignsel-menu" role="listbox" hidden>';
@@ -2937,23 +2937,23 @@ class AOD_CD_Section_Orders {
 		echo '<div class="aod-cd-od-grid">';
 
 		echo '<div class="aod-cd-od-box aod-cd-od-boxform"><h4>' . esc_html__( 'Client', 'aod-client-dashboard' ) . '</h4>';
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'user', array( 'size' => 14 ) ) . esc_html__( 'Nom du client', 'aod-client-dashboard' ) . '</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'user', array( 'size' => 15 ) ) . esc_html__( 'Nom du client', 'aod-client-dashboard' ) . '</span>';
 		echo '<input type="text" name="name" value="' . esc_attr( $full_name ) . '"></label>';
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'phone', array( 'size' => 14 ) ) . esc_html__( 'Téléphone', 'aod-client-dashboard' ) . ' *</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'phone', array( 'size' => 15 ) ) . esc_html__( 'Téléphone', 'aod-client-dashboard' ) . ' *</span>';
 		echo '<input type="text" name="phone" required value="' . esc_attr( $order->get_billing_phone() ) . '"></label>';
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'home', array( 'size' => 14 ) ) . esc_html__( 'Adresse', 'aod-client-dashboard' ) . '</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'home', array( 'size' => 15 ) ) . esc_html__( 'Adresse', 'aod-client-dashboard' ) . '</span>';
 		echo '<input type="text" name="address" value="' . esc_attr( $order->get_billing_address_1() ) . '"></label>';
 		echo '</div>';
 
 		echo '<div class="aod-cd-od-box aod-cd-od-boxform"><h4>' . esc_html__( 'Livraison', 'aod-client-dashboard' ) . '</h4>';
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'shipping', array( 'size' => 14 ) ) . esc_html__( 'Type de livraison', 'aod-client-dashboard' ) . '</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'shipping', array( 'size' => 15 ) ) . esc_html__( 'Type de livraison', 'aod-client-dashboard' ) . '</span>';
 		echo '<select name="delivery_type">';
 		echo '<option value="home" ' . selected( $delivery, 'home', false ) . '>' . esc_html__( 'À domicile', 'aod-client-dashboard' ) . '</option>';
 		echo '<option value="desk" ' . selected( $delivery, 'desk', false ) . '>' . esc_html__( 'Stop-desk (bureau)', 'aod-client-dashboard' ) . '</option>';
 		echo '</select></label>';
 
 		// Wilaya.
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'tracking', array( 'size' => 14 ) ) . esc_html__( 'Wilaya', 'aod-client-dashboard' ) . '</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'tracking', array( 'size' => 15 ) ) . esc_html__( 'Wilaya', 'aod-client-dashboard' ) . '</span>';
 		echo '<select name="wilaya" class="aod-cd-od-wilaya">';
 		echo '<option value="">' . esc_html__( '—', 'aod-client-dashboard' ) . '</option>';
 		if ( $has_data ) {
@@ -2970,7 +2970,7 @@ class AOD_CD_Section_Orders {
 		// déjà l'épingle (`tracking` = map-pin). Deux épingles identiques l'une sous
 		// l'autre n'auraient rien distingué — la carte pour le territoire, l'épingle
 		// pour le point.
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'map', array( 'size' => 14 ) ) . esc_html__( 'Commune', 'aod-client-dashboard' ) . '</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'map', array( 'size' => 15 ) ) . esc_html__( 'Commune', 'aod-client-dashboard' ) . '</span>';
 		echo '<select name="commune" class="aod-cd-od-commune">';
 		echo '<option value="">' . esc_html__( '—', 'aod-client-dashboard' ) . '</option>';
 		if ( $has_data && $wilaya_code ) {

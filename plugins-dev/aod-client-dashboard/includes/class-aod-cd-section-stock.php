@@ -435,6 +435,15 @@ class AOD_CD_Section_Stock {
 			$rows[] = array(
 				'pid'   => $pid,
 				'name'  => $p->get_name(),
+				// 🔁 2026-08-09 — la vignette. Stock et Produits listent LE MÊME
+				// catalogue : l'un montrait la photo, l'autre pas. Le gérant qui passe
+				// de l'un à l'autre reconnaissait ses articles sur un écran et devait
+				// les lire sur le suivant.
+				// 🔒 AUCUNE REQUÊTE DE PLUS : `$p` est déjà chargé ici (c'est lui qui
+				// donne `get_name()` juste au-dessus). Charger l'image dans `render_row()`
+				// à partir du seul `pid` aurait, lui, coûté un `wc_get_product()` par
+				// ligne — c'est pourquoi elle est prise ICI et pas là-bas.
+				'img'   => $p->get_image( array( 40, 40 ) ),
 				'stock' => $stock,
 				'low'   => $low,
 				'low_own' => (string) $p->get_low_stock_amount(), // '' = seuil global.
@@ -526,11 +535,34 @@ class AOD_CD_Section_Stock {
 		}
 		echo '</tbody></table></div>';
 
+		// 🔁 2026-08-09 — LES TROIS NOTES DEVIENNENT UN BLOC DE RÉFÉRENCE.
+		//
+		// Elles étaient trois `<p>` frères posés à nu sous le tableau, donc rendus sur
+		// TOUTE la largeur — 1 314 px mesurés. C'est deux à trois fois la longueur de
+		// ligne à laquelle un œil retrouve le début de la suivante : on lit la première
+		// ligne, on perd la seconde. Le texte était correct, sa mise en page le rendait
+		// pénible.
+		// L'enveloppe donne trois choses que trois `<p>` nus ne peuvent pas avoir :
+		// une LARGEUR DE LECTURE bornée, une surface qui les sort du flux des données,
+		// et un repère (l'icône) qui dit « ceci explique, ceci ne se fait pas ».
+		//
+		// 🔒 AUCUNE CHAÎNE NOUVELLE, et c'est un choix, pas un oubli. Un intitulé
+		// (« Comment lire ce tableau ») aurait été plus clair — mais toute chaîne
+		// visible impose le cycle `make-translations.sh` + traduction arabe manuelle
+		// (règle 4 du dépôt). L'icône et la mise en forme portent le même sens sans
+		// rien ajouter à traduire. Si un intitulé est voulu un jour, il vient AVEC son
+		// arabe, pas après.
+		// ⚠️ `aria-hidden` sur l'icône : elle ne dit rien que le texte ne dise, et un
+		// lecteur d'écran n'a pas à annoncer une décoration avant trois paragraphes.
+		echo '<div class="aod-cd-legend">';
+		echo '<span class="aod-cd-legend__ic" aria-hidden="true">' . AOD_CD_Icon::svg( 'question', array( 'size' => 18 ) ) . '</span>';
+		echo '<div class="aod-cd-legend__body">';
 		echo '<p class="aod-cd-note">' . esc_html__( 'Vendus = quantités des commandes en cours, confirmées et terminées créées sur la période. Couverture = stock ÷ vitesse ; « ∞ » = aucune vente sur la période. « Stock bas » dès que le stock atteint le seuil d’alerte (seuil du produit, sinon seuil global WooCommerce).', 'aod-client-dashboard' ) . '</p>';
 		echo '<p class="aod-cd-note">' . esc_html__( 'Les produits sans gestion de stock WooCommerce sont listés « non suivi » (activez « Gérer le stock ? » sur la fiche produit pour les suivre).', 'aod-client-dashboard' ) . '</p>';
 		if ( current_user_can( 'edit_products' ) ) {
 			echo '<p class="aod-cd-note">' . esc_html__( 'Après un ajustement, le classement du tableau se met à jour au rechargement de la page.', 'aod-client-dashboard' ) . '</p>';
 		}
+		echo '</div></div>';
 	}
 
 	/**
@@ -752,7 +784,16 @@ class AOD_CD_Section_Stock {
 		$name = esc_html( $r['name'] );
 		if ( current_user_can( 'edit_product', $r['pid'] ) ) {
 			$edit = add_query_arg( array( 'action' => 'edit', 'product' => $r['pid'] ), home_url( '/' . AOD_CD_SLUG . '/products' ) );
-			$name = '<a href="' . esc_url( $edit ) . '">' . $name . '</a>';
+			// 🔴 CE LIEN ÉTAIT NU (corrigé le 2026-08-09), et c'est le MÊME défaut que
+			// celui trouvé sur `/gestion/products/` le 2026-08-08 : un `<a href>` sans
+			// classe n'est visé par aucune règle de `dashboard.css`, donc il hérite du
+			// style du NAVIGATEUR — bleu, souligné. Mesuré ici : le nom du produit était
+			// le seul élément bleu de tout l'écran, sur une page entièrement verte.
+			// 🚨 Le correctif existait déjà, avec sa classe et sa raison, appliqué à un
+			// seul des deux tableaux du catalogue. C'est le mode de dérive que la
+			// Phase 46 documente en entier : *une règle écrite une fois ne se propage
+			// pas toute seule à son jumeau.*
+			$name = '<a class="aod-cd-prod__name" href="' . esc_url( $edit ) . '">' . $name . '</a>';
 		}
 		if ( $r['pack'] ) {
 			$parts = array();
@@ -834,8 +875,18 @@ class AOD_CD_Section_Stock {
 		}
 
 		echo '<tr data-stock-row data-product="' . esc_attr( $r['pid'] ) . '" data-speed="' . esc_attr( $r['speed'] ) . '">';
-		echo '<td data-label="' . esc_attr__( 'Produit', 'aod-client-dashboard' ) . '">' . $name . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé ci-dessus.
-		echo '<td data-label="' . esc_attr__( 'Stock actuel', 'aod-client-dashboard' ) . '">' . $stock_cell . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		// La cellule reprend `.aod-cd-prod` — le composant vignette + nom de la page
+		// Produits — pour que les deux tableaux du catalogue se ressemblent. Le détail
+		// (variantes, composants de pack, note) reste SOUS le nom, dans la colonne.
+		echo '<td class="aod-cd-cell-prod" data-label="' . esc_attr__( 'Produit', 'aod-client-dashboard' ) . '"><span class="aod-cd-prod">'
+			. ( isset( $r['img'] ) ? wp_kses_post( $r['img'] ) : '' )
+			. '<span class="aod-cd-prod__txt">' . $name . '</span></span></td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- markup échappé ci-dessus.
+		// 🔑 `aod-cd-cell-stockn` — c'est LE nombre de cette page. Il était rendu au
+		// corps de texte, à côté d'un « géré par variante » gris, dans une colonne
+		// parmi sept. Une classe est nécessaire : le seul autre point d'accroche
+		// aurait été `[data-label="Stock actuel"]`, un sélecteur sur du TEXTE TRADUIT,
+		// donc mort dès que le gérant passe en arabe.
+		echo '<td class="aod-cd-cell-stockn" data-label="' . esc_attr__( 'Stock actuel', 'aod-client-dashboard' ) . '">' . $stock_cell . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		echo '<td data-label="' . esc_attr__( 'Seuil d’alerte', 'aod-client-dashboard' ) . '">' . $low_cell . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		echo '<td data-label="' . esc_attr__( 'Vendus sur la période', 'aod-client-dashboard' ) . '">' . esc_html( number_format_i18n( $r['sold'] ) ) . '</td>';
 		echo '<td data-label="' . esc_attr__( 'Vitesse (ventes/jour)', 'aod-client-dashboard' ) . '">' . esc_html( number_format_i18n( $r['speed'], 1 ) ) . '</td>';
