@@ -294,6 +294,30 @@
 	--cd-sp-5:20px;
 	--cd-sp-6:24px;
 	--cd-sp-10:40px;
+	/* ── HAUTEUR DES CONTRÔLES (2026-08-09) ─────────────────────────────
+	   🚨 CES DEUX NOMBRES CLOSENT UNE DETTE QUI A COÛTÉ SIX CORRECTIFS EN DEUX
+	   JOURS. Le même défaut — des contrôles voisins à des hauteurs différentes —
+	   a été trouvé et recalé séparément dans la barre d'actions groupée, les
+	   tableaux, le volet de détail d'une commande, son formulaire d'édition, la
+	   barre de recherche et le formulaire produit. Six fois la même cause : trois
+	   composants (bouton, champ, liste) qui additionnent chacun leur `padding` à
+	   leur cran de texte, et qui ne tombent donc jamais sur le même total. Chaque
+	   correctif était cadré sur SON conteneur et laissait le défaut intact
+	   partout ailleurs — c'est ce qui le faisait réapparaître à l'écran suivant.
+	   Deux rangs, et deux seulement :
+	     · `--cd-ctl-h` — le rang FORMULAIRE. Tout ce qu'on remplit.
+	     · `--cd-ctl-h-sm` — le rang DENSE : une rangée de tableau, un en-tête de
+	       volet. Là où la hauteur de ligne compte plus que le confort de visée.
+	   ⚠️ CE N'EST PAS LA CIBLE TACTILE. Au pouce, `min-height:44px` continue de
+	   gagner (bloc mobile) — d'où les `@media(min-width:781px)` autour de chaque
+	   usage. Ne pas « simplifier » en retirant ces media-queries : les contrôles
+	   RÉTRÉCIRAIENT sur mobile, une `height` d'ici battant un `min-height` de
+	   spécificité plus faible.
+	   ⚠️ NE PAS y ranger les pastilles carrées, les vignettes ni les avatars
+	   (`width` ET `height` égales) : ce sont des BOÎTES D'IMAGE, pas des contrôles
+	   à remplir. Les balayer avec ferait grandir des icônes sans rapport. */
+	--cd-ctl-h:42px;
+	--cd-ctl-h-sm:34px;
 	/* 🚨 46.5 — `--cd-sp-8:32px` A ÉTÉ SUPPRIMÉ, et cette suppression CORRIGE une
 	   décision du plan de la phase.
 	   La décision D2 du verdict A.22 tranchait « les crans d'espacement morts sont
@@ -1105,7 +1129,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 	.aod-cd-table .aod-cd-carriersel-btn,
 	.aod-cd-table .aod-cd-assignsel-btn,
 	.aod-cd-table .aod-cd-leadassignsel-btn,
-	.aod-cd-table .aod-cd-btn-sm{height:34px;padding-block:0}
+	.aod-cd-table .aod-cd-btn-sm{height:var(--cd-ctl-h-sm);padding-block:0}
 }
 
 /* ── L'ÉTAT « Suivi » CESSE D'ÊTRE UNE IMAGE POSÉE DANS LE VIDE ────────
@@ -1129,7 +1153,7 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
    déjà utilisé dans ce fichier (cf. `.aod-cd-bulk-ow`). */
 @media(min-width:781px){
 	.aod-cd-cell-ship .aod-cd-ship:not(:has(button)){
-		height:34px;padding-inline:var(--cd-sp-2);
+		height:var(--cd-ctl-h-sm);padding-inline:var(--cd-sp-2);
 		border-radius:var(--cd-r-pill);
 		background:var(--cd-bg);border:1px solid var(--cd-line);
 	}
@@ -1796,6 +1820,18 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-form input:focus,.aod-cd-form textarea:focus,.aod-cd-form select:focus{
 	outline:none;border-color:var(--cd-ink);box-shadow:var(--cd-focus);
 }
+/* L'INTITULÉ SUIT SON CHAMP (2026-08-09). Le champ savait dire qu'il avait le
+   focus — anneau + bord d'encre — mais son étiquette, elle, ne bougeait pas :
+   sur une colonne de huit champs identiques, l'anneau seul oblige à chercher
+   des yeux LEQUEL est actif, alors que le nom du champ est ce qu'on lit.
+   🔒 `--cd-accent` NU est autorisé ici, et c'est le même raisonnement que pour
+   le filet de section : le changement de couleur est du DÉCOR au sens 1.4.11 —
+   il ne porte aucune information que l'anneau de focus ne dise déjà, et
+   l'anneau, lui, ne dépend pas de l'accent (règle du fichier ~l.152). Un accent
+   pâle rendrait l'effet discret sans rien retirer.
+   ⚠️ `:focus-within` et non `:focus` : c'est le LABEL parent qu'on peint, il ne
+   reçoit jamais le focus lui-même. */
+.aod-cd-field:focus-within > .aod-cd-label{color:var(--cd-accent)}
 .aod-cd-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
 /* Période de promotion : deux dates groupées (début → fin) */
@@ -2220,7 +2256,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 @media(min-width:781px){
 	.aod-cd-od-head .aod-cd-statussel-btn,
 	.aod-cd-od-head .aod-cd-assignsel-btn,
-	.aod-cd-od-head .aod-cd-btn{height:34px;padding-block:0}
+	.aod-cd-od-head .aod-cd-btn{height:var(--cd-ctl-h-sm);padding-block:0}
 }
 
 /* La date cesse d'être un mot posé entre deux contrôles : un filet la détache du
@@ -2241,6 +2277,83 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    portent du texte. */
 .aod-cd-od-prods th:nth-child(n+2),
 .aod-cd-od-prods td:nth-child(n+2){text-align:end}
+
+/* ── LE TABLEAU DES PRODUITS DEVIENT UN OBJET (2026-08-09) ────────────
+   Il était posé à nu au milieu de la modale : pas de cadre, pas de bande
+   d'en-tête, aucune séparation entre les lignes, et — le pire — **le « Total »
+   avait exactement le même poids visuel que « Prix livraison »**. Le seul
+   nombre que le gérant cherche vraiment se lisait comme les deux autres.
+   Il prend donc le vocabulaire des tableaux de `/gestion` : cadre arrondi,
+   bande d'en-tête sur le creux, un filet par ligne — et la ligne de total sur
+   le lavis d'accent, en encre pleine.
+   🔒 L'accroche est SÉMANTIQUE, pas positionnelle : la décomposition du montant
+   vit dans un `<tfoot>` (cf. `class-aod-cd-section-orders.php`), donc
+   `tfoot tr:last-child` désigne le total quel que soit le nombre d'articles
+   au-dessus. Un `tbody tr:last-child` aurait mis en valeur la dernière ligne
+   d'ARTICLE sur une commande sans décomposition — juste par accident de rang.
+   ⚠️ `border-collapse:separate` est obligatoire pour que le rayon rogne quelque
+   chose : en `collapse`, les bords des cellules débordent du conteneur arrondi
+   et les coins redeviennent carrés. Le sélecteur est doublé
+   (`.aod-cd-table.aod-cd-od-prods`) pour passer devant la peau générique des
+   tableaux, qui a la même spécificité et pourrait un jour être déplacée plus bas
+   dans le fichier. */
+.aod-cd-table.aod-cd-od-prods{
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
+	border-collapse:separate;border-spacing:0;overflow:hidden;background:var(--cd-field);
+}
+.aod-cd-table.aod-cd-od-prods thead th{background:var(--cd-bg);border-bottom:1px solid var(--cd-line)}
+.aod-cd-table.aod-cd-od-prods tbody td{border-top:1px solid var(--cd-line)}
+.aod-cd-table.aod-cd-od-prods tbody tr:first-child td{border-top:0}
+.aod-cd-table.aod-cd-od-prods tfoot td{border-top:1px solid var(--cd-line);color:var(--cd-muted)}
+.aod-cd-table.aod-cd-od-prods tfoot tr:last-child td{
+	background:var(--cd-accent-wash);color:var(--cd-ink);font-weight:800;
+}
+
+/* ── LE VOLET D'ÉDITION : UNE HAUTEUR, DES ANNOTATIONS (2026-08-09) ────
+   Mesuré dans « Modifier » : champs texte **42 px**, listes natives (type de
+   livraison, wilaya, commune, choix d'article) **44**, bouton « + Ajouter »
+   **29,8**. Trois hauteurs, dont deux qui se touchent dans la même rangée
+   (Téléphone 42 / Type de livraison 44). C'est la même cause que partout
+   ailleurs — un `padding` propre à chaque composant, additionné à son cran de
+   texte — et le même remède local, en attendant le jeton de charte.
+   ⚠️ Le bouton « + Ajouter » est dans la liste : il vit COLLÉ à la liste de
+   produits qu'il complète, et un bouton 14 px plus court que le champ d'à côté
+   se lit comme un contrôle d'un autre rang. */
+@media(min-width:781px){
+	.aod-cd-od-edit select,
+	.aod-cd-od-edit .aod-cd-btn-sm{height:var(--cd-ctl-h);padding-block:0}
+}
+
+/* Les explications reprennent leur rang. Elles occupaient jusqu'ici la MÊME
+   largeur pleine et le même bloc que les champs — mesuré, la plus longue fait
+   42 px de haut, soit autant qu'un champ de saisie. Un liseré et un retrait
+   suffisent à dire « ceci commente ce qui précède » plutôt que « ceci est une
+   chose de plus à remplir ».
+   ⚠️ `border-inline-start` / `padding-inline-start` : en arabe le liseré passe
+   à droite tout seul. */
+.aod-cd-od-edit .aod-cd-note{
+	border-inline-start:2px solid var(--cd-line);
+	padding-inline-start:var(--cd-sp-3);
+}
+
+/* ── LES CARTES DU FORMULAIRE D'ÉDITION (2026-08-09) ──────────────────
+   `.aod-cd-od-boxform` n'apporte AUCUNE peau : elle hérite de `.aod-cd-od-box`,
+   les encarts de la vue lecture, et c'est tout l'intérêt — les deux vues du même
+   volet se ressemblent enfin. Elle ne sert qu'à ce que ce qui suit ne touche pas
+   aux encarts de LECTURE, qui portent des listes et non des champs.
+   ⚠️ L'espacement entre champs doit être posé ici : la règle de rythme écrite
+   plus haut est cadrée sur `.aod-cd-acc-body` (le formulaire produit). Encore un
+   correctif par conteneur — même dette que les hauteurs de contrôle. */
+.aod-cd-od-boxform .aod-cd-field + .aod-cd-field{margin-top:var(--cd-sp-3)}
+/* L'icône entre DANS l'intitulé. `display:flex` est cadré sur ces cartes et non
+   posé sur `.aod-cd-label` en général : ce sélecteur sert dans tout le tableau de
+   bord, et le passer en flex partout déplacerait des libellés que personne n'a
+   mesurés. */
+.aod-cd-od-boxform .aod-cd-label{display:flex;align-items:center;gap:6px}
+.aod-cd-od-boxform .aod-cd-label svg{flex:none;color:var(--cd-muted)}
+/* L'icône suit l'intitulé quand le champ prend le focus — elle fait partie du
+   même signal (cf. la règle `:focus-within` sur `.aod-cd-label`). */
+.aod-cd-od-boxform .aod-cd-field:focus-within > .aod-cd-label svg{color:var(--cd-accent)}
 .aod-cd-od-edit{margin-bottom:8px}
 .aod-cd-od-edit .aod-cd-form-foot{margin-top:18px;padding-top:16px}
 .aod-cd-od-items{display:flex;flex-direction:column;gap:12px}
@@ -2594,9 +2707,17 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    ⚠️ DÉCOR AU SENS 1.4.11 : le filet ne porte aucune information que le titre ne dise
    déjà. Un accent clair qui le rendrait presque invisible ne retire donc rien —
    c'est ce qui autorise `--cd-accent` nu, sans encre ni plancher de contraste. */
+/* 🔁 `.aod-cd-od-sub` REJOINT LES DEUX AUTRES LE 2026-08-09. Le filet était posé
+   sur deux sélecteurs et pas sur leur jumeau : les intitulés du volet de détail
+   d'une commande (« Produits », « Articles », « Total », « Notes & historique »)
+   restaient des capitales nues, alors qu'ils jouent exactement le même rôle que
+   ceux du formulaire produit. Une décision appliquée à deux endroits sur trois —
+   le mode de dérive que la Phase 46 documente en entier. */
 .aod-cd-form-subtitle,
+.aod-cd-od-sub,
 .aod-cd-subsec__title{display:flex;align-items:center;gap:var(--cd-sp-2);flex-wrap:wrap}
 .aod-cd-form-subtitle::before,
+.aod-cd-od-sub::before,
 .aod-cd-subsec__title::before{
 	content:"";flex:none;width:3px;height:1em;border-radius:var(--cd-r-pill);background:var(--cd-accent);
 }
@@ -2722,9 +2843,17 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 .aod-cd-gal-add-ic{font-size:var(--cd-fs-2xl);line-height:1;font-weight:400}
 /* Catégories : liste déroulante sous forme de bouton (multi-sélection) */
 .aod-cd-catdd{position:relative}
+/* 🔁 `--cd-bg` → `--cd-field` (2026-08-09). Ce bouton ouvre une liste de cases à
+   cocher : c'est une ZONE DE SAISIE, il doit porter le cran des champs. Peint sur
+   le creux, il ressortait plus SOMBRE que les deux champs qui l'entourent dans la
+   même rangée (« Nouvelle catégorie », « Statut ») — et un champ plus sombre que
+   ses voisins se lit comme DÉSACTIVÉ. Il ne l'était pas.
+   ⚠️ `text-align:left` reste faux en arabe (il devrait être `start`), mais le
+   corriger déplace le contenu de tous les clones RTL sans que la porte `rtl` ait
+   été rejouée sur ce travail : à traiter dans une passe qui la joue. */
 .aod-cd-catdd-btn{
 	display:flex;align-items:center;gap:8px;width:100%;padding:8px 11px;
-	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-bg);
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);
 	font-size:var(--cd-fs-md);font-family:inherit;color:var(--cd-ink);cursor:pointer;text-align:left;
 }
 .aod-cd-catdd-btn:hover{border-color:var(--cd-ink)}
@@ -2786,7 +2915,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 }
 .aod-cd-searchfield:focus-within svg{color:var(--cd-ink)}
 .aod-cd-search input[type="search"]{
-	width:100%;max-width:none;height:42px;font-size:var(--cd-fs-md);font-family:inherit;
+	width:100%;max-width:none;height:var(--cd-ctl-h);font-size:var(--cd-fs-md);font-family:inherit;
 	padding-block:0;padding-inline:calc(var(--cd-sp-3) + 16px + var(--cd-sp-2)) var(--cd-sp-3);
 	border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);background:var(--cd-field);
 }
@@ -2797,7 +2926,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    vert et l'autre gris — celui qui restait gris étant le plus utilisé des deux.
    ⚠️ Le lien « Réinitialiser » qui le suit reste NEUTRE, et doit le rester :
    annuler une recherche n'est pas au même rang que la lancer. */
-.aod-cd-search .aod-cd-btn{height:42px;padding-block:0}
+.aod-cd-search .aod-cd-btn{height:var(--cd-ctl-h);padding-block:0}
 /* Au pouce : le champ prend toute la largeur et passe à la cible tactile. 42 px
    suffisent à la souris, pas au doigt — et c'est le premier contrôle de l'écran.
    🔒 CE BLOC DOIT RESTER ICI, sous les règles qu'il corrige. Il était écrit
@@ -2895,7 +3024,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 	.aod-cd-acc-form .aod-cd-opt-name-ar,
 	.aod-cd-acc-form .aod-cd-opt-price,
 	.aod-cd-acc-form .aod-cd-opt-stock,
-	.aod-cd-acc-form .aod-cd-offer-row input[type=number]{height:42px;padding-block:0}
+	.aod-cd-acc-form .aod-cd-offer-row input[type=number]{height:var(--cd-ctl-h);padding-block:0}
 }
 .aod-cd-grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:640px){.aod-cd-grid2{grid-template-columns:1fr}}
@@ -3276,7 +3405,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 @media(min-width:781px){
 	.aod-cd-bulkbar .aod-cd-csel-btn,
 	.aod-cd-bulkbar .aod-cd-btn,
-	.aod-cd-bulkbar .aod-cd-bulk-ow{height:38px;padding-block:0}
+	.aod-cd-bulkbar .aod-cd-bulk-ow{height:var(--cd-ctl-h);padding-block:0}
 }
 
 /* La barre respire : 16 px entre le compteur et les panneaux, 12 px à
@@ -4586,9 +4715,22 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    visiteur de l'autre langue lit celle-ci — les voir ensemble rend le trou visible. */
 .aod-cd-lp-langs{display:grid;grid-template-columns:1fr 1fr;gap:var(--cd-sp-3)}
 .aod-cd-lp-lang{display:flex;flex-direction:column;gap:var(--cd-sp-1)}
+/* 🔁 L'ÉTIQUETTE DE LANGUE DEVIENT UNE PASTILLE (2026-08-09). C'était deux mots
+   gris posés à nu au-dessus de deux cases : rien ne disait que « Français » et
+   « العربية » coiffent chacun UNE moitié d'un même champ, ni où finissait l'une
+   et commençait l'autre. Sur trois couples empilés (nom, description,
+   arguments), l'œil ne voyait plus qu'une colonne de petits mots gris.
+   Le creux de la charte suffit à faire l'objet — et il se lit comme un ONGLET,
+   ce qu'est exactement cette étiquette.
+   ⚠️ `align-self:flex-start` et non `width:fit-content` : le bloc arabe porte
+   `dir="rtl"`, donc `flex-start` bascule la pastille à DROITE toute seule. Une
+   largeur fixée aurait demandé une règle miroir de plus. */
 .aod-cd-lp-tag{
 	font-size:var(--cd-fs-xs);font-weight:700;color:var(--cd-muted);
 	text-transform:uppercase;letter-spacing:.4px;
+	display:inline-flex;align-items:center;align-self:flex-start;
+	padding:2px var(--cd-sp-2);border-radius:var(--cd-r-pill);
+	background:var(--cd-bg);
 }
 /* La case arabe est en RTL (dir="rtl" sur son conteneur) — l'étiquette suit. */
 .aod-cd-lp-lang[dir=rtl] .aod-cd-lp-tag{text-align:start}
@@ -4600,6 +4742,60 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-lp-lang .mce-tinymce,.aod-cd-lp-lang .mce-panel{border-color:var(--cd-line)}
 .aod-cd-lp-lang .mce-toolbar-grp{padding:2px}
 .aod-cd-lp-lang .mce-toolbar .mce-btn-group{white-space:normal}
+
+/* ── 🔴 L'ÉDITEUR ÉTAIT LA SEULE SURFACE SYSTÈME DE LA PAGE (2026-08-09) ──
+   Mesuré sur « Modifier le produit » : barre d'outils TinyMCE à
+   `background:rgb(255,255,255)`, texte `rgb(89,89,89)`, `border-radius:0`. Deux
+   rectangles d'un blanc FROID, à coins vifs, au milieu d'un écran entièrement
+   teinté vert d'eau et arrondi à 8 px. C'est ce qui sautait aux yeux — pas la
+   forme des champs, la MATIÈRE de ces deux-là.
+   🚨 Et les quatre règles au-dessus expliquent pourquoi personne ne l'avait vu :
+   elles existaient déjà, sur CE MÊME sélecteur, depuis la 8.1 — mais elles ne
+   traitaient que le DÉBORDEMENT (largeur, repli de la barre, couleur de bordure).
+   Un correctif de mise en page relu comme un correctif de peau : le bloc avait
+   l'air traité, il ne l'était pas. *Un sélecteur déjà stylé n'est pas un
+   sélecteur déjà fini.*
+   🔒 Aucune couleur nouvelle — `--cd-bg` pour la barre (le creux de la charte,
+   comme l'en-tête d'un tableau), `--cd-field` pour le cadre (c'est une zone où
+   l'on ÉCRIT), `--cd-accent-wash` sur le bouton actif (le couple déjà éprouvé
+   des lignes survolées).
+   ⚠️ Le fond de la ZONE DE FRAPPE reste blanc et c'est voulu : c'est un
+   `<iframe>`, un document séparé qu'aucune règle d'ici ne peut atteindre — il
+   faudrait `add_editor_style()`, donc du code de thème, sur un template qui ne
+   doit rien imposer au thème du client. Le blanc y joue de toute façon son rôle
+   de PAPIER sous du texte long.
+   ⚠️ `overflow:hidden` sur `.mce-tinymce` pour que le rayon rogne la barre. Sans
+   danger pour le menu déroulant « Paragraphe » : TinyMCE l'accroche au <body>,
+   hors de ce conteneur — et hors de portée de ce sélecteur descendant, ce qui
+   évite au passage de repeindre les menus flottants de tout le tableau de bord. */
+.aod-cd-lp-lang .mce-tinymce{border-radius:var(--cd-r-sm);overflow:hidden;box-shadow:none}
+.aod-cd-lp-lang .mce-panel{background:var(--cd-field)}
+.aod-cd-lp-lang .mce-toolbar-grp{background:var(--cd-bg);border-bottom:1px solid var(--cd-line)}
+.aod-cd-lp-lang .mce-btn button,
+.aod-cd-lp-lang .mce-txt{color:var(--cd-ink);font-family:inherit}
+.aod-cd-lp-lang .mce-btn{background:none;border-color:transparent;transition:background-color .14s var(--cd-ease-out)}
+.aod-cd-lp-lang .mce-btn:hover,
+.aod-cd-lp-lang .mce-btn.mce-active{background:var(--cd-accent-wash);border-color:transparent}
+.aod-cd-lp-lang .mce-statusbar{background:var(--cd-bg);border-top:1px solid var(--cd-line)}
+
+/* ── LE RYTHME VERTICAL DU FORMULAIRE ─────────────────────────────────
+   Mesuré : la note « Affichés en liste à puces… » finit à 756 px et l'intitulé
+   « CATÉGORIES » commence à 773 — **17 px**. Or l'écart entre un intitulé et sa
+   propre case est de 6 px : deux champs distincts étaient donc presque aussi
+   serrés qu'un champ et son étiquette. Rien ne disait où un champ finissait.
+   Le groupe reste soudé (6 px), la respiration ENTRE groupes passe à 20 px —
+   c'est le rapport qui fait lire des blocs, pas les valeurs.
+
+   🔴 PREMIÈRE VERSION INCOMPLÈTE, ET LA MESURE L'A DIT : la règle ne visait que
+   `.aod-cd-note + .aod-cd-field`, or la note des arguments de vente est suivie
+   d'une `.aod-cd-row2` (la rangée Catégories / Nouvelle catégorie). Écart mesuré
+   après correctif supposé : **3 px**. Écrire une règle et ne pas remesurer, c'est
+   croire l'avoir appliquée. Les trois conteneurs qui peuvent suivre une note sont
+   donc nommés. */
+.aod-cd-acc-body .aod-cd-field + .aod-cd-field,
+.aod-cd-acc-body .aod-cd-note + .aod-cd-field,
+.aod-cd-acc-body .aod-cd-note + .aod-cd-row2,
+.aod-cd-acc-body .aod-cd-note + .aod-cd-grid2{margin-top:var(--cd-sp-5)}
 
 /* Items d'une liste répétable (bénéfices, garanties…) */
 .aod-cd-lp-repeat{display:flex;flex-direction:column;gap:var(--cd-sp-3);align-items:flex-start}

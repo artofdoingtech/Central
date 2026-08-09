@@ -2908,26 +2908,52 @@ class AOD_CD_Section_Orders {
 
 		echo '<form class="aod-cd-form aod-cd-od-edit" data-order="' . esc_attr( $order->get_id() ) . '" hidden>';
 
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . esc_html__( 'Nom du client', 'aod-client-dashboard' ) . '</span>';
-		echo '<input type="text" name="name" value="' . esc_attr( $full_name ) . '"></label>';
+		// 🔁 2026-08-09 — L'ÉDITION REPREND LES DEUX CARTES DE LA VUE LECTURE.
+		//
+		// Retour owner, trois fois de suite : « ça reste simple ». Il avait raison, et
+		// la cause n'était pas la peau des champs — c'était l'ABSENCE DE STRUCTURE.
+		// Le volet en lecture montre deux encarts nommés (Client / Livraison) ; passer
+		// en édition les faisait disparaître au profit d'une pile plate de sept champs
+		// où rien ne disait plus ce qui relevait de l'acheteur et ce qui relevait du
+		// colis. Deux vues du MÊME objet qui ne se ressemblaient pas.
+		// Les champs sont donc regroupés dans `.aod-cd-od-box`, la classe exacte des
+		// encarts de lecture — même grille, même creux, mêmes intitulés.
+		//
+		// 🔒 AUCUNE CHAÎNE NOUVELLE : « Client » et « Livraison » sont déjà traduits,
+		// c'est la vue lecture qui les pose (cf. `render_order_detail()`). Aucun
+		// passage par `make-translations.sh` n'est dû ici.
+		//
+		// ⚠️ L'ORDRE DES CHAMPS CHANGE, et c'est le coût assumé : « Téléphone » et
+		// « Type de livraison » partageaient une rangée alors qu'ils appartiennent à
+		// deux sujets différents. Un gérant habitué au tabulateur retrouvera les mêmes
+		// champs, pas dans le même ordre. Le gain — deux blocs qu'on lit d'un coup au
+		// lieu de sept lignes à déchiffrer — vaut ce dérangement une fois.
+		//
+		// ⚠️ Le JS n'est PAS touché : ses deux accès à ce formulaire sont
+		// `form.querySelector( '.aod-cd-od-wilaya' )` (l. 1116-1117 de
+		// `section-orders.js`) et une boucle sur `[name=…]` (l. 1241) — deux
+		// recherches par DESCENDANCE, insensibles à l'enveloppe. Vérifié avant
+		// d'écrire, pas après.
+		echo '<div class="aod-cd-od-grid">';
 
-		echo '<div class="aod-cd-row2">';
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . esc_html__( 'Téléphone', 'aod-client-dashboard' ) . ' *</span>';
+		echo '<div class="aod-cd-od-box aod-cd-od-boxform"><h4>' . esc_html__( 'Client', 'aod-client-dashboard' ) . '</h4>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'user', array( 'size' => 14 ) ) . esc_html__( 'Nom du client', 'aod-client-dashboard' ) . '</span>';
+		echo '<input type="text" name="name" value="' . esc_attr( $full_name ) . '"></label>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'phone', array( 'size' => 14 ) ) . esc_html__( 'Téléphone', 'aod-client-dashboard' ) . ' *</span>';
 		echo '<input type="text" name="phone" required value="' . esc_attr( $order->get_billing_phone() ) . '"></label>';
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . esc_html__( 'Type de livraison', 'aod-client-dashboard' ) . '</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'home', array( 'size' => 14 ) ) . esc_html__( 'Adresse', 'aod-client-dashboard' ) . '</span>';
+		echo '<input type="text" name="address" value="' . esc_attr( $order->get_billing_address_1() ) . '"></label>';
+		echo '</div>';
+
+		echo '<div class="aod-cd-od-box aod-cd-od-boxform"><h4>' . esc_html__( 'Livraison', 'aod-client-dashboard' ) . '</h4>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'shipping', array( 'size' => 14 ) ) . esc_html__( 'Type de livraison', 'aod-client-dashboard' ) . '</span>';
 		echo '<select name="delivery_type">';
 		echo '<option value="home" ' . selected( $delivery, 'home', false ) . '>' . esc_html__( 'À domicile', 'aod-client-dashboard' ) . '</option>';
 		echo '<option value="desk" ' . selected( $delivery, 'desk', false ) . '>' . esc_html__( 'Stop-desk (bureau)', 'aod-client-dashboard' ) . '</option>';
 		echo '</select></label>';
-		echo '</div>';
-
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . esc_html__( 'Adresse', 'aod-client-dashboard' ) . '</span>';
-		echo '<input type="text" name="address" value="' . esc_attr( $order->get_billing_address_1() ) . '"></label>';
-
-		echo '<div class="aod-cd-row2">';
 
 		// Wilaya.
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . esc_html__( 'Wilaya', 'aod-client-dashboard' ) . '</span>';
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'tracking', array( 'size' => 14 ) ) . esc_html__( 'Wilaya', 'aod-client-dashboard' ) . '</span>';
 		echo '<select name="wilaya" class="aod-cd-od-wilaya">';
 		echo '<option value="">' . esc_html__( '—', 'aod-client-dashboard' ) . '</option>';
 		if ( $has_data ) {
@@ -2940,7 +2966,11 @@ class AOD_CD_Section_Orders {
 		echo '</select></label>';
 
 		// Commune (peuplée pour la wilaya courante, recalculée en JS au changement).
-		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . esc_html__( 'Commune', 'aod-client-dashboard' ) . '</span>';
+		// `map` et non `tracking` : les deux existent au catalogue, et la wilaya porte
+		// déjà l'épingle (`tracking` = map-pin). Deux épingles identiques l'une sous
+		// l'autre n'auraient rien distingué — la carte pour le territoire, l'épingle
+		// pour le point.
+		echo '<label class="aod-cd-field"><span class="aod-cd-label">' . AOD_CD_Icon::svg( 'map', array( 'size' => 14 ) ) . esc_html__( 'Commune', 'aod-client-dashboard' ) . '</span>';
 		echo '<select name="commune" class="aod-cd-od-commune">';
 		echo '<option value="">' . esc_html__( '—', 'aod-client-dashboard' ) . '</option>';
 		if ( $has_data && $wilaya_code ) {
@@ -2954,7 +2984,8 @@ class AOD_CD_Section_Orders {
 		}
 		echo '</select></label>';
 
-		echo '</div>'; // /row2
+		echo '</div>'; // /box Livraison
+		echo '</div>'; // /grid
 
 		// 47.3 — LA NOTE DU CONFIRMATEUR, et elle est ici pour une raison.
 		//
