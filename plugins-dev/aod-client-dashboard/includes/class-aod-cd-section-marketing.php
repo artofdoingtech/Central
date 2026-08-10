@@ -1,8 +1,11 @@
 <?php
 /**
  * Section « Pixels & Tracking » (marketing) : les identifiants de régies
- * publicitaires (Meta/TikTok/Snapchat/Google) et les jetons Conversions API (CAPI),
- * plus la devise de reporting.
+ * publicitaires (Meta/TikTok/Snapchat/Google) et les jetons Conversions API (CAPI).
+ *
+ * ⛔ La « devise de reporting » ne s'y règle plus (2026-08-10) : elle reste dans
+ * l'option et dans wp-admin, mais elle a quitté cet écran. Détail et conséquence
+ * sur `ajax_save_pixels()` dans le bloc ⛔ de `render()`.
  *
  * 🧩 EXTRACTION (Phase 30.2). Sortie du monolithe `class-aod-cd-dashboard.php` à
  * comportement CONSTANT : mêmes réglages (`aod_cod_pixels`), mêmes actions AJAX
@@ -66,11 +69,6 @@ class AOD_CD_Section_Marketing {
 	/** Nettoie un identifiant de pixel (mêmes caractères sûrs que le plugin COD). */
 	protected static function clean_pixel_id( $v ) {
 		return preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $v );
-	}
-
-	/** Nettoie un code de devise ISO 4217 (3 lettres majuscules, ex. USD). */
-	protected static function clean_currency( $v ) {
-		return substr( strtoupper( preg_replace( '/[^A-Za-z]/', '', (string) $v ) ), 0, 3 );
 	}
 
 	/**
@@ -366,33 +364,25 @@ class AOD_CD_Section_Marketing {
 			</section>
 
 			<?php
-			/* La devise n'est PAS une cinquième régie. Elle vivait pourtant dans la
-			   même grille de marques, avec le même encadré et la même icône ronde :
-			   au balayage, elle se lisait comme un canal publicitaire de plus. Elle
-			   a désormais son propre étage, sans liseré de marque et sans pastille
-			   actif/inactif — trois signaux qui ne veulent rien dire pour elle. */
-			echo self::stage_open( // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le helper.
-				'money',
-				__( 'Devise de reporting', 'aod-client-dashboard' ),
-				__( 'Meta refuse le dinar algérien : la valeur de vos achats n’est pas comptée dans vos publicités. Déclarez une devise reconnue et son taux pour rendre cette valeur mesurable. Laissez vide pour ne rien changer.', 'aod-client-dashboard' )
-			);
+			// -- « DEVISE DE REPORTING » A QUITTÉ CETTE PAGE (2026-08-10, demande
+			// owner). Elle occupait un étage entier pour deux champs qu'un gérant ne
+			// sait pas remplir : un code ISO 4217 et un taux de change à quatre
+			// décimales, sur une page dont tout le reste se copie-colle depuis le
+			// gestionnaire de publicités.
+			//
+			// LE MÉCANISME, LUI, EST INTACT. `AOD_COD_Pixels::to_reporting()` convertit
+			// toujours, les clés `report_currency` / `report_rate` restent dans
+			// l'option, et le réglage demeure accessible dans wp-admin
+			// (`AOD_COD_Pixels`, « Devise de reporting (régies pub) »). Retirer un champ
+			// d'un écran n'est pas retirer une fonctionnalité — c'était le périmètre
+			// demandé, et l'élargir aurait changé ce que reçoivent les régies sur un
+			// clone déjà configuré.
+			//
+			// ET C'EST POURQUOI `ajax_save_pixels()` A DÛ CHANGER DANS LE MÊME GESTE :
+			// il traite le formulaire ENTIER. Voir la note posée sur les deux clés
+			// là-bas — c'est là que le défaut se serait produit, donc c'est là qu'il
+			// est expliqué.
 			?>
-			<div class="aod-cd-pxcard aod-cd-pxcard--plain">
-				<div class="aod-cd-pxcard__body aod-cd-pxcard__body--2">
-					<label class="aod-cd-field">
-						<span class="aod-cd-label"><?php esc_html_e( 'Devise (code à 3 lettres)', 'aod-client-dashboard' ); ?></span>
-						<input type="text" class="aod-cd-code aod-cd-code--up" name="report_currency" value="<?php echo esc_attr( $s['report_currency'] ); ?>" placeholder="USD" maxlength="3">
-						<span class="aod-cd-help"><?php esc_html_e( 'Ex. USD, EUR — une devise que les régies reconnaissent.', 'aod-client-dashboard' ); ?></span>
-					</label>
-					<label class="aod-cd-field">
-						<span class="aod-cd-label"><?php esc_html_e( 'Taux : 1 DZD = ?', 'aod-client-dashboard' ); ?></span>
-						<input type="number" class="aod-cd-code" step="0.0001" min="0" name="report_rate" value="<?php echo esc_attr( $s['report_rate'] ); ?>" placeholder="0.0075">
-						<span class="aod-cd-help"><?php esc_html_e( 'Combien vaut 1 dinar dans la devise choisie (ex. 0,0075 pour le dollar).', 'aod-client-dashboard' ); ?></span>
-					</label>
-				</div>
-			</div>
-			</section>
-
 			<div class="aod-cd-form-foot aod-cd-savebar">
 				<button type="submit" class="aod-cd-btn aod-cd-btn-primary"><?php esc_html_e( 'Enregistrer les pixels', 'aod-client-dashboard' ); ?></button>
 				<span class="aod-cd-form-msg"></span>
@@ -422,8 +412,14 @@ class AOD_CD_Section_Marketing {
 			'tiktok_capi_token'    => self::capi_token_from_post( $existing['tiktok_capi_token'], 'tiktok_capi_token' ),
 			'tiktok_test_event_code' => isset( $_POST['tiktok_test_event_code'] ) ? sanitize_text_field( wp_unslash( $_POST['tiktok_test_event_code'] ) ) : '',
 			'snapchat_capi_token'  => self::capi_token_from_post( $existing['snapchat_capi_token'], 'snapchat_capi_token' ),
-			'report_currency' => isset( $_POST['report_currency'] ) ? self::clean_currency( wp_unslash( $_POST['report_currency'] ) ) : '',
-			'report_rate'     => isset( $_POST['report_rate'] ) ? (string) max( 0, (float) wp_unslash( $_POST['report_rate'] ) ) : '',
+			// 🔒 RECONDUITES TELLES QUELLES, JAMAIS RELUES DU POST. Ces deux clés
+			// n'ont plus de champ sur cette page (cf. le bloc ⛔ dans render()) mais
+			// restent réglables dans wp-admin. Les lire depuis `$_POST` avec un repli
+			// sur '' — ce que faisait ce handler — les aurait effacées au premier
+			// enregistrement des pixels, en silence, depuis un écran qui ne les
+			// mentionne plus. Un formulaire complet écrit TOUT ce qu'il ne poste pas.
+			'report_currency' => $existing['report_currency'],
+			'report_rate'     => $existing['report_rate'],
 		);
 		update_option( 'aod_cod_pixels', $settings );
 		wp_send_json_success( array( 'message' => __( 'Pixels enregistrés.', 'aod-client-dashboard' ) ) );

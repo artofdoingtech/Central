@@ -109,7 +109,15 @@ function aod_test_pcs_census() {
 			// libellés `__()`, trois entiers castés en chaîne, trois noms d'icône du
 			// catalogue fermé, et des URLs construites par `add_query_arg()` sur
 			// `home_url()`. Aucune donnée saisie par un utilisateur n'entre là.
-			'n'        => 168,
+			//
+			// 168 → 167 le 2026-08-10 : « Devise de reporting » quitte la page
+			// Marketing (demande owner) et emporte l'annotation posée sur son appel
+			// à `stage_open()`. ⬇️ Une BAISSE, donc la direction sûre — un contrôle
+			// revient, il n'en part pas. Elle est notée quand même : ce cliquet
+			// existe pour qu'aucun mouvement du census n'arrive en silence, et un
+			// chiffre qui descend sans explication se relit, dans six mois, comme
+			// un chiffre qu'on a ajusté pour faire passer le test.
+			'n'        => 167,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
