@@ -230,7 +230,27 @@ AOD_Test::group( 'Décomposition 30 — R1 : le fichier-dieu ne regrossit pas' )
 // bilinguisme) sont entrés SANS en ajouter — la première sur la ligne existante
 // de `js_map()`, le second nulle part, les noms de mois et de jours venant
 // d'`Intl` dans la langue de la page plutôt que de douze chaînes à traduire.
-$aod_decomp_plafond = 1087;
+//
+// REMONTÉE ASSUMÉE 1087 → 1098 (+11, page Suivi commande, 2026-08-10) :
+// `kpis()` accepte une URL par carte (`$c[6]`) et rend alors un `<a>` au lieu
+// d'un `<div>`. Rang COMPOSANT PARTAGÉ — le même que celui qui a fait monter
+// cette méthode ici en 5.5 : elle vit dans ce fichier PRÉCISÉMENT pour que deux
+// sections ne recopient pas le balisage d'une tuile. Le bandeau de Suivi avait
+// besoin de tuiles qui MÈNENT au filtre qu'elles comptent ; le seul autre
+// chemin était un second modèle de tuile dans la section Suivi, c'est-à-dire
+// deux grammaires de carte dans la même application (le défaut que la 45.3 a
+// fermé sur les tableaux) — et bien plus de onze lignes, dans un fichier où
+// elles n'auraient été relues par personne.
+// 🔎 CE QUI N'A PAS COÛTÉ DE LIGNE, et c'est l'arbitrage qui vaut d'être noté :
+// la grille à trois colonnes a d'abord été écrite comme un paramètre `$mods`
+// que l'appelant passait. Elle est repartie en CSS
+// (`.aod-cd-kpis:has(> :nth-child(3)):not(:has(> :nth-child(4)))`) — une ligne
+// de moins ici, un argument de moins dans une API partagée, et surtout une
+// géométrie qu'aucun appelant futur ne peut oublier de déclarer.
+// ⚠️ Ce plafond garde une COQUE. Le compte NET du chantier est négatif côté
+// section : `class-aod-cd-section-tracking.php` sort son `meta_query` de
+// `render()` pour en faire un corps unique que le bandeau réemploie.
+$aod_decomp_plafond = 1098;
 
 $aod_decomp_fichier = AOD_CD_PATH . 'includes/class-aod-cd-dashboard.php';
 $aod_decomp_lignes  = is_readable( $aod_decomp_fichier ) ? count( file( $aod_decomp_fichier ) ) : -1;

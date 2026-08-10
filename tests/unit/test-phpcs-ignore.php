@@ -97,7 +97,19 @@ function aod_test_pcs_census() {
 			// la fenêtre. C'est voulu (c'est ce qui fait reconnaître la régie qu'on
 			// vient de cliquer) mais ça se paie ici : redire un fragment, c'est
 			// redire ses dérogations.
-			'n'        => 167,
+			//
+			// 167 → 168 le 2026-08-10 (bandeau de la page Suivi commande). ⬆️ Une
+			// HAUSSE d'UNE, sur `render_tracking_pulse()`, qui appelle le composant
+			// partagé `AOD_CD_Dashboard::kpis()` — même motif que les appels à
+			// `page_head()` et `empty_state()` déjà recensés ici : le composant
+			// échappe LUI-MÊME chacune de ses entrées (`esc_html` sur les libellés,
+			// `wp_kses_post` sur les valeurs, `esc_url` sur les URLs, `esc_attr` sur
+			// la tonalité), et rend du balisage que `esc_html()` détruirait.
+			// ⚠️ Ce que l'appelant lui passe est vérifiable d'un coup d'œil : trois
+			// libellés `__()`, trois entiers castés en chaîne, trois noms d'icône du
+			// catalogue fermé, et des URLs construites par `add_query_arg()` sur
+			// `home_url()`. Aucune donnée saisie par un utilisateur n'entre là.
+			'n'        => 168,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
@@ -265,7 +277,13 @@ function aod_test_pcs_census() {
 			'quoi'     => 'Entrée non validée/sanitisée au sens du sniff — sanitisée autrement sur ces lignes.',
 		),
 		'WordPress.DB'                            => array(
-			'n'        => 28,
+			// 28 → 29 le 2026-08-10 : `tracking_count()` (page Suivi) compte les colis
+			// d'un état. Le `meta_query` n'est PAS recopié — c'est le corps que la
+			// liste emploie (`tracking_meta_query()`), justement pour que le nombre
+			// affiché et la liste qu'il ouvre ne puissent pas diverger. Mesuré :
+			// médiane 2142 ms avec les trois comptages, contre 2964 ms sur la page
+			// Commandes qui n'en fait aucun — le coût est sous le bruit de ce montage.
+			'n'        => 29,
 			'securite' => false,
 			'quoi'     => 'Requêtes directes / meta_query lentes. Performance, pas sécurité — sauf PreparedSQL, surveillé à part. '
 				. 'La 13ᵉ (étape 25.1, aod-client-dashboard/uninstall.php) énumère les porteurs d’une capability : '

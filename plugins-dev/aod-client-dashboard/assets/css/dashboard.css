@@ -4629,6 +4629,49 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 }
 .aod-cd-kpi:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:var(--cd-soft)}
 
+/* -- 🔗 UNE TUILE QUI MÈNE À CE QU'ELLE COMPTE ----------------------------
+   Sur Suivi commande, chaque chiffre a un filtre qui isole EXACTEMENT les colis
+   qu'il compte. La tuile devient donc un `<a>` : même composant, même dessin,
+   `text-decoration:none` + `color:inherit` pour que rien ne change à l'œil.
+   Sans href elle reste le `<div>` d'hier — Accueil et Stock ne voient pas la
+   différence, et c'est la condition pour n'avoir qu'un seul modèle de tuile.
+   🔒 L'anneau de focus passe par `--cd-focus`, JAMAIS par l'accent. C'est la
+   règle que la 46.1 a dû ré-appliquer quatre fois dans ce fichier après l'avoir
+   écrite en toutes lettres ; chaque lien nouveau est une occasion de plus de la
+   démentir, et les anneaux fautifs mesuraient 1,15:1.
+   ⚠️ La marque « filtre actif » passe par `border-color` — le seul canal que le
+   cliquet de conformité laisse à l'accent, précisément parce qu'une bordure
+   accentuée n'est pas le mécanisme dont dépend l'atteignabilité au clavier. */
+.aod-cd-kpi--link{text-decoration:none;color:inherit}
+.aod-cd-kpi--link:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+.aod-cd-kpi--actif{border-color:var(--cd-accent);background:var(--cd-accent-wash)}
+/* Trois tuiles dans une grille taillée pour quatre laisseraient une colonne vide
+   à droite. La règle se lit dans le DOM — EXACTEMENT trois enfants — plutôt que
+   d'être déclarée par l'appelant : une rangée à trois est une rangée à trois, où
+   qu'elle apparaisse, et personne n'a à s'en souvenir.
+   ⚠️ Les deux `:has()` sont nécessaires ensemble : le premier exige un 3ᵉ enfant
+   (sinon une rangée de deux passerait en trois colonnes, avec un trou), le second
+   interdit un 4ᵉ (sinon la règle mangerait les rangées de l'Accueil).
+
+   🔴 LA MÉDIA-QUERY N'EST PAS DÉCORATIVE, ELLE RÉPARE UN DÉFAUT MESURÉ.
+   J'avais d'abord écrit ce sélecteur SANS elle, en affirmant dans ce commentaire
+   même que les paliers responsives (`.aod-cd-kpis`, plus bas) l'emporteraient sur
+   mobile. Faux : deux `:has()` et un `:not()` pèsent (0,3,0) contre (0,1,0) — la
+   règle gagnait DANS les média-queries. Mesuré à 390 px en arabe : trois colonnes
+   de 123 / 111 / 119 px et **8 px de débordement**. L'affirmation venait d'une
+   mesure faite sur la version PRÉCÉDENTE de la règle, quand elle était une simple
+   classe. *Une mesure ne vaut que pour le code qu'on a mesuré ; changer le
+   sélecteur, c'est changer l'expérience.*
+   ⚠️ Le seuil est 641 px et non 1081 : entre les deux, le palier commun passe à
+   deux colonnes, ce qui laisserait la troisième tuile SEULE sur une rangée. Trois
+   colonnes tiennent jusqu'en bas de cette plage — balayé sur dix largeurs, FR et
+   AR : 428 px par tuile à 1440, 235 à 768, 192 à 641, **0 px de débordement
+   partout**. À 640 px la règle se tait et la rangée redevient une colonne
+   (608 px), comme partout ailleurs dans l'application. */
+@media(min-width:641px){
+	.aod-cd-kpis:has(> :nth-child(3)):not(:has(> :nth-child(4))){grid-template-columns:repeat(3,1fr)}
+}
+
 /* ── Hiérarchie de la grille de KPI (2026-08-04) ───────────────────────────
    La carte PRINCIPALE occupe deux colonnes. Huit cartes de poids identique ne
    hiérarchisent rien : le chiffre d'affaires pesait autant que « Produits en

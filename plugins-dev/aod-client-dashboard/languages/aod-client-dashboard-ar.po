@@ -1402,6 +1402,14 @@ msgstr "الطرود المُرسلة"
 msgid "Livrés"
 msgstr "مُسلَّمة"
 
+#: includes/class-aod-cd-section-tracking.php:293
+msgid "Colis suivis"
+msgstr "الطرود المُتتبَّعة"
+
+#: includes/class-aod-cd-section-tracking.php:301
+msgid "Bloqués"
+msgstr "عالقة"
+
 #: includes/class-aod-cd-section-home.php:1791
 #: includes/class-aod-cd-section-home.php:1807
 msgid "En transit"

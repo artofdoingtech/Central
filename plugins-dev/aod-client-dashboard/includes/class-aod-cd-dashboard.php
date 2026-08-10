@@ -914,14 +914,25 @@ class AOD_CD_Dashboard {
 	 * Vivait dans la section Accueil ; remontée ici en étape 5.5 pour que Stock
 	 * l'emploie sans dupliquer le balisage — une seule définition, un seul rendu.
 	 *
+	 * 🔗 `$c[6]` rend la carte cliquable (`<a>`) sans forker le composant ; sans
+	 * lui le rendu est celui d'hier à l'octet près. Le pourquoi est chez son
+	 * appelant, `AOD_CD_Section_Tracking::render_tracking_pulse()`.
+	 * ⚠️ Aucun modificateur de RANGÉE n'est exposé : la géométrie se lit dans le
+	 * DOM (`:has()`, cf. `.aod-cd-kpis` dans `dashboard.css`), elle ne se déclare
+	 * pas — un appelant qui doit s'en souvenir finit par oublier.
+	 *
 	 * @param array[] $cards Chaque carte : [ label, valeur HTML, icône, tonalité,
-	 *                       delta HTML (facultatif, déjà sûr) ].
+	 *                       delta HTML (facultatif, déjà sûr), modificateur
+	 *                       (facultatif), URL (facultative — rend un `<a>`) ].
 	 * @return string HTML sûr.
 	 */
 	public static function kpis( $cards ) {
 		$out = '<div class="aod-cd-kpis">';
 		foreach ( $cards as $c ) {
-			$out .= '<div class="aod-cd-kpi' . ( empty( $c[5] ) ? '' : ' aod-cd-kpi--' . sanitize_html_class( $c[5] ) ) . '">'; // $c[5] : modificateur optionnel (ex. « primary »), jamais du balisage.
+			$href  = isset( $c[6] ) && '' !== $c[6] ? (string) $c[6] : '';
+			$balis = $href ? 'a' : 'div';
+			$out  .= '<' . $balis . ' class="aod-cd-kpi' . ( empty( $c[5] ) ? '' : ' aod-cd-kpi--' . sanitize_html_class( $c[5] ) ) . ( $href ? ' aod-cd-kpi--link' : '' ) . '"' // $c[5] : modificateur optionnel (ex. « primary »), jamais du balisage.
+				. ( $href ? ' href="' . esc_url( $href ) . '"' : '' ) . '>';
 			$out .= '<div class="aod-cd-kpi__top">';
 			// $c[2] est un NOM D'ICÔNE du catalogue, plus un emoji (Phase 15). Le
 			// composant appelle lui-même AOD_CD_Icon : les appelants restent
@@ -938,7 +949,7 @@ class AOD_CD_Dashboard {
 			if ( isset( $c[4] ) && '' !== $c[4] ) {
 				$out .= $c[4];
 			}
-			$out .= '</div>';
+			$out .= '</' . $balis . '>';
 		}
 		$out .= '</div>';
 		return $out;

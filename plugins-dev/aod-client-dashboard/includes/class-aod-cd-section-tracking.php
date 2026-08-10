@@ -101,44 +101,7 @@ class AOD_CD_Section_Tracking {
 
 		$filtered = ( '' !== $f_car || '' !== $f_st || '' !== $range['from'] || '' !== $range['to'] || $confirmer_filter );
 
-		// Un colis « bloqué » = état non terminal + aucun événement depuis N jours.
-		$meta_query = array(
-			array(
-				'key'     => AOD_Carrier::META_TRACKING,
-				'value'   => '',
-				'compare' => '!=',
-			),
-		);
-		if ( '' !== $f_car ) {
-			$meta_query[] = array(
-				'key'   => AOD_Carrier::META_CARRIER,
-				'value' => $f_car,
-			);
-		}
-		if ( 'bloques' === $f_st ) {
-			$meta_query[] = array(
-				'key'     => AOD_Carrier::META_STATUS,
-				'value'   => AOD_Carrier::tracking_terminal_statuses(),
-				'compare' => 'NOT IN',
-			);
-			$meta_query[] = array(
-				'key'     => AOD_Carrier::META_STATUS_AT,
-				'value'   => time() - ( self::TRACK_BLOCKED_DAYS * DAY_IN_SECONDS ),
-				'compare' => '<',
-				'type'    => 'NUMERIC',
-			);
-		} elseif ( '' !== $f_st ) {
-			$meta_query[] = array(
-				'key'   => AOD_Carrier::META_STATUS,
-				'value' => $f_st,
-			);
-		}
-		if ( $confirmer_filter ) {
-			$meta_query[] = array(
-				'key'   => '_aod_assigned_confirmer',
-				'value' => $confirmer_filter,
-			);
-		}
+		$meta_query = $this->tracking_meta_query( $f_car, $f_st, $confirmer_filter );
 
 		// scoped_orders() : un confirmateur ne voit que les colis de ses produits
 		// affectés (parité avec la page Commandes).
@@ -169,6 +132,16 @@ class AOD_CD_Section_Tracking {
 			__( 'Évolution des colis expédiés, récupérée automatiquement depuis le compte du transporteur.', 'aod-client-dashboard' ),
 			$refresh
 		);
+
+		// ⚠️ PAS DE BANDEAU SUR UNE BOUTIQUE QUI N'A JAMAIS EXPÉDIÉ. Trois zéros
+		// posés au-dessus de « Aucun colis expédié pour le moment » disent la même
+		// chose que l'état vide, en trois fois — et c'est précisément l'écran d'un
+		// clone neuf, donc la première impression de la page. Un filtre qui ne rend
+		// rien, lui, GARDE son bandeau : les compteurs sont alors la sortie de
+		// secours (« 2 bloqués » reste cliquable quand la liste est vide).
+		if ( ! empty( $orders ) || $filtered ) {
+			$this->render_tracking_pulse( $base_url, $f_car, $f_st, $range, $confirmer_filter );
+		}
 
 		// La barre de filtres est TOUJOURS rendue — sinon un filtre sans résultat
 		// masquerait le moyen de l'annuler.
@@ -222,6 +195,98 @@ class AOD_CD_Section_Tracking {
 	}
 
 	/**
+	 * Le `meta_query` de la page Suivi — UN SEUL CORPS, deux appelants.
+	 *
+	 * 🚨 IL EST DEVENU UNE MÉTHODE LE JOUR OÙ IL A EU UN SECOND LECTEUR. Tant que
+	 * `render()` était seul à le construire, l'écrire sur place ne coûtait rien.
+	 * Le bandeau de compteurs pose la MÊME question à la base une fois par état :
+	 * recopié, il aurait suffi qu'un critère change ici pour que le nombre affiché
+	 * en tête cesse de décrire la liste qu'il surplombe — et rien ne l'aurait dit,
+	 * puisque les deux chiffres seraient restés plausibles.
+	 *
+	 * C'est exactement la garde que porte déjà `is_tracking_blocked()` quelques
+	 * lignes plus bas : elle ne peut pas partager ce code (elle interroge un objet,
+	 * pas SQL) et doit donc rester son jumeau à la main. Là où le partage EST
+	 * possible, on ne s'en prive pas.
+	 *
+	 * @param string $f_car            Transporteur filtré, `''` = tous.
+	 * @param string $f_st             État filtré, `''` = tous, `bloques` = immobiles.
+	 * @param int    $confirmer_filter ID du confirmateur filtré, `0` = tous.
+	 * @return array `meta_query` WooCommerce.
+	 */
+	protected function tracking_meta_query( $f_car, $f_st, $confirmer_filter ) {
+		// Un colis « bloqué » = état non terminal + aucun événement depuis N jours.
+		$meta_query = array(
+			array(
+				'key'     => AOD_Carrier::META_TRACKING,
+				'value'   => '',
+				'compare' => '!=',
+			),
+		);
+		if ( '' !== $f_car ) {
+			$meta_query[] = array(
+				'key'   => AOD_Carrier::META_CARRIER,
+				'value' => $f_car,
+			);
+		}
+		if ( 'bloques' === $f_st ) {
+			$meta_query[] = array(
+				'key'     => AOD_Carrier::META_STATUS,
+				'value'   => AOD_Carrier::tracking_terminal_statuses(),
+				'compare' => 'NOT IN',
+			);
+			$meta_query[] = array(
+				'key'     => AOD_Carrier::META_STATUS_AT,
+				'value'   => time() - ( self::TRACK_BLOCKED_DAYS * DAY_IN_SECONDS ),
+				'compare' => '<',
+				'type'    => 'NUMERIC',
+			);
+		} elseif ( '' !== $f_st ) {
+			$meta_query[] = array(
+				'key'   => AOD_Carrier::META_STATUS,
+				'value' => $f_st,
+			);
+		}
+		if ( $confirmer_filter ) {
+			$meta_query[] = array(
+				'key'   => '_aod_assigned_confirmer',
+				'value' => $confirmer_filter,
+			);
+		}
+		return $meta_query;
+	}
+
+	/**
+	 * Combien de colis dans cet état — DANS LE PÉRIMÈTRE ET LES FILTRES COURANTS.
+	 *
+	 * ⚠️ Le transporteur, la plage de dates et le confirmateur sont CONSERVÉS ;
+	 * seul l'état varie. Un bandeau qui compterait toute la boutique pendant que
+	 * la liste montre un seul transporteur afficherait deux vérités sur le même
+	 * écran — le défaut que la Phase 48 a mis deux passes à fermer sur l'Accueil.
+	 *
+	 * @param string $f_st             État compté (`''` = tous, `bloques` = immobiles).
+	 * @param string $f_car            Transporteur filtré.
+	 * @param array  $range            Plage de dates active.
+	 * @param int    $confirmer_filter Confirmateur filtré.
+	 * @return int
+	 */
+	protected function tracking_count( $f_st, $f_car, $range, $confirmer_filter ) {
+		$args = array(
+			'type'       => 'shop_order',
+			'limit'      => 1,
+			'paginate'   => true,
+			'return'     => 'ids',
+			'meta_query' => $this->tracking_meta_query( $f_car, $f_st, $confirmer_filter ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- corps unique partagé avec la liste ; clés indexées, gouverné par scoped_orders().
+		);
+		$date_created = AOD_CD_Dashboard::date_created_query_arg( $range['from'], $range['to'] );
+		if ( null !== $date_created ) {
+			$args['date_created'] = $date_created;
+		}
+		$res = AOD_CD_Section_Orders::instance()->scoped_orders( $args );
+		return isset( $res->total ) ? (int) $res->total : 0;
+	}
+
+	/**
 	 * Choix du filtre « État du colis » : les 8 états normalisés + « bloqués ».
 	 *
 	 * @return array<string,string> clé => libellé traduit.
@@ -244,6 +309,93 @@ class AOD_CD_Section_Tracking {
 		/* translators: %d : nombre de jours sans nouvel événement de suivi */
 		$out['bloques'] = sprintf( __( 'Bloqués (plus de %d jours)', 'aod-client-dashboard' ), self::TRACK_BLOCKED_DAYS );
 		return $out;
+	}
+
+	/**
+	 * ⏱️ LE POULS DES COLIS — trois chiffres au-dessus de la liste.
+	 *
+	 * 🚨 CE QUE ÇA CORRIGE. Le marqueur « Bloqué » posé en 43.x désigne un colis
+	 * immobile DANS SA LIGNE : encore faut-il tomber dessus. La liste est paginée
+	 * par 20 et triée par date — un colis parti il y a trois semaines est en page
+	 * 2 ou 3, c'est-à-dire nulle part. Le seul fait de cette page sur lequel on
+	 * peut encore agir était donc lisible uniquement par celui qui le cherchait
+	 * déjà. C'est le MÊME défaut que le marqueur croyait fermer, d'un cran plus
+	 * haut : *rendre une information visible dans la ligne ne la rend pas visible
+	 * sur la page.*
+	 *
+	 * 🔗 Chaque tuile est un LIEN vers le filtre qui isole exactement ce qu'elle
+	 * compte, et le compte passe par `tracking_meta_query()` — le corps que la
+	 * liste emploie. Le nombre et la liste qu'il ouvre ne peuvent pas diverger :
+	 * ils sont la même requête, à la pagination près.
+	 *
+	 * ⚠️ TROIS TUILES, PAS NEUF. Le menu déroulant liste déjà les huit états ; les
+	 * recopier ici en aurait fait un second menu, plus gros et moins complet. On
+	 * garde les trois questions qu'un gérant se pose devant des colis partis :
+	 * combien sont en route, combien n'avancent plus, combien sont arrivés.
+	 *
+	 * ⚠️ « Bloqués » reste rendu à ZÉRO, en ton neutre. Une tuile qui disparaît
+	 * quand tout va bien laisse le doute (« a-t-elle disparu, ou n'ai-je pas
+	 * regardé ? ») ; « 0 » est une réponse, l'absence n'en est pas une.
+	 *
+	 * @param string $base_url         URL de la section.
+	 * @param string $f_car            Transporteur filtré.
+	 * @param string $f_st             État filtré (surligne la tuile active).
+	 * @param array  $range            Plage de dates active.
+	 * @param int    $confirmer_filter Confirmateur filtré.
+	 */
+	protected function render_tracking_pulse( $base_url, $f_car, $f_st, $range, $confirmer_filter ) {
+		// Les filtres AUTRES que l'état sont reconduits dans chaque lien : cliquer
+		// « Bloqués » depuis « Yalidine » doit donner les bloqués de Yalidine, pas
+		// ceux de la boutique entière.
+		$porte = array_filter( array(
+			'transporteur' => $f_car,
+			'date_from'    => $range['from'],
+			'date_to'      => $range['to'],
+			'confirmateur' => $confirmer_filter,
+		) );
+		$lien  = function ( $etat ) use ( $base_url, $porte ) {
+			$q = $porte;
+			if ( '' !== $etat ) {
+				$q['etat'] = $etat;
+			}
+			return $q ? add_query_arg( $q, $base_url ) : $base_url;
+		};
+
+		$n_tous    = $this->tracking_count( '', $f_car, $range, $confirmer_filter );
+		$n_bloques = $this->tracking_count( 'bloques', $f_car, $range, $confirmer_filter );
+		$n_livres  = $this->tracking_count( AOD_Carrier::ST_DELIVERED, $f_car, $range, $confirmer_filter );
+
+		echo AOD_CD_Dashboard::kpis( // phpcs:ignore WordPress.Security.EscapeOutput -- composant : libellés échappés, valeurs entières, URLs esc_url().
+			array(
+				array(
+					__( 'Colis suivis', 'aod-client-dashboard' ),
+					(string) $n_tous,
+					'shipping',
+					'accent',
+					'',
+					'' === $f_st ? 'actif' : '',
+					$lien( '' ),
+				),
+				array(
+					__( 'Bloqués', 'aod-client-dashboard' ),
+					(string) $n_bloques,
+					'warning',
+					$n_bloques ? 'amber' : 'slate',
+					'',
+					'bloques' === $f_st ? 'actif' : '',
+					$lien( 'bloques' ),
+				),
+				array(
+					__( 'Livrés', 'aod-client-dashboard' ),
+					(string) $n_livres,
+					'check',
+					'green',
+					'',
+					AOD_Carrier::ST_DELIVERED === $f_st ? 'actif' : '',
+					$lien( AOD_Carrier::ST_DELIVERED ),
+				),
+			)
+		);
 	}
 
 	/**
