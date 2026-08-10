@@ -91,6 +91,10 @@ function aod_test_nonce_exemptions() {
 			'famille'  => 'affichage',
 			'pourquoi' => 'Filtres de la liste de suivi (ex-AOD_CD_Dashboard::section_tracking, extraite en 30.5). Lecture seule, écran déjà authentifié.',
 		),
+		'AOD_CD_Section_Finance::produits_mois' => array(
+			'famille'  => 'affichage',
+			'pourquoi' => 'Mois affiché par « Rentabilité par produit » ($_GET["mois"]). Lecture seule, écran déjà authentifié ; la valeur est validée contre /^\d{4}-(0[1-9]|1[0-2])$/ et retombe sur le mois courant — un POST forgé ne peut au pire que changer la période REGARDÉE.',
+		),
 		'AOD_CD_Section_Finance::render'    => array(
 			'famille'  => 'affichage',
 			'pourquoi' => 'Choix de l’outil financier ouvert ($_GET["outil"]). Lecture seule, écran déjà authentifié ; une clé inconnue retombe sur la page de choix plutôt que d’écrire quoi que ce soit.',

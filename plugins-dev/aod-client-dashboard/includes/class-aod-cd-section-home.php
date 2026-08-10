@@ -1457,10 +1457,22 @@ class AOD_CD_Section_Home {
 	 * propre, retombe sur le coût du produit parent. Retourne null quand aucun
 	 * prix d'achat n'est renseigné (la ligne est alors exclue du calcul de marge).
 	 *
+	 * 🔓 PASSÉE `public` LE 2026-08-10, PARCE QU'ELLE A EU UN SECOND LECTEUR.
+	 * `AOD_CD_Section_Finance` calcule la rentabilité par produit et a besoin
+	 * EXACTEMENT de cette règle — meta du produit, repli sur le parent pour une
+	 * variation, `null` quand rien n'est renseigné. La recopier là-bas aurait
+	 * donné deux définitions du prix d'achat : le jour où l'une gagnerait le
+	 * repli sur le parent et pas l'autre, l'Accueil et Finance afficheraient deux
+	 * marges différentes pour le même produit, toutes deux plausibles.
+	 * ⚠️ Elle ne lit RIEN d'autre qu'un meta produit et ne mute rien : l'ouvrir
+	 * n'expose aucun privilège. Ce n'est pas le cas de tous les helpers de cette
+	 * classe — cf. le contrat de `test-nonce-contract.php` sur ceux qui lisent le
+	 * POST, qui doivent, eux, rester privés.
+	 *
 	 * @param WC_Order_Item_Product $item Ligne de commande.
 	 * @return float|null Coût unitaire, ou null si inconnu.
 	 */
-	protected function item_cost_price( $item ) {
+	public function item_cost_price( $item ) {
 		$product = $item->get_product();
 		if ( ! $product ) {
 			return null;

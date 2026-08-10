@@ -111,6 +111,11 @@ $aod_cd_cleanup = static function () use ( $aod_cd_role, $aod_cd_confirmer, $aod
 	// que rien ne le signale (c'est exactement ce que garde R1 de
 	// `test-uninstall.php`).
 	delete_option( 'aod_cd_finance_calculs' );
+	// Les deux tables de « Rentabilité par produit » : les taux globaux et les
+	// budgets publicitaires par mois. Même raison que ci-dessus — de la donnée
+	// saisie, mais qu'aucun écran ne saura plus lire une fois le plugin parti.
+	delete_option( 'aod_cd_finance_taux' );
+	delete_option( 'aod_cd_finance_pub' );
 	// Motif « aod_cd_% » et non « aod_cd_home_% » : la section Stock a repris le
 	// même mécanisme de cache avec SON préfixe (`aod_cd_stock_`, étape 25.1) et
 	// échappait au balayage. Un motif nommant une seule section dérive dès la

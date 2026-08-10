@@ -4528,6 +4528,30 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 .aod-cd-findet__row dd{margin:0 0 0 auto;font-size:var(--cd-fs-sm);font-weight:700;color:var(--cd-ink);font-variant-numeric:tabular-nums}
 [dir="rtl"] .aod-cd-findet__row dd{margin:0 auto 0 0}
 
+/* ── Rentabilite par produit ───────────────────────────────────────────
+   Presque rien : le tableau est `.aod-cd-table`, les champs sont ceux du
+   calculateur. Un composant de plus serait une grammaire de plus. */
+/* 🔴 LE TABLEAU DOIT TRAVERSER LA GRILLE DU FORMULAIRE, et il ne le faisait
+   pas. `.aod-cd-settings-form` est une grille à deux colonnes ; le tableau y
+   tombait dans une moitié, et `.aod-cd-tablewrap` faisait le reste — il
+   DÉFILAIT, si bien que « Publicité », « Bénéfice » et « Marge » étaient hors
+   champ. Les trois colonnes pour lesquelles l'écran existe, invisibles sans
+   que rien ne casse : le tableau avait l'air complet.
+   ⚠️ Même correctif que `.aod-cd-settings-form > .aod-cd-pxstage` sur la page
+   Pixels — un enfant qui n'est pas un champ traverse la grille. */
+.aod-cd-finprod__form > *{grid-column:1 / -1;min-width:0}
+/* Un sélecteur de mois n'a pas besoin de toute la barre : il en prenait la
+   largeur entière parce que les filtres partagent l'espace à parts égales. */
+.aod-cd-finprod .aod-cd-filters .aod-cd-field{flex:0 1 220px}
+.aod-cd-finprod__t td:first-child{min-width:180px}
+.aod-cd-finprod__pub input{max-width:120px;text-align:end}
+.aod-cd-finprod__net{font-weight:800;font-variant-numeric:tabular-nums}
+.aod-cd-finprod__net.is-ok{color:var(--cd-ok)}
+.aod-cd-finprod__net.is-bad{color:var(--cd-bad)}
+.aod-cd-finprod__vide{color:var(--cd-muted)}
+.aod-cd-finprod__tot td{border-top:2px solid var(--cd-line);font-weight:700;background:var(--cd-bg)}
+.aod-cd-finprod__notes{margin-top:var(--cd-sp-5)}
+
 /* ── L'historique ────────────────────────────────────────────────────── */
 .aod-cd-finhist{margin-top:var(--cd-sp-6)}
 .aod-cd-finhist__t{margin:0 0 var(--cd-sp-4);font-size:var(--cd-fs-lg);font-weight:800;color:var(--cd-ink)}

@@ -4203,3 +4203,100 @@ msgstr "نسبك"
 #: includes/class-aod-cd-section-finance.php
 msgid "À venir"
 msgstr "قريبًا"
+
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Afficher"
+msgstr "عرض"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Aucune commande encaissée sur ce mois."
+msgstr "لا توجد طلبيات محصَّلة في هذا الشهر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Budget publicitaire — %s"
+msgstr "ميزانية الإشهار — %s"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Bénéfice"
+msgstr "الربح"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Bénéfice = encaissé − coût produit − livraison − frais par commande − publicité. Les frais de livraison réels de chaque commande sont répartis entre ses produits au prorata de leur montant."
+msgstr "الربح = المحصَّل − تكلفة المنتج − التوصيل − رسوم الطلبية − الإشهار. رسوم التوصيل الفعلية لكل طلبية تُوزَّع على منتجاتها بنسبة مبلغ كل منها."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Calculé sur les commandes réellement encaissées du mois. Renseignez le budget publicitaire de chaque produit pour obtenir son bénéfice."
+msgstr "محسوب على الطلبيات المحصَّلة فعليًا خلال الشهر. أدخل ميزانية الإشهار لكل منتج للحصول على ربحه."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce mois dépasse %d commandes encaissées : seules les premières sont comptées. Les chiffres ci-dessous sont donc incomplets."
+msgstr "هذا الشهر يتجاوز %d طلبية محصَّلة: لم تُحتسب إلا الأولى منها. الأرقام أدناه غير كاملة إذن."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coût produit"
+msgstr "تكلفة المنتج"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Encaissé"
+msgstr "المحصَّل"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Enregistrer et recalculer"
+msgstr "حفظ وإعادة الحساب"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Enregistré. Les bénéfices sont recalculés."
+msgstr "تم الحفظ. أُعيد حساب الأرباح."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Frais de confirmation (par commande)"
+msgstr "رسوم التأكيد (لكل طلبية)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Frais d’emballage (par pièce)"
+msgstr "رسوم التغليف (لكل قطعة)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Frais par commande"
+msgstr "رسوم الطلبية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Les mêmes pour tous les produits. Ils sont retranchés du bénéfice de chaque ligne, au nombre de commandes et de pièces."
+msgstr "هي نفسها لكل المنتجات. تُطرح من ربح كل سطر، حسب عدد الطلبيات والقطع."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Mois"
+msgstr "الشهر"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Mois invalide."
+msgstr "شهر غير صالح."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Prix d’achat non renseigné pour ce produit."
+msgstr "سعر الشراء غير مُدخل لهذا المنتج."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Quels produits vous rapportent vraiment, une fois leur coût, leur livraison et leur publicité déduits."
+msgstr "أي المنتجات تدرّ عليك فعلًا، بعد طرح تكلفتها وتوصيلها وإشهارها."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Rentabilité par produit"
+msgstr "ربحية كل منتج"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Un « — » signifie qu’il manque une donnée : le prix d’achat du produit, ou son budget publicitaire du mois. Le bénéfice n’est jamais estimé à partir d’un coût inconnu."
+msgstr "علامة « — » تعني أن معطى ناقص: سعر شراء المنتج، أو ميزانية إشهاره لهذا الشهر. الربح لا يُقدَّر أبدًا انطلاقًا من تكلفة مجهولة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Une commande compte ici lorsqu’elle est terminée, ou que son colis est marqué livré par le transporteur."
+msgstr "تُحتسب الطلبية هنا عندما تكون منتهية، أو عندما يُوسَم طردها كمُسلَّم من طرف شركة التوصيل."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Vos coûts par commande"
+msgstr "تكاليفك لكل طلبية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "« Encaissé » = commandes terminées, ou dont le colis est marqué livré (%d ce mois-ci). Ce n’est pas le « Chiffre d’affaires » de l’Accueil, qui compte aussi les commandes en cours : ici on ne parle que d’argent réellement rentré."
+msgstr "« المحصَّل » = الطلبيات المنتهية، أو التي وُسم طردها كمُسلَّم (%d هذا الشهر). ليس هو « رقم الأعمال » في الصفحة الرئيسية، الذي يحتسب أيضًا الطلبيات الجارية: هنا لا نتحدّث إلا عن مال دخل فعلًا."

@@ -128,7 +128,13 @@ function aod_test_pcs_census() {
 			// libre de cette section est le NOM d'un calcul enregistré : il passe par
 			// `sanitize_text_field()` à l'écriture et par `esc_html()` à l'affichage —
 			// il n'y a pas de dérogation sur ce chemin, et c'est délibéré.
-			'n'        => 176,
+			// 176 → 180 le 2026-08-10 (« Rentabilité par produit »). ⬆️ QUATRE de plus,
+			// même motif que les neuf précédentes : `page_head()`, `empty_state()`,
+			// `AOD_CD_Icon::svg()` (catalogue fermé) et `wc_price()`, qui échappent
+			// eux-mêmes leurs entrées. ⚠️ Les NOMS DE PRODUITS de cet écran, eux,
+			// passent par `esc_html()` sans dérogation — c'est le seul texte de la
+			// page qui vienne d'une saisie.
+			'n'        => 180,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
@@ -298,18 +304,27 @@ function aod_test_pcs_census() {
 				. 'sans fermer quoi que ce soit.',
 		),
 		'WordPress.Security.ValidatedSanitizedInput' => array(
-			'n'        => 9,
+			// 9 → 10 le 2026-08-10 : la boucle sur `$_POST['pub']` d'`ajax_finance_produits()`.
+			// Le sniff exige une sanitisation AVANT la boucle ; ici elle est faite
+			// DANS la boucle, et plus strictement que ce qu'il demanderait — la clé est
+			// castée en entier et rejetée si ≤ 0, la valeur passe par un flottant borné
+			// aux nombres finis positifs. Aucune des deux n'est jamais rendue à l'écran
+			// ni concaténée dans du SQL : elles finissent en clés/valeurs d'une option.
+			'n'        => 10,
 			'securite' => true,
 			'quoi'     => 'Entrée non validée/sanitisée au sens du sniff — sanitisée autrement sur ces lignes.',
 		),
 		'WordPress.DB'                            => array(
+			// 29 → 30 le 2026-08-10 : le `meta_query` qui isole les colis LIVRÉS dans
+			// `produits_data()`. Une clé, une valeur, sur une méta indexée, une fois par
+			// affichage d'écran — et le résultat est plafonné (MAX_COMMANDES).
 			// 28 → 29 le 2026-08-10 : `tracking_count()` (page Suivi) compte les colis
 			// d'un état. Le `meta_query` n'est PAS recopié — c'est le corps que la
 			// liste emploie (`tracking_meta_query()`), justement pour que le nombre
 			// affiché et la liste qu'il ouvre ne puissent pas diverger. Mesuré :
 			// médiane 2142 ms avec les trois comptages, contre 2964 ms sur la page
 			// Commandes qui n'en fait aucun — le coût est sous le bruit de ce montage.
-			'n'        => 29,
+			'n'        => 30,
 			'securite' => false,
 			'quoi'     => 'Requêtes directes / meta_query lentes. Performance, pas sécurité — sauf PreparedSQL, surveillé à part. '
 				. 'La 13ᵉ (étape 25.1, aod-client-dashboard/uninstall.php) énumère les porteurs d’une capability : '
