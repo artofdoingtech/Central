@@ -257,13 +257,24 @@ class AOD_CD_Section_Marketing {
 			<div class="aod-cd-pxcards">
 				<?php foreach ( $platforms as $p ) :
 					$on = '' !== trim( (string) $s[ $p['fields'][0][0] ] ); ?>
-					<details class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--<?php echo esc_attr( $p['brand'] ); ?><?php echo $on ? ' is-on' : ''; ?>"<?php echo $on ? ' open' : ''; ?>>
-						<summary class="aod-cd-pxcard__head">
+					<div class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--<?php echo esc_attr( $p['brand'] ); ?><?php echo $on ? ' is-on' : ''; ?>">
+						<button type="button" class="aod-cd-pxcard__head" aria-haspopup="dialog">
 							<span class="aod-cd-pxcard__ic t-<?php echo esc_attr( $p['tone'] ); ?>" aria-hidden="true"><?php echo AOD_CD_Icon::svg( $p['ic'], array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé. ?></span>
 							<span class="aod-cd-pxcard__name"><?php echo esc_html( $p['name'] ); ?></span>
 							<span class="aod-cd-px-on"<?php echo $on ? '' : ' hidden'; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Actif', 'aod-client-dashboard' ), 'ok' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 							<span class="aod-cd-px-off"<?php echo $on ? ' hidden' : ''; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Inactif', 'aod-client-dashboard' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-						</summary>
+						</button>
+						<?php
+						// L'en-tete de la fenetre reprend l'ecusson et le nom de la ligne
+						// cliquee : les sept regies ont le meme champ « ID du pixel », et
+						// une fenetre sans titre les rendrait a nouveau indiscernables.
+						?>
+						<dialog class="aod-cd-pxdlg">
+						<div class="aod-cd-pxdlg__head">
+							<span class="aod-cd-pxcard__ic t-<?php echo esc_attr( $p['tone'] ); ?>" aria-hidden="true"><?php echo AOD_CD_Icon::svg( $p['ic'], array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue ferme. ?></span>
+							<span class="aod-cd-pxdlg__name"><?php echo esc_html( $p['name'] ); ?></span>
+							<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ico aod-cd-pxdlg__x aod-cd-pxdlg-close" aria-label="<?php esc_attr_e( 'Fermer', 'aod-client-dashboard' ); ?>"><?php echo AOD_CD_Icon::svg( 'close', array( 'size' => 15 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue ferme. ?></button>
+						</div>
 						<div class="aod-cd-pxcard__body">
 							<?php foreach ( $p['fields'] as $i => $f ) :
 								list( $key, $label, $ph, $desc ) = $f; ?>
@@ -273,8 +284,12 @@ class AOD_CD_Section_Marketing {
 									<span class="aod-cd-help"><?php echo esc_html( $desc ); ?></span>
 								</label>
 							<?php endforeach; ?>
+							<div class="aod-cd-pxdlg__foot">
+								<button type="button" class="aod-cd-btn aod-cd-pxdlg-close"><?php esc_html_e( 'Terminé', 'aod-client-dashboard' ); ?></button>
+							</div>
 						</div>
-					</details>
+						</dialog>
+					</div>
 				<?php endforeach; ?>
 			</div>
 			</section>
@@ -289,13 +304,19 @@ class AOD_CD_Section_Marketing {
 			<div class="aod-cd-pxcards">
 				<?php foreach ( $capis as $c ) :
 					$capi_on = '' !== trim( (string) $s[ $c['key'] ] ); ?>
-					<details class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--<?php echo esc_attr( $c['brand'] ); ?><?php echo $capi_on ? ' is-on' : ''; ?>"<?php echo $capi_on ? ' open' : ''; ?>>
-						<summary class="aod-cd-pxcard__head">
+					<div class="aod-cd-pxcard aod-cd-pxcard--brand aod-cd-pxcard--<?php echo esc_attr( $c['brand'] ); ?><?php echo $capi_on ? ' is-on' : ''; ?>">
+						<button type="button" class="aod-cd-pxcard__head" aria-haspopup="dialog">
 							<span class="aod-cd-pxcard__ic t-<?php echo esc_attr( $c['tone'] ); ?>" aria-hidden="true"><?php echo AOD_CD_Icon::svg( $c['ic'], array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé. ?></span>
 							<span class="aod-cd-pxcard__name"><?php echo esc_html( $c['name'] ); ?></span>
 							<span class="aod-cd-px-on"<?php echo $capi_on ? '' : ' hidden'; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Actif', 'aod-client-dashboard' ), 'ok' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 							<span class="aod-cd-px-off"<?php echo $capi_on ? ' hidden' : ''; ?>><?php echo AOD_CD_Dashboard::pill( __( 'Inactif', 'aod-client-dashboard' ), 'neutral' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-						</summary>
+						</button>
+						<dialog class="aod-cd-pxdlg">
+						<div class="aod-cd-pxdlg__head">
+							<span class="aod-cd-pxcard__ic t-<?php echo esc_attr( $c['tone'] ); ?>" aria-hidden="true"><?php echo AOD_CD_Icon::svg( $c['ic'], array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue ferme. ?></span>
+							<span class="aod-cd-pxdlg__name"><?php echo esc_html( $c['name'] ); ?></span>
+							<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ico aod-cd-pxdlg__x aod-cd-pxdlg-close" aria-label="<?php esc_attr_e( 'Fermer', 'aod-client-dashboard' ); ?>"><?php echo AOD_CD_Icon::svg( 'close', array( 'size' => 15 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue ferme. ?></button>
+						</div>
 						<div class="aod-cd-pxcard__body">
 							<label class="aod-cd-field aod-cd-field--secret">
 								<span class="aod-cd-label"><?php echo AOD_CD_Icon::svg( 'locked', array( 'size' => 13 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé. ?><?php esc_html_e( 'Jeton d’accès (secret)', 'aod-client-dashboard' ); ?></span>
@@ -333,8 +354,12 @@ class AOD_CD_Section_Marketing {
 								<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-capi-test" data-platform="<?php echo esc_attr( $c['brand'] ); ?>"><?php esc_html_e( 'Tester la connexion', 'aod-client-dashboard' ); ?></button>
 								<span class="aod-cd-capi-test-msg" aria-live="polite"></span>
 							</div>
+							<div class="aod-cd-pxdlg__foot">
+								<button type="button" class="aod-cd-btn aod-cd-pxdlg-close"><?php esc_html_e( 'Terminé', 'aod-client-dashboard' ); ?></button>
+							</div>
 						</div>
-					</details>
+						</dialog>
+					</div>
 				<?php endforeach; ?>
 			</div>
 			<p class="aod-cd-pxstage__foot"><?php esc_html_e( 'Le test utilise le jeton enregistré : enregistrez d’abord si vous venez de le coller.', 'aod-client-dashboard' ); ?></p>

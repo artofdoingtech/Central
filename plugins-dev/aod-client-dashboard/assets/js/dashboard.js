@@ -752,12 +752,12 @@
 	// register() ; rien ne s'exécute à l'enregistrement, tout au DOMContentLoaded,
 	// dans CET ordre — jamais dans l'ordre des balises <script>.
 	var ORDER = [
-		'bindNavToggle', 'bindStatus', 'bindProducts', 'bindCategories',
+		'bindNavToggle', 'bindStatus', 'bindQuickEdit', 'bindProducts', 'bindCategories',
 		'bindCatDropdown', 'bindPromoRange', 'bindGallery', 'bindColorPalette',
 		'bindCharts', 'bindCounters', 'bindSelects', 'bindDatePickers', 'bindAccordionForms', 'bindSettingsForms',
 		'bindShippingFree', 'bindCarrierRows', 'bindCarrierTest',
 		'bindShippingSearch', 'bindImportFees', 'bindWhatsappTest',
-		'bindCapiTest', 'bindPixelCards', 'bindOrderDetail',
+		'bindPixelDialogs', 'bindCapiTest', 'bindPixelCards', 'bindOrderDetail',
 		'bindOrderBulkDelete', 'bindShipSend', 'bindResetShop', 'bindTracking', 'bindTeam',
 		'bindStock', 'bindLanding', 'bindAbandonedConvert',
 		'bindAbandonedBulkDelete', 'bindLeadAssign'

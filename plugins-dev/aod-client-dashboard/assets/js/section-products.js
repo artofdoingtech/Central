@@ -1161,6 +1161,107 @@
 		} );
 	}
 
+	// ÉDITION RAPIDE — la modale de la liste des produits.
+	//
+	// 🔒 ELLE NE PARLE PAS À `aod_cd_save_product`, ET C'EST VITAL. Ce handler-là
+	// est un formulaire COMPLET : sans `description` au POST il vide la
+	// description, et il réécrit les catégories dans tous les cas. Poster quatre
+	// champs dessus mutilerait le produit en silence. La modale a donc son propre
+	// point d'entrée, `aod_cd_quick_product`, qui ne sait toucher que ce qu'elle
+	// montre.
+	//
+	// Bâtie sur `openOverlayModal` : ni le piège de focus, ni Échap, ni le fond ne
+	// sont réécrits ici.
+	//
+	// ⓘ Commentaire en `//` et non en bloc `/* */`, à dessein : le cliquet
+	// `test-icones.php` ne retire que les commentaires de LIGNE avant de chercher
+	// des emojis de chrome. Un 🔒 dans un bloc y est donc lu comme du balisage —
+	// faux positif, mais du bon côté (il ne laisse rien passer).
+	function bindQuickEdit() {
+		var tpl = document.getElementById( 'aod-cd-quick-tpl' );
+		if ( ! tpl ) { return; }
+
+		document.querySelectorAll( '.aod-cd-quick-edit' ).forEach( function ( btn ) {
+			btn.addEventListener( 'click', function () {
+				var row = btn.closest( 'tr' );
+				if ( ! row ) { return; }
+
+				var modal = openOverlayModal( {
+					title: row.dataset.nameFr || '',
+					bodyHtml: tpl.innerHTML,
+					initialFocus: 'input[name="name_fr"]'
+				} );
+
+				var form = modal.box.querySelector( '.aod-cd-quick' );
+				var msg  = form.querySelector( '.aod-cd-quick__msg' );
+				var lien = form.querySelector( '.aod-cd-quick__link' );
+				var val  = function ( n ) { return form.querySelector( '[name="' + n + '"]' ); };
+
+				// Le gabarit arrive VIDE : c'est la ligne cliquée qui le remplit.
+				val( 'name_fr' ).value       = row.dataset.nameFr || '';
+				val( 'name_ar' ).value       = row.dataset.nameAr || '';
+				val( 'regular_price' ).value = row.dataset.regular || '';
+				val( 'sale_price' ).value    = row.dataset.sale || '';
+				val( 'status' ).value        = ( 'draft' === row.dataset.status ) ? 'draft' : 'publish';
+				if ( lien ) { lien.href = row.dataset.edit || '#'; }
+
+				form.addEventListener( 'submit', function ( e ) {
+					e.preventDefault();
+					var envoi = form.querySelector( '[type="submit"]' );
+					envoi.disabled = true;
+					msg.textContent = '';
+					msg.className = 'aod-cd-quick__msg';
+
+					var body = new URLSearchParams();
+					body.append( 'action', 'aod_cd_quick_product' );
+					body.append( 'nonce', CD.nonce );
+					body.append( 'product_id', row.dataset.product );
+					[ 'name_fr', 'name_ar', 'regular_price', 'sale_price', 'status' ].forEach( function ( n ) {
+						body.append( n, val( n ).value );
+					} );
+
+					fetch( CD.ajaxUrl, { method: 'POST', credentials: 'same-origin', body: body } )
+						.then( function ( r ) { return r.json(); } )
+						.then( function ( res ) {
+							envoi.disabled = false;
+							var m = ( res && res.data && res.data.message ) || '';
+							if ( ! res || ! res.success ) {
+								// Le refus reste DANS la modale : un toast disparaît, or
+								// le message dit ce qu'il faut corriger (prix promo
+								// supérieur au prix, nom vide).
+								msg.textContent = m || netErr;
+								msg.className = 'aod-cd-quick__msg is-bad';
+								return;
+							}
+							// La ligne est repeinte avec ce que le SERVEUR a écrit, pas
+							// avec ce qu'on croit avoir envoyé.
+							var d = res.data;
+							var nom = row.querySelector( '.aod-cd-prod__name' );
+							if ( nom && d.name ) { nom.textContent = d.name; }
+							var cells = row.querySelectorAll( 'td' );
+							if ( cells[ 1 ] && d.price ) { cells[ 1 ].innerHTML = d.price; }
+							if ( cells[ 3 ] && d.statut ) { cells[ 3 ].innerHTML = d.statut; }
+							// Les attributs suivent, sinon rouvrir la modale
+							// réafficherait les ANCIENNES valeurs.
+							row.dataset.nameFr  = val( 'name_fr' ).value;
+							row.dataset.nameAr  = val( 'name_ar' ).value;
+							row.dataset.regular = val( 'regular_price' ).value;
+							row.dataset.sale    = val( 'sale_price' ).value;
+							row.dataset.status  = val( 'status' ).value;
+							modal.close();
+							toast( m );
+						} )
+						.catch( function () {
+							envoi.disabled = false;
+							msg.textContent = netErr;
+							msg.className = 'aod-cd-quick__msg is-bad';
+						} );
+				} );
+			} );
+		} );
+	}
+
+	core.register( 'bindQuickEdit', bindQuickEdit );
 	core.register( 'bindProducts', bindProducts );
 	core.register( 'bindCategories', bindCategories );
 	core.register( 'bindCatDropdown', bindCatDropdown );

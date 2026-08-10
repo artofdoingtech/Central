@@ -64,6 +64,57 @@
 		} );
 	}
 
+	// Chaque régie ouvre sa PETITE FENÊTRE (2026-08-10).
+	//
+	// 🔒 `<dialog>` NATIF, ET PLACÉ DANS LE FORMULAIRE. C'est le point qui décide
+	// de tout : les champs ne quittent jamais leur `<form>`, donc « Enregistrer
+	// les pixels » continue de les envoyer. Une modale construite dans
+	// `document.body` — comme celle de l'édition rapide — aurait sorti les champs
+	// du formulaire, et `new FormData( form )` ne les aurait plus vus. Le réglage
+	// se serait perdu en silence, exactement comme la soumission de WhatsApp la
+	// veille.
+	//
+	// Le navigateur fournit le reste : fond, plan supérieur (donc aucun souci de
+	// `overflow` ou de `transform` d'un ancêtre), piège de focus et Échap. Rien de
+	// tout cela n'est réécrit ici.
+	//
+	// ⓘ Le bouton « Tester la connexion » vit DANS le dialogue, mais le dialogue
+	// vit dans la carte : `btn.closest( '.aod-cd-pxcard' )` de bindCapiTest()
+	// trouve donc toujours la bonne carte, et le verdict ne peut pas s'afficher
+	// sur la régie du voisin.
+	function bindPixelDialogs() {
+		document.querySelectorAll( '.aod-cd-pxcard' ).forEach( function ( card ) {
+			var head = card.querySelector( ':scope > .aod-cd-pxcard__head' );
+			var dlg  = card.querySelector( ':scope > .aod-cd-pxdlg' );
+			if ( ! head || ! dlg || ! dlg.showModal ) { return; }
+
+			head.addEventListener( 'click', function () {
+				dlg.showModal();
+				// Le premier champ prend la main : on ouvre cette fenêtre POUR
+				// saisir, pas pour lire.
+				var premier = dlg.querySelector( 'input:not([type=checkbox]), select, textarea' );
+				if ( premier ) { premier.focus(); }
+			} );
+
+			dlg.querySelectorAll( '.aod-cd-pxdlg-close' ).forEach( function ( b ) {
+				b.addEventListener( 'click', function () { dlg.close(); } );
+			} );
+
+			// Clic sur le FOND. Un `<dialog>` occupe toute la fenêtre : le fond est
+			// le dialogue lui-même, hors de son panneau. On compare donc le point
+			// cliqué à la boîte du panneau plutôt que de se fier à la cible, qui
+			// serait le dialogue dans les deux cas.
+			dlg.addEventListener( 'click', function ( e ) {
+				var b = dlg.querySelector( '.aod-cd-pxcard__body' );
+				if ( ! b ) { return; }
+				var r = b.getBoundingClientRect();
+				var dedans = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+				if ( ! dedans ) { dlg.close(); }
+			} );
+		} );
+	}
+
+	core.register( 'bindPixelDialogs', bindPixelDialogs );
 	core.register( 'bindCapiTest', bindCapiTest );
 	core.register( 'bindPixelCards', bindPixelCards );
 }( window.aodCdCore ) );

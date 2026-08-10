@@ -5211,38 +5211,47 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* Même correctif que `.aod-cd-panel__head` (cf. sa note) : un token de TRAIT ne sert
    pas de surface. Les deux en-têtes sont le même objet à deux endroits ; ne corriger
    que celui qu'on regardait aurait recréé la divergence à l'identique. */
-.aod-cd-pxcard__head{
+/* 🔗 UN SEUL CORPS POUR LES DEUX EN-TÊTES — celui de la ligne et celui de la
+   fenêtre qu'elle ouvre. Ils doivent être identiques au pixel : c'est ce qui
+   fait qu'on reconnaît, dans la fenêtre, la ligne qu'on vient de cliquer.
+   Écrits deux fois ils auraient divergé — c'est le mode de dérive que la
+   Phase 46 a passé huit étapes à fermer, et il a suffi d'une copie de
+   `padding:14px 16px` pour que le cliquet des littéraux le signale. */
+.aod-cd-pxcard__head,
+.aod-cd-pxdlg__head{
 	display:flex;align-items:center;gap:10px;
 	padding:14px 16px;border-bottom:1px solid var(--cd-line);background:var(--cd-bg);
 }
 
-/* ---- La carte se REPLIE (2026-08-09) ------------------------------------
-   Huit formulaires ouverts en permanence pour un ou deux qu'un gérant remplit :
-   2 235 px sur bureau, 3 747 px sur mobile, à balayer pour trouver la régie qu'on
-   vient configurer. Chaque carte est désormais un `<details>` et son en-tête le
-   `<summary>` — on clique la régie, elle s'ouvre.
+/* ---- Chaque régie ouvre sa PETITE FENÊTRE (2026-08-10) ------------------
+   L'étape du 2026-08-09 avait replié les cartes en accordéon : 2 235 px → 1 241.
+   Le repli était le bon diagnostic, l'accordéon la réponse perfectible — une
+   carte dépliée POUSSE ses voisines vers le bas, donc la liste saute sous la main
+   au moment précis où l'on vient saisir. Une régie n'a qu'un à trois champs :
+   elle tient dans une fenêtre, et la page derrière ne bouge plus.
 
-   🔒 `<details>` NATIF, ET PAS DU JS. Trois raisons, dans cet ordre : les champs
-   d'un panneau fermé restent dans le DOM, donc `Enregistrer les pixels` continue
-   d'envoyer TOUT le formulaire (une carte repliée n'efface rien) ; le clavier et
-   les lecteurs d'écran connaissent déjà l'élément, sans un attribut à tenir à
-   jour ; et c'est l'accordéon que Livraison emploie (`.aod-cd-acc`) — en inventer
-   un second, c'est se garantir qu'ils divergeront.
+   🔒 `<dialog>` NATIF, ET IL VIT DANS LE FORMULAIRE. C'est la décision qui porte
+   tout le reste : les champs ne quittent jamais leur `<form>`, donc
+   `new FormData( form )` les voit encore et « Enregistrer les pixels » les envoie.
+   Une modale bâtie dans `document.body` les en aurait sortis, et le réglage se
+   serait perdu SANS ERREUR — c'est très exactement la panne qui a frappé la
+   soumission de WhatsApp la veille.
+   Le navigateur fournit le fond, le PLAN SUPÉRIEUR (donc aucun `overflow` ni
+   `transform` d'ancêtre ne peut rogner la fenêtre), le piège de focus et Échap.
 
-   📖 CE QUI EST OUVERT AU CHARGEMENT : les cartes CONFIGURÉES. Une page qui
-   n'ouvre rien oblige à chercher ce qu'on a déjà réglé ; une page qui ouvre tout
-   est celle qu'on vient de quitter. L'état par défaut dit donc l'état réel — sur
-   un clone neuf, rien n'est réglé, donc rien n'est ouvert, et la page tient en
-   huit lignes. */
-.aod-cd-pxcard > .aod-cd-pxcard__head{cursor:pointer;list-style:none;-webkit-user-select:none;user-select:none}
-.aod-cd-pxcard > .aod-cd-pxcard__head::-webkit-details-marker{display:none}
-/* Le chevron est un GLYPHE et pivote seul — même raison que `.aod-cd-note-fold` :
-   faire pivoter la ligne entière la ferait déborder de la carte. */
+   ⚠️ L'en-tête est un `<button type="button">`. Sans le `type`, un bouton dans un
+   formulaire vaut `submit` : cliquer sur « Meta » aurait ENREGISTRÉ la page. */
+.aod-cd-pxcard > .aod-cd-pxcard__head{
+	width:100%;font:inherit;text-align:start;cursor:pointer;
+	border:0;border-bottom:1px solid var(--cd-line);
+	-webkit-user-select:none;user-select:none;
+}
+/* Le chevron ne pivote plus — rien ne se déplie. Il DÉSIGNE : « il y a quelque
+   chose derrière ». */
 .aod-cd-pxcard > .aod-cd-pxcard__head::after{
 	content:"›";flex:none;display:inline-block;font-size:var(--cd-fs-lg);line-height:1;
-	font-weight:700;color:var(--cd-soft);transition:transform .18s var(--cd-ease-out);
+	font-weight:700;color:var(--cd-soft);
 }
-.aod-cd-pxcard[open] > .aod-cd-pxcard__head::after{transform:rotate(90deg);color:var(--cd-ink)}
 /* Un en-tête cliquable dont rien ne bouge au survol ne dit pas qu'il est
    cliquable — c'est le défaut déjà corrigé sur les champs (« le seul retour était
    le curseur »). La réponse porte sur le CHEVRON, jamais sur le fond : le fond de
@@ -5250,35 +5259,49 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    seule chose qui distingue Meta de TikTok. */
 .aod-cd-pxcard > .aod-cd-pxcard__head:hover::after{color:var(--cd-ink)}
 .aod-cd-pxcard > .aod-cd-pxcard__head:focus-visible{outline:none;box-shadow:var(--cd-focus)}
-/* 🎬 Le CORPS entre au dépliage. `<details>` bascule d'un coup : entre le clic et
-   l'affichage, 300 px de formulaire apparaissent sans transition et l'œil perd ce
-   qu'il vient d'ouvrir. C'est la seule partie animable sans mesurer une hauteur
-   en JS — exactement le raisonnement de `.aod-cd-acc-body`, et le même mouvement.
+
+/* ---- La fenêtre elle-même ------------------------------------------------ */
+.aod-cd-pxdlg{
+	width:min(520px,calc(100vw - 32px));max-width:none;
+	padding:0;border:0;border-radius:var(--cd-r-lg);
+	background:var(--cd-card);color:var(--cd-ink);box-shadow:var(--cd-shadow);
+}
+.aod-cd-pxdlg::backdrop{background:rgba(24,24,24,.6)}
+/* 🎬 Elle ARRIVE. Sans cela une fenêtre apparaît d'un bloc au centre de l'écran et
+   l'œil perd le lien avec la ligne qu'on vient de cliquer.
    🔒 Le sélecteur est recopié AU CARACTÈRE PRÈS dans le bloc
    `prefers-reduced-motion` en fin de fichier : R1 de `test-mouvement-reduit.php`
-   compare les deux listes et exige qu'elles soient rigoureusement égales. */
-.aod-cd-pxcard[open] > .aod-cd-pxcard__body{animation:aod-cd-pop .28s var(--cd-ease-out)}
+   compare les deux listes et exige l'égalité. */
+.aod-cd-pxdlg[open]{animation:aod-cd-pop .22s var(--cd-ease-out)}
+/* L'EN-TETE DE LA FENETRE N'EST PAS UN ORNEMENT. Sans lui, elle s'ouvrait sur
+   « ID DU PIXEL » et rien ne disait DE QUELLE RÉGIE il s'agissait — or elles ont
+   toutes le même champ, et c'est précisément pour ne plus les confondre que cette
+   page a été refondue. Il reprend l'écusson de marque de la ligne cliquée : c'est
+   le lien visuel entre ce qu'on a cliqué et ce qui s'ouvre. */
+.aod-cd-pxdlg__name{font-weight:800;font-size:var(--cd-fs-md);color:var(--cd-ink);min-width:0}
+.aod-cd-pxdlg__x{margin-inline-start:auto;flex:none}
+.aod-cd-pxdlg .aod-cd-pxcard__body{padding:var(--cd-sp-5)}
+/* Le pied de la fenêtre : un seul bouton, et il ne fait QUE fermer. Enregistrer
+   reste le geste de la page — deux boutons « Enregistrer » à deux endroits
+   diraient deux choses différentes du même formulaire. */
+.aod-cd-pxdlg__foot{
+	display:flex;justify-content:flex-end;
+	margin-top:var(--cd-sp-5);padding-top:var(--cd-sp-4);
+	border-top:1px solid var(--cd-line-2);
+}
 
-/* 🔴 EN ARABE, LE CHEVRON OUVERT POINTAIT VERS LE HAUT — et pas seulement ici.
-   MESURÉ, pas déduit : `›` (U+203A) ET `▸` (U+25B8) sont tous deux MIROITÉS par
-   l'algorithme bidi (même glyphe rendu en `dir=ltr` puis `dir=rtl`, images
+/* 🔴 EN ARABE, LE CHEVRON D'UN ACCORDÉON OUVERT POINTAIT VERS LE HAUT.
+   MESURÉ, pas déduit : « › » (U+203A) ET « ▸ » (U+25B8) sont tous deux MIROITÉS
+   par l'algorithme bidi (même glyphe rendu en `dir=ltr` puis `dir=rtl`, images
    comparées octet à octet : différentes dans les deux cas). Fermé, c'est
    exactement ce qu'on veut — le chevron désigne le sens de lecture, donc la
    gauche en RTL. Mais `rotate(90deg)` est une rotation ABSOLUE : appliquée à un
    glyphe déjà retourné, elle l'envoie vers le HAUT au lieu du bas. Un indicateur
-   d'ouverture qui pointe vers le haut sur une carte ouverte ne se tait pas, il
-   ment.
-   🚨 LA RÈGLE ÉTAIT ÉCRITE TROIS FOIS — l'accordéon de Livraison, le repli des
-   notes, et la carte de régie ci-dessus — donc le défaut aussi. Les trois sont
-   corrigés par CE bloc et pas par trois retouches : c'est le mode de dérive que
-   la Phase 46 a nommé, et le corriger une fois de plus au même endroit qu'on
-   l'introduit est la seule façon de ne pas le rejouer.
-   ⚠️ Placé APRÈS les trois règles d'origine, et chacune gagne `[dir="rtl"]` :
-   sans cet attribut la spécificité serait égale et l'ordre du fichier déciderait
-   par accident. */
+   d'ouverture qui pointe vers le haut ne se tait pas, il ment.
+   ⚠️ La carte de régie a QUITTÉ cette liste le 2026-08-10 : son chevron ne pivote
+   plus du tout. Les deux accordéons qui restent, eux, en ont toujours besoin. */
 [dir="rtl"] .aod-cd-acc[open] .aod-cd-acc-sum::after,
-[dir="rtl"] .aod-cd-note-fold[open]>summary::before,
-[dir="rtl"] .aod-cd-pxcard[open] > .aod-cd-pxcard__head::after{transform:rotate(-90deg)}
+[dir="rtl"] .aod-cd-note-fold[open]>summary::before{transform:rotate(-90deg)}
 .aod-cd-pxcard__ic{
 	width:34px;height:34px;flex:0 0 34px;border-radius:var(--cd-r-sm);
 	display:inline-flex;align-items:center;justify-content:center;
@@ -5330,7 +5353,11 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	content:"";position:absolute;inset-block:0;inset-inline-start:0;width:3px;
 	background:var(--px-brand);pointer-events:none;
 }
-.aod-cd-pxcard--brand .aod-cd-pxcard__head{background:var(--px-brand-soft)}
+/* La teinte de marque suit jusque DANS la fenêtre : c'est elle qui dit « tu es
+   toujours sur Meta ». La laisser à la ligne seule aurait fait s'ouvrir sept
+   fenêtres identiques. */
+.aod-cd-pxcard--brand .aod-cd-pxcard__head,
+.aod-cd-pxcard--brand .aod-cd-pxdlg__head{background:var(--px-brand-soft)}
 /* Spécificité (0,3,0) pour battre `.aod-cd-pxcard__ic.t-blue` (0,2,0) quel que soit
    l'ordre du fichier — la carte garde son `t-*` comme repli neutre inoffensif. */
 .aod-cd-pxcard.aod-cd-pxcard--brand .aod-cd-pxcard__ic{background:var(--px-brand);color:var(--px-brand-ink)}
@@ -5461,13 +5488,186 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 
 /* Mise en route CallMeBot : encadré d'aide (l'ancien `.aod-cd-soon` est un état
    « bientôt disponible » centré à 48 px de padding — détourné de son rôle). */
-.aod-cd-steps{
-	margin-top:14px;padding:14px 16px;
-	background:var(--cd-info-soft);border-radius:var(--cd-r-sm);
-	font-size:var(--cd-fs-sm);line-height:1.6;color:var(--cd-ink);
+/* ---- Édition rapide d'un produit (modale, 2026-08-09) -------------------
+   Quatre champs sur les cinquante-huit de la page complète. La modale n'a donc
+   pas à défiler, et c'est la seule raison pour laquelle elle est légitime :
+   l'éditeur ENTIER dans une fenêtre aurait produit 2 591 px dans une boîte de
+   700, c'est-à-dire un défilement dans un défilement. */
+/* ⚠️ `> * + *` ET NON `.aod-cd-field + .aod-cd-field` : écrite sans le chevron,
+   la règle frappait AUSSI les deux champs de la rangée prix/promo, qui sont
+   frères — mesuré, la colonne « Prix promo » descendait de 16 px sous « Prix ».
+   C'est le même piège que le corps des cartes de régie, corrigé le même jour :
+   une sélection d'adjacence ne sait pas à quelle profondeur elle s'applique. */
+.aod-cd-quick > * + *{margin-top:var(--cd-sp-4)}
+.aod-cd-quick__row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--cd-sp-4)}
+@media(max-width:520px){.aod-cd-quick__row{grid-template-columns:minmax(0,1fr)}}
+/* Le lien vers la page complète est SÉPARÉ des champs par un trait : il ne se
+   remplit pas, il emmène ailleurs. */
+.aod-cd-quick__more{
+	margin:var(--cd-sp-5) 0 0;padding-top:var(--cd-sp-4);
+	border-top:1px solid var(--cd-line-2);font-size:var(--cd-fs-sm);
 }
-.aod-cd-steps ol{margin:8px 0 0;padding-inline-start:1.2em}
-.aod-cd-steps code{background:var(--cd-card);padding:1px 6px;border-radius:4px;font-size:var(--cd-fs-sm)}
+.aod-cd-quick__link{color:var(--cd-accent);font-weight:700;text-decoration:underline}
+.aod-cd-quick__msg{display:block;margin-top:var(--cd-sp-2);font-size:var(--cd-fs-sm);font-weight:600}
+/* Le refus reste DANS la modale — un toast s'efface, or ce message dit ce qu'il
+   faut corriger. `--cd-bad` est le ton de la charte, pas un rouge inventé. */
+.aod-cd-quick__msg.is-bad{color:var(--cd-bad)}
+
+/* ==========================================================================
+   WhatsApp — le branchement (2026-08-09)
+   ==========================================================================
+   La page tenait dans un panneau de 720 px au milieu de 1 316, avec 300 px de
+   page vide dessous : neuf dixièmes de l'écran ne portaient rien. Et le contenu
+   le plus utile — les trois étapes SANS lesquelles on n'a pas de clé — était
+   tassé dans un encart bleu au milieu du formulaire, comme une note.
+
+   Ce que cette page est réellement : une PROCÉDURE de branchement en trois
+   temps, puis un interrupteur. Elle était présentée à l'envers. */
+
+/* La couleur de WhatsApp. Même statut que les quatre régies de « Pixels &
+   Tracking » (Phase 41) : une couleur UNIVERSELLE de marque tierce, identique
+   sur tous les clones, sans lien avec l'accent du client — donc légitimement en
+   dur, et recensée dans `test-charte-surfaces.php` avec les autres.
+   🔒 L'encre est NOIRE et ce n'est pas un goût : #25d366 rend 10,4:1 avec le
+   noir contre 2,0:1 avec le blanc. Le blanc y échouerait AA, comme sur le jaune
+   Snapchat et le bleu Meta.
+   🎨 DEUX COULEURS, UNE RÈGLE — et la règle est ce qui empêche l'une de manger
+   l'autre. Le VERT marque ce qui appartient à WhatsApp : l'écusson du service, le
+   filet, le rail de l'interrupteur allumé, et les deux blocs qu'on va coller DANS
+   WhatsApp. L'ACCENT DU CLIENT marque ce qui appartient à la boutique : les rangs
+   de la procédure, le bouton d'enregistrement, les anneaux de focus. Un lecteur
+   qui repère ça une fois n'a plus à lire les libellés pour savoir de quel côté il
+   est.
+   ⚠️ Le vert ne franchit jamais cette frontière — la règle 1 du template
+   (« rien de spécifique en dur ») ne connaît pas d'exception de charme, et un
+   accent client orange doit rester le seul maître de la page. */
+.aod-cd-wa{--wa:#25d366;--wa-ink:#000000;--wa-soft:#e6f8ee}
+/* ⚠️ `.aod-cd-settings-form` porte DEUX choses sans rapport : le branchement JS
+   de la soumission (c'est le sélecteur que `bindSettingsForms()` cherche) et une
+   grille à deux colonnes taillée pour « Mon compte ». Cette page a besoin du
+   premier et pas de la seconde — sans cette ligne, la carte d'état et les deux
+   colonnes se retrouvaient côte à côte.
+   🚨 Un même nom de classe qui sert à la fois de crochet de comportement et de
+   règle de mise en page ne peut pas être retiré sans casser l'autre : c'est ce
+   couplage qui a fait perdre la soumission de cette page le 2026-08-09. */
+.aod-cd-settings-form.aod-cd-wa{display:block}
+
+/* ---- L'état, en tête et en trois valeurs -------------------------------- */
+.aod-cd-wa-state{
+	display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--cd-sp-2) var(--cd-sp-4);
+	align-items:center;position:relative;overflow:hidden;
+	padding:var(--cd-sp-5);margin-bottom:var(--cd-sp-5);
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+}
+.aod-cd-wa-state::before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:4px;background:var(--wa)}
+.aod-cd-wa-state__ic{
+	flex:none;width:46px;height:46px;border-radius:var(--cd-r-md);
+	display:inline-flex;align-items:center;justify-content:center;
+	background:var(--wa);color:var(--wa-ink);
+}
+.aod-cd-wa-state__txt{min-width:0}
+.aod-cd-wa-state__t{margin:0;font-size:var(--cd-fs-lg);font-weight:800;color:var(--cd-ink);line-height:1.25}
+.aod-cd-wa-state__s{margin:2px 0 0;font-size:var(--cd-fs-sm);color:var(--cd-muted)}
+/* La rangée de l'interrupteur passe SOUS les trois colonnes : sur un écran
+   étroit, un libellé de huit mots et une pastille ne tiennent pas côte à côte. */
+.aod-cd-wa-switch{grid-column:1 / -1;margin-top:var(--cd-sp-3);padding-top:var(--cd-sp-4);border-top:1px solid var(--cd-line-2)}
+/* Sous 560 px, le titre et la pastille se disputent 150 px : « Notifications
+   WhatsApp » passait à deux lignes pour loger « Actives » à côté. La pastille
+   descend d'un rang plutôt que d'écraser le nom. */
+@media(max-width:560px){
+	.aod-cd-wa-state{grid-template-columns:auto minmax(0,1fr)}
+	.aod-cd-wa-pill{grid-column:1 / -1;justify-self:start}
+}
+
+/* Les trois pastilles sont TOUTES rendues ; `:has()` en montre une. Aucun
+   compteur à tenir à jour, et l'état suit la frappe — même mécanique que la
+   mention « non livrable » de Livraison. */
+.aod-cd-wa-pill{display:none}
+.aod-cd-wa:not(:has(.aod-cd-wa-enable:checked)) .aod-cd-wa-pill--off{display:inline-flex}
+.aod-cd-wa:has(.aod-cd-wa-enable:checked) .aod-cd-wa-pill--on{display:inline-flex}
+/* ⚠️ L'ordre compte : « incomplet » doit BATTRE « actives », pas s'y ajouter.
+   Un champ requis vide alors que l'envoi est coché, c'est une boutique qui croit
+   être notifiée et ne l'est pas — le seul état que cette page n'avouait jamais. */
+.aod-cd-wa:has(.aod-cd-wa-enable:checked):has(.aod-cd-wa-req:placeholder-shown) .aod-cd-wa-pill--on{display:none}
+.aod-cd-wa:has(.aod-cd-wa-enable:checked):has(.aod-cd-wa-req:placeholder-shown) .aod-cd-wa-pill--todo{display:inline-flex}
+
+/* ---- L'interrupteur ------------------------------------------------------
+   La seule décision de cette page valait 13 × 13 px. La case native reste dans
+   le DOM et garde le focus — elle est seulement rendue transparente : c'est elle
+   qui est envoyée, cochée au clavier, et lue par les lecteurs d'écran. Le dessin
+   est un frère qui la suit. */
+.aod-cd-wa-switch input{position:absolute;opacity:0;width:46px;height:26px;margin:0;cursor:pointer}
+.aod-cd-wa-switch__ui{
+	flex:none;width:46px;height:26px;border-radius:var(--cd-r-pill);
+	background:var(--cd-line);position:relative;
+	transition:background-color .18s var(--cd-ease-out);
+}
+.aod-cd-wa-switch__ui::after{
+	content:"";position:absolute;inset-block-start:3px;inset-inline-start:3px;
+	width:20px;height:20px;border-radius:var(--cd-r-pill);background:var(--cd-card);
+	box-shadow:0 1px 3px rgba(24,24,24,.28);
+	transition:transform .18s var(--cd-ease-out);
+}
+.aod-cd-wa-switch input:checked ~ .aod-cd-wa-switch__ui{background:var(--wa)}
+/* 🔴 `translateX` ET NON `inset-inline-start` : en arabe la page est en RTL, le
+   bouton part donc de la droite, et une valeur positive le pousserait HORS du
+   rail. `translateX` suit l'axe d'écriture du parent. */
+.aod-cd-wa-switch input:checked ~ .aod-cd-wa-switch__ui::after{transform:translateX(20px)}
+[dir="rtl"] .aod-cd-wa-switch input:checked ~ .aod-cd-wa-switch__ui::after{transform:translateX(-20px)}
+.aod-cd-wa-switch input:focus-visible ~ .aod-cd-wa-switch__ui{box-shadow:var(--cd-focus)}
+
+/* ---- Les deux colonnes --------------------------------------------------- */
+.aod-cd-wa-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--cd-sp-5)}
+@media(min-width:900px){.aod-cd-wa-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+.aod-cd-wa-setup,.aod-cd-wa-ids{
+	padding:var(--cd-sp-5);background:var(--cd-card);
+	border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+}
+.aod-cd-wa-h{margin:0 0 var(--cd-sp-4);font-size:var(--cd-fs-md);font-weight:800;color:var(--cd-ink);text-transform:uppercase;letter-spacing:.05em}
+.aod-cd-wa-ids .aod-cd-field + .aod-cd-field{margin-top:var(--cd-sp-5)}
+.aod-cd-wa-testrow{display:flex;align-items:center;gap:var(--cd-sp-3);flex-wrap:wrap;margin-top:var(--cd-sp-5)}
+.aod-cd-wa-testrow + .aod-cd-help{margin-top:var(--cd-sp-2)}
+
+/* ---- Les trois temps ----------------------------------------------------
+   🔢 LA NUMÉROTATION EST VRAIE ICI, et c'est la seule chose qui l'autorise. Sur
+   « Pixels & Tracking » je l'ai refusée — quatre régies ne forment pas un ordre.
+   Ici on ne peut pas recevoir la clé sans avoir écrit au bot, ni lui écrire sans
+   l'avoir enregistré. Le rang porte donc une information que le lecteur doit
+   avoir, au lieu de décorer. */
+.aod-cd-wa-steps{margin:0;padding:0;list-style:none;counter-reset:wa}
+.aod-cd-wa-steps > li{position:relative;padding-inline-start:38px;counter-increment:wa}
+.aod-cd-wa-steps > li + li{margin-top:var(--cd-sp-5)}
+.aod-cd-wa-steps > li::before{
+	content:counter(wa);position:absolute;inset-inline-start:0;inset-block-start:0;
+	width:26px;height:26px;border-radius:var(--cd-r-pill);
+	display:flex;align-items:center;justify-content:center;
+	background:var(--cd-accent);color:var(--cd-accent-ink);
+	font-size:var(--cd-fs-sm);font-weight:800;font-variant-numeric:tabular-nums;
+}
+/* Le trait qui relie les rangs : il dit « ceci s'enchaîne », ce qui est
+   précisément l'information que la numérotation apporte. Le dernier n'en a pas —
+   rien ne le suit. */
+.aod-cd-wa-steps > li:not(:last-child)::after{
+	content:"";position:absolute;inset-inline-start:13px;inset-block:32px 0;
+	width:2px;background:var(--cd-line);
+}
+.aod-cd-wa-steps p{margin:0;font-size:var(--cd-fs-sm);line-height:1.6;color:var(--cd-ink)}
+
+/* ---- Ce qu'on vient recopier -------------------------------------------
+   Les deux chaînes à coller dans WhatsApp sont l'objet MÊME de cette page, et
+   elles vivaient en `<code>` au fil du texte. `user-select:all` en fait un bloc
+   qu'un seul clic sélectionne entièrement — c'est neuf dixièmes du bénéfice d'un
+   bouton « copier », sans un octet de JS ni une chaîne de plus à traduire.
+   🔒 `direction:ltr` : le numéro comme la phrase sont latins ; en arabe la page
+   bascule en RTL et « +34 644 84 71 89 » s'alignerait du mauvais bord. */
+.aod-cd-wa-copy{
+	display:block;margin-top:var(--cd-sp-2);padding:11px 13px;
+	background:var(--wa-soft);border:1px solid var(--wa);border-radius:var(--cd-r-sm);
+	font-family:var(--cd-mono);font-size:var(--cd-fs-sm);font-weight:600;
+	letter-spacing:.02em;line-height:1.5;color:var(--cd-ink);
+	direction:ltr;text-align:left;overflow-wrap:anywhere;
+	-webkit-user-select:all;user-select:all;cursor:text;
+}
 
 /* Retour du bouton « test » : même langage visuel que le test transporteur. */
 .aod-cd-wa-test-msg,.aod-cd-capi-test-msg{font-size:var(--cd-fs-sm);font-weight:600}
@@ -6027,14 +6227,15 @@ html[dir="rtl"] .aod-cd-content .aod-cd-pagehead::before{
 	   Sélecteurs recopiés au CARACTÈRE PRÈS de ceux qui posent `aod-cd-pop` —
 	   c'est la comparaison exacte que fait R1. */
 	.aod-cd-acc[open] .aod-cd-acc-body{animation:aod-cd-fade .14s var(--cd-ease-out)}
-	/* 🎬 Dépliage d'une carte de régie (Pixels & Tracking) — même élément que
-	   ci-dessus à un autre endroit, donc même traitement, sélecteur recopié au
-	   caractère près. */
-	.aod-cd-pxcard[open] > .aod-cd-pxcard__body{animation:aod-cd-fade .14s var(--cd-ease-out)}
-	/* Le chevron de la carte PIVOTE à l'ouverture. C'est la TRANSITION qui part,
-	   jamais la rotation : `transform:none` remettrait le chevron à l'horizontale
-	   sur une carte ouverte — l'indicateur mentirait au lieu de se taire. */
-	.aod-cd-pxcard > .aod-cd-pxcard__head::after{transition:none}
+	/* 🎬 Arrivée de la fenêtre d'une régie (Pixels & Tracking) — sélecteur recopié
+	   au caractère près de celui qui pose `aod-cd-pop`. */
+	.aod-cd-pxdlg[open]{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* 🎬 Le bouton de l'interrupteur WhatsApp GLISSE. C'est la TRANSITION qui
+	   part, jamais la translation : `transform:none` ramènerait le bouton au
+	   repos sur un interrupteur ALLUMÉ — l'écran dirait « éteint » alors que les
+	   notifications partent. Exactement le piège du liseré d'accent quinze lignes
+	   plus bas, et il se referme de la même façon. */
+	.aod-cd-wa-switch__ui::after{transition:none}
 	.aod-cd-offer-row{animation:aod-cd-fade .14s var(--cd-ease-out)}
 	/* 🎬 Cascade des lignes de catégories : même sélecteur AU CARACTÈRE PRÈS que
 	   celui qui pose `aod-cd-pop`, retards remis à zéro. */

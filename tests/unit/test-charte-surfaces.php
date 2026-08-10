@@ -155,6 +155,15 @@ $aod_surf_permis = array(
 	// d'en-tête. L'ENCRE posée dessus (best_ink) est achromatique, donc non listée ;
 	// sa justesse AA est gardée à part par test-contraste.php. TikTok #000000 et sa
 	// teinte #ededed sont neutres → jamais signalées ici.
+	// WhatsApp (2026-08-09, `.aod-cd-wa`). MÊME statut que les quatre ci-dessous —
+	// une couleur universelle de marque tierce, identique sur tous les clones,
+	// sans lien avec l'accent du client. Elle ne peint que l'écusson d'état, un
+	// filet, le rail de l'interrupteur allumé et le cadre des deux blocs à
+	// recopier. L'encre posée dessus est #000000 (achromatique, donc non listée) :
+	// #25d366 rend 10,4:1 avec le noir contre 2,0:1 avec le blanc, qui y échouerait
+	// AA — même arbitrage que sur le jaune Snapchat et le bleu Meta.
+	'25d366', 'e6f8ee', // WhatsApp — vert + teinte des blocs à recopier.
+
 	'1877f2', 'e9f1fe', // Meta — bleu + en-tête.
 	'fffc00', 'fffde0', // Snapchat — jaune + en-tête.
 	'ea4335', 'fdeceb', // Google — rouge + en-tête.

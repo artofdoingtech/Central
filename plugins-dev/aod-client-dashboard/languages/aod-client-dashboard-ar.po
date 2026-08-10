@@ -1871,6 +1871,10 @@ msgstr "غير نشط"
 msgid "Meta"
 msgstr "ميتا"
 
+#: includes/class-aod-cd-section-marketing.php:275
+msgid "Terminé"
+msgstr "تمّ"
+
 #: includes/class-aod-cd-section-marketing.php:203
 msgid "Le pixel du navigateur"
 msgstr "بكسل المتصفّح"
@@ -2595,6 +2599,82 @@ msgstr "إذا أضفت متغيّرات، يُستخدَم هذا السعر ك
 #: includes/class-aod-cd-section-products.php:545
 msgid "Prix promo (optionnel)"
 msgstr "سعر التخفيض (اختياري)"
+
+#: includes/class-aod-cd-section-products.php:620
+msgid "promo active"
+msgstr "تخفيض نشط"
+
+#: includes/class-aod-cd-section-products.php:624
+msgid "%d offre"
+msgid_plural "%d offres"
+msgstr[0] "لا توجد عروض"
+msgstr[1] "عرض واحد"
+msgstr[2] "عرضان"
+msgstr[3] "%d عروض"
+msgstr[4] "%d عرضًا"
+msgstr[5] "%d عرض"
+
+#: includes/class-aod-cd-section-products.php:632
+msgid "%d photo"
+msgid_plural "%d photos"
+msgstr[0] "لا توجد صور"
+msgstr[1] "صورة واحدة"
+msgstr[2] "صورتان"
+msgstr[3] "%d صور"
+msgstr[4] "%d صورة"
+msgstr[5] "%d صورة"
+
+#: includes/class-aod-cd-section-products.php:633
+msgid "aucune photo"
+msgstr "لا توجد صورة"
+
+#: includes/class-aod-cd-section-products.php:635
+msgid "stock non géré"
+msgstr "المخزون غير مُدار"
+
+#: includes/class-aod-cd-section-products.php:638
+msgid "stock géré · %s en stock"
+msgstr "المخزون مُدار · %s في المخزون"
+
+#: includes/class-aod-cd-section-products.php:650
+msgid "%d section"
+msgid_plural "%d sections"
+msgstr[0] "لا أقسام"
+msgstr[1] "قسم واحد"
+msgstr[2] "قسمان"
+msgstr[3] "%d أقسام"
+msgstr[4] "%d قسمًا"
+msgstr[5] "%d قسم"
+
+#: includes/class-aod-cd-section-products.php:652
+msgid "%d variante"
+msgid_plural "%d variantes"
+msgstr[0] "لا متغيّرات"
+msgstr[1] "متغيّر واحد"
+msgstr[2] "متغيّران"
+msgstr[3] "%d متغيّرات"
+msgstr[4] "%d متغيّرًا"
+msgstr[5] "%d متغيّر"
+
+#: includes/class-aod-cd-section-products.php:395
+msgid "Édition rapide"
+msgstr "تعديل سريع"
+
+#: includes/class-aod-cd-section-products.php:441
+msgid "Nom du produit (français)"
+msgstr "اسم المنتج (بالفرنسية)"
+
+#: includes/class-aod-cd-section-products.php:445
+msgid "Nom du produit (arabe)"
+msgstr "اسم المنتج (بالعربية)"
+
+#: includes/class-aod-cd-section-products.php:470
+msgid "Tout modifier — photos, variantes, offres, description…"
+msgstr "تعديل كل شيء — الصور، المتغيّرات، العروض، الوصف…"
+
+#: includes/class-aod-cd-section-products.php:1900
+msgid "Produit enregistré."
+msgstr "تم حفظ المنتج."
 
 #: includes/class-aod-cd-section-products.php:551
 msgid "Période de promotion (optionnel)"
@@ -3679,22 +3759,40 @@ msgid "Service gratuit via CallMeBot."
 msgstr "خدمة مجانية عبر CallMeBot."
 
 #: includes/class-aod-cd-section-whatsapp.php:75
-msgid "Mise en route (une seule fois) :"
-msgstr "الإعداد (مرة واحدة فقط):"
+msgid "Mise en route (une seule fois)"
+msgstr "الإعداد (مرة واحدة فقط)"
 
 #: includes/class-aod-cd-section-whatsapp.php:77
-#, php-format
-msgid "Enregistrez le numéro %s dans vos contacts (nom : CallMeBot)."
-msgstr "احفظ الرقم %s في جهات اتّصالك (الاسم: CallMeBot)."
+msgid "Enregistrez ce numéro dans vos contacts, sous le nom CallMeBot."
+msgstr "احفظ هذا الرقم في جهات اتّصالك باسم CallMeBot."
 
 #: includes/class-aod-cd-section-whatsapp.php:78
-#, php-format
-msgid "Sur WhatsApp, envoyez-lui : %s"
-msgstr "على واتساب، أرسل له: %s"
+msgid "Sur WhatsApp, envoyez-lui exactement ce message :"
+msgstr "على واتساب، أرسل له هذه الرسالة حرفيًا:"
 
 #: includes/class-aod-cd-section-whatsapp.php:79
-msgid "Vous recevez votre clé API (apikey). Collez-la ci-dessous."
-msgstr "ستستلم مفتاح API (apikey). الصقه في الأسفل."
+msgid "CallMeBot répond avec votre clé API. Collez-la dans le champ « Clé API »."
+msgstr "يردّ CallMeBot بمفتاح API الخاص بك. الصقه في حقل «مفتاح API»."
+
+#: includes/class-aod-cd-section-whatsapp.php:80
+msgid "Actives"
+msgstr "مفعّلة"
+
+#: includes/class-aod-cd-section-whatsapp.php:81
+msgid "Désactivées"
+msgstr "معطّلة"
+
+#: includes/class-aod-cd-section-whatsapp.php:82
+msgid "Numéro ou clé manquant"
+msgstr "الرقم أو المفتاح ناقص"
+
+#: includes/class-aod-cd-section-whatsapp.php:83
+msgid "Vos identifiants"
+msgstr "بيانات الاتصال الخاصة بك"
+
+#: includes/class-aod-cd-section-whatsapp.php:84
+msgid "Le test utilise les valeurs enregistrées : enregistrez d’abord si vous venez de les coller."
+msgstr "يستخدم الاختبار القيم المحفوظة: احفظ أولًا إن كنت قد لصقتها للتو."
 
 #: includes/class-aod-cd-section-whatsapp.php:86
 msgid "Envoyer un WhatsApp à chaque commande"

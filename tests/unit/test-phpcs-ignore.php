@@ -70,7 +70,34 @@ function aod_test_pcs_census() {
 			// solde de −3. 🚨 Ce que ça vaut au-delà du chiffre : trois copies d'une même
 			// dérogation, c'est trois endroits où la relire, et deux où oublier de la
 			// corriger. Le census n'a jamais su dire ça — il compte, il ne déduplique pas.
-			'n'        => 160,
+			//
+			// 160 → 163 le 2026-08-09 (refonte de « WhatsApp »). ⬆️ Une HAUSSE, donc
+			// elle se justifie ici, et les 161ᵉ à 163ᵉ le sont par le MÊME motif : les
+			// trois appels `AOD_CD_Dashboard::pill()` de la carte d'état (« Actives »,
+			// « Numéro ou clé manquant », « Désactivées »). C'est le patron déjà couvert
+			// par les dérogations de « Pixels & Tracking » sur ce même helper, et il est
+			// sûr PAR CONSTRUCTION, pas par relecture : `pill()` échappe son libellé par
+			// `esc_html()` et son ton par `esc_attr()` sur une LISTE BLANCHE de cinq
+			// valeurs (`ok|warn|bad|info|neutral`, repli `neutral`). Aucun des trois
+			// n'est de la donnée saisie : ce sont des littéraux traduits.
+			// ⚠️ Les trois sont rendues EN MÊME TEMPS et départagées en CSS — donc
+			// l'écran n'en montre qu'une, mais le HTML en porte trois. Un futur lecteur
+			// qui compterait les pastilles à l'écran croirait ce census faux d'un
+			// facteur trois.
+			//
+			// 163 → 167 le 2026-08-10 (les régies ouvrent une fenêtre). ⬆️ Une HAUSSE
+			// de QUATRE, toutes du même motif et toutes déjà couvertes ailleurs dans
+			// ce fichier : les en-têtes des deux `<dialog>` (cartes pixel et cartes
+			// CAPI) portent chacun `AOD_CD_Icon::svg()` pour l'écusson de marque et
+			// `AOD_CD_Icon::svg( 'close' )` pour la croix de fermeture. `AOD_CD_Icon`
+			// est un CATALOGUE FERMÉ : `svg()` ne rend que des fichiers du dépôt,
+			// résolus par un nom validé contre une liste — aucune donnée saisie n'y
+			// entre, et `tests/unit/test-icones.php` garde cette fermeture.
+			// ⚠️ Ces quatre-là existent parce que l'en-tête de la ligne est REDIT dans
+			// la fenêtre. C'est voulu (c'est ce qui fait reconnaître la régie qu'on
+			// vient de cliquer) mais ça se paie ici : redire un fragment, c'est
+			// redire ses dérogations.
+			'n'        => 167,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '

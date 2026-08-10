@@ -35,6 +35,7 @@ class AOD_CD_Section_Products {
 
 	private function __construct() {
 		add_action( 'wp_ajax_aod_cd_save_product', array( $this, 'ajax_save_product' ) );
+		add_action( 'wp_ajax_aod_cd_quick_product', array( $this, 'ajax_quick_product' ) );
 		add_action( 'wp_ajax_aod_cd_delete_product', array( $this, 'ajax_delete_product' ) );
 		add_action( 'wp_ajax_aod_cd_duplicate_product', array( $this, 'ajax_duplicate_product' ) );
 		add_action( 'wp_ajax_aod_cd_save_category', array( $this, 'ajax_save_category' ) );
@@ -357,7 +358,17 @@ class AOD_CD_Section_Products {
 		foreach ( $products as $p ) {
 			$img      = $p->get_image( array( 40, 40 ) );
 			$edit_url = $this->products_url( array( 'action' => 'edit', 'product' => $p->get_id() ) );
-			echo '<tr data-product="' . esc_attr( $p->get_id() ) . '">';
+			// Les valeurs de l'édition rapide voyagent sur la LIGNE, pas dans une
+			// requête de plus : elles sont déjà toutes affichées ou connues ici, et
+			// un aller-retour pour les relire ferait attendre l'ouverture de la
+			// modale sans rien apprendre.
+			echo '<tr data-product="' . esc_attr( $p->get_id() ) . '"'
+				. ' data-name-fr="' . esc_attr( $p->get_name() ) . '"'
+				. ' data-name-ar="' . esc_attr( (string) $p->get_meta( '_aod_title_ar' ) ) . '"'
+				. ' data-regular="' . esc_attr( (string) $p->get_regular_price() ) . '"'
+				. ' data-sale="' . esc_attr( (string) $p->get_sale_price() ) . '"'
+				. ' data-status="' . esc_attr( $p->get_status() ) . '"'
+				. ' data-edit="' . esc_url( $edit_url ) . '">';
 			echo '<td class="aod-cd-cell-prod" data-label="' . esc_attr__( 'Produit', 'aod-client-dashboard' ) . '"><span class="aod-cd-prod">' . wp_kses_post( $img ) . '<a class="aod-cd-prod__name" href="' . esc_url( $edit_url ) . '">' . esc_html( $p->get_name() ) . '</a></span></td>';
 			echo '<td data-label="' . esc_attr__( 'Prix', 'aod-client-dashboard' ) . '">' . $this->render_price_cell( $p ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML déjà échappé dans le helper.
 			// Badge de stock : MÊME règle que la page Stock (une seule source de vérité).
@@ -368,7 +379,13 @@ class AOD_CD_Section_Products {
 				$online ? 'ok' : 'neutral'
 			) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- échappé dans le composant.
 			echo '<td class="aod-cd-rowactions" data-label="' . esc_attr__( 'Actions', 'aod-client-dashboard' ) . '">';
-			echo '<a class="aod-cd-btn aod-cd-btn-sm" href="' . esc_url( $edit_url ) . '">' . esc_html__( 'Éditer', 'aod-client-dashboard' ) . '</a> ';
+			// 🔁 « Éditer » ouvre désormais l'ÉDITION RAPIDE (modale) au lieu de
+			// charger 2 591 px de formulaire pour changer un prix. La page complète
+			// n'est pas cachée pour autant : le NOM du produit, à gauche, reste un
+			// vrai lien vers elle — donc ouvrable dans un onglet, partageable,
+			// atteignable au clavier —, et la modale porte « Tout modifier ».
+			// ⚠️ `<button>` et non `<a href="#">` : ceci n'est pas une navigation.
+			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-quick-edit">' . esc_html__( 'Édition rapide', 'aod-client-dashboard' ) . '</button> ';
 			// Page de vente : seulement si le plugin public est là (c'est lui qui l'affiche).
 			if ( AOD_CD_Section_Landing::available() ) {
 				$lp_on = AOD_COD_Landing::is_enabled( $p->get_id() );
@@ -410,6 +427,8 @@ class AOD_CD_Section_Products {
 		}
 		echo '</tbody></table></div>';
 
+		$this->render_quick_template();
+
 		AOD_CD_Dashboard::render_pagination( $base_url, $paged, (int) $result->max_num_pages, array( 's' => $search ) );
 	}
 
@@ -423,6 +442,77 @@ class AOD_CD_Section_Products {
 	 * @param WC_Product $p Produit.
 	 * @return string HTML de la cellule (déjà échappé).
 	 */
+	/**
+	 * Le gabarit de la modale d'édition rapide — rendu UNE fois, sous le tableau.
+	 *
+	 * 🔤 IL EST EN PHP, ET C'EST LA RAISON PRINCIPALE DE SON EXISTENCE. Bâti en
+	 * JavaScript, ses sept libellés auraient dû rejoindre l'objet `AOD_CD` inline
+	 * (`i18nQuickName`, `i18nQuickPrice`…) — sept clés de plus à déclarer, à
+	 * traduire et à ne pas oublier, pour du texte que `__()` sait déjà rendre.
+	 * Ici il passe par la même chaîne que le reste de la page.
+	 *
+	 * `<template>` : son contenu n'est ni rendu, ni focalisable, ni lu par un
+	 * lecteur d'écran tant que le JS ne l'a pas cloné. Un `<div hidden>` aurait
+	 * laissé sept champs de formulaire dans l'ordre de tabulation de la page.
+	 *
+	 * ⚠️ UN SEUL gabarit pour N lignes : les VALEURS viennent des attributs
+	 * `data-*` de la ligne cliquée. Recopier le formulaire sous chaque produit
+	 * aurait multiplié 7 champs par le nombre de lignes.
+	 */
+	protected function render_quick_template() {
+		?>
+		<template id="aod-cd-quick-tpl">
+			<form class="aod-cd-quick">
+				<label class="aod-cd-field">
+					<span class="aod-cd-label"><?php esc_html_e( 'Nom du produit (français)', 'aod-client-dashboard' ); ?></span>
+					<input type="text" name="name_fr" required>
+				</label>
+				<label class="aod-cd-field">
+					<span class="aod-cd-label"><?php esc_html_e( 'Nom du produit (arabe)', 'aod-client-dashboard' ); ?></span>
+					<?php
+					/* `dir="rtl"` en dur sur CE champ : il reçoit de l'arabe même quand
+					   le tableau de bord est en français. Sans lui, le gérant francophone
+					   saisirait son arabe dans un champ aligné à gauche, curseur à
+					   gauche — la même faute que les codes latins forcés en RTL sur
+					   « Pixels & Tracking », prise par l'autre bout. */
+					?>
+					<input type="text" name="name_ar" dir="rtl" lang="ar">
+				</label>
+				<div class="aod-cd-quick__row">
+					<label class="aod-cd-field">
+						<span class="aod-cd-label"><?php esc_html_e( 'Prix', 'aod-client-dashboard' ); ?></span>
+						<input type="number" name="regular_price" step="0.01" min="0">
+					</label>
+					<label class="aod-cd-field">
+						<span class="aod-cd-label"><?php esc_html_e( 'Prix promo (optionnel)', 'aod-client-dashboard' ); ?></span>
+						<input type="number" name="sale_price" step="0.01" min="0">
+					</label>
+				</div>
+				<label class="aod-cd-field">
+					<span class="aod-cd-label"><?php esc_html_e( 'Statut', 'aod-client-dashboard' ); ?></span>
+					<select name="status">
+						<option value="publish"><?php esc_html_e( 'En ligne', 'aod-client-dashboard' ); ?></option>
+						<option value="draft"><?php esc_html_e( 'Brouillon', 'aod-client-dashboard' ); ?></option>
+					</select>
+				</label>
+				<?php
+				/* Ce lien N'EST PAS un ornement : il est la seule chose qui rende la
+				   modale honnête. Elle ne montre que quatre champs sur cinquante-huit,
+				   et sans lui un gérant pourrait croire qu'un produit se résume à ça. */
+				?>
+				<p class="aod-cd-quick__more">
+					<a class="aod-cd-quick__link" href="#"><?php esc_html_e( 'Tout modifier — photos, variantes, offres, description…', 'aod-client-dashboard' ); ?></a>
+				</p>
+				<div class="aod-cd-modal-actions">
+					<button type="button" class="aod-cd-btn" data-cancel><?php esc_html_e( 'Annuler', 'aod-client-dashboard' ); ?></button>
+					<button type="submit" class="aod-cd-btn aod-cd-btn-primary"><?php esc_html_e( 'Enregistrer', 'aod-client-dashboard' ); ?></button>
+				</div>
+				<span class="aod-cd-quick__msg" aria-live="polite"></span>
+			</form>
+		</template>
+		<?php
+	}
+
 	protected function render_price_cell( $p ) {
 		$cost    = (string) $p->get_meta( '_aod_cost_price' );
 		$current = null; // Prix actuel sous forme numérique, pour la marge (produits simples).
@@ -526,6 +616,62 @@ class AOD_CD_Section_Products {
 		$low_stock = $product ? (string) $product->get_low_stock_amount() : '';
 		$sale_from = ( $product && $product->get_date_on_sale_from() ) ? $product->get_date_on_sale_from()->date( 'Y-m-d' ) : '';
 		$sale_to   = ( $product && $product->get_date_on_sale_to() ) ? $product->get_date_on_sale_to()->date( 'Y-m-d' ) : '';
+
+		/*
+		 * 📖 CE QUE CHAQUE SECTION REPLIÉE CONTIENT — calculé ici, affiché dans son
+		 * intitulé.
+		 *
+		 * Le formulaire fait 2 591 px pour 58 champs répartis en cinq accordéons.
+		 * Replié, un accordéon ne disait que son nom : « Photos », « Options &
+		 * variantes ». Pour savoir si ce produit A des photos, il fallait l'ouvrir —
+		 * et comme la réponse était invisible pour les cinq, on les ouvrait tous,
+		 * c'est-à-dire qu'on annulait l'accordéon.
+		 *
+		 * 🔒 Ce sont des DÉRIVÉES, pas un compteur : elles sont recalculées à chaque
+		 * rendu depuis le produit lui-même, et la page se recharge après
+		 * enregistrement. Il n'existe aucun état où elles peuvent mentir — c'est la
+		 * différence avec le compteur d'agrégats de la Phase 48.5, qui vivait en
+		 * cache et pouvait dériver cinq minutes durant.
+		 */
+		$sum_prix   = array();
+		$sale_price = $product ? (string) $product->get_sale_price() : '';
+		if ( '' !== $sale_price ) {
+			$sum_prix[] = __( 'promo active', 'aod-client-dashboard' );
+		}
+		if ( $offers ) {
+			/* translators: %d = nombre d'offres de lot. */
+			$sum_prix[] = sprintf( _n( '%d offre', '%d offres', count( $offers ), 'aod-client-dashboard' ), count( $offers ) );
+		}
+		$sum_prix = $sum_prix ? implode( ' · ', $sum_prix ) : __( 'prix, promotion, lots', 'aod-client-dashboard' );
+
+		$n_photos = ( $product && $product->get_image_id() ) ? 1 : 0;
+		$n_photos += count( $gallery_ids );
+		/* translators: %d = nombre de photos (principale + galerie). */
+		$sum_photos = $n_photos
+			? sprintf( _n( '%d photo', '%d photos', $n_photos, 'aod-client-dashboard' ), $n_photos )
+			: __( 'aucune photo', 'aod-client-dashboard' );
+
+		$sum_stock = __( 'stock non géré', 'aod-client-dashboard' );
+		if ( $product && $product->get_manage_stock() ) {
+			/* translators: %s = quantité en stock. */
+			$sum_stock = sprintf( __( 'stock géré · %s en stock', 'aod-client-dashboard' ), (string) (int) $product->get_stock_quantity() );
+		}
+
+		$n_var = 0;
+		foreach ( $options as $o ) {
+			$n_var += isset( $o['values'] ) ? count( (array) $o['values'] ) : 0;
+		}
+		// ⚠️ DEUX `_n()` JOINTS, et non un « %d section(s) » : « (s) » n'est pas du
+		// français, et surtout l'arabe a SIX formes plurielles (cf. l'en-tête du
+		// .po) — une parenthèse ne s'y traduit pas.
+		$sum_options = __( 'Taille, Couleur, Pointure… (optionnel)', 'aod-client-dashboard' );
+		if ( $options ) {
+			/* translators: %d = nombre de sections d'options (Taille, Couleur…). */
+			$s_sec = sprintf( _n( '%d section', '%d sections', count( $options ), 'aod-client-dashboard' ), count( $options ) );
+			/* translators: %d = nombre de variantes tous choix confondus. */
+			$s_var = sprintf( _n( '%d variante', '%d variantes', $n_var, 'aod-client-dashboard' ), $n_var );
+			$sum_options = $s_sec . ' · ' . $s_var;
+		}
 
 		$title = $pid ? __( 'Modifier le produit', 'aod-client-dashboard' ) : __( 'Nouveau produit', 'aod-client-dashboard' );
 
@@ -637,8 +783,15 @@ class AOD_CD_Section_Products {
 			</details>
 
 			<!-- Bloc 2/5 : Prix & offres -->
-			<details class="aod-cd-acc" open>
-				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'money', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Prix & offres', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php esc_html_e( 'prix, promotion, lots', 'aod-client-dashboard' ); ?></span></summary>
+			<?php
+			/* 🔁 « Prix & offres » N'EST PLUS OUVERTE AU CHARGEMENT (2026-08-09). Deux
+			   sections dépliées d'emblée faisaient 1 995 px : il fallait traverser tout
+			   le formulaire pour découvrir qu'il en restait trois. Une seule s'ouvre
+			   désormais — celle qu'on remplit d'abord —, et la page devient sa propre
+			   table des matières. */
+			?>
+			<details class="aod-cd-acc">
+				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'money', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Prix & offres', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php echo esc_html( $sum_prix ); ?></span></summary>
 				<div class="aod-cd-acc-body">
 					<div class="aod-cd-row2">
 						<label class="aod-cd-field">
@@ -720,7 +873,7 @@ class AOD_CD_Section_Products {
 
 			<!-- Section : Images -->
 			<details class="aod-cd-acc">
-				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'images', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Photos', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php esc_html_e( 'photo principale & galerie', 'aod-client-dashboard' ); ?></span></summary>
+				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'images', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Photos', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php echo esc_html( $sum_photos ); ?></span></summary>
 				<div class="aod-cd-acc-body aod-cd-grid2">
 					<div class="aod-cd-field">
 						<span class="aod-cd-label"><?php esc_html_e( 'Photo principale', 'aod-client-dashboard' ); ?></span>
@@ -761,7 +914,7 @@ class AOD_CD_Section_Products {
 
 			<!-- Section : Stock & logistique -->
 			<details class="aod-cd-acc">
-				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'products', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Stock & logistique', 'aod-client-dashboard' ); ?></summary>
+				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'products', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Stock & logistique', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php echo esc_html( $sum_stock ); ?></span></summary>
 				<div class="aod-cd-acc-body">
 					<div class="aod-cd-field">
 						<label class="aod-cd-check">
@@ -796,7 +949,7 @@ class AOD_CD_Section_Products {
 
 			<!-- Section : Variantes -->
 			<details class="aod-cd-acc">
-				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'palette', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Options & variantes', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php esc_html_e( 'Taille, Couleur, Pointure… (optionnel)', 'aod-client-dashboard' ); ?></span></summary>
+				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'palette', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Options & variantes', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php echo esc_html( $sum_options ); ?></span></summary>
 				<div class="aod-cd-acc-body">
 					<div class="aod-cd-options" id="aod-cd-options">
 						<p class="aod-cd-note" style="margin-top:0"><?php esc_html_e( 'Crée une section par caractéristique (Taille, Pointure, Couleur…). Pour chaque section, ajoute les valeurs que le client pourra choisir. Une section « avec photos » affiche des pastilles cliquables (couleurs, modèles…) ; chaque valeur peut ajouter un supplément de prix. Laisse vide pour un produit simple.', 'aod-client-dashboard' ); ?></p>
@@ -1798,6 +1951,104 @@ class AOD_CD_Section_Products {
 
 		$product->set_gallery_image_ids( array_values( array_unique( array_filter( $gallery ) ) ) );
 		$product->save();
+	}
+
+	/* ============================================================
+	 * AJAX : édition RAPIDE depuis la liste (modale)
+	 * ========================================================== */
+
+	/**
+	 * Enregistre les quatre champs de la modale d'édition rapide.
+	 *
+	 * 🔴 POURQUOI CE HANDLER EXISTE AU LIEU DE RÉUTILISER `ajax_save_product()`.
+	 * Celui-ci est un gestionnaire de formulaire COMPLET, et il l'est
+	 * délibérément : sans `description` au POST il écrit `set_description('')`,
+	 * et `set_category_ids()` est appliqué INCONDITIONNELLEMENT — son commentaire
+	 * le dit en toutes lettres, « permet aussi de tout retirer si rien n'est
+	 * sélectionné ». Une modale qui ne poste que quatre champs et taperait sur ce
+	 * handler EFFACERAIT la description, les catégories et les variantes du
+	 * produit, sans erreur et sans que rien ne le signale à l'écran.
+	 * 🚨 C'est le mode d'échec le plus coûteux de cette fonctionnalité, et il
+	 * n'aurait été visible qu'après coup, sur le produit d'un vrai client.
+	 *
+	 * Ce handler ne connaît donc QUE ce que la modale montre. Tout le reste du
+	 * produit est hors de sa portée — il ne peut pas l'abîmer, même mal appelé.
+	 *
+	 * ⚠️ NI STOCK NI CATÉGORIES ICI, ET C'EST UN CHOIX. Le stock a sa propre
+	 * section dans `/gestion`, avec ses règles par variante (D3 / Phase 40.5) :
+	 * un champ « stock » global dans une modale mentirait sur un produit à
+	 * variantes. Les catégories, elles, demandent la liste complète pour être
+	 * réécrites sans perte.
+	 *
+	 * Garde en QUATRE temps, identique à `ajax_save_product()` : nonce → cap
+	 * globale → cap sur CE produit → périmètre du confirmateur.
+	 */
+	public function ajax_quick_product() {
+		check_ajax_referer( 'aod_cd', 'nonce' );
+		if ( ! current_user_can( 'edit_products' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+
+		// L'édition rapide ne CRÉE jamais : un produit neuf passe par la page
+		// complète, qui seule sait demander une catégorie, une photo, un stock.
+		$pid = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+		if ( ! $pid ) {
+			wp_send_json_error( array( 'message' => __( 'Produit introuvable.', 'aod-client-dashboard' ) ), 404 );
+		}
+		if ( ! current_user_can( 'edit_product', $pid ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+		$scope = AOD_CD_Roles::assigned_products();
+		if ( $scope && ! in_array( $pid, $scope, true ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+
+		$product = wc_get_product( $pid );
+		if ( ! $product ) {
+			wp_send_json_error( array( 'message' => __( 'Produit introuvable.', 'aod-client-dashboard' ) ), 404 );
+		}
+
+		$name    = isset( $_POST['name_fr'] ) ? sanitize_text_field( wp_unslash( $_POST['name_fr'] ) ) : '';
+		$name_ar = isset( $_POST['name_ar'] ) ? sanitize_text_field( wp_unslash( $_POST['name_ar'] ) ) : '';
+		if ( '' === $name ) {
+			wp_send_json_error( array( 'message' => __( 'Le nom du produit est obligatoire.', 'aod-client-dashboard' ) ), 400 );
+		}
+
+		$reg  = isset( $_POST['regular_price'] ) ? wc_format_decimal( wp_unslash( $_POST['regular_price'] ) ) : '';
+		$sale = isset( $_POST['sale_price'] ) ? wc_format_decimal( wp_unslash( $_POST['sale_price'] ) ) : '';
+		// MÊME garde que la page complète, et pas une garde « équivalente » : deux
+		// écritures de la même règle divergent (Phase 46).
+		if ( '' !== $sale && '' !== $reg && (float) $sale > (float) $reg ) {
+			wp_send_json_error( array( 'message' => __( 'Le prix promo doit être inférieur ou égal au prix normal.', 'aod-client-dashboard' ) ), 400 );
+		}
+
+		$product->set_name( $name );
+		// Le couple { fr, ar } : vide → on SUPPRIME la méta. Une méta vide en base
+		// romprait la règle « absence de _ar = repli FR » (cf. ajax_save_product).
+		if ( '' !== trim( $name_ar ) ) {
+			$product->update_meta_data( '_aod_title_ar', $name_ar );
+		} else {
+			$product->delete_meta_data( '_aod_title_ar' );
+		}
+		$product->set_regular_price( $reg );
+		$product->set_sale_price( $sale );
+		$product->set_status( ( isset( $_POST['status'] ) && 'draft' === $_POST['status'] ) ? 'draft' : 'publish' );
+		$product->save();
+
+		// La ligne du tableau est REPEINTE avec ce que le serveur vient d'écrire,
+		// pas avec ce que le navigateur croit avoir envoyé : un prix refusé par
+		// `wc_format_decimal` doit se voir tout de suite, pas au rechargement.
+		$fresh  = wc_get_product( $pid );
+		$online = ( 'publish' === $fresh->get_status() );
+		wp_send_json_success( array(
+			'message' => __( 'Produit enregistré.', 'aod-client-dashboard' ),
+			'name'    => $fresh->get_name(),
+			'price'   => $this->render_price_cell( $fresh ),
+			'statut'  => AOD_CD_Dashboard::pill(
+				$online ? __( 'En ligne', 'aod-client-dashboard' ) : __( 'Brouillon', 'aod-client-dashboard' ),
+				$online ? 'ok' : 'neutral'
+			),
+		) );
 	}
 
 	/* ============================================================

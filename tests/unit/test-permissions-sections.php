@@ -152,6 +152,16 @@ function aod_test_perm_contrat() {
 
 		/* --- Sections réservées au gérant ------------------------------------- */
 		'save_product'     => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
+		// 2026-08-09 — édition RAPIDE depuis la liste (modale). MÊME capability que
+		// `save_product`, et c'est exact : modifier un prix ou un nom, c'est écrire
+		// un produit — le fait que la modale n'en montre que quatre champs ne change
+		// rien au droit exigé.
+		// 🚨 Ce n'est PAS un alias de `save_product` pour autant : celui-là est un
+		// gestionnaire de formulaire COMPLET (sans `description` au POST il vide la
+		// description, et il réécrit les catégories dans tous les cas). Y router
+		// quatre champs aurait mutilé le produit en silence. Le handler séparé est
+		// la seule façon de borner ce qu'une modale partielle peut abîmer.
+		'quick_product'    => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
 		'delete_product'   => array( 'caps' => array( 'delete_products' ), 'famille' => 'manager' ),
 		// 2026-08-04 — duplication. `edit_products` et NON `delete_products` : créer
 		// une copie n'est pas destructif (elle naît en brouillon). Même cap que
