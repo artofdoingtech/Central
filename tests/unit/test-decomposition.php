@@ -250,7 +250,17 @@ AOD_Test::group( 'Décomposition 30 — R1 : le fichier-dieu ne regrossit pas' )
 // ⚠️ Ce plafond garde une COQUE. Le compte NET du chantier est négatif côté
 // section : `class-aod-cd-section-tracking.php` sort son `meta_query` de
 // `render()` pour en faire un corps unique que le bandeau réemploie.
-$aod_decomp_plafond = 1098;
+//
+// REMONTÉE ASSUMÉE 1098 → 1107 (+9, section Finance, 2026-08-10) : une
+// section NOUVELLE coûte quatre lignes de COQUE dans ce fichier — son entrée
+// de registre, son groupe de navigation, son `case` de routeur et son module
+// JS — plus trois clés i18n que `section-finance.js` consomme et qui n'ont,
+// comme les précédentes, aucun autre endroit où être déclarées.
+// 🔎 C'est le coût NORMAL et borné d'une section : tout le reste — rendu,
+// calcul, stockage, handlers AJAX — vit dans `class-aod-cd-section-finance.php`.
+// Ce plafond garde une COQUE ; il n'a jamais eu pour rôle d'empêcher le
+// dépôt de grandir, seulement d'empêcher le monolithe de se reformer.
+$aod_decomp_plafond = 1107;
 
 $aod_decomp_fichier = AOD_CD_PATH . 'includes/class-aod-cd-dashboard.php';
 $aod_decomp_lignes  = is_readable( $aod_decomp_fichier ) ? count( file( $aod_decomp_fichier ) ) : -1;

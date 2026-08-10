@@ -161,6 +161,13 @@ function aod_test_perm_contrat() {
 		// description, et il réécrit les catégories dans tous les cas). Y router
 		// quatre champs aurait mutilé le produit en silence. Le handler séparé est
 		// la seule façon de borner ce qu'une modale partielle peut abîmer.
+		// Finance (2026-08-10). `manage_woocommerce` et rien de moins : le
+		// calculateur ne lit aucune commande, mais son historique est une donnée
+		// de PILOTAGE — prix d'achat, budget publicitaire, marge réelle. C'est
+		// précisément ce qu'un confirmateur n'a pas à voir, et la section elle-même
+		// est absente de `$section_caps`, donc gérant-only par défaut.
+		'finance_save'     => array( 'caps' => array( 'manage_woocommerce' ), 'famille' => 'manager' ),
+		'finance_delete'   => array( 'caps' => array( 'manage_woocommerce' ), 'famille' => 'manager' ),
 		'quick_product'    => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
 		'delete_product'   => array( 'caps' => array( 'delete_products' ), 'famille' => 'manager' ),
 		// 2026-08-04 — duplication. `edit_products` et NON `delete_products` : créer

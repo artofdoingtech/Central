@@ -117,6 +117,7 @@ add_action( 'plugins_loaded', function () {
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-section-shipping.php';
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-section-tracking.php';
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-section-orders.php';
+	require_once AOD_CD_PATH . 'includes/class-aod-cd-section-finance.php';
 	require_once AOD_CD_PATH . 'includes/class-aod-cd-account.php';
 
 	AOD_CD_Roles::instance();
@@ -124,6 +125,7 @@ add_action( 'plugins_loaded', function () {
 	AOD_CD_Customize::init();
 	AOD_CD_Dashboard::instance();
 	AOD_CD_Section_Home::instance();
+	AOD_CD_Section_Finance::instance(); // hooks AJAX du calculateur au boot.
 	AOD_CD_Section_Stock::instance();
 	AOD_CD_Section_Abandoned::instance(); // hook AJAX de conversion abandon → commande au boot (39.1)
 	AOD_CD_Section_Team::instance();

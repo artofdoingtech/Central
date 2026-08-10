@@ -104,6 +104,13 @@ $aod_cd_cleanup = static function () use ( $aod_cd_role, $aod_cd_confirmer, $aod
 	// ci-dessus : un état de cache, sans valeur métier, qui n'a rien à faire en
 	// base après la désinstallation.
 	delete_option( 'aod_cd_home_cache_buckets' );
+	// Historique des calculs du pôle Finance (2026-08-10). Ce n'est PAS du
+	// cache : ce sont des simulations que le gérant a explicitement demandé de
+	// garder. Elle part quand même — désinstaller le plugin retire l'écran qui
+	// sait les lire, et une option orpheline survit indéfiniment en base sans
+	// que rien ne le signale (c'est exactement ce que garde R1 de
+	// `test-uninstall.php`).
+	delete_option( 'aod_cd_finance_calculs' );
 	// Motif « aod_cd_% » et non « aod_cd_home_% » : la section Stock a repris le
 	// même mécanisme de cache avec SON préfixe (`aod_cd_stock_`, étape 25.1) et
 	// échappait au balayage. Un motif nommant une seule section dérive dès la

@@ -67,6 +67,7 @@ class AOD_CD_Icon {
 			'tracking'   => 'map-pin',
 			'marketing'  => 'crosshair',
 			'whatsapp'   => 'whatsapp-logo',
+			'finance'    => 'currency-circle-dollar',
 			'team'       => 'users',
 			'account'    => 'user-circle',
 			'storefront' => 'storefront',
@@ -151,7 +152,7 @@ class AOD_CD_Icon {
 	public static function filled() {
 		return array(
 			'home', 'orders', 'abandoned', 'products', 'stock', 'categories',
-			'shipping', 'tracking', 'marketing', 'whatsapp', 'team', 'account',
+			'shipping', 'tracking', 'marketing', 'whatsapp', 'team', 'account', 'finance',
 			'storefront', 'landing',
 		);
 	}

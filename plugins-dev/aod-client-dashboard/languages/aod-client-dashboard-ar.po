@@ -3914,3 +3914,292 @@ msgstr[2] "منذ سنتين"
 msgstr[3] "منذ %s سنوات"
 msgstr[4] "منذ %s سنة"
 msgstr[5] "منذ %s سنة"
+
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Abandonnées avant l’expédition : aucun colis n’est parti."
+msgstr "مُلغاة قبل الإرسال: لم يخرج أي طرد."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Abonnements, outils, salaires fixes… tout ce qui ne dépend pas du nombre de commandes."
+msgstr "اشتراكات، أدوات، رواتب ثابتة… كل ما لا يتعلّق بعدد الطلبيات."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Aucun calcul enregistré."
+msgstr "لا توجد أي عملية حساب محفوظة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Autres dépenses"
+msgstr "مصاريف أخرى"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Bénéfice brut"
+msgstr "الربح الإجمالي"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Bénéfice net"
+msgstr "الربح الصافي"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Calcul du %s"
+msgstr "حساب %s"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Calcul enregistré."
+msgstr "تم حفظ الحساب."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Calcul introuvable."
+msgstr "الحساب غير موجود."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Calcul supprimé."
+msgstr "تم حذف الحساب."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Calculateur de bénéfices"
+msgstr "حاسبة الأرباح"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Calculs enregistrés"
+msgstr "الحسابات المحفوظة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Carton, adhésif, étiquette — compté sur les colis réellement partis."
+msgstr "كرتون، لاصق، ملصق — يُحسب على الطرود التي خرجت فعلًا."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce que chaque commande vous coûte ou vous rapporte, une par une."
+msgstr "ما تكلّفه كل طلبية أو ما تدرّه، واحدة واحدة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce que coûte l’appel — compté sur TOUTES les commandes, pas seulement celles qui aboutissent."
+msgstr "تكلفة المكالمة — تُحسب على كل الطلبيات، لا على الناجحة منها فقط."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce que le produit vous coûte chez le fournisseur."
+msgstr "ما يكلّفك المنتج عند المورّد."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce que le transporteur vous facture par colis."
+msgstr "ما تفوتره لك شركة التوصيل عن كل طرد."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce qu’il vous reste vraiment, une fois la publicité, les retours et la confirmation payés."
+msgstr "ما يبقى لك فعلًا بعد دفع الإشهار والمرتجعات والتأكيد."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Celles qui ont été payées. Ce sont les seules qui font du chiffre d’affaires."
+msgstr "التي دُفع ثمنها. وهي وحدها التي تصنع رقم الأعمال."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Commandes annulées"
+msgstr "طلبيات ملغاة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Commandes livrées"
+msgstr "طلبيات مُسلَّمة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coordonnées, informations fiscales et bancaires de la société."
+msgstr "بيانات الاتصال والمعلومات الجبائية والبنكية للشركة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coût de livraison"
+msgstr "تكلفة التوصيل"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coût des retours"
+msgstr "تكلفة المرتجعات"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coût d’acquisition client"
+msgstr "تكلفة اكتساب الزبون"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coût moyen par commande"
+msgstr "متوسّط التكلفة لكل طلبية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coût total"
+msgstr "التكلفة الإجمالية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Des montants globaux, pas par commande : ils ne se multiplient pas."
+msgstr "مبالغ إجمالية، لا لكل طلبية: لا تُضرب في العدد."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Dépenses"
+msgstr "المصاريف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Dépenses publicitaires"
+msgstr "الإنفاق الإشهاري"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Emballage"
+msgstr "التغليف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Enregistrer ce calcul"
+msgstr "حفظ هذا الحساب"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Enregistrez une simulation pour la retrouver ici et la recharger d’un clic."
+msgstr "احفظ محاكاة لتجدها هنا وتستعيدها بنقرة واحدة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Entreprise"
+msgstr "الشركة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Finance"
+msgstr "المالية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Frais de confirmation"
+msgstr "رسوم التأكيد"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Frais de livraison"
+msgstr "رسوم التوصيل"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Frais de publicité"
+msgstr "مصاريف الإشهار"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Frais d’emballage"
+msgstr "رسوم التغليف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le budget total dépensé en publicité sur la période."
+msgstr "إجمالي الميزانية المُنفقة على الإشهار خلال الفترة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le colis est parti et vous est revenu : la livraison est due, la marchandise revient en stock."
+msgstr "خرج الطرد وعاد إليك: التوصيل مستحقّ، والبضاعة تعود إلى المخزون."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le détail"
+msgstr "التفصيل"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le prix payé par le client à la livraison."
+msgstr "الثمن الذي يدفعه الزبون عند الاستلام."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le serveur a recalculé et ne trouve pas la même chose que cet écran (%s). Les nombres affichés sont désormais ceux du serveur."
+msgstr "أعاد الخادم الحساب ولم يجد نفس نتيجة هذه الشاشة (%s). الأرقام المعروضة الآن هي أرقام الخادم."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le total, avant tout tri."
+msgstr "المجموع، قبل أي فرز."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Les outils qui répondent à une seule question : est-ce que cette boutique gagne de l’argent ?"
+msgstr "أدوات تجيب عن سؤال واحد: هل يربح هذا المتجر مالًا؟"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Les quantités observées sur la même période."
+msgstr "الكميات المُسجَّلة في نفس الفترة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Livrées + annulées + retours font %1$d, au-dessus des %2$d commandes reçues. Les taux resteront calculés, mais ils ne voudront rien dire."
+msgstr "المُسلَّمة + الملغاة + المرتجعة تساوي %1$d، أي أكثر من %2$d طلبية مستلمة. ستبقى النِّسب محسوبة، لكنها لن تعني شيئًا."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Marge bénéficiaire"
+msgstr "هامش الربح"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Nom du calcul"
+msgstr "اسم الحساب"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Nommez ce calcul (facultatif)"
+msgstr "سمِّ هذا الحساب (اختياري)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Où part l’argent"
+msgstr "أين يذهب المال"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Par commande"
+msgstr "لكل طلبية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Prix de vente"
+msgstr "سعر البيع"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Prix d’achat (coût produit)"
+msgstr "سعر الشراء (تكلفة المنتج)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Publicité"
+msgstr "الإشهار"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Publicité, livraison, salaires, emballage, fournisseurs, abonnements — saisies une fois, retrouvées par période."
+msgstr "إشهار، توصيل، رواتب، تغليف، موردون، اشتراكات — تُدخَل مرة واحدة وتُسترجع حسب الفترة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "ROAS"
+msgstr "العائد على الإنفاق الإشهاري (ROAS)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Recharger"
+msgstr "استعادة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Renseignez vos chiffres : le résultat se met à jour à chaque frappe. Rien n’est enregistré tant que vous ne le demandez pas."
+msgstr "أدخل أرقامك: تتحدّث النتيجة مع كل ضغطة. لا يُحفظ شيء ما لم تطلب ذلك."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Retours"
+msgstr "المرتجعات"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Répartition des coûts"
+msgstr "توزيع التكاليف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Sans nom"
+msgstr "بدون اسم"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Supprimer ce calcul"
+msgstr "حذف هذا الحساب"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Sur la période"
+msgstr "خلال الفترة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Taux de livraison"
+msgstr "نسبة التسليم"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Taux de retour"
+msgstr "نسبة الإرجاع"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Taux d’annulation"
+msgstr "نسبة الإلغاء"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Tout effacer"
+msgstr "مسح الكل"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Vos commandes"
+msgstr "طلبياتك"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Vos taux"
+msgstr "نسبك"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "À venir"
+msgstr "قريبًا"

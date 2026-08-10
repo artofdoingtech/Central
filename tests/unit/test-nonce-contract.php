@@ -91,6 +91,10 @@ function aod_test_nonce_exemptions() {
 			'famille'  => 'affichage',
 			'pourquoi' => 'Filtres de la liste de suivi (ex-AOD_CD_Dashboard::section_tracking, extraite en 30.5). Lecture seule, écran déjà authentifié.',
 		),
+		'AOD_CD_Section_Finance::render'    => array(
+			'famille'  => 'affichage',
+			'pourquoi' => 'Choix de l’outil financier ouvert ($_GET["outil"]). Lecture seule, écran déjà authentifié ; une clé inconnue retombe sur la page de choix plutôt que d’écrire quoi que ce soit.',
+		),
 		'AOD_CD_Section_Abandoned::render'  => array(
 			'famille'  => 'affichage',
 			'pourquoi' => 'Filtres des commandes abandonnées. Lecture seule, écran déjà authentifié.',
@@ -150,6 +154,11 @@ function aod_test_nonce_helpers() {
 	return array(
 		'AOD_COD_Pixels::capi_token_from_post',
 		'AOD_CD_Section_Marketing::capi_token_from_post',
+		// Même contrat que les deux ci-dessus : elle CONVERTIT le POST en nombres
+		// et ne décide de rien. `private static`, donc le contrat ne peut pas être
+		// contourné depuis l'extérieur — et c'est ce test qui vérifie que son
+		// unique appelant, `ajax_finance_save()`, vérifie bien le nonce.
+		'AOD_CD_Section_Finance::entrees_du_post',
 		'AOD_CD_Section_Products::collect_options',
 		'AOD_CD_Section_Products::collect_offers',
 		'AOD_CD_Section_Products::save_gallery',

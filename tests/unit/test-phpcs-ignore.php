@@ -117,7 +117,18 @@ function aod_test_pcs_census() {
 			// existe pour qu'aucun mouvement du census n'arrive en silence, et un
 			// chiffre qui descend sans explication se relit, dans six mois, comme
 			// un chiffre qu'on a ajusté pour faire passer le test.
-			'n'        => 167,
+			//
+			// 167 → 176 le 2026-08-10 (section Finance). ⬆️ Une hausse de NEUF, toutes
+			// du même motif déjà recensé plus haut : `AOD_CD_Icon::svg()` (catalogue
+			// FERMÉ — un nom validé contre une liste, aucune donnée saisie n'y entre)
+			// et les composants partagés `page_head()` / `empty_state()` / `wc_price()`,
+			// qui échappent EUX-MÊMES leurs entrées et rendent du balisage que
+			// `esc_html()` détruirait.
+			// ⚠️ AUCUNE ne couvre une donnée saisie par un utilisateur. Le seul contenu
+			// libre de cette section est le NOM d'un calcul enregistré : il passe par
+			// `sanitize_text_field()` à l'écriture et par `esc_html()` à l'affichage —
+			// il n'y a pas de dérogation sur ce chemin, et c'est délibéré.
+			'n'        => 176,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
@@ -266,7 +277,14 @@ function aod_test_pcs_census() {
 				. 'voie : le census compte les annotations, il ne relit pas ce qu’elles couvrent.',
 		),
 		'WordPress.Security.NonceVerification'    => array(
-			'n'        => 18,
+			// 18 → 19 le 2026-08-10 : `AOD_CD_Section_Finance::entrees_du_post()`.
+			// Même contrat que les deux `capi_token_from_post()` déjà recensés — elle
+			// CONVERTIT le POST en nombres et ne décide de rien ; le nonce est vérifié
+			// par son unique appelant, `ajax_finance_save()`. 🔒 Ce n'est pas une
+			// promesse de commentaire : elle est inscrite dans `aod_test_nonce_helpers()`,
+			// qui EXIGE que tous ses appelants noncent et rougit au premier qui ne le
+			// ferait pas.
+			'n'        => 19,
 			'securite' => true,
 			'quoi'     => 'Contrôle CSRF désarmé. Majoritairement des lectures $_GET de navigation (langue, section) sans effet de bord. '
 				. 'La 18ᵉ (étape 47.6, class-aod-cd-upload.php, handle()) : lecture de `$_FILES[ $field ]` '

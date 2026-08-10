@@ -436,7 +436,23 @@ $aod_surf_corps = aod_test_surf_body( $aod_surf_css );
 // un cran mais un couple : le tokeniser à moitié aurait donné une déclaration
 // illisible pour un gain de comptage nul.
 $aod_surf_plafond_fs  = 29;
-$aod_surf_plafond_pad = 139;
+// 🔁 PADDING : 139 → 137 LE 2026-08-10, ET LA DOCTRINE CI-DESSUS A TENU.
+// La section Finance ajoutait CINQ `padding` littéraux — quatre remises à zéro
+// (`<form>`, `<legend>`, deux `<ul>`) et une pastille — soit 144, au-dessus du
+// plafond. Les trois sorties de 2026-08-07 se représentaient à l'identique ;
+// la même a été retenue : PAYER LA HAUSSE AILLEURS.
+//   · La pastille « À venir » passe aux crans (`--cd-sp-1 --cd-sp-3`).
+//   · SEPT `padding` à DEUX valeurs dont les deux sont des crans exacts
+//     (`16px 12px`, `12px 16px`, `8px 12px`, `20px 24px`…) passent en
+//     `var(--cd-sp-*) var(--cd-sp-*)`. Conversion visuellement nulle par
+//     construction — 16 px EST la valeur du cran.
+// ⚠️ La note de 2026-08-07 disait n'avoir converti que la forme à valeur
+// UNIQUE, au motif qu'un couple « tokenisé à moitié » serait illisible. Ces
+// sept-là sont tokenisés DES DEUX CÔTÉS : l'objection ne les vise pas.
+// 🔎 Et le compte final est MESURÉ, pas déduit : j'avais calculé 136, le
+// cliquet a rendu 137. C'est le cliquet qui a raison — d'où un plafond posé
+// sur ce qu'il compte, jamais sur ce que je crois avoir retiré.
+$aod_surf_plafond_pad = 137;
 
 $aod_surf_n_fs  = preg_match_all( '/font-size\s*:\s*[0-9.]+px/', $aod_surf_corps );
 $aod_surf_n_pad = preg_match_all( '/padding\s*:\s*[0-9]/', $aod_surf_corps );

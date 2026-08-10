@@ -760,7 +760,7 @@
 		'bindPixelDialogs', 'bindCapiTest', 'bindPixelCards', 'bindOrderDetail',
 		'bindOrderBulkDelete', 'bindShipSend', 'bindResetShop', 'bindTracking', 'bindTeam',
 		'bindStock', 'bindLanding', 'bindAbandonedConvert',
-		'bindAbandonedBulkDelete', 'bindLeadAssign'
+		'bindAbandonedBulkDelete', 'bindLeadAssign', 'bindFinance'
 	];
 	var registry = {};
 	function register( name, fn ) {

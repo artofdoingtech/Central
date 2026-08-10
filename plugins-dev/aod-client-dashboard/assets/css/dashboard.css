@@ -513,7 +513,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 /* `contain` et non `cover` : un logo client n'est jamais carré, et `cover` le
    rognerait — on préfère de l'air autour d'une marque entière. */
 .aod-cd-brand-logo{width:100%;height:100%;object-fit:contain;display:block}
-.aod-cd-nav{padding:16px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+.aod-cd-nav{padding:var(--cd-sp-4) var(--cd-sp-3);display:flex;flex-direction:column;gap:3px;flex:1}
 /* Intitulé de groupe de navigation (coque groupée par domaine — étape 5.3) */
 .aod-cd-navgroup{
 	padding:15px 14px 5px;font-size:10.5px;font-weight:800;text-transform:uppercase;
@@ -592,7 +592,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
    ⚠️ Le geste vaut pour les DEUX états (replié et déplié) : le modifier dans un
    seul ferait glisser les entrées au dépliage, sous le curseur qui vient les
    chercher (45.5). */
-.aod-cd-side-head{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px}
+.aod-cd-side-head{padding:var(--cd-sp-3) var(--cd-sp-4);border-bottom:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px}
 .aod-cd-side-foot{padding:10px 16px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:9px}
 .aod-cd-view,.aod-cd-logout{
 	color:var(--cd-side-txt);text-decoration:none;font-size:var(--cd-fs-sm);font-weight:600;opacity:.85;
@@ -662,7 +662,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	.aod-cd-side:focus-within{width:var(--cd-side-w)}
 
 	/* 45.1 — L'ICÔNE AU CENTRE DE SON CADRE, pas seulement « dedans ».
-	   `.aod-cd-nav{padding:16px 12px}` réduit à 40 px, sur un rail de 64, le cadre
+	   `.aod-cd-nav{padding:var(--cd-sp-4) var(--cd-sp-3)}` réduit à 40 px, sur un rail de 64, le cadre
 	   du lien — celui que peint `.is-active`. Or `.aod-cd-navlink` gardait le
 	   `padding-inline:14px` de la barre DÉPLIÉE : l'icône de 20 px se posait donc à
 	   14 px du début, centrée en 36 pour un cadre centré en 32. MESURÉ : 4 px de
@@ -835,7 +835,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	.aod-cd-side{
 		width:100%;flex:0 0 auto;position:sticky;top:0;height:auto;z-index:20;
 	}
-	.aod-cd-brand{padding:16px 20px;border-bottom:0}
+	.aod-cd-brand{padding:var(--cd-sp-4) var(--cd-sp-5);border-bottom:0}
 	.aod-cd-navtoggle{
 		display:inline-flex;flex-direction:column;justify-content:center;gap:5px;
 		margin-inline-start:auto;width:44px;height:38px;padding:0 10px;flex:0 0 auto;
@@ -1763,7 +1763,7 @@ html[dir="rtl"] .aod-cd-csel-opt.is-active{box-shadow:inset -3px 0 0 var(--cd-ac
 .aod-cd-guide{stroke:var(--cd-ink);stroke-width:1;stroke-dasharray:4 4;opacity:0;transition:opacity .12s}
 .aod-cd-tip{
 	position:absolute;pointer-events:none;left:0;top:0;background:var(--cd-field);color:var(--cd-muted);
-	padding:8px 12px;border:1px solid var(--cd-line);border-inline-start:3px solid var(--cd-accent);
+	padding:var(--cd-sp-2) var(--cd-sp-3);border:1px solid var(--cd-line);border-inline-start:3px solid var(--cd-accent);
 	border-radius:var(--cd-r-sm);font-size:var(--cd-fs-xs);line-height:1.45;white-space:nowrap;
 	opacity:0;transform:translate(-50%,calc(-100% - 12px));transition:opacity .12s;
 	box-shadow:0 8px 22px rgba(24,24,24,.14);z-index:2;
@@ -2308,7 +2308,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 
 /* Réutilisation des champs admin des transporteurs (.form-table) en contexte front */
 .aod-cd-carrier-fields .form-table{width:100%;border-collapse:collapse}
-.aod-cd-carrier-fields .form-table th{text-align:start;padding:8px 12px 8px 0;font-weight:700;font-size:var(--cd-fs-sm);color:var(--cd-ink);vertical-align:top;width:180px}
+.aod-cd-carrier-fields .form-table th{text-align:start;padding:var(--cd-sp-2) var(--cd-sp-3) 8px 0;font-weight:700;font-size:var(--cd-fs-sm);color:var(--cd-ink);vertical-align:top;width:180px}
 .aod-cd-carrier-fields .form-table td{padding:8px 0;font-size:var(--cd-fs-md);background:none}
 .aod-cd-carrier-fields .form-table input[type=text],
 .aod-cd-carrier-fields .form-table input[type=number],
@@ -2373,7 +2373,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 	box-shadow:0 24px 64px rgba(0,0,0,.32);z-index:1;animation:aod-cd-pop .26s var(--cd-ease-out);
 }
 @keyframes aod-cd-pop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-.aod-cd-modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--cd-line)}
+.aod-cd-modal-head{display:flex;align-items:center;justify-content:space-between;padding:var(--cd-sp-5) var(--cd-sp-6);border-bottom:1px solid var(--cd-line)}
 .aod-cd-modal-title{margin:0;font-size:var(--cd-fs-xl);font-weight:800;letter-spacing:-.2px}
 /* La croix devient un BOUTON et cesse d'être un caractère cliquable : 32 px de
    surface, un creux au survol. Elle était une glyphe de 24 × 28 px sans fond —
@@ -4324,6 +4324,226 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 .aod-cd-btn-danger:disabled:hover{background:transparent;color:var(--cd-bad);border-color:var(--cd-bad)}
 .aod-cd-danger .aod-cd-form-msg{color:var(--cd-ink-2)}
 .aod-cd-danger .aod-cd-form-msg.is-bad{color:var(--cd-bad)}
+
+/* ============================================================
+ * Finance — le pôle, et son calculateur de bénéfices
+ *
+ * 🎨 AUCUNE COULEUR NOUVELLE. Tout dérive de l'accent choisi par le client dans
+ *    le Personnalisateur, ou des jetons sémantiques de la charte (--cd-ok,
+ *    --cd-warn, --cd-bad). Les sept postes de coût reprennent LA MÊME rampe
+ *    `color-mix` que l'anneau des ventes (`.aod-cd-donut__arc`) : deux
+ *    graphiques de la même application doivent parler la même langue de
+ *    couleur, et un littéral ici sortirait du garde-fou de contraste éprouvé
+ *    sur six accents hostiles.
+ * ========================================================== */
+
+/* ── Le choix des outils ─────────────────────────────────────────────── */
+.aod-cd-finmods{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--cd-sp-4)}
+.aod-cd-finmod{
+	display:flex;align-items:flex-start;gap:var(--cd-sp-4);
+	padding:var(--cd-sp-5);text-decoration:none;color:inherit;
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+	transition:border-color .18s var(--cd-ease-out),box-shadow .18s var(--cd-ease-out),transform .18s var(--cd-ease-out);
+}
+.aod-cd-finmod--pret:hover{transform:translateY(-3px);box-shadow:var(--cd-shadow);border-color:var(--cd-accent)}
+.aod-cd-finmod--pret:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+.aod-cd-finmod--avenir{opacity:.72}
+.aod-cd-finmod__ic{
+	flex:0 0 42px;width:42px;height:42px;border-radius:var(--cd-r-md);
+	display:inline-flex;align-items:center;justify-content:center;
+	background:var(--cd-accent-soft);color:var(--cd-ink);
+}
+.aod-cd-finmod--pret .aod-cd-finmod__ic{background:var(--cd-accent);color:var(--cd-accent-ink)}
+.aod-cd-finmod__txt{display:flex;flex-direction:column;gap:5px;min-width:0}
+.aod-cd-finmod__t{font-size:var(--cd-fs-lg);font-weight:800;color:var(--cd-ink);line-height:1.25}
+.aod-cd-finmod__s{font-size:var(--cd-fs-sm);line-height:1.55;color:var(--cd-muted)}
+/* La flèche avance au survol : le seul mouvement de la carte qui DIT quelque
+   chose — « ceci mène ailleurs ». Les cartes « à venir » ne l'ont pas. */
+.aod-cd-finmod__go{margin-inline-start:auto;flex:none;color:var(--cd-accent);transition:transform .18s var(--cd-ease-out)}
+.aod-cd-finmod--pret:hover .aod-cd-finmod__go{transform:translateX(4px)}
+[dir="rtl"] .aod-cd-finmod--pret:hover .aod-cd-finmod__go{transform:translateX(-4px)}
+.aod-cd-finmod__tag{
+	margin-inline-start:auto;flex:none;align-self:center;
+	padding:var(--cd-sp-1) var(--cd-sp-3);border-radius:var(--cd-r-pill);
+	font-size:var(--cd-fs-xs);font-weight:700;letter-spacing:.03em;
+	color:var(--cd-muted);background:var(--cd-bg);border:1px solid var(--cd-line);
+}
+
+/* ── Le calculateur : saisie à gauche, résultat à droite ─────────────── */
+.aod-cd-fincalc__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--cd-sp-5);align-items:start}
+@media(max-width:1080px){.aod-cd-fincalc__grid{grid-template-columns:minmax(0,1fr)}}
+/* Le résultat suit la saisie sur grand écran : on tape en bas du formulaire et
+   le bénéfice reste sous les yeux. Sans cela, l'outil oblige à remonter pour
+   voir l'effet de ce qu'on vient d'écrire. */
+@media(min-width:1081px){
+	.aod-cd-finres{position:sticky;top:var(--cd-sp-5)}
+}
+
+.aod-cd-fincalc__form{display:block;padding:0;background:none;border:0}
+.aod-cd-finset{
+	margin:0 0 var(--cd-sp-4);padding:var(--cd-sp-5);
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+}
+.aod-cd-finset__lg{display:flex;align-items:center;gap:var(--cd-sp-2);padding:0;float:none;width:auto}
+.aod-cd-finset__ic{
+	flex:none;width:26px;height:26px;border-radius:var(--cd-r-sm);
+	display:inline-flex;align-items:center;justify-content:center;
+	background:var(--cd-accent-soft);color:var(--cd-ink);
+}
+.aod-cd-finset__t{font-size:var(--cd-fs-md);font-weight:800;color:var(--cd-ink)}
+.aod-cd-finset__s{margin:6px 0 var(--cd-sp-4);font-size:var(--cd-fs-sm);line-height:1.55;color:var(--cd-muted)}
+.aod-cd-finset__body{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--cd-sp-4)}
+
+/* ── 🎬 LE CHAMP QUI RÉPOND ───────────────────────────────────────────
+   Trois signaux, et aucun n'est décoratif : le liseré d'accent dit « c'est ici
+   que vous écrivez », le fond qui s'éclaircit sépare le champ actif des six
+   autres de la grille, et l'unité monétaire s'estompe quand le champ est vide
+   pour ne pas se faire lire comme une valeur.
+   🔒 L'anneau de focus reste `--cd-focus`, JAMAIS l'accent : c'est la règle que
+   la 46.1 a dû ré-appliquer quatre fois dans ce fichier. Le `border-color`
+   accentué, lui, est le seul canal que le cliquet de conformité autorise. */
+.aod-cd-finfield{position:relative}
+.aod-cd-finfield__wrap{position:relative;display:block}
+.aod-cd-form input.aod-cd-finfield__in{
+	width:100%;font-variant-numeric:tabular-nums;padding-right:var(--cd-sp-10);
+	transition:border-color .16s var(--cd-ease-out),background-color .16s var(--cd-ease-out);
+}
+.aod-cd-form input.aod-cd-finfield__in:hover{border-color:var(--cd-soft)}
+.aod-cd-form input.aod-cd-finfield__in:focus{border-color:var(--cd-accent);background:var(--cd-card)}
+/* 🔴 `right`, PAS `inset-inline-end` — ET C'EST L'INVERSE DU RÉFLEXE.
+   Tout le reste de cette feuille est écrit en logique, précisément pour
+   miroiter en arabe. Ce champ-ci ne le doit PAS : `.aod-cd-code` lui impose
+   `direction:ltr; text-align:left`, parce qu'un montant se lit de gauche à
+   droite dans les deux langues. Son contenu ne miroite donc jamais — mais
+   `inset-inline-end`, lui, miroitait : en arabe l'unité passait à GAUCHE,
+   c'est-à-dire exactement sur le nombre. Mesuré à 390 px : « 3000 » et
+   « د.ج » superposés dans la même boîte, illisibles.
+   🚨 La leçon vaut au-delà de ce champ : une propriété logique ne suit pas la
+   langue de la page, elle suit la DIRECTION de son conteneur. Là où on a
+   figé cette direction, il faut figer la position avec elle — sinon les deux
+   se contredisent, et seul l'arabe le montre.
+   ⚠️ Le réservoir de droite est ouvert par `padding-right` sur le champ : sans
+   lui, un montant long finirait sous l'unité. Il est exprimé en cran, donc il
+   n'ajoute aucun littéral au recensement de la charte. */
+.aod-cd-finfield__unit{
+	position:absolute;inset-block-start:50%;right:12px;transform:translateY(-50%);
+	font-size:var(--cd-fs-sm);font-weight:700;color:var(--cd-soft);pointer-events:none;
+	transition:color .16s var(--cd-ease-out);
+}
+.aod-cd-finfield__in:not(:placeholder-shown) ~ .aod-cd-finfield__unit{color:var(--cd-ink)}
+/* Les flèches natives volent la place de l'unité et n'ont aucun usage ici :
+   on saisit un montant, on ne l'incrémente pas de 1 en 1. */
+.aod-cd-finfield__in::-webkit-outer-spin-button,
+.aod-cd-finfield__in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.aod-cd-finfield__in[type=number]{-moz-appearance:textfield;appearance:textfield}
+
+.aod-cd-finwarn{
+	margin:0 0 var(--cd-sp-4);padding:var(--cd-sp-3) var(--cd-sp-4);
+	font-size:var(--cd-fs-sm);line-height:1.5;color:var(--cd-warn);
+	background:var(--cd-warn-soft);border-radius:var(--cd-r-md);
+	border-inline-start:3px solid var(--cd-warn);
+}
+.aod-cd-fincalc__acts{display:flex;flex-wrap:wrap;align-items:center;gap:var(--cd-sp-3)}
+.aod-cd-fincalc__nom{flex:1 1 200px;min-width:0}
+
+/* ── Les résultats ───────────────────────────────────────────────────── */
+.aod-cd-finres{display:flex;flex-direction:column;gap:var(--cd-sp-4)}
+/* 🔴 « 180 000 د.ج » PASSAIT À LA LIGNE, et la tuile grandissait toute seule.
+   Vu à la capture, pas déduit : la grille partagée est taillée pour la pleine
+   largeur de l'Accueil, ici le panneau n'en fait que la moitié.
+   🔎 J'avais d'abord passé la rangée à DEUX colonnes. Règle inerte : elle a la
+   même spécificité (0,1,0) que `.aod-cd-kpis`, qui la SUIT dans le fichier et
+   l'emporte donc. Elle a été retirée plutôt que renforcée — une fois le
+   débordement corrigé, quatre tuiles de front passent très bien, et laisser
+   une déclaration qui ne s'applique pas sous un commentaire qui explique un
+   correctif, c'est mentir deux fois : sur ce que fait le code et sur pourquoi.
+   Ce qui corrige réellement est la ligne ci-dessous, en (0,2,0). */
+.aod-cd-finres__kpis{margin-bottom:0}
+.aod-cd-finres__kpis .aod-cd-kpi__val{white-space:nowrap}
+.aod-cd-finkpi{transition:border-color .18s var(--cd-ease-out)}
+.aod-cd-finkpi.is-ok{border-color:var(--cd-ok)}
+.aod-cd-finkpi.is-bad{border-color:var(--cd-bad)}
+.aod-cd-finkpi.is-bad .aod-cd-kpi__val{color:var(--cd-bad)}
+
+/* ── 🎬 UN NOMBRE QUI CHANGE DOIT SE VOIR CHANGER ─────────────────────
+   Sans ce battement, on tape dans un champ et rien ne bouge de façon
+   perceptible à l'écran, alors que les dix-huit indicateurs viennent d'être
+   recalculés. L'animation est COURTE et ne déplace rien : elle éclaire la
+   valeur une fraction de seconde. C'est le seul mouvement du panneau. */
+@keyframes aod-cd-fin-maj{
+	0%{color:var(--cd-accent)}
+	100%{color:inherit}
+}
+.aod-cd-finres [data-res].is-maj{animation:aod-cd-fin-maj .45s var(--cd-ease-out)}
+
+/* ── Où part l'argent ──────────────────────────────────────────────────
+   🔴 LA RAMPE NE VA PAS VERS L'ENCRE, ET C'EST UN CORRECTIF. Recopiée de
+   l'anneau des ventes, elle mélangeait l'accent vers `--cd-ink` : sur un
+   accent SOMBRE — celui du template l'est — les deux extrémités sont sombres,
+   et les segments 4 à 7 devenaient indiscernables. Vu à la capture, pas
+   déduit. Elle va désormais de l'accent vers sa propre teinte claire : même
+   famille de couleur, sept crans réellement distincts, toujours zéro littéral
+   et toujours dérivée de l'accent du client.
+   ⚠️ L'anneau des ventes garde sa formule : il ne montre que quatre parts, où
+   elle tient. La corriger là-bas serait un autre chantier, avec sa mesure. */
+.aod-cd-fincost__bar{
+	display:flex;width:100%;height:22px;overflow:hidden;
+	border-radius:var(--cd-r-pill);background:var(--cd-bg);
+}
+.aod-cd-fincost__bar.is-vide{box-shadow:inset 0 0 0 1px var(--cd-line)}
+.aod-cd-fincost__seg{
+	display:block;height:100%;min-width:2px;
+	background:color-mix(in srgb,var(--cd-accent) calc(100% - var(--part) * 14%),var(--cd-accent-soft));
+	transition:width .35s var(--cd-ease-out);
+}
+.aod-cd-fincost__leg{list-style:none;margin:var(--cd-sp-4) 0 0;padding:0;display:flex;flex-direction:column;gap:var(--cd-sp-2)}
+.aod-cd-fincost__li{display:flex;align-items:center;gap:var(--cd-sp-2);font-size:var(--cd-fs-sm)}
+.aod-cd-fincost__dot{
+	flex:none;width:10px;height:10px;border-radius:50%;
+	background:color-mix(in srgb,var(--cd-accent) calc(100% - var(--part) * 14%),var(--cd-accent-soft));
+}
+.aod-cd-fincost__nom{color:var(--cd-ink);font-weight:600}
+.aod-cd-fincost__val{margin-inline-start:auto;color:var(--cd-ink);font-variant-numeric:tabular-nums}
+.aod-cd-fincost__pct{flex:none;min-width:52px;text-align:end;color:var(--cd-muted);font-variant-numeric:tabular-nums}
+
+/* ── Les taux ────────────────────────────────────────────────────────── */
+.aod-cd-finrate{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px var(--cd-sp-3);margin-bottom:var(--cd-sp-4)}
+.aod-cd-finrate:last-child{margin-bottom:0}
+.aod-cd-finrate__l{font-size:var(--cd-fs-sm);font-weight:600;color:var(--cd-ink)}
+.aod-cd-finrate__v{font-size:var(--cd-fs-sm);font-weight:800;color:var(--cd-ink);font-variant-numeric:tabular-nums}
+.aod-cd-finrate__track{grid-column:1 / -1;height:8px;border-radius:var(--cd-r-pill);background:var(--cd-bg);overflow:hidden}
+/* La largeur est la DONNÉE, pas un effet : elle est animée pour qu'on voie le
+   taux bouger quand on corrige une saisie. Elle ne se neutralise donc PAS sous
+   `prefers-reduced-motion` — même arbitrage que la jauge de stock. */
+.aod-cd-finrate__fill{display:block;height:100%;width:0;border-radius:var(--cd-r-pill);transition:width .35s var(--cd-ease-out)}
+.aod-cd-finrate--ok .aod-cd-finrate__fill{background:var(--cd-ok)}
+.aod-cd-finrate--warn .aod-cd-finrate__fill{background:var(--cd-warn)}
+.aod-cd-finrate--bad .aod-cd-finrate__fill{background:var(--cd-bad)}
+
+/* ── Le détail ───────────────────────────────────────────────────────── */
+.aod-cd-findet__l{margin:0}
+.aod-cd-findet__row{display:flex;align-items:baseline;gap:var(--cd-sp-3);padding:var(--cd-sp-2) 0;border-bottom:1px solid var(--cd-line-2)}
+.aod-cd-findet__row:last-child{border-bottom:0}
+.aod-cd-findet__row dt{margin:0;font-size:var(--cd-fs-sm);color:var(--cd-muted)}
+.aod-cd-findet__row dd{margin:0 0 0 auto;font-size:var(--cd-fs-sm);font-weight:700;color:var(--cd-ink);font-variant-numeric:tabular-nums}
+[dir="rtl"] .aod-cd-findet__row dd{margin:0 auto 0 0}
+
+/* ── L'historique ────────────────────────────────────────────────────── */
+.aod-cd-finhist{margin-top:var(--cd-sp-6)}
+.aod-cd-finhist__t{margin:0 0 var(--cd-sp-4);font-size:var(--cd-fs-lg);font-weight:800;color:var(--cd-ink)}
+.aod-cd-finhist__l{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--cd-sp-2)}
+.aod-cd-finhist__i{
+	display:flex;align-items:center;flex-wrap:wrap;gap:var(--cd-sp-3);
+	padding:var(--cd-sp-3) var(--cd-sp-4);
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-md);
+	transition:border-color .18s var(--cd-ease-out)
+}
+.aod-cd-finhist__i:hover{border-color:var(--cd-soft)}
+.aod-cd-finhist__nom{font-weight:700;color:var(--cd-ink);min-width:0}
+.aod-cd-finhist__net{font-weight:800;color:var(--cd-ok);font-variant-numeric:tabular-nums}
+.aod-cd-finhist__net.is-bad{color:var(--cd-bad)}
+.aod-cd-finhist__at{font-size:var(--cd-fs-xs);color:var(--cd-muted)}
+.aod-cd-finhist__load{margin-inline-start:auto}
 
 /* ============================================================
  * Suivi commande
@@ -6376,6 +6596,16 @@ html[dir="rtl"] .aod-cd-content .aod-cd-pagehead::before{
 	   🔎 Et la généralisation a REMPLACÉ dix sélecteurs par deux : la même
 	   décision, écrite une fois, couvre désormais douze sections au lieu d'une —
 	   c'est-à-dire qu'on ne peut plus oublier d'y neutraliser une page. */
+	/* ── Finance ───────────────────────────────────────────────────────────
+	   Ce qui part : les DÉPLACEMENTS (la carte qui se soulève, la flèche qui
+	   avance) et le battement de couleur d'un nombre qui change. Ce qui RESTE :
+	   la largeur des segments de coût et des jauges de taux — c'est la donnée
+	   elle-même, pas un effet ; la figer rendrait le graphique muet.
+	   ⚠️ Sélecteurs repris au caractère près des règles qu'ils annulent (R3). */
+	.aod-cd-finmod--pret:hover{transform:none}
+	.aod-cd-finmod--pret:hover .aod-cd-finmod__go{transform:none}
+	[dir="rtl"] .aod-cd-finmod--pret:hover .aod-cd-finmod__go{transform:none}
+	.aod-cd-finres [data-res].is-maj{animation:none}
 	.aod-cd-content > *{animation:none}
 	.aod-cd-todo > *,
 	.aod-cd-kpis > *,

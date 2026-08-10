@@ -54,6 +54,7 @@ class AOD_CD_Dashboard {
 				'tracking'   => array( __( 'Suivi commande', 'aod-client-dashboard' ), 'tracking' ),
 				'marketing'  => array( __( 'Pixels & Tracking', 'aod-client-dashboard' ), 'marketing' ),
 				'whatsapp'   => array( __( 'WhatsApp', 'aod-client-dashboard' ), 'whatsapp' ),
+				'finance'    => array( __( 'Finance', 'aod-client-dashboard' ), 'finance' ),
 				'team'       => array( __( 'Équipe', 'aod-client-dashboard' ), 'team' ),
 				'account'    => array( __( 'Mon compte', 'aod-client-dashboard' ), 'account' ),
 			);
@@ -192,7 +193,7 @@ class AOD_CD_Dashboard {
 	 */
 	protected function nav_groups() {
 		return array(
-			'pilotage'  => array( __( 'Pilotage', 'aod-client-dashboard' ),       array( 'home' ) ),
+			'pilotage'  => array( __( 'Pilotage', 'aod-client-dashboard' ),       array( 'home', 'finance' ) ),
 			'ventes'    => array( __( 'Ventes', 'aod-client-dashboard' ),         array( 'orders', 'abandoned' ) ),
 			// « landing » n'est PAS dans sections() : elle ne s'affichera donc jamais dans
 			// le menu (la boucle filtre sur les sections visibles). Sa présence ici sert
@@ -426,6 +427,9 @@ class AOD_CD_Dashboard {
 			maxUpload:        <?php echo (int) AOD_CD_Upload::max_bytes(); ?>,
 			i18nTooBig:       <?php echo wp_json_encode( sprintf( /* translators: %s : poids maximal accepté, déjà formaté. */ __( 'Fichier trop lourd : %s au maximum.', 'aod-client-dashboard' ), size_format( AOD_CD_Upload::max_bytes() ) ) ); ?>,
 			i18nLpCopyConfirm: <?php echo wp_json_encode( __( 'Remplacer les blocs actuels par ceux de l’autre produit ? Le travail en cours sur cette page sera perdu.', 'aod-client-dashboard' ) ); ?>,
+			finPostes: <?php echo wp_json_encode( AOD_CD_Section_Finance::postes_i18n() ); ?>,
+			finIncoherent: <?php echo wp_json_encode( __( 'Livrées + annulées + retours font %1$d, au-dessus des %2$d commandes reçues. Les taux resteront calculés, mais ils ne voudront rien dire.', 'aod-client-dashboard' ) ); ?>,
+			finDivergence: <?php echo wp_json_encode( __( 'Le serveur a recalculé et ne trouve pas la même chose que cet écran (%s). Les nombres affichés sont désormais ceux du serveur.', 'aod-client-dashboard' ) ); ?>,
 			// Icônes dont le JS a besoin pour construire du balisage côté client.
 			// On expose le SVG DÉJÀ RENDU par le catalogue plutôt qu'un nom : le JS
 			// n'a ainsi aucun moyen de fabriquer une icône hors liste, et la source
@@ -627,6 +631,9 @@ class AOD_CD_Dashboard {
 				break;
 			case 'whatsapp':
 				AOD_CD_Section_WhatsApp::instance()->render();
+				break;
+			case 'finance':
+				AOD_CD_Section_Finance::instance()->render();
 				break;
 			case 'team':
 				AOD_CD_Section_Team::instance()->render();
@@ -862,6 +869,7 @@ class AOD_CD_Dashboard {
 			'assets/js/section-team.js',
 			'assets/js/section-account.js',
 			'assets/js/section-abandoned.js',
+			'assets/js/section-finance.js',
 			// Les modules qui ne sont PAS des sections (2026-08-06) : ils appartiennent
 			// à un COMPOSANT partagé, donc à aucune page. Cf. leur en-tête.
 			'assets/js/widget-datepicker.js',
