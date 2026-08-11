@@ -88,6 +88,102 @@ class AOD_CD_Section_Shipping {
 		return current_user_can( 'manage_woocommerce' );
 	}
 
+	/**
+	 * Ouvre une CARTE et la fenêtre qu'elle commande.
+	 *
+	 * 🔒 LE `<dialog>` VIT DANS LE `<form>`, ET C'EST LA DÉCISION QUI PORTE TOUT.
+	 * Les champs ne quittent jamais leur formulaire : `new FormData( form )` les
+	 * voit encore, et l'enregistrement les envoie tous — les 174 saisies de la
+	 * grille des wilayas comprises. Une fenêtre bâtie dans `document.body` les en
+	 * aurait sortis, et le réglage se serait perdu SANS ERREUR. C'est la panne qui
+	 * a frappé la soumission de WhatsApp, et la raison écrite du même choix sur
+	 * les cartes de régie (« Pixels & Tracking », 2026-08-10) : on reprend leur
+	 * patron plutôt que d'en inventer un second.
+	 *
+	 * 🚨 CHAQUE FENÊTRE PORTE SON PROPRE « ENREGISTRER », ET C'EST LÀ QU'ON
+	 * S'ÉCARTE DES RÉGIES. Là-bas, le pied ne fait que fermer parce qu'une régie a
+	 * un à trois champs : on la referme et le bouton de la page est juste dessous.
+	 * Ici, la grille tarifaire en a 174, et on y passe plusieurs minutes. Fermer
+	 * une fenêtre sans avoir enregistré perdrait ce travail, en silence, au moment
+	 * où l'on croit avoir fini. Le bouton porte le MÊME libellé et poste le MÊME
+	 * formulaire complet — ce n'est pas un second enregistrement, c'est le même,
+	 * placé là où le geste se termine.
+	 *
+	 * ⚠️ `type="button"` sur l'en-tête. Sans lui, un bouton dans un formulaire vaut
+	 * `submit` : cliquer sur « Transporteurs » aurait enregistré la page.
+	 *
+	 * ⓘ Sans JavaScript, `<dialog>` sans attribut `open` est invisible : ces blocs
+	 * deviendraient inatteignables. Ce n'est pas une régression — dans `/gestion`
+	 * TOUT enregistrement passe déjà par AJAX, donc sans script rien ne se
+	 * sauvegarde nulle part. On ne perd pas un mode qui fonctionnait.
+	 *
+	 * @param string $ic       Nom d'icône du catalogue fermé.
+	 * @param string $titre    Titre de la carte et de la fenêtre.
+	 * @param string $sous     Résumé lu sans ouvrir.
+	 * @param string $pastille HTML d'une pastille d'état (déjà échappée).
+	 * @param string $save     Libellé du bouton d'enregistrement, ou '' pour aucun.
+	 */
+	protected function card_open( $ic, $titre, $sous, $pastille, $save = '' ) {
+		if ( '' === $save ) {
+			$save = __( 'Enregistrer la livraison', 'aod-client-dashboard' );
+		}
+		$this->card_save = $save;
+		$icone           = AOD_CD_Icon::svg( $ic, array( 'size' => 18 ) );
+
+		echo '<div class="aod-cd-shipcard">';
+		echo '<button type="button" class="aod-cd-shipcard__head" aria-haspopup="dialog">';
+		echo '<span class="aod-cd-shipcard__ic" aria-hidden="true">' . $icone . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+		// 🔴 LA PASTILLE EST SOUS LE RÉSUMÉ, PAS À CÔTÉ DU TITRE. Posée sur la même
+		// ligne, elle prenait sa largeur au titre : « Importer les tarifs du
+		// transporteur » se cassait sur TROIS lignes dans une carte de 340 px, et
+		// les trois cartes n'avaient plus la même hauteur. Mesuré à la capture.
+		echo '<span class="aod-cd-shipcard__txt">';
+		echo '<span class="aod-cd-shipcard__name">' . esc_html( $titre ) . '</span>';
+		echo '<span class="aod-cd-shipcard__sub">' . esc_html( $sous ) . '</span>';
+		echo '<span class="aod-cd-shipcard__state">' . wp_kses_post( $pastille ) . '</span>';
+		echo '</span>';
+		echo '</button>';
+
+		echo '<dialog class="aod-cd-shipdlg">';
+		echo '<div class="aod-cd-shipdlg__head">';
+		echo '<span class="aod-cd-shipcard__ic" aria-hidden="true">' . $icone . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+		echo '<span class="aod-cd-shipdlg__name">' . esc_html( $titre ) . '</span>';
+		echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ico aod-cd-shipdlg__x aod-cd-shipdlg-close" aria-label="' . esc_attr__( 'Fermer', 'aod-client-dashboard' ) . '">'
+			. AOD_CD_Icon::svg( 'close', array( 'size' => 15 ) ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+		echo '</div>';
+		echo '<div class="aod-cd-shipdlg__body">';
+	}
+
+	/**
+	 * Ferme la fenêtre et sa carte.
+	 *
+	 * @param bool $save Vrai si la fenêtre porte un bouton d'enregistrement.
+	 */
+	protected function card_close( $save ) {
+		echo '</div>'; // .aod-cd-shipdlg__body
+		// `aod-cd-form-foot` EN PLUS de la classe propre : c'est par elle que le
+		// binder générique retrouve le `.aod-cd-form-msg` du bouton cliqué (cf. son
+		// commentaire dans dashboard.js). Une classe de moins ici, et la
+		// confirmation repartirait s'afficher dans la fenêtre voisine.
+		echo '<div class="aod-cd-shipdlg__foot aod-cd-form-foot">';
+		echo '<button type="button" class="aod-cd-btn aod-cd-shipdlg-close">' . esc_html__( 'Fermer', 'aod-client-dashboard' ) . '</button>';
+		if ( $save ) {
+			// ⚠️ `.aod-cd-form-msg` est ICI, dans le pied de CETTE fenêtre. Le binder
+			// générique écrit son message dans celui qui accompagne le bouton
+			// cliqué : sans ce voisinage, la confirmation d'un enregistrement fait
+			// depuis « Transporteurs » se serait affichée dans la fenêtre
+			// « Tarifs » — donc nulle part, puisqu'elle est fermée.
+			echo '<span class="aod-cd-form-msg"></span>';
+			echo '<button type="submit" class="aod-cd-btn aod-cd-btn-primary">' . esc_html( $this->card_save ) . '</button>';
+		}
+		echo '</div>';
+		echo '</dialog>';
+		echo '</div>'; // .aod-cd-shipcard
+	}
+
+	/** Libellé d'enregistrement de la carte en cours de rendu. */
+	protected $card_save = '';
+
 	public function render() {
 		if ( ! class_exists( 'AOD_COD_Data' ) ) {
 			echo AOD_CD_Dashboard::empty_state( 'shipping', __( 'Le module de livraison (AOD COD Form) n’est pas actif.', 'aod-client-dashboard' ) ); // phpcs:ignore WordPress.Security.EscapeOutput
@@ -137,27 +233,27 @@ class AOD_CD_Section_Shipping {
 		);
 		?>
 		<form class="aod-cd-form aod-cd-acc-form aod-cd-settings-form" data-action="aod_cd_save_shipping">
-
-			<details class="aod-cd-acc" open>
-				<summary class="aod-cd-acc-sum">
-					<span class="aod-cd-acc-ic" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'money', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-					<?php esc_html_e( 'Tarifs par wilaya', 'aod-client-dashboard' ); ?>
-					<span class="aod-cd-acc-sub">
-						<?php
-						// Libellé au pluriel invariable plutôt qu'un _n() : nos msgid sont
-						// français, or pour une chaîne NON traduite WordPress applique la
-						// règle de pluriel anglaise (0 → pluriel) — « 0 wilayas livrées »
-						// au lieu de « 0 wilaya livrée ». Ici, aucun accord à faire.
-						printf(
-							/* translators: 1 : nombre de wilayas livrées, 2 : nombre total de wilayas. */
-							esc_html__( 'Wilayas livrées : %1$s / %2$s', 'aod-client-dashboard' ),
-							esc_html( number_format_i18n( $served ) ),
-							esc_html( number_format_i18n( count( $places ) ) )
-						);
-						?>
-					</span>
-				</summary>
-				<div class="aod-cd-acc-body">
+			<div class="aod-cd-shipcards">
+			<?php
+			// Libellé au pluriel invariable plutôt qu'un _n() : nos msgid sont
+			// français, or pour une chaîne NON traduite WordPress applique la règle
+			// de pluriel anglaise (0 → pluriel) — « 0 wilayas livrées » au lieu de
+			// « 0 wilaya livrée ». Ici, aucun accord à faire.
+			$sous_tarifs = sprintf(
+				/* translators: 1 : nombre de wilayas livrées, 2 : nombre total de wilayas. */
+				__( 'Wilayas livrées : %1$s / %2$s', 'aod-client-dashboard' ),
+				number_format_i18n( $served ),
+				number_format_i18n( count( $places ) )
+			);
+			$this->card_open(
+				'money',
+				__( 'Tarifs par wilaya', 'aod-client-dashboard' ),
+				$sous_tarifs,
+				$served > 0
+					? AOD_CD_Dashboard::pill( __( 'Configuré', 'aod-client-dashboard' ), 'ok' )
+					: AOD_CD_Dashboard::pill( __( 'À renseigner', 'aod-client-dashboard' ), 'warn' )
+			);
+			?>
 					<div class="aod-cd-field">
 						<label class="aod-cd-check">
 							<input type="checkbox" name="fs_enabled" value="1" <?php checked( ! empty( $free['enabled'] ) ); ?>>
@@ -256,31 +352,27 @@ class AOD_CD_Section_Shipping {
 							</table>
 						</div>
 					</div>
-				</div>
-			</details>
+				<?php $this->card_close( true ); ?>
 
 			<?php
 			// 🔒 Bloc réservé au gérant (31.1) : il expose les identifiants API et
 			// pilote la destination de l'envoi auto. Cf. can_manage_carriers().
 			if ( $shipping && $this->can_manage_carriers() ) :
 				$auto = $shipping->auto_settings();
+				$this->card_open(
+					'shipping',
+					__( 'Transporteurs', 'aod-client-dashboard' ),
+					sprintf(
+						/* translators: 1 : nombre de transporteurs connectés, 2 : nombre total. */
+						__( 'Transporteurs connectés : %1$s / %2$s', 'aod-client-dashboard' ),
+						number_format_i18n( $connected ),
+						number_format_i18n( count( $carriers ) )
+					),
+					$connected > 0
+						? AOD_CD_Dashboard::pill( __( 'Connecté', 'aod-client-dashboard' ), 'ok' )
+						: AOD_CD_Dashboard::pill( __( 'Non connecté', 'aod-client-dashboard' ), 'neutral' )
+				);
 				?>
-				<details class="aod-cd-acc" open>
-					<summary class="aod-cd-acc-sum">
-						<span class="aod-cd-acc-ic" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'shipping', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-						<?php esc_html_e( 'Transporteurs', 'aod-client-dashboard' ); ?>
-						<span class="aod-cd-acc-sub">
-							<?php
-							printf(
-								/* translators: 1 : nombre de transporteurs connectés, 2 : nombre total. */
-								esc_html__( 'Transporteurs connectés : %1$s / %2$s', 'aod-client-dashboard' ),
-								esc_html( number_format_i18n( $connected ) ),
-								esc_html( number_format_i18n( count( $carriers ) ) )
-							);
-							?>
-						</span>
-					</summary>
-					<div class="aod-cd-acc-body">
 						<?php
 						// 🚨 47.2 — LA CASE « ENVOYER AUTOMATIQUEMENT » A ÉTÉ RETIRÉE D'ICI.
 						// Elle pilotait un hook qui n'existe plus : la laisser aurait
@@ -360,21 +452,19 @@ class AOD_CD_Section_Shipping {
 								</table>
 							</div>
 						</div>
-					</div>
-				</details>
+					<?php $this->card_close( true ); ?>
 			<?php endif; ?>
 
 			<?php
 			if ( ! empty( $importable ) ) :
 				$has_backup = is_array( get_option( AOD_COD_Data::OPTION_PRICES_BACKUP, null ) );
+				$this->card_open(
+					'download',
+					__( 'Importer les tarifs du transporteur', 'aod-client-dashboard' ),
+					__( 'récupère la grille officielle via l’API', 'aod-client-dashboard' ),
+					AOD_CD_Dashboard::pill( __( 'Disponible', 'aod-client-dashboard' ), 'info' )
+				);
 				?>
-				<details class="aod-cd-acc">
-					<summary class="aod-cd-acc-sum">
-						<span class="aod-cd-acc-ic" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'download', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
-						<?php esc_html_e( 'Importer les tarifs du transporteur', 'aod-client-dashboard' ); ?>
-						<span class="aod-cd-acc-sub"><?php esc_html_e( 'récupère la grille officielle via l’API', 'aod-client-dashboard' ); ?></span>
-					</summary>
-					<div class="aod-cd-acc-body">
 						<div class="aod-cd-import" data-import>
 							<p class="aod-cd-note"><?php esc_html_e( 'Récupérez les tarifs directement depuis l’API de votre transporteur, prévisualisez-les (avec une marge éventuelle), puis choisissez les wilayas à appliquer. Rien n’est enregistré tant que vous n’avez pas cliqué sur « Appliquer ».', 'aod-client-dashboard' ); ?></p>
 							<div class="aod-cd-import-controls">
@@ -416,14 +506,9 @@ class AOD_CD_Section_Shipping {
 							</div>
 							<div class="aod-cd-import-result" hidden></div>
 						</div>
-					</div>
-				</details>
+					<?php $this->card_close( false ); ?>
 			<?php endif; ?>
-
-			<div class="aod-cd-form-foot aod-cd-savebar">
-				<button type="submit" class="aod-cd-btn aod-cd-btn-primary"><?php esc_html_e( 'Enregistrer la livraison', 'aod-client-dashboard' ); ?></button>
-				<span class="aod-cd-form-msg"></span>
-			</div>
+			</div><!-- .aod-cd-shipcards -->
 		</form>
 		<?php
 		// 🔒 RÉSERVÉ AU GÉRANT (précédent 31.1) : le mode d'achat de la boutique
@@ -435,13 +520,18 @@ class AOD_CD_Section_Shipping {
 			$cart_on = class_exists( 'AOD_COD_Form' ) && AOD_COD_Form::cart_enabled();
 			?>
 			<form class="aod-cd-form aod-cd-acc-form aod-cd-settings-form" data-action="aod_cd_save_cart_mode">
-				<details class="aod-cd-acc" open>
-					<summary class="aod-cd-acc-sum">
-						<span class="aod-cd-acc-ic" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'cart', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- SVG du catalogue fermé AOD_CD_Icon (sûreté démontrée en 18.3, gardée par test-icones.php). ?></span>
-						<?php esc_html_e( 'Panier', 'aod-client-dashboard' ); ?>
-						<span class="aod-cd-acc-sub"><?php echo $cart_on ? esc_html__( 'activé', 'aod-client-dashboard' ) : esc_html__( 'désactivé', 'aod-client-dashboard' ); ?></span>
-					</summary>
-					<div class="aod-cd-acc-body">
+				<div class="aod-cd-shipcards">
+				<?php
+				$this->card_open(
+					'cart',
+					__( 'Panier', 'aod-client-dashboard' ),
+					__( 'commander plusieurs produits en une seule commande', 'aod-client-dashboard' ),
+					$cart_on
+						? AOD_CD_Dashboard::pill( __( 'Activé', 'aod-client-dashboard' ), 'ok' )
+						: AOD_CD_Dashboard::pill( __( 'Désactivé', 'aod-client-dashboard' ), 'neutral' ),
+					__( 'Enregistrer le panier', 'aod-client-dashboard' )
+				);
+				?>
 						<div class="aod-cd-field">
 							<label class="aod-cd-check">
 								<input type="checkbox" name="cart_enabled" value="1" <?php checked( $cart_on ); ?>>
@@ -449,12 +539,8 @@ class AOD_CD_Section_Shipping {
 							</label>
 						</div>
 						<p class="aod-cd-note"><?php esc_html_e( 'Désactivé : chaque produit se commande directement depuis sa page (comportement par défaut). Dans les deux cas, le paiement reste à la livraison, sans compte client.', 'aod-client-dashboard' ); ?></p>
-					</div>
-				</details>
-				<div class="aod-cd-form-foot aod-cd-savebar">
-					<button type="submit" class="aod-cd-btn aod-cd-btn-primary"><?php esc_html_e( 'Enregistrer le panier', 'aod-client-dashboard' ); ?></button>
-					<span class="aod-cd-form-msg"></span>
-				</div>
+					<?php $this->card_close( true ); ?>
+				</div><!-- .aod-cd-shipcards -->
 			</form>
 		<?php endif; ?>
 		<?php

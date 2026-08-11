@@ -4564,3 +4564,24 @@ msgstr "لا يخرج من هذه الصفحة إلا العنوان: فهو ي�
 #: includes/class-aod-cd-section-finance.php
 msgid "Ville"
 msgstr "المدينة"
+
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "Activé"
+msgstr "مفعّل"
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "Configuré"
+msgstr "مضبوط"
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "Disponible"
+msgstr "متاح"
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "commander plusieurs produits en une seule commande"
+msgstr "طلب عدّة منتجات في طلبية واحدة"
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "À renseigner"
+msgstr "يُرجى ملءه"

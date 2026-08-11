@@ -165,7 +165,15 @@ AOD_Test::group( 'Décomposition JS 33 — R1 : la coque ne regrossit pas' );
 // réponse PARTAGÉ par tous les formulaires de réglages, l'écrire dans un module
 // le ferait recopier — la dérive que la Phase 46 a passé huit étapes à fermer.
 // (+1 ligne aussi pour `bindDepenses` dans ORDER : la liste est la coque.)
-$aod_djs_plafond = 840;
+// REMONTÉE ASSUMÉE 840 → 850 (+10, 2026-08-11) : `bindSettingsForms()` cible le
+// bouton RÉELLEMENT cliqué (`e.submitter`) et cherche son message dans SON pied.
+// Croissance de COQUE légitime, et elle est née d'un défaut réel : la page
+// Livraison porte désormais une barre d'enregistrement PAR FENÊTRE, et le
+// `querySelector` d'origine désactivait le bouton de la première tout en
+// écrivant la confirmation dans une fenêtre fermée — donc nulle part. Le binder
+// est PARTAGÉ par tous les formulaires de réglages : l'écrire dans un module
+// section-*.js le ferait recopier, la dérive que la Phase 46 a fermée.
+$aod_djs_plafond = 850;
 
 $aod_djs_coque  = AOD_CD_PATH . 'assets/js/dashboard.js';
 $aod_djs_src    = is_readable( $aod_djs_coque ) ? (string) file_get_contents( $aod_djs_coque ) : '';

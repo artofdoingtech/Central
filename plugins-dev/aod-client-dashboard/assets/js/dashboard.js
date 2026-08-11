@@ -697,8 +697,18 @@
 		document.querySelectorAll( '.aod-cd-settings-form' ).forEach( function ( form ) {
 			form.addEventListener( 'submit', function ( e ) {
 				e.preventDefault();
-				var btn = form.querySelector( 'button[type="submit"]' );
-				var msg = form.querySelector( '.aod-cd-form-msg' );
+				// 🔴 LE BOUTON CLIQUÉ, PAS LE PREMIER DU FORMULAIRE. Tant qu'un
+				// formulaire n'avait qu'une barre d'enregistrement, `querySelector`
+				// tombait forcément juste. La page Livraison en porte désormais une
+				// PAR FENÊTRE : enregistrer depuis « Transporteurs » désactivait le
+				// bouton de « Tarifs » et écrivait la confirmation dans une fenêtre
+				// fermée — donc nulle part, pendant que le bouton cliqué restait
+				// actif et réenclenchable. `e.submitter` désigne celui qu'on a
+				// vraiment pressé ; le message est cherché dans SON pied.
+				var btn = e.submitter || form.querySelector( 'button[type="submit"]' );
+				var pied = btn && btn.closest ? btn.closest( '.aod-cd-form-foot' ) : null;
+				var msg = ( pied && pied.querySelector( '.aod-cd-form-msg' ) )
+					|| form.querySelector( '.aod-cd-form-msg' );
 				if ( btn ) { btn.disabled = true; }
 				if ( msg ) { msg.textContent = ''; }
 
@@ -769,7 +779,7 @@
 		'bindNavToggle', 'bindStatus', 'bindQuickEdit', 'bindProducts', 'bindCategories',
 		'bindCatDropdown', 'bindPromoRange', 'bindGallery', 'bindColorPalette',
 		'bindCharts', 'bindCounters', 'bindSelects', 'bindDatePickers', 'bindAccordionForms', 'bindSettingsForms',
-		'bindShippingFree', 'bindCarrierRows', 'bindCarrierTest',
+		'bindShipDialogs', 'bindShippingFree', 'bindCarrierRows', 'bindCarrierTest',
 		'bindShippingSearch', 'bindImportFees', 'bindWhatsappTest',
 		'bindPixelDialogs', 'bindCapiTest', 'bindPixelCards', 'bindOrderDetail',
 		'bindOrderBulkDelete', 'bindShipSend', 'bindResetShop', 'bindTracking', 'bindTeam',

@@ -1381,7 +1381,19 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-leadassignsel-menu[hidden],
 .aod-cd-carriersel-menu[hidden],
 .aod-cd-cal[hidden],
-.aod-cd-catdd-panel[hidden]{display:none}
+.aod-cd-catdd-panel[hidden],
+/* 🔴 `.aod-cd-field` REJOINT LA LISTE LE 2026-08-11, ET LE DÉFAUT ÉTAIT DÉJÀ LÀ.
+   `.aod-cd-field{display:flex}` bat exactement de la même façon le `[hidden]` du
+   navigateur : « Valeur de la marge », sur le panneau d'import, s'affichait EN
+   PERMANENCE — y compris avec « Marge : Aucune », alors que
+   `section-shipping.js:237` pose bien `mvalWrap.hidden`. Le script faisait son
+   travail, la feuille le défaisait. Vu en photographiant ce panneau pour la
+   refonte de Livraison, pas en lisant le code.
+   ⚠️ Le bloc ci-dessus annonçait déjà la règle GÉNÉRALE (« la moindre règle
+   d'auteur posant un display la bat ») et listait quatre sélecteurs. Une règle
+   énoncée pour tous, appliquée à quatre : c'est la forme même de la dérive que
+   la Phase 46 a passé huit étapes à fermer. */
+.aod-cd-field[hidden]{display:none}
 
 /* L'ouverture. Voir le commentaire de `aod-cd-pop` (section Modale) : ces
    quatre surfaces ont référencé pendant toute leur existence une animation
@@ -2137,10 +2149,18 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    juste en dessous, et le prochain qui naîtra. C'est exactement la famille
    « corrigé sur un jumeau, pas sur l'autre » que la revue de la Phase 47 a
    comptée huit fois. */
-.aod-cd-acc-form .aod-cd-scroll{padding-bottom:var(--cd-sp-6)}
-@media(min-width:781px){
-	.aod-cd-acc-form .aod-cd-scroll{padding-bottom:76px}
-}
+/* 🔻 RÉSERVE SUPPRIMÉE LE 2026-08-11, PARCE QUE SON OBJET A DISPARU. La barre
+   collante qu'elle compensait ne survole plus aucun défileur : les quatre blocs
+   de Livraison sont devenus des FENÊTRES, dont le pied est un frère du corps
+   défilant, pas un calque posé dessus. `.aod-cd-scroll` n'existe plus que là
+   (mesuré : deux occurrences dans `class-aod-cd-section-shipping.php`, une
+   troisième construite par `section-shipping.js` pour l'aperçu d'import — toutes
+   dans une fenêtre).
+   ⚠️ La règle est retirée, pas neutralisée : gardée, elle aurait laissé 76 px de
+   vide au bas de la grille des wilayas — une réserve pour un obstacle absent se
+   lit comme un défaut d'alignement, et personne n'aurait su pourquoi elle était
+   là. Le raisonnement d'origine reste ci-dessus : il redeviendra vrai le jour où
+   un défileur retrouvera une barre collante au-dessus de lui. */
 
 /* Sous-section d'un bloc d'accordéon (ex. « Offres » dans « Prix & offres »). */
 .aod-cd-subsec{margin-top:22px;padding-top:18px;border-top:1px dashed var(--cd-line)}
@@ -2309,7 +2329,15 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 /* Réutilisation des champs admin des transporteurs (.form-table) en contexte front */
 .aod-cd-carrier-fields .form-table{width:100%;border-collapse:collapse}
 .aod-cd-carrier-fields .form-table th{text-align:start;padding:var(--cd-sp-2) var(--cd-sp-3) 8px 0;font-weight:700;font-size:var(--cd-fs-sm);color:var(--cd-ink);vertical-align:top;width:180px}
-.aod-cd-carrier-fields .form-table td{padding:8px 0;font-size:var(--cd-fs-md);background:none}
+/* 🔁 `8px` → `var(--cd-sp-2)` LE 2026-08-11, ET C'EST LE CLIQUET QUI L'A DEMANDÉ.
+   La refonte de Livraison ajoute un `padding:0` — la remise à zéro d'un
+   `<dialog>`, dont le navigateur impose un espacement par défaut, pas un
+   espacement de charte. Les trois sorties de 2026-08-07 se représentaient ;
+   la même a été retenue : PAYER LA HAUSSE AILLEURS. C'est le seul couple encore
+   convertible de la feuille — `0` n'a pas de cran et n'en demande pas, donc
+   l'objection « tokenisé à moitié » ne le vise pas. Conversion visuellement
+   nulle par construction : 8 px EST la valeur du cran. */
+.aod-cd-carrier-fields .form-table td{padding:var(--cd-sp-2) 0;font-size:var(--cd-fs-md);background:none}
 .aod-cd-carrier-fields .form-table input[type=text],
 .aod-cd-carrier-fields .form-table input[type=number],
 .aod-cd-carrier-fields .form-table select{box-sizing:border-box;height:40px;padding:9px 11px;border:1px solid var(--cd-line);border-radius:var(--cd-r-sm);font-size:var(--cd-fs-md);font-family:inherit;background:var(--cd-field);vertical-align:middle}
@@ -5567,8 +5595,16 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    le `.aod-cd-scroll` lui-même : un conteneur de défilement échappe à cette règle,
    d'où l'absence du bug. Sans ce `min-width:0`, le `overflow-x:auto` intérieur ne
    sert à rien : c'est le parent qui grossit. */
+/* 🔁 `.aod-cd-shipcards` REJOINT LA LISTE LE 2026-08-11, et c'est la CAPTURE qui
+   l'a demandé : sans elle, la grille de cartes de Livraison tombait dans une
+   MOITIÉ de la page (≈640 px sur 1100), ses pistes de 300 px n'en logeaient que
+   deux par rang, et « Importer les tarifs du transporteur » se cassait sur trois
+   lignes. Rien ne débordait, rien ne cassait — c'était juste à l'étroit sans
+   raison. Troisième fois que ce défaut se présente (Rentabilité, Dépenses, ici) :
+   un enfant direct qui n'est pas un CHAMP doit traverser la grille. */
 .aod-cd-settings-form > details.aod-cd-acc,
 .aod-cd-settings-form > .aod-cd-pxcards,
+.aod-cd-settings-form > .aod-cd-shipcards,
 .aod-cd-settings-form > .aod-cd-panel{grid-column:1 / -1;min-width:0}
 
 /* Le panneau d'import vit désormais DANS un accordéon : plus de double encadré. */
@@ -5686,6 +5722,114 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    plus du tout. Les deux accordéons qui restent, eux, en ont toujours besoin. */
 [dir="rtl"] .aod-cd-acc[open] .aod-cd-acc-sum::after,
 [dir="rtl"] .aod-cd-note-fold[open]>summary::before{transform:rotate(-90deg)}
+/* ── Livraison : quatre cartes, quatre fenêtres (2026-08-11) ──────────────
+   La page empilait quatre accordéons OUVERTS par défaut : on faisait défiler
+   58 wilayas, six transporteurs et un panneau d'import avant d'avoir choisi quoi
+   que ce soit. Elle ne montre plus que ce qu'on vient y chercher — quatre
+   cartes, chacune avec son résumé et son état — et le contenu s'ouvre au-dessus.
+
+   🔗 MÊME GRAMMAIRE QUE LES CARTES DE RÉGIE, à dessein : `<dialog>` natif rendu
+   DANS le formulaire, en-tête de fenêtre qui reprend l'en-tête de la carte,
+   `aod-cd-pop` à l'ouverture. Deux façons d'ouvrir une fenêtre dans le même
+   tableau de bord, ce serait deux choses à apprendre pour une seule idée.
+
+   ⚠️ CE QUI DIFFÈRE, ET POURQUOI. Une régie tient dans 520 px et trois champs ;
+   la grille tarifaire en a 174 et ne tient dans aucune hauteur d'écran. Cette
+   fenêtre-ci est donc bornée en hauteur et DÉFILE — en-tête et pied fixes, corps
+   défilant. C'est aussi ce qui écarte le défaut mesuré sur la barre collante
+   (68 px de tableau mangés sous elle) : le pied n'est pas posé PAR-DESSUS le
+   défileur, il est à côté, dans une colonne flex. */
+/* 🔴 `min(300px,100%)` ET NON `300px`. MESURÉ : à 320 px de large, une piste
+   `minmax(300px,1fr)` reste à 300 px dans un conteneur qui n'en fait que 288 —
+   la grille débordait la page de 20 px. `minmax()` n'a pas le droit de descendre
+   sous son minimum ; on lui donne donc un minimum qui, lui, sait rétrécir. */
+.aod-cd-shipcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:var(--cd-sp-4)}
+.aod-cd-shipcard{
+	background:var(--cd-card);border:1px solid var(--cd-line);border-radius:var(--cd-r-lg);
+	overflow:hidden;transition:border-color .18s var(--cd-ease-out),box-shadow .18s var(--cd-ease-out),transform .18s var(--cd-ease-out);
+}
+.aod-cd-shipcard:hover{border-color:var(--cd-accent);box-shadow:var(--cd-shadow);transform:translateY(-2px)}
+/* `align-items:flex-start` : l'écusson se cale en haut du bloc de texte, qui fait
+   maintenant trois lignes. Centré, il flottait au milieu d'une carte dont la
+   hauteur dépend du libellé — donc à une place différente sur chaque carte. */
+.aod-cd-shipcard__head{
+	display:flex;align-items:flex-start;gap:var(--cd-sp-3);width:100%;
+	padding:var(--cd-sp-4);border:0;background:none;font:inherit;text-align:start;cursor:pointer;
+	-webkit-user-select:none;user-select:none;
+}
+.aod-cd-shipcard__head:focus-visible{outline:none;box-shadow:var(--cd-focus)}
+.aod-cd-shipcard__ic{
+	width:38px;height:38px;flex:0 0 38px;border-radius:var(--cd-r-sm);
+	display:inline-flex;align-items:center;justify-content:center;
+	background:var(--cd-accent);color:var(--cd-accent-ink);
+	transition:transform .18s var(--cd-ease-out);
+}
+.aod-cd-shipcard__head:hover .aod-cd-shipcard__ic{transform:scale(1.08)}
+.aod-cd-shipcard__txt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.aod-cd-shipcard__name{font-weight:800;font-size:var(--cd-fs-md);color:var(--cd-ink);line-height:1.3}
+.aod-cd-shipcard__sub{font-size:var(--cd-fs-sm);color:var(--cd-muted);line-height:1.45}
+/* La pastille sur sa propre ligne, calée au début — pas étirée à la largeur du
+   bloc : une pastille pleine largeur cesse d'être une pastille. */
+.aod-cd-shipcard__state{align-self:flex-start;margin-top:var(--cd-sp-1)}
+/* Le chevron s'aligne sur la PREMIÈRE ligne du titre, pas sur le milieu d'un
+   bloc de trois lignes. */
+.aod-cd-shipcard__head::after{margin-top:2px}
+/* Le chevron DÉSIGNE (« il y a quelque chose derrière ») ; il ne pivote pas,
+   rien ne se déplie. Même décision que la carte de régie, et même raison pour
+   laquelle il n'est PAS dans la liste des chevrons miroités : `›` est déjà
+   retourné par l'algorithme bidi, ce qui est exactement ce qu'on veut. */
+.aod-cd-shipcard__head::after{
+	content:"›";flex:none;font-size:var(--cd-fs-lg);line-height:1;font-weight:700;color:var(--cd-soft);
+}
+.aod-cd-shipcard__head:hover::after{color:var(--cd-ink)}
+
+.aod-cd-shipdlg{
+	width:min(1040px,calc(100vw - 32px));max-width:none;
+	max-height:min(88vh,900px);
+	padding:0;border:0;border-radius:var(--cd-r-lg);
+	background:var(--cd-card);color:var(--cd-ink);box-shadow:var(--cd-shadow);
+	/* Colonne : en-tête et pied gardent leur hauteur, seul le corps défile. */
+	display:flex;flex-direction:column;overflow:hidden;
+}
+.aod-cd-shipdlg:not([open]){display:none}
+.aod-cd-shipdlg::backdrop{background:rgba(24,24,24,.6)}
+/* 🔒 Sélecteur recopié AU CARACTÈRE PRÈS dans le bloc `prefers-reduced-motion`
+   en fin de fichier : R1 de `test-mouvement-reduit.php` compare les deux listes
+   et exige l'égalité. `aod-cd-pop` est repris tel quel, aucune image nouvelle. */
+.aod-cd-shipdlg[open]{animation:aod-cd-pop .22s var(--cd-ease-out)}
+.aod-cd-shipdlg__head{
+	display:flex;align-items:center;gap:var(--cd-sp-3);flex:none;
+	padding:var(--cd-sp-4);border-bottom:1px solid var(--cd-line);background:var(--cd-bg);
+}
+.aod-cd-shipdlg__name{font-weight:800;font-size:var(--cd-fs-md);color:var(--cd-ink);min-width:0}
+.aod-cd-shipdlg__x{margin-inline-start:auto;flex:none}
+.aod-cd-shipdlg__body{flex:1;min-height:0;overflow-y:auto;padding:var(--cd-sp-5)}
+/* Un rythme vertical entre les blocs de la fenêtre. Sans lui, la case « Offrir
+   la livraison… » et le libellé du seuil se touchaient : deux réglages
+   différents collés donnent l'impression d'un seul. */
+.aod-cd-shipdlg__body > * + *{margin-top:var(--cd-sp-4)}
+.aod-cd-shipdlg__foot{
+	flex:none;display:flex;align-items:center;gap:var(--cd-sp-3);
+	margin-top:0;padding:var(--cd-sp-4) var(--cd-sp-5);
+	border-top:1px solid var(--cd-line);background:var(--cd-bg);
+}
+/* Le message d'enregistrement pousse le bouton principal à la fin de la ligne :
+   « Fermer » à gauche, « Enregistrer » à droite, comme partout ailleurs. */
+.aod-cd-shipdlg__foot .aod-cd-form-msg{margin-inline-start:auto;text-align:end}
+.aod-cd-shipdlg__foot .aod-cd-btn-primary:only-of-type{margin-inline-start:auto}
+/* 🔴 UN SEUL DÉFILEUR PAR FENÊTRE. `.aod-cd-scroll` borne la grille des wilayas à
+   72vh AVEC sa propre barre : dans une fenêtre qui défile déjà, cela donnait deux
+   ascenseurs imbriqués — celui qu'on attrape n'est jamais celui qu'on veut. La
+   boîte garde son cadre, elle cesse de défiler. */
+.aod-cd-shipdlg__body .aod-cd-scroll{max-height:none;min-height:0;overflow-y:visible}
+/* Au pouce, la fenêtre prend toute la hauteur utile : sur 58 wilayas, chaque
+   ligne gagnée compte. La LARGEUR, elle, garde ses gouttières — `100vw` inclut
+   la barre de défilement et rendait 20 px de débordement à 320 px, mesurés. */
+@media(max-width:640px){
+	.aod-cd-shipdlg{max-height:calc(100vh - var(--cd-sp-4))}
+	.aod-cd-shipdlg__body{padding:var(--cd-sp-4)}
+}
+
 .aod-cd-pxcard__ic{
 	width:34px;height:34px;flex:0 0 34px;border-radius:var(--cd-r-sm);
 	display:inline-flex;align-items:center;justify-content:center;
@@ -6614,6 +6758,14 @@ html[dir="rtl"] .aod-cd-content .aod-cd-pagehead::before{
 	/* 🎬 Arrivée de la fenêtre d'une régie (Pixels & Tracking) — sélecteur recopié
 	   au caractère près de celui qui pose `aod-cd-pop`. */
 	.aod-cd-pxdlg[open]{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	/* 🎬 Arrivée de la fenêtre d'un bloc de Livraison — même sélecteur au
+	   caractère près que celui qui pose `aod-cd-pop`. La carte, elle, se SOULÈVE
+	   au survol et son écusson grossit : deux déplacements, donc les deux
+	   partent. Le changement de bordure et d'ombre reste — l'interface continue
+	   de répondre, elle ne bouge plus. */
+	.aod-cd-shipdlg[open]{animation:aod-cd-fade .14s var(--cd-ease-out)}
+	.aod-cd-shipcard:hover{transform:none}
+	.aod-cd-shipcard__head:hover .aod-cd-shipcard__ic{transform:none}
 	/* 🎬 Le bouton de l'interrupteur WhatsApp GLISSE. C'est la TRANSITION qui
 	   part, jamais la translation : `transform:none` ramènerait le bouton au
 	   repos sur un interrupteur ALLUMÉ — l'écran dirait « éteint » alors que les

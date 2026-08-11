@@ -277,6 +277,21 @@ const HOST = new URL( BASE ).hostname;
 			 * Une porte qui n'ouvre jamais rien ne voit que l'état initial. */
 			const tables = ( r.tables || [] ).slice();
 			if ( 'shipping' === s && await page.$( 'tr.aod-cd-carrier-row' ) ) {
+				// 🔁 2026-08-11 — IL FAUT D'ABORD OUVRIR LA FENÊTRE. Les quatre blocs
+				// de Livraison sont devenus des cartes qui commandent un `<dialog>` :
+				// le tableau des transporteurs existe toujours dans le DOM, mais il
+				// n'est plus VISIBLE, et `page.click()` a attendu 30 s une ligne que
+				// personne ne pouvait atteindre. La porte a rougi à juste titre — elle
+				// mesurait un état que la page ne sert plus telle quelle.
+				// ⚠️ On ouvre par le vrai geste (un clic sur l'en-tête de la carte),
+				// pas en forçant `dlg.open = true` : un dialogue ouvert par attribut
+				// n'est PAS modal, il ne monte pas dans le plan supérieur, et on
+				// mesurerait une géométrie que l'utilisateur ne voit jamais.
+				const carte = await page.$( '.aod-cd-shipcard:has(tr.aod-cd-carrier-row) .aod-cd-shipcard__head' );
+				if ( carte ) {
+					await carte.click();
+					await page.waitForTimeout( 400 );
+				}
 				await page.click( 'tr.aod-cd-carrier-row' );
 				// Laisse la transition du chevron finir : c'est son image FINALE
 				// qui doit tenir dans la ligne, pas une image intermédiaire.

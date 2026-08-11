@@ -415,6 +415,59 @@
 		}
 	}
 
+	/**
+	 * Chaque bloc de la page Livraison ouvre sa FENÊTRE (2026-08-11).
+	 *
+	 * Les quatre blocs étaient des accordéons ouverts par défaut : la page faisait
+	 * défiler 58 wilayas, six transporteurs et un panneau d'import avant qu'on
+	 * n'ait choisi quoi que ce soit. Elle ne montre plus que quatre cartes, et le
+	 * contenu s'ouvre au-dessus.
+	 *
+	 * 🔒 Le `<dialog>` est rendu PAR LE PHP, à l'intérieur du formulaire — ce
+	 * binder ne déplace aucun nœud. C'est la condition pour que les champs restent
+	 * vus par `new FormData( form )` ; la déplacer ici, dans `document.body`,
+	 * perdrait la grille tarifaire en silence. Même raison, même patron que
+	 * `bindPixelDialogs` (section-marketing.js), qui le documente en détail.
+	 *
+	 * Le navigateur fournit le fond, le plan supérieur, le piège de focus et
+	 * Échap : rien de tout cela n'est réécrit ici.
+	 */
+	function bindShipDialogs() {
+		document.querySelectorAll( '.aod-cd-shipcard' ).forEach( function ( card ) {
+			var head = card.querySelector( ':scope > .aod-cd-shipcard__head' );
+			var dlg  = card.querySelector( ':scope > .aod-cd-shipdlg' );
+			if ( ! head || ! dlg || ! dlg.showModal ) { return; }
+
+			head.addEventListener( 'click', function () {
+				dlg.showModal();
+				// La recherche d'abord quand il y en a une : sur 58 wilayas, on
+				// ouvre cette fenêtre pour en trouver UNE, pas pour lire la liste.
+				var premier = dlg.querySelector( '.aod-cd-search-input' )
+					|| dlg.querySelector( 'input:not([type=checkbox]):not([type=hidden]), select, textarea' );
+				if ( premier ) { premier.focus(); }
+			} );
+
+			dlg.querySelectorAll( '.aod-cd-shipdlg-close' ).forEach( function ( b ) {
+				b.addEventListener( 'click', function () { dlg.close(); } );
+			} );
+
+			// Clic sur le FOND. Un `<dialog>` occupe toute la fenêtre : le fond est
+			// le dialogue lui-même, hors de son panneau. On compare donc le POINT
+			// cliqué à la boîte du panneau — la cible serait le dialogue dans les
+			// deux cas.
+			// ⚠️ Ici le panneau EST le dialogue (il porte sa propre boîte, contrairement
+			// aux cartes de régie dont le corps est un enfant). On mesure donc le
+			// dialogue lui-même : un clic hors de sa boîte ferme.
+			dlg.addEventListener( 'click', function ( e ) {
+				var r = dlg.getBoundingClientRect();
+				var dedans = e.clientX >= r.left && e.clientX <= r.right
+					&& e.clientY >= r.top && e.clientY <= r.bottom;
+				if ( ! dedans ) { dlg.close(); }
+			} );
+		} );
+	}
+
+	core.register( 'bindShipDialogs', bindShipDialogs );
 	core.register( 'bindShippingFree', bindShippingFree );
 	core.register( 'bindCarrierRows', bindCarrierRows );
 	core.register( 'bindCarrierTest', bindCarrierTest );

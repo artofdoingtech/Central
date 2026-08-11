@@ -161,7 +161,22 @@ function aod_test_pcs_census() {
 			// d'un `<input>`, sans dérogation — et c'est le contenu le plus sensible
 			// de l'écran : une dérogation sur ce chemin ferait d'un champ de saisie
 			// gérant un vecteur d'injection stockée.
-			'n'        => 193,
+			//
+			// 193 → 192 le 2026-08-11 (Livraison passe en cartes + fenêtres). ⬇️ Une
+			// BAISSE d'UNE, donc la direction sûre — un contrôle revient, il n'en part
+			// pas. Elle est notée quand même : ce cliquet existe pour qu'aucun
+			// mouvement du census n'arrive en silence, et un chiffre qui descend sans
+			// explication se relit, dans six mois, comme un chiffre ajusté pour faire
+			// passer le test.
+			// Cause : les quatre en-têtes d'accordéon portaient chacun leur appel
+			// `AOD_CD_Icon::svg()` avec sa dérogation, écrits QUATRE FOIS. Ils passent
+			// par `card_open()`, un seul corps — qui en porte trois (l'écusson de la
+			// carte, celui de la fenêtre, la croix de fermeture) pour les quatre
+			// cartes. 🚨 Ce que ça vaut au-delà du chiffre : quatre copies d'une même
+			// dérogation, c'est quatre endroits où la relire et trois où oublier de la
+			// corriger. Le census n'a jamais su dire ça — il compte, il ne déduplique
+			// pas.
+			'n'        => 192,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
