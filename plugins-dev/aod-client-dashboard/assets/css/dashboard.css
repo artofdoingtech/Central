@@ -2299,13 +2299,30 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 .aod-cd-carrier-row.is-open td{background:var(--cd-accent-wash)}
 .aod-cd-carrier-name{display:flex;align-items:center;gap:13px;font-weight:700;font-size:var(--cd-fs-md)}
 .aod-carrier-ic{
+	position:relative;
 	display:inline-flex;align-items:center;justify-content:center;
 	width:38px;height:38px;border-radius:var(--cd-r-sm);flex:0 0 38px;
 	/* L'encre est calculée par AOD_Carrier::brand_ink() d'après la couleur de
-	   marque (blanc en dur = 2,15:1 sur l'ambre EcoTrack). Repli : blanc. */
-	background:var(--ic,var(--cd-ink));color:var(--ic-ink,#fff);font-size:var(--cd-fs-sm);font-weight:800;
+	   marque (blanc en dur = 2,15:1 sur l'ambre EcoTrack). Repli : blanc.
+	   Le dégradé part de `--ic-2`, calculé par AOD_Carrier::brand_shade() : cette
+	   teinte s'éloigne TOUJOURS de l'encre, donc elle ne peut pas faire retomber
+	   le monogramme sous le seuil que brand_ink() venait de garantir. Repli sur
+	   la couleur pleine : un dégradé absent ne casse rien. */
+	background:linear-gradient(150deg,var(--ic-2,var(--ic,var(--cd-ink))) 0%,var(--ic,var(--cd-ink)) 62%);
+	color:var(--ic-ink,#fff);font-size:var(--cd-fs-sm);font-weight:800;
 	letter-spacing:.3px;line-height:1;text-transform:uppercase
 }
+/* Le filet intérieur prend `currentColor`, donc l'ENCRE. Écrit en blanc il aurait
+   disparu sur les marques claires — l'ambre de Rocket, le jaune de Packers — qui
+   sont précisément celles dont la pastille a besoin d'un bord pour se détacher du
+   fond de la ligne. */
+.aod-carrier-ic::after{
+	content:"";position:absolute;inset:0;border-radius:inherit;
+	border:1px solid currentColor;opacity:.18;pointer-events:none
+}
+/* Les emblèmes NE SONT PAS miroités en RTL : une marque ne se retourne pas. Rien
+   à écrire pour ça — c'est l'absence de `directional()` qui le garantit. */
+.aod-carrier-ic svg{display:block;width:21px;height:21px}
 .aod-cd-carrier-chev{text-align:end;color:var(--cd-soft);font-size:22px;width:38px}
 /* 🚨 La rotation porte sur le GLYPHE, jamais sur la cellule. Relevé en soldant
    D32, sur GRAND écran — là où le correctif mobile ne s'applique pas, donc un

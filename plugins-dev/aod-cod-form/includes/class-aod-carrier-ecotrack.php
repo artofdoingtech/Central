@@ -30,6 +30,7 @@ class AOD_Carrier_Ecotrack extends AOD_Carrier {
 	 *     @type string $domain   Domaine fixe ; si défini, le champ domaine est masqué.
 	 *     @type string $brand    Couleur de marque (#RRGGBB).
 	 *     @type string $initials Initiales de la pastille.
+	 *     @type string $emblem   Emblème au catalogue `AOD_Carrier_Emblem`, '' = monogramme.
 	 * }
 	 */
 	public function __construct( $config = array() ) {
@@ -39,6 +40,13 @@ class AOD_Carrier_Ecotrack extends AOD_Carrier {
 			'domain'   => '',
 			'brand'    => '#16a34a',
 			'initials' => '',
+			// Le défaut est l'emblème d'EcoTrack LUI-MÊME, parce que la seule
+			// instance qui se construit sans config est l'EcoTrack générique.
+			// Les 23 white-labels déclarent tous le leur — y compris '' quand
+			// leur nom ne porte pas d'image. Un white-label ajouté sans clé
+			// `emblem` arborerait donc la trace d'EcoTrack : c'est ce que
+			// `test-carrier-emblemes.php` R2 refuse.
+			'emblem'   => 'route',
 		) );
 	}
 
@@ -56,6 +64,10 @@ class AOD_Carrier_Ecotrack extends AOD_Carrier {
 
 	public function initials() {
 		return '' !== $this->config['initials'] ? $this->config['initials'] : parent::initials();
+	}
+
+	public function emblem() {
+		return $this->config['emblem'];
 	}
 
 	public function supports_stopdesk() {

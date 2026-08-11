@@ -55,6 +55,12 @@ class AOD_Carrier_Procolis extends AOD_Carrier {
 		return '' !== $this->config['initials'] ? $this->config['initials'] : parent::initials();
 	}
 
+	/** « E-com » — le commerce en ligne, donc le sac. Pas le caddie : dans /gestion
+	 *  ce glyphe est déjà celui des commandes abandonnées. */
+	public function emblem() {
+		return 'bag';
+	}
+
 	/** E-com Delivery gère le stop-desk via le code_stopdesk d'un bureau de la wilaya. */
 	public function supports_stopdesk() {
 		return true;

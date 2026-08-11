@@ -511,6 +511,46 @@ Trois garde-fous, écrits pour qu'on ne les rate pas :
 
 Cadré en Phase 41 (cf. [`ROADMAP-AMELIORATIONS.md`](ROADMAP-AMELIORATIONS.md) A.18).
 
+### 6.5 Les emblèmes de transporteur sont un SECOND catalogue, et il vit ailleurs
+
+La pastille des 29 transporteurs de `Livraison` porte un **emblème** dessiné, pas une
+icône de `AOD_CD_Icon`. Le catalogue est
+[`class-aod-carrier-emblem.php`](../plugins-dev/aod-cod-form/includes/class-aod-carrier-emblem.php),
+dans l'**autre plugin** — celui où vivent les transporteurs. Deux raisons, et aucune
+n'est cosmétique :
+
+- **Le sens.** `AOD_CD_Icon` est un jeu d'**interface**. Coiffer « Fret Direct » du
+  glyphe qui sert déjà de pastille à la section *Livraison* ferait dire au même dessin
+  deux choses différentes sur le même écran — exactement ce que §5 évite en donnant à
+  `cart` et `abandoned` des noms distincts pour un glyphe commun.
+- **Le sens de la dépendance.** `aod-cod-form` ne dépend pas de `aod-client-dashboard`,
+  et ne doit pas commencer. Le transporteur porte son identité ; le tableau de bord se
+  contente de l'afficher.
+
+🚨 **Ce ne sont pas les logos officiels, et l'écrire ici est le garde-fou.** Un template
+redistribué à chaque clone ne peut pas embarquer des marques déposées, et rien dans la
+pile ne permet d'aller les chercher (pas d'internet sortant, TEMPLATE.md §3). Les
+emblèmes s'appuient donc sur ce qu'on possède légitimement : la couleur de marque, déjà
+déclarée, et le **sens du nom** — Negmar est *nedjma*, l'étoile ; 48HR est le délai.
+**Quand le nom ne dit rien, il n'y a pas d'emblème** : la pastille garde son monogramme
+(15 des 29). Inventer un pictogramme pour « TSL Express » lui attribuerait une identité
+visuelle qu'il n'a pas. Ne comblez pas ces 15 « trous » : ce n'en sont pas.
+
+Deux points techniques valent d'être connus avant d'y toucher :
+
+- **`currentColor` uniquement.** L'encre vient de `AOD_Carrier::brand_ink()`, la même
+  logique qu'en §4. Une couleur en dur ne casserait le dessin que sur les marques dont
+  l'encre n'est pas celle-là — un défaut sur 1 lecteur sur 23, jamais relevé en revue.
+- **La pastille est en dégradé, et le second ton s'éloigne TOUJOURS de l'encre**
+  (`AOD_Carrier::brand_shade()` : assombri quand l'encre est blanche, éclairci quand
+  elle est noire). Un dégradé introduit une seconde couleur sous le même monogramme :
+  l'assombrir sans regarder ferait tomber **10 transporteurs sur 29 sous AA** —
+  jusqu'à 2,58:1 sur le rouge de Yalidine — pendant que `brand_ink()` continuerait de
+  répondre juste à une question devenue incomplète. Chiffres relevés en éprouvant le
+  cliquet au rouge, pas estimés.
+
+Gardé par [`tests/unit/test-carrier-emblemes.php`](../tests/unit/test-carrier-emblemes.php).
+
 ---
 
 ## 7. Tests à ajouter

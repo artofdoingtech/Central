@@ -67,6 +67,7 @@ class AOD_Shipping {
 	}
 
 	private function __construct() {
+		require_once AOD_COD_PATH . 'includes/class-aod-carrier-emblem.php';
 		require_once AOD_COD_PATH . 'includes/class-aod-carrier.php';
 		require_once AOD_COD_PATH . 'includes/class-aod-carrier-yalidine.php';
 		require_once AOD_COD_PATH . 'includes/class-aod-carrier-yalitec.php';
@@ -146,33 +147,42 @@ class AOD_Shipping {
 	/**
 	 * Liste des transporteurs « white-label » EcoTrack (même API, domaine + marque).
 	 *
-	 * @return array[] Config : id, label, domain, brand, initials.
+	 * @return array[] Config : id, label, domain, brand, initials, emblem.
 	 */
 	protected function ecotrack_whitelabels() {
+		// 🎨 `emblem` — l'emblème de la pastille, au catalogue fermé
+		// `AOD_Carrier_Emblem`. Il vient du SENS DU NOM et de rien d'autre :
+		// Negmar est nedjma (l'étoile), 48HR est le délai, Conexlog est UPS donc
+		// l'écusson. Quand le nom ne dit rien — TSL, RB, Prest, Areex… —, la
+		// valeur est '' et la pastille garde son monogramme : inventer un dessin
+		// leur attribuerait une identité visuelle qu'ils n'ont pas.
+		// ⚠️ La clé est OBLIGATOIRE ici, '' compris. Sans elle, le défaut de
+		// `AOD_Carrier_Ecotrack` s'applique — et c'est l'emblème d'EcoTrack
+		// lui-même, donc un white-label déguisé en sa plateforme.
 		return array(
-			array( 'id' => 'allolivraison', 'label' => 'Allo Livraison',    'domain' => 'allolivraison.ecotrack.dz',    'brand' => '#0ea5e9', 'initials' => 'AL' ),
-			array( 'id' => 'rex',          'label' => 'Rex Livraison',     'domain' => 'rex.ecotrack.dz',              'brand' => '#db2777', 'initials' => 'REX' ),
-			array( 'id' => 'golivri',      'label' => 'GOLIVRI',           'domain' => 'golivri.ecotrack.dz',          'brand' => '#0d9488', 'initials' => 'GO' ),
-			array( 'id' => 'dhd',          'label' => 'DHD',               'domain' => 'dhd.ecotrack.dz',              'brand' => '#b45309', 'initials' => 'DHD' ),
-			array( 'id' => 'anderson',     'label' => 'Anderson Delivery', 'domain' => 'anderson.ecotrack.dz',         'brand' => '#4f46e5', 'initials' => 'AN' ),
-			array( 'id' => 'areex',        'label' => 'Areex',             'domain' => 'areex.ecotrack.dz',            'brand' => '#0891b2', 'initials' => 'AR' ),
-			array( 'id' => 'bacexpress',   'label' => 'BAC Express',       'domain' => 'bacexpress.ecotrack.dz',       'brand' => '#9333ea', 'initials' => 'BAC' ),
-			array( 'id' => 'conexlog',     'label' => 'Conexlog (UPS)',    'domain' => 'app.conexlog-dz.com',          'brand' => '#a16207', 'initials' => 'UPS' ),
-			array( 'id' => 'coyote',       'label' => 'Coyote Express',    'domain' => 'coyoteexpressdz.ecotrack.dz',  'brand' => '#c2410c', 'initials' => 'CY' ),
-			array( 'id' => 'distazero',    'label' => 'Distazero',         'domain' => 'distazero.ecotrack.dz',        'brand' => '#2563eb', 'initials' => 'DZ' ),
-			array( 'id' => 'e48hr',        'label' => '48HR Livraison',    'domain' => '48hr.ecotrack.dz',             'brand' => '#16a34a', 'initials' => '48' ),
-			array( 'id' => 'fretdirect',   'label' => 'Fret Direct',       'domain' => 'fret.ecotrack.dz',             'brand' => '#475569', 'initials' => 'FD' ),
-			array( 'id' => 'monohub',      'label' => 'MonoHub',           'domain' => 'mono.ecotrack.dz',             'brand' => '#7c3aed', 'initials' => 'MH' ),
-			array( 'id' => 'msmgo',        'label' => 'MSM Go',            'domain' => 'msmgo.ecotrack.dz',            'brand' => '#dc2626', 'initials' => 'MSM' ),
-			array( 'id' => 'negmar',       'label' => 'Negmar Express',    'domain' => 'negmar.ecotrack.dz',           'brand' => '#0f766e', 'initials' => 'NG' ),
-			array( 'id' => 'packers',      'label' => 'Packers',           'domain' => 'packers.ecotrack.dz',          'brand' => '#ca8a04', 'initials' => 'PK' ),
-			array( 'id' => 'prest',        'label' => 'Prest',             'domain' => 'prest.ecotrack.dz',            'brand' => '#e11d48', 'initials' => 'PR' ),
-			array( 'id' => 'rblivraison',  'label' => 'RB Livraison',      'domain' => 'rblivraison.ecotrack.dz',      'brand' => '#1d4ed8', 'initials' => 'RB' ),
-			array( 'id' => 'rocket',       'label' => 'Rocket Delivery',   'domain' => 'rocket.ecotrack.dz',           'brand' => '#f59e0b', 'initials' => 'RK' ),
-			array( 'id' => 'salva',        'label' => 'Salva Delivery',    'domain' => 'salvadelivery.ecotrack.dz',    'brand' => '#15803d', 'initials' => 'SV' ),
-			array( 'id' => 'speed',        'label' => 'Speed Delivery',    'domain' => 'speeddelivery.ecotrack.dz',    'brand' => '#ea580c', 'initials' => 'SP' ),
-			array( 'id' => 'tsl',          'label' => 'TSL Express',       'domain' => 'tsl.ecotrack.dz',              'brand' => '#6d28d9', 'initials' => 'TSL' ),
-			array( 'id' => 'worldexpress', 'label' => 'Worldexpress',      'domain' => 'worldexpress.ecotrack.dz',     'brand' => '#0369a1', 'initials' => 'WX' ),
+			array( 'id' => 'allolivraison', 'label' => 'Allo Livraison',    'domain' => 'allolivraison.ecotrack.dz',    'brand' => '#0ea5e9', 'initials' => 'AL',  'emblem' => 'call' ),
+			array( 'id' => 'rex',          'label' => 'Rex Livraison',     'domain' => 'rex.ecotrack.dz',              'brand' => '#db2777', 'initials' => 'REX', 'emblem' => 'crown' ),
+			array( 'id' => 'golivri',      'label' => 'GOLIVRI',           'domain' => 'golivri.ecotrack.dz',          'brand' => '#0d9488', 'initials' => 'GO',  'emblem' => '' ),
+			array( 'id' => 'dhd',          'label' => 'DHD',               'domain' => 'dhd.ecotrack.dz',              'brand' => '#b45309', 'initials' => 'DHD', 'emblem' => '' ),
+			array( 'id' => 'anderson',     'label' => 'Anderson Delivery', 'domain' => 'anderson.ecotrack.dz',         'brand' => '#4f46e5', 'initials' => 'AN',  'emblem' => '' ),
+			array( 'id' => 'areex',        'label' => 'Areex',             'domain' => 'areex.ecotrack.dz',            'brand' => '#0891b2', 'initials' => 'AR',  'emblem' => '' ),
+			array( 'id' => 'bacexpress',   'label' => 'BAC Express',       'domain' => 'bacexpress.ecotrack.dz',       'brand' => '#9333ea', 'initials' => 'BAC', 'emblem' => '' ),
+			array( 'id' => 'conexlog',     'label' => 'Conexlog (UPS)',    'domain' => 'app.conexlog-dz.com',          'brand' => '#a16207', 'initials' => 'UPS', 'emblem' => 'shield' ),
+			array( 'id' => 'coyote',       'label' => 'Coyote Express',    'domain' => 'coyoteexpressdz.ecotrack.dz',  'brand' => '#c2410c', 'initials' => 'CY',  'emblem' => 'paw' ),
+			array( 'id' => 'distazero',    'label' => 'Distazero',         'domain' => 'distazero.ecotrack.dz',        'brand' => '#2563eb', 'initials' => 'DZ',  'emblem' => 'target' ),
+			array( 'id' => 'e48hr',        'label' => '48HR Livraison',    'domain' => '48hr.ecotrack.dz',             'brand' => '#16a34a', 'initials' => '48',  'emblem' => 'clock' ),
+			array( 'id' => 'fretdirect',   'label' => 'Fret Direct',       'domain' => 'fret.ecotrack.dz',             'brand' => '#475569', 'initials' => 'FD',  'emblem' => 'truck' ),
+			array( 'id' => 'monohub',      'label' => 'MonoHub',           'domain' => 'mono.ecotrack.dz',             'brand' => '#7c3aed', 'initials' => 'MH',  'emblem' => 'hub' ),
+			array( 'id' => 'msmgo',        'label' => 'MSM Go',            'domain' => 'msmgo.ecotrack.dz',            'brand' => '#dc2626', 'initials' => 'MSM', 'emblem' => '' ),
+			array( 'id' => 'negmar',       'label' => 'Negmar Express',    'domain' => 'negmar.ecotrack.dz',           'brand' => '#0f766e', 'initials' => 'NG',  'emblem' => 'star' ),
+			array( 'id' => 'packers',      'label' => 'Packers',           'domain' => 'packers.ecotrack.dz',          'brand' => '#ca8a04', 'initials' => 'PK',  'emblem' => 'box' ),
+			array( 'id' => 'prest',        'label' => 'Prest',             'domain' => 'prest.ecotrack.dz',            'brand' => '#e11d48', 'initials' => 'PR',  'emblem' => '' ),
+			array( 'id' => 'rblivraison',  'label' => 'RB Livraison',      'domain' => 'rblivraison.ecotrack.dz',      'brand' => '#1d4ed8', 'initials' => 'RB',  'emblem' => '' ),
+			array( 'id' => 'rocket',       'label' => 'Rocket Delivery',   'domain' => 'rocket.ecotrack.dz',           'brand' => '#f59e0b', 'initials' => 'RK',  'emblem' => 'rocket' ),
+			array( 'id' => 'salva',        'label' => 'Salva Delivery',    'domain' => 'salvadelivery.ecotrack.dz',    'brand' => '#15803d', 'initials' => 'SV',  'emblem' => '' ),
+			array( 'id' => 'speed',        'label' => 'Speed Delivery',    'domain' => 'speeddelivery.ecotrack.dz',    'brand' => '#ea580c', 'initials' => 'SP',  'emblem' => 'speed' ),
+			array( 'id' => 'tsl',          'label' => 'TSL Express',       'domain' => 'tsl.ecotrack.dz',              'brand' => '#6d28d9', 'initials' => 'TSL', 'emblem' => '' ),
+			array( 'id' => 'worldexpress', 'label' => 'Worldexpress',      'domain' => 'worldexpress.ecotrack.dz',     'brand' => '#0369a1', 'initials' => 'WX',  'emblem' => 'globe' ),
 		);
 	}
 

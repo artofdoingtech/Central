@@ -240,14 +240,71 @@ abstract class AOD_Carrier {
 	}
 
 	/**
-	 * Pastille-icône HTML du livreur (monogramme coloré).
+	 * Teinte d'appui du dégradé de la pastille.
+	 *
+	 * 🚨 ELLE S'ÉLOIGNE TOUJOURS DE L'ENCRE, ET C'EST TOUT L'INTÉRÊT. `brand_ink()`
+	 * choisit le noir ou le blanc en mesurant le contraste SUR LA COULEUR PLEINE.
+	 * Un dégradé introduit une seconde couleur sous le même monogramme : l'assombrir
+	 * systématiquement ferait tomber l'encre NOIRE — celle retenue sur les marques
+	 * claires, l'ambre EcoTrack en tête — sous le seuil qu'on venait de garantir,
+	 * et personne ne l'aurait vu puisque le calcul, lui, resterait juste.
+	 * On décale donc dans le sens opposé à l'encre : assombri quand l'encre est
+	 * blanche, éclairci quand elle est noire. Le contraste ne peut que monter.
+	 * Gardé par `tests/unit/test-carrier-emblemes.php` R3.
+	 *
+	 * @return string Code couleur hexadécimal (#RRGGBB).
+	 */
+	public function brand_shade() {
+		$hex = ltrim( (string) $this->brand_color(), '#' );
+		if ( 3 === strlen( $hex ) ) {
+			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+		}
+		if ( ! preg_match( '/^[0-9a-fA-F]{6}$/', $hex ) ) {
+			return $this->brand_color(); // Couleur illisible : pas de dégradé, pas de risque.
+		}
+		$vers_le_noir = ( '#ffffff' === $this->brand_ink() );
+		$out          = '#';
+		foreach ( array( 0, 2, 4 ) as $i ) {
+			$v    = hexdec( substr( $hex, $i, 2 ) );
+			$v    = $vers_le_noir ? (int) round( $v * 0.66 ) : (int) round( $v + ( 255 - $v ) * 0.34 );
+			$out .= str_pad( dechex( max( 0, min( 255, $v ) ) ), 2, '0', STR_PAD_LEFT );
+		}
+		return $out;
+	}
+
+	/**
+	 * Nom de l'emblème du transporteur au catalogue `AOD_Carrier_Emblem`.
+	 *
+	 * '' = pas d'emblème, la pastille garde son monogramme. C'est le défaut, et
+	 * c'est un défaut SÛR : un transporteur ajouté demain sans emblème s'affiche
+	 * correctement, il ne porte simplement pas de dessin. Lire l'en-tête de
+	 * `class-aod-carrier-emblem.php` avant d'en inventer un.
+	 *
+	 * @return string
+	 */
+	public function emblem() {
+		return '';
+	}
+
+	/**
+	 * Pastille-icône HTML du livreur : emblème, ou monogramme à défaut.
+	 *
+	 * ⚠️ `aria-hidden` sur la pastille ENTIÈRE, monogramme compris. Le nom du
+	 * transporteur est le texte immédiatement à côté : jusqu'ici un lecteur
+	 * d'écran annonçait « Y A Yalidine », les initiales n'apportant rien qui ne
+	 * suive dans la même cellule.
 	 *
 	 * @return string HTML sûr (déjà échappé).
 	 */
 	public function icon_html() {
-		return '<span class="aod-carrier-ic" style="--ic:' . esc_attr( $this->brand_color() )
+		$emb = AOD_Carrier_Emblem::svg( $this->emblem() );
+
+		return '<span class="aod-carrier-ic" aria-hidden="true" style="--ic:' . esc_attr( $this->brand_color() )
+			. ';--ic-2:' . esc_attr( $this->brand_shade() )
 			. ';--ic-ink:' . esc_attr( $this->brand_ink() ) . '">'
-			. esc_html( $this->initials() ) . '</span>';
+			// Le SVG vient du catalogue fermé de CE dépôt, jamais d'une saisie.
+			. ( '' !== $emb ? $emb : esc_html( $this->initials() ) )
+			. '</span>';
 	}
 
 	/**
