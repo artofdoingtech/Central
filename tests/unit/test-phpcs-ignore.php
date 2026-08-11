@@ -134,7 +134,24 @@ function aod_test_pcs_census() {
 			// eux-mêmes leurs entrées. ⚠️ Les NOMS DE PRODUITS de cet écran, eux,
 			// passent par `esc_html()` sans dérogation — c'est le seul texte de la
 			// page qui vienne d'une saisie.
-			'n'        => 180,
+			//
+			// 180 → 189 le 2026-08-10 (module « Dépenses »). ⬆️ NEUF de plus, et pas
+			// un motif nouveau : `page_head()` et `empty_state()` (composants qui
+			// échappent eux-mêmes leurs entrées), `AOD_CD_Icon::svg()` × 4 (catalogue
+			// FERMÉ), `AOD_CD_Dashboard::kpis()` (même motif que le bandeau de Suivi,
+			// recensé plus haut), et les DEUX de `render_depenses_bar()` — la barre
+			// « Où part l'argent » et sa légende, assemblées en PHP.
+			// ⚠️ CES DEUX-LÀ MÉRITENT D'ÊTRE LUES : ce sont les seules du lot qui
+			// concatènent du balisage au lieu d'appeler un composant. Tout ce qui y
+			// est variable passe par un échappement à la construction — libellés de
+			// postes par `esc_html()` (et ce sont des littéraux `__()`, pas de la
+			// saisie), largeurs par `number_format()` sur un flottant, indice de
+			// couleur par un cast `(int)`, montants par `wp_kses_post( wc_price() )`.
+			// 🔒 Aucune donnée saisie n'atteint ces deux `echo` : les postes viennent
+			// d'une LISTE FERMÉE (`depenses_cats()`), et le libellé libre d'une
+			// dépense — le seul texte saisi de l'écran — n'y entre pas du tout. Il est
+			// rendu dans le tableau, par `esc_html()`, sans dérogation.
+			'n'        => 189,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '

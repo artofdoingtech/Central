@@ -712,6 +712,20 @@
 						if ( btn ) { btn.disabled = false; }
 						if ( res && res.success ) {
 							toast( res.data.message || CD.i18nSaved || 'Enregistré', false );
+							// 🔴 `reload` ÉTAIT ÉCOUTÉ PARTOUT SAUF ICI, et ça rendait un
+							// bouton menteur. Les binders de section (Livraison, Équipe,
+							// Suivi) respectent ce drapeau depuis toujours ; le générique
+							// l'ignorait. Résultat : « Rentabilité par produit » renvoyait
+							// `reload:true`, son bouton annonçait « Enregistrer et
+							// recalculer », et seul l'enregistrement avait lieu — les
+							// bénéfices affichés restaient ceux d'avant la saisie, sans
+							// que rien ne le signale. Un handler qui change des nombres
+							// rendus par le serveur les fait désormais reprendre.
+							// 700 ms : le même délai que les trois autres binders, pour
+							// que le toast soit lu avant que la page ne reparte.
+							if ( res.data && res.data.reload ) {
+								setTimeout( function () { window.location.reload(); }, 700 );
+							}
 						} else {
 							toast( ( res && res.data && res.data.message ) || CD.i18nErr || 'Erreur.', true );
 						}
@@ -760,7 +774,7 @@
 		'bindPixelDialogs', 'bindCapiTest', 'bindPixelCards', 'bindOrderDetail',
 		'bindOrderBulkDelete', 'bindShipSend', 'bindResetShop', 'bindTracking', 'bindTeam',
 		'bindStock', 'bindLanding', 'bindAbandonedConvert',
-		'bindAbandonedBulkDelete', 'bindLeadAssign', 'bindFinance'
+		'bindAbandonedBulkDelete', 'bindLeadAssign', 'bindFinance', 'bindDepenses'
 	];
 	var registry = {};
 	function register( name, fn ) {

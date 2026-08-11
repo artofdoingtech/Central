@@ -156,7 +156,16 @@ AOD_Test::group( 'Décomposition JS 33 — R1 : la coque ne regrossit pas' );
 // toujours faux parce qu'une Promise est truthy — vaut 13 suppressions sans
 // confirmation. Tailler le commentaire pour rentrer sous un compteur paierait
 // la lisibilité du garde-fou au prix de la connaissance qu'il protège.
-$aod_djs_plafond = 830;
+// REMONTÉE ASSUMÉE 830 → 840 (+10, 2026-08-10) : `bindSettingsForms()` honore
+// enfin `res.data.reload`, et le commentaire pèse plus que le code — à dessein.
+// Le drapeau était respecté par les binders de Livraison, Équipe et Suivi, et
+// IGNORÉ par le générique : « Rentabilité par produit » le renvoyait, son bouton
+// annonçait « Enregistrer et recalculer », et les bénéfices affichés restaient
+// ceux d'avant la saisie. Croissance de COQUE légitime : c'est un contrat de
+// réponse PARTAGÉ par tous les formulaires de réglages, l'écrire dans un module
+// le ferait recopier — la dérive que la Phase 46 a passé huit étapes à fermer.
+// (+1 ligne aussi pour `bindDepenses` dans ORDER : la liste est la coque.)
+$aod_djs_plafond = 840;
 
 $aod_djs_coque  = AOD_CD_PATH . 'assets/js/dashboard.js';
 $aod_djs_src    = is_readable( $aod_djs_coque ) ? (string) file_get_contents( $aod_djs_coque ) : '';

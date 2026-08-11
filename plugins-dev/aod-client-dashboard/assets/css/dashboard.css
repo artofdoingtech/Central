@@ -4538,19 +4538,43 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    champ. Les trois colonnes pour lesquelles l'écran existe, invisibles sans
    que rien ne casse : le tableau avait l'air complet.
    ⚠️ Même correctif que `.aod-cd-settings-form > .aod-cd-pxstage` sur la page
-   Pixels — un enfant qui n'est pas un champ traverse la grille. */
-.aod-cd-finprod__form > *{grid-column:1 / -1;min-width:0}
+   Pixels — un enfant qui n'est pas un champ traverse la grille.
+   🔁 Les Dépenses sont dans le même cas : leur formulaire porte un `fieldset` et
+   une barre d'enregistrement, pas des champs de premier niveau. Un second
+   sélecteur ici plutôt qu'une seconde règle plus bas — la raison est la même, et
+   deux règles jumelles auraient dérivé au premier ajustement. */
+.aod-cd-finprod__form > *,
+.aod-cd-findep__form > *{grid-column:1 / -1;min-width:0}
 /* Un sélecteur de mois n'a pas besoin de toute la barre : il en prenait la
    largeur entière parce que les filtres partagent l'espace à parts égales. */
-.aod-cd-finprod .aod-cd-filters .aod-cd-field{flex:0 1 220px}
+.aod-cd-finprod .aod-cd-filters .aod-cd-field,
+.aod-cd-findep .aod-cd-filters .aod-cd-field{flex:0 1 220px}
 .aod-cd-finprod__t td:first-child{min-width:180px}
 .aod-cd-finprod__pub input{max-width:120px;text-align:end}
 .aod-cd-finprod__net{font-weight:800;font-variant-numeric:tabular-nums}
 .aod-cd-finprod__net.is-ok{color:var(--cd-ok)}
 .aod-cd-finprod__net.is-bad{color:var(--cd-bad)}
 .aod-cd-finprod__vide{color:var(--cd-muted)}
-.aod-cd-finprod__tot td{border-top:2px solid var(--cd-line);font-weight:700;background:var(--cd-bg)}
 .aod-cd-finprod__notes{margin-top:var(--cd-sp-5)}
+
+/* La ligne de TOTAL d'un tableau du pôle. Elle s'appelait `.aod-cd-finprod__tot`
+   quand la Rentabilité en était l'unique tableau ; les Dépenses en ont un aussi,
+   et un total ne se dessine pas différemment selon la page qui le porte. */
+.aod-cd-fintot td{border-top:2px solid var(--cd-line);font-weight:700;background:var(--cd-bg)}
+
+/* ── Dépenses ──────────────────────────────────────────────────────────
+   Presque rien de neuf : l'écran emprunte la barre « Où part l'argent » du
+   calculateur, les fieldsets `.aod-cd-finset` du formulaire, et la rampe de
+   couleurs des postes. Ce qui suit ne fait qu'accorder le tableau. */
+.aod-cd-findep__card{margin-bottom:var(--cd-sp-5)}
+.aod-cd-findep__form{margin-bottom:var(--cd-sp-5)}
+/* La pastille du poste, reprise de la légende : le tableau et la barre se
+   lisent l'un contre l'autre au lieu de demander qu'on compte les parts. */
+.aod-cd-findep__poste{display:inline-flex;align-items:center;gap:var(--cd-sp-2)}
+.aod-cd-findep__mnt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.aod-cd-findep__t td:nth-child(3){min-width:200px}
+.aod-cd-findep__vide{color:var(--cd-muted)}
+.aod-cd-findep__notes{margin-top:var(--cd-sp-5)}
 
 /* ── L'historique ────────────────────────────────────────────────────── */
 .aod-cd-finhist{margin-top:var(--cd-sp-6)}

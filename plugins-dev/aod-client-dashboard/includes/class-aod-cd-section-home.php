@@ -1229,8 +1229,15 @@ class AOD_CD_Section_Home {
 	 * @param bool  $points           Vrai si la métrique est déjà un pourcentage
 	 *                                (la variation s'exprime alors en points).
 	 * @return string HTML sûr, ou '' si le delta n'a pas de sens.
+	 *
+	 * 🔓 `public` DEPUIS LES DÉPENSES, ET POUR LA RAISON DE `item_cost_price()` :
+	 * un second lecteur est apparu (le total d'un mois comparé au précédent), et
+	 * la recopier en aurait fait deux définitions de la même pastille — donc deux
+	 * seuils de « plat », deux flèches, et un jour deux couleurs pour la même
+	 * variation. Elle reste une méthode d'instance : `kpis()` la reçoit déjà
+	 * comme du HTML tout prêt, elle n'a rien à savoir de l'appelant.
 	 */
-	protected function kpi_delta( $now, $prev, $higher_is_better = true, $points = false ) {
+	public function kpi_delta( $now, $prev, $higher_is_better = true, $points = false ) {
 		$now  = (float) $now;
 		$prev = (float) $prev;
 

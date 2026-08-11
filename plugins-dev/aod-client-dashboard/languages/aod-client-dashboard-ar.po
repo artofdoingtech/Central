@@ -4300,3 +4300,138 @@ msgstr "تكاليفك لكل طلبية"
 #: includes/class-aod-cd-section-finance.php
 msgid "« Encaissé » = commandes terminées, ou dont le colis est marqué livré (%d ce mois-ci). Ce n’est pas le « Chiffre d’affaires » de l’Accueil, qui compte aussi les commandes en cours : ici on ne parle que d’argent réellement rentré."
 msgstr "« المحصَّل » = الطلبيات المنتهية، أو التي وُسم طردها كمُسلَّم (%d هذا الشهر). ليس هو « رقم الأعمال » في الصفحة الرئيسية، الذي يحتسب أيضًا الطلبيات الجارية: هنا لا نتحدّث إلا عن مال دخل فعلًا."
+
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Abonnements"
+msgstr "الاشتراكات"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Action"
+msgstr "إجراء"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ajouter la dépense"
+msgstr "أضف المصروف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ajouter une dépense"
+msgstr "إضافة مصروف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ajoutez-en une ci-dessus : elle apparaîtra ici, avec sa part du total."
+msgstr "أضف واحدًا أعلاه: سيظهر هنا، مع نسبته من المجموع."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Aucune dépense saisie sur ce mois."
+msgstr "لا توجد مصاريف مُدخلة في هذا الشهر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Campagne Meta, salaire d’Amine, cartons…"
+msgstr "حملة ميتا، راتب أمين، كراتين…"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce mois compte déjà %d lignes, le maximum. Supprimez-en une avant d’en ajouter une autre — aucune ligne n’est effacée automatiquement."
+msgstr "هذا الشهر يحتوي أصلًا على %d سطرًا، وهو الحدّ الأقصى. احذف سطرًا قبل إضافة آخر — لا يُحذف أيّ سطر تلقائيًا."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce mois compte déjà %d lignes, le maximum. Supprimez-en une avant d’en ajouter une autre."
+msgstr "هذا الشهر يحتوي أصلًا على %d سطرًا، وهو الحدّ الأقصى. احذف سطرًا قبل إضافة آخر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ce registre est le vôtre : il totalise exactement ce que vous saisissez. Aucune dépense n’y entre automatiquement depuis les commandes."
+msgstr "هذا السجلّ سجلّك: يجمع بالضبط ما تُدخله. لا يدخل إليه أيّ مصروف تلقائيًا انطلاقًا من الطلبيات."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Date invalide."
+msgstr "تاريخ غير صالح."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Dépense ajoutée."
+msgstr "تمت إضافة المصروف."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Dépense introuvable."
+msgstr "المصروف غير موجود."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Dépense supprimée."
+msgstr "تم حذف المصروف."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Elle sera rangée dans le mois de sa date, pas dans celui que vous consultez."
+msgstr "سيُدرَج في شهر تاريخه، لا في الشهر الذي تتصفّحه."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Fournisseurs"
+msgstr "المورّدون"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le montant doit être supérieur à zéro."
+msgstr "يجب أن يكون المبلغ أكبر من صفر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Libellé"
+msgstr "البيان"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Mois précédent"
+msgstr "الشهر السابق"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Poste"
+msgstr "البند"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Poste de dépense inconnu."
+msgstr "بند مصروف غير معروف."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Poste principal"
+msgstr "البند الرئيسي"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Publicité : %1$s ici, contre %2$s répartis produit par produit dans « Rentabilité par produit ». Les deux saisies sont indépendantes — celle-ci mesure ce que la boutique a payé, l’autre sert à calculer le bénéfice de chaque produit."
+msgstr "الإشهار: %1$s هنا، مقابل %2$s موزّعة منتجًا بمنتج في « ربحية كل منتج ». الإدخالان مستقلّان — هذا يقيس ما دفعه المتجر، والآخر يخدم حساب ربح كل منتج."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Publicité, livraison, salaires, emballage, fournisseurs, abonnements — saisies une fois, retrouvées par mois."
+msgstr "إشهار، توصيل، رواتب، تغليف، مورّدون، اشتراكات — تُدخَل مرّة واحدة، وتُسترجَع حسب الشهر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Répartition des dépenses par poste"
+msgstr "توزيع المصاريف حسب البند"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Salaires"
+msgstr "الرواتب"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Supprimer cette dépense"
+msgstr "حذف هذا المصروف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Supprimer cette dépense (%1$s, %2$s) ? Elle ne sera plus comptée dans le total du mois."
+msgstr "حذف هذا المصروف (%1$s، %2$s)؟ لن يُحتسب بعد ذلك في مجموع الشهر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Total des dépenses"
+msgstr "مجموع المصاريف"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Tout ce que la boutique paie, mois par mois. Saisi une fois, retrouvé ensuite."
+msgstr "كلّ ما يدفعه المتجر، شهرًا بشهر. يُدخَل مرّة، ويُسترجَع بعد ذلك."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Un mois accepte %d lignes. Au-delà, l’ajout est refusé : rien n’est effacé pour faire de la place."
+msgstr "يقبل الشهر %d سطرًا. بعد ذلك تُرفض الإضافة: لا يُحذف شيء لإفساح المجال."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "%d dépense"
+msgid_plural "%d dépenses"
+msgstr[0] "لا مصاريف"
+msgstr[1] "مصروف واحد"
+msgstr[2] "مصروفان"
+msgstr[3] "%d مصاريف"
+msgstr[4] "%d مصروفًا"
+msgstr[5] "%d مصروف"

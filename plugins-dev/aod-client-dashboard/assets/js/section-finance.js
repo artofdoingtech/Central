@@ -66,6 +66,59 @@
 
 	var toast = core.toast;
 
+	/**
+	 * Dépenses : la suppression d'une ligne du registre.
+	 *
+	 * ⚠️ ON RECHARGE, ON NE RETIRE PAS LA LIGNE. Le total du mois, la pastille de
+	 * variation et la barre « Où part l'argent » sont rendus par le SERVEUR :
+	 * effacer la ligne à l'écran laisserait trois nombres qui la comptent encore.
+	 * Un tableau juste sous un total faux se lit comme un total juste.
+	 *
+	 * L'ajout, lui, passe par le binder générique des formulaires de réglages —
+	 * il n'y a rien à confronter, seulement à enregistrer.
+	 */
+	function bindDepenses() {
+		var tbl = document.querySelector( '[data-depenses]' );
+		if ( ! tbl ) { return; }
+
+		tbl.addEventListener( 'click', function ( ev ) {
+			var btn = ev.target.closest( '.aod-cd-findep__del' );
+			if ( ! btn ) { return; }
+
+			// ⚠️ `confirmModal` rend une PROMESSE : la suite DOIT être en
+			// continuation. Un `if ( ! confirmModal(…) )` ne se déclencherait
+			// jamais — donc une suppression sans confirmation.
+			core.confirmModal( {
+				message: btn.getAttribute( 'data-confirm' ) || '',
+				danger: true
+			} ).then( function ( ok ) {
+				if ( ! ok ) { return; }
+				var data = new FormData();
+				data.append( 'action', 'aod_cd_finance_depense_del' );
+				data.append( 'nonce', core.CD.nonce || '' );
+				data.append( 'mois', tbl.getAttribute( 'data-mois' ) || '' );
+				data.append( 'dep', btn.getAttribute( 'data-id' ) || '' );
+				btn.disabled = true;
+
+				fetch( core.CD.ajaxUrl, { method: 'POST', credentials: 'same-origin', body: data } )
+					.then( function ( r ) { return r.json(); } )
+					.then( function ( r ) {
+						if ( r && r.success ) {
+							if ( toast ) { toast( r.data.message || '' ); }
+							setTimeout( function () { window.location.reload(); }, 700 );
+							return;
+						}
+						btn.disabled = false;
+						if ( toast ) { toast( ( r && r.data && r.data.message ) || core.netErr, true ); }
+					} )
+					.catch( function () {
+						btn.disabled = false;
+						if ( toast ) { toast( core.netErr, true ); }
+					} );
+			} );
+		} );
+	}
+
 	function bindFinance() {
 		var grille = document.querySelector( '.aod-cd-fincalc__grid' );
 		if ( ! grille ) { return; }
@@ -318,5 +371,11 @@
 		} );
 	}
 
+	// DEUX binders, pas un appel imbriqué. Le premier jet appelait `bindDepenses()`
+	// depuis `bindFinance()` : un cliquet (32.5 — R2) l'a refusé, et il avait
+	// raison. `init()` isole et NOMME chaque binder qui échoue ; appelé nu depuis
+	// un autre, celui-ci aurait fait passer sa propre panne pour celle du
+	// calculateur — l'écran fautif désigné à la console n'aurait pas été le bon.
 	core.register( 'bindFinance', bindFinance );
+	core.register( 'bindDepenses', bindDepenses );
 }( window.aodCdCore ) );

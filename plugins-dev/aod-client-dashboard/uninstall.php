@@ -116,6 +116,11 @@ $aod_cd_cleanup = static function () use ( $aod_cd_role, $aod_cd_confirmer, $aod
 	// saisie, mais qu'aucun écran ne saura plus lire une fois le plugin parti.
 	delete_option( 'aod_cd_finance_taux' );
 	delete_option( 'aod_cd_finance_pub' );
+	// Le registre des dépenses. C'est la donnée la plus « comptable » du pôle, et
+	// c'est justement pourquoi elle part aussi : la garder ferait survivre en base
+	// un registre que plus aucun écran ne sait lire ni exporter — inutilisable et
+	// invisible. Le gérant qui veut le conserver le fait avant de désinstaller.
+	delete_option( 'aod_cd_finance_depenses' );
 	// Motif « aod_cd_% » et non « aod_cd_home_% » : la section Stock a repris le
 	// même mécanisme de cache avec SON préfixe (`aod_cd_stock_`, étape 25.1) et
 	// échappait au balayage. Un motif nommant une seule section dérive dès la
