@@ -171,6 +171,7 @@ function aod_test_perm_contrat() {
 		'finance_produits' => array( 'caps' => array( 'manage_woocommerce' ), 'famille' => 'manager' ),
 		'finance_depense_add' => array( 'caps' => array( 'manage_woocommerce' ), 'famille' => 'manager' ),
 		'finance_depense_del' => array( 'caps' => array( 'manage_woocommerce' ), 'famille' => 'manager' ),
+		'finance_entreprise' => array( 'caps' => array( 'manage_woocommerce' ), 'famille' => 'manager' ),
 		'quick_product'    => array( 'caps' => array( 'edit_products' ), 'famille' => 'manager' ),
 		'delete_product'   => array( 'caps' => array( 'delete_products' ), 'famille' => 'manager' ),
 		// 2026-08-04 — duplication. `edit_products` et NON `delete_products` : créer

@@ -121,6 +121,13 @@ $aod_cd_cleanup = static function () use ( $aod_cd_role, $aod_cd_confirmer, $aod
 	// un registre que plus aucun écran ne sait lire ni exporter — inutilisable et
 	// invisible. Le gérant qui veut le conserver le fait avant de désinstaller.
 	delete_option( 'aod_cd_finance_depenses' );
+	// La fiche société. ⛔ Ce qu'on NE supprime PAS ici : les options
+	// `woocommerce_store_*` que l'écran « Entreprise » édite aussi. Elles
+	// appartiennent à WooCommerce, qui reste actif après nous — les effacer
+	// viderait l'adresse de la page Contact publique parce qu'on a désinstallé un
+	// tableau de bord. *On supprime ce qu'on possède, jamais ce qu'on édite.*
+	// Même règle que les réglages `aod_cod_*`, énoncée en tête de fichier.
+	delete_option( 'aod_cd_entreprise' );
 	// Motif « aod_cd_% » et non « aod_cd_home_% » : la section Stock a repris le
 	// même mécanisme de cache avec SON préfixe (`aod_cd_stock_`, étape 25.1) et
 	// échappait au balayage. Un motif nommant une seule section dérive dès la

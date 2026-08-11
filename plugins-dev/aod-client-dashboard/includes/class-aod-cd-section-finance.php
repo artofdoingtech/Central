@@ -61,6 +61,7 @@ class AOD_CD_Section_Finance {
 		add_action( 'wp_ajax_aod_cd_finance_produits', array( $this, 'ajax_finance_produits' ) );
 		add_action( 'wp_ajax_aod_cd_finance_depense_add', array( $this, 'ajax_depense_add' ) );
 		add_action( 'wp_ajax_aod_cd_finance_depense_del', array( $this, 'ajax_depense_del' ) );
+		add_action( 'wp_ajax_aod_cd_finance_entreprise', array( $this, 'ajax_entreprise' ) );
 	}
 
 	/* =====================================================================
@@ -102,7 +103,7 @@ class AOD_CD_Section_Finance {
 				'ic'    => 'storefront',
 				'titre' => __( 'Entreprise', 'aod-client-dashboard' ),
 				'sous'  => __( 'Coordonnées, informations fiscales et bancaires de la société.', 'aod-client-dashboard' ),
-				'etat'  => 'avenir',
+				'etat'  => 'pret',
 			),
 		);
 	}
@@ -347,6 +348,8 @@ class AOD_CD_Section_Finance {
 			$this->render_produits();
 		} elseif ( 'depenses' === $outil ) {
 			$this->render_depenses();
+		} elseif ( 'entreprise' === $outil ) {
+			$this->render_entreprise();
 		}
 	}
 
@@ -1399,6 +1402,249 @@ class AOD_CD_Section_Finance {
 		update_option( self::OPTION_DEPENSES, $all, false );
 
 		wp_send_json_success( array( 'message' => __( 'Dépense supprimée.', 'aod-client-dashboard' ) ) );
+	}
+
+	/* =====================================================================
+	 * Entreprise
+	 * ================================================================== */
+
+	/** Option : la fiche société (identité, fiscal, bancaire). */
+	const OPTION_ENTREPRISE = 'aod_cd_entreprise';
+
+	/**
+	 * L'ADRESSE N'EST PAS À NOUS — elle appartient à WooCommerce.
+	 *
+	 * 🚨 CE TABLEAU EST UN PONT, PAS UN STOCKAGE. Ces quatre valeurs vivent déjà
+	 * dans les options `woocommerce_store_*`, et la page Contact PUBLIQUE les
+	 * affiche (`AOD_COD_Contact::store_details()`). Les recopier dans notre fiche
+	 * aurait donné deux adresses pour une société : celle qu'on saisit ici et
+	 * celle que voit l'acheteur, divergeant dès la première correction faite du
+	 * mauvais côté. Cet écran les ÉDITE donc là où elles vivent.
+	 *
+	 * ⚠️ Et il comble un vrai trou : jusqu'ici l'adresse du site public ne se
+	 * modifiait QUE depuis `wp-admin` (TEMPLATE.md §5, « Renseigner l'adresse de
+	 * la boutique dans les réglages WooCommerce ») — sur un tableau de bord dont
+	 * la raison d'être est que le client gère sa boutique SANS wp-admin.
+	 *
+	 * ⛔ Ces options ne sont PAS supprimées par notre `uninstall.php` : elles
+	 * appartiennent à WooCommerce, qui reste actif après nous. Même règle que les
+	 * réglages `aod_cod_*`, éditée ici mais possédée ailleurs.
+	 *
+	 * @return array<string,array{opt:string,l:string,ph:string}>
+	 */
+	public static function entreprise_adresse() {
+		return array(
+			'adresse'   => array(
+				'opt' => 'woocommerce_store_address',
+				'l'   => __( 'Adresse', 'aod-client-dashboard' ),
+				'ph'  => __( 'Numéro et rue', 'aod-client-dashboard' ),
+			),
+			'adresse_2' => array(
+				'opt' => 'woocommerce_store_address_2',
+				'l'   => __( 'Complément d’adresse', 'aod-client-dashboard' ),
+				'ph'  => __( 'Bâtiment, étage, local…', 'aod-client-dashboard' ),
+			),
+			'ville'     => array(
+				'opt' => 'woocommerce_store_city',
+				'l'   => __( 'Ville', 'aod-client-dashboard' ),
+				'ph'  => '',
+			),
+			'code'      => array(
+				'opt' => 'woocommerce_store_postcode',
+				'l'   => __( 'Code postal', 'aod-client-dashboard' ),
+				'ph'  => '',
+			),
+		);
+	}
+
+	/**
+	 * La fiche société — déclarée une fois, lue trois fois.
+	 *
+	 * Même contrat que `champs()` pour le calculateur : le formulaire s'en déduit,
+	 * la sanitisation du POST s'en déduit, l'affichage aussi. Écrits séparément,
+	 * un champ affiché mais non lu se saisirait sans effet et rien ne le dirait.
+	 *
+	 * ⚠️ AUCUN LIBELLÉ N'EST PROPRE À UN PAYS DANS LE CODE. « RC », « NIF »,
+	 * « NIS » sont les intitulés algériens, et ce template vise l'Algérie
+	 * (TEMPLATE.md) — mais ce sont des ÉTIQUETTES traduisibles, pas des règles :
+	 * aucune validation de format, aucun calcul ne s'y adosse. Un clone servant un
+	 * autre pays remplace les libellés dans son `.po` et le reste fonctionne.
+	 * Écrire un contrôle de format « 15 chiffres » aurait figé la fiscalité d'un
+	 * pays dans un template générique.
+	 *
+	 * @return array<string,array>
+	 */
+	public static function entreprise_champs() {
+		return array(
+			'identite' => array(
+				'titre'  => __( 'Identité', 'aod-client-dashboard' ),
+				'aide'   => __( 'Le nom sous lequel la société est enregistrée — pas nécessairement celui de la boutique.', 'aod-client-dashboard' ),
+				'ic'     => 'storefront',
+				'champs' => array(
+					'raison_sociale' => array( 'l' => __( 'Raison sociale', 'aod-client-dashboard' ), 'ph' => __( 'Nom légal de la société', 'aod-client-dashboard' ) ),
+					'forme'          => array( 'l' => __( 'Forme juridique', 'aod-client-dashboard' ), 'ph' => __( 'EURL, SARL, SPA, auto-entrepreneur…', 'aod-client-dashboard' ) ),
+					'gerant'         => array( 'l' => __( 'Représentant légal', 'aod-client-dashboard' ), 'ph' => __( 'Prénom et nom du gérant', 'aod-client-dashboard' ) ),
+					'capital'        => array( 'l' => __( 'Capital social', 'aod-client-dashboard' ), 'ph' => '' ),
+				),
+			),
+			'fiscal'   => array(
+				'titre'  => __( 'Informations fiscales', 'aod-client-dashboard' ),
+				'aide'   => __( 'Les numéros que réclament un contrat transporteur, une facture ou un dossier administratif.', 'aod-client-dashboard' ),
+				'ic'     => 'note',
+				'champs' => array(
+					'rc'      => array( 'l' => __( 'Registre de commerce (RC)', 'aod-client-dashboard' ), 'ph' => '' ),
+					'nif'     => array( 'l' => __( 'Identification fiscale (NIF)', 'aod-client-dashboard' ), 'ph' => '' ),
+					'nis'     => array( 'l' => __( 'Identification statistique (NIS)', 'aod-client-dashboard' ), 'ph' => '' ),
+					'article' => array( 'l' => __( 'Article d’imposition', 'aod-client-dashboard' ), 'ph' => '' ),
+				),
+			),
+			'banque'   => array(
+				'titre'  => __( 'Coordonnées bancaires', 'aod-client-dashboard' ),
+				'aide'   => __( 'Le compte sur lequel la boutique encaisse. Visible du gérant seul.', 'aod-client-dashboard' ),
+				'ic'     => 'money',
+				'champs' => array(
+					'banque' => array( 'l' => __( 'Banque', 'aod-client-dashboard' ), 'ph' => '' ),
+					'agence' => array( 'l' => __( 'Agence', 'aod-client-dashboard' ), 'ph' => '' ),
+					'rib'    => array( 'l' => __( 'RIB / numéro de compte', 'aod-client-dashboard' ), 'ph' => '' ),
+				),
+			),
+		);
+	}
+
+	/** La fiche enregistrée, complétée des clés manquantes. */
+	protected function entreprise_valeurs() {
+		$brut = get_option( self::OPTION_ENTREPRISE, array() );
+		$brut = is_array( $brut ) ? $brut : array();
+		$out  = array();
+		foreach ( self::entreprise_champs() as $groupe ) {
+			foreach ( array_keys( $groupe['champs'] ) as $cle ) {
+				$out[ $cle ] = isset( $brut[ $cle ] ) ? (string) $brut[ $cle ] : '';
+			}
+		}
+		return $out;
+	}
+
+	/** L'écran « Entreprise ». */
+	protected function render_entreprise() {
+		$base    = home_url( '/' . AOD_CD_SLUG . '/finance' );
+		$valeurs = $this->entreprise_valeurs();
+
+		echo '<div class="aod-cd-fin aod-cd-finent">';
+		$retour = '<a class="aod-cd-btn aod-cd-btn-sm" href="' . esc_url( $base ) . '">'
+			. AOD_CD_Icon::svg( 'returned', array( 'size' => 15 ) ) . ' ' . esc_html__( 'Finance', 'aod-client-dashboard' ) . '</a>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+		echo AOD_CD_Dashboard::page_head( // phpcs:ignore WordPress.Security.EscapeOutput -- composant : libellés échappés à l'intérieur.
+			__( 'Entreprise', 'aod-client-dashboard' ),
+			__( 'La fiche de votre société : ce qu’on vous demande de recopier, rangé une fois pour toutes.', 'aod-client-dashboard' ),
+			$retour
+		);
+
+		// Les quatre blocs sont des ENFANTS DIRECTS du formulaire : celui-ci est
+		// déjà une grille à deux colonnes qui retombe à une sous 680 px. Une
+		// grille de plus n'aurait rien ajouté qu'un point de rupture à tenir.
+		echo '<form class="aod-cd-form aod-cd-settings-form aod-cd-finent__form" data-action="aod_cd_finance_entreprise">';
+
+		$this->render_entreprise_bloc(
+			'adresse',
+			__( 'Adresse de la boutique', 'aod-client-dashboard' ),
+			__( 'C’est l’adresse affichée sur votre page Contact publique.', 'aod-client-dashboard' ),
+			'map',
+			self::entreprise_adresse(),
+			null
+		);
+
+		foreach ( self::entreprise_champs() as $gcle => $g ) {
+			$this->render_entreprise_bloc( $gcle, $g['titre'], $g['aide'], $g['ic'], $g['champs'], $valeurs );
+		}
+
+		echo '<div class="aod-cd-form-foot aod-cd-savebar">';
+		echo '<button type="submit" class="aod-cd-btn aod-cd-btn-primary">'
+			. AOD_CD_Icon::svg( 'save', array( 'size' => 15 ) ) . ' ' . esc_html__( 'Enregistrer la fiche', 'aod-client-dashboard' ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+		echo '<span class="aod-cd-form-msg"></span>';
+		echo '</div>';
+		echo '</form>';
+
+		// 🚨 CE QUE CET ÉCRAN FAIT, ET CE QU'IL NE FAIT PAS. Une fiche d'entreprise
+		// laisse croire qu'elle s'imprime quelque part. Une seule de ces valeurs
+		// sort d'ici — l'adresse, sur la page Contact. Le taire ferait attendre des
+		// factures qui n'existent pas ; l'écrire vaut mieux qu'une promesse.
+		echo '<div class="aod-cd-finent__notes">';
+		echo '<p class="aod-cd-note">' . esc_html__( 'Seule l’adresse quitte cette page : elle s’affiche sur votre page Contact. Le reste est une fiche de référence — ce que vous recopiez sur un contrat transporteur, une facture ou un dossier. Rien n’est envoyé à l’extérieur.', 'aod-client-dashboard' ) . '</p>';
+		echo '<p class="aod-cd-note">' . esc_html__( 'Cette page n’est visible que du gérant. Un confirmateur ne la voit pas dans le menu et ne peut pas l’ouvrir par son adresse.', 'aod-client-dashboard' ) . '</p>';
+		echo '</div>';
+		echo '</div>';
+	}
+
+	/**
+	 * Un bloc de la fiche.
+	 *
+	 * Un seul corps pour les quatre, alors que le premier lit ses valeurs dans
+	 * WooCommerce et les trois autres dans notre option : la DIFFÉRENCE tient dans
+	 * `$valeurs` (nul = va chercher `opt` côté Woo). Quatre rendus jumeaux auraient
+	 * divergé au premier ajustement de balisage — le mode de dérive que la Phase 46
+	 * a passé huit étapes à fermer.
+	 *
+	 * @param string     $cle     Clé du groupe (classe CSS).
+	 * @param string     $titre   Titre du bloc.
+	 * @param string     $aide    Phrase d'explication.
+	 * @param string     $ic      Icône du catalogue fermé.
+	 * @param array      $champs  Champs du bloc.
+	 * @param array|null $valeurs Valeurs, ou null pour lire les options WooCommerce.
+	 */
+	protected function render_entreprise_bloc( $cle, $titre, $aide, $ic, $champs, $valeurs ) {
+		echo '<fieldset class="aod-cd-finset aod-cd-finent__bloc aod-cd-finent__bloc--' . esc_attr( $cle ) . '">';
+		echo '<legend class="aod-cd-finset__lg">';
+		echo '<span class="aod-cd-finset__ic" aria-hidden="true">' . AOD_CD_Icon::svg( $ic, array( 'size' => 16 ) ) . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+		echo '<span class="aod-cd-finset__t">' . esc_html( $titre ) . '</span></legend>';
+		echo '<p class="aod-cd-finset__s">' . esc_html( $aide ) . '</p>';
+		echo '<div class="aod-cd-finset__body">';
+		foreach ( $champs as $k => $def ) {
+			$val = ( null === $valeurs )
+				? (string) get_option( $def['opt'], '' )
+				: ( isset( $valeurs[ $k ] ) ? $valeurs[ $k ] : '' );
+			echo '<label class="aod-cd-field"><span class="aod-cd-label">' . esc_html( $def['l'] ) . '</span>';
+			echo '<input type="text" name="' . esc_attr( ( null === $valeurs ? 'wc_' : 'ent_' ) . $k ) . '" maxlength="120"'
+				. ' value="' . esc_attr( $val ) . '"'
+				. ( '' === $def['ph'] ? '' : ' placeholder="' . esc_attr( $def['ph'] ) . '"' ) . '></label>';
+		}
+		echo '</div></fieldset>';
+	}
+
+	/**
+	 * AJAX : enregistre la fiche société.
+	 *
+	 * ⚠️ DEUX DESTINATIONS, UN SEUL FORMULAIRE. Les champs préfixés `wc_` partent
+	 * dans les options WooCommerce (l'adresse, que la page Contact affiche) ; les
+	 * `ent_` dans la nôtre. Le préfixe est ce qui empêche une clé de fiche
+	 * d'écraser une option de WooCommerce si les deux venaient à porter le même
+	 * nom — et il rend le tri lisible au lieu de le confier à une liste tenue à
+	 * jour à la main.
+	 */
+	public function ajax_entreprise() {
+		check_ajax_referer( 'aod_cd', 'nonce' );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+
+		$lire = static function ( $nom ) {
+			$v = isset( $_POST[ $nom ] ) ? sanitize_text_field( wp_unslash( $_POST[ $nom ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce vérifié en tête de ce handler.
+			return trim( mb_substr( $v, 0, 120 ) );
+		};
+
+		foreach ( self::entreprise_adresse() as $cle => $def ) {
+			update_option( $def['opt'], $lire( 'wc_' . $cle ) );
+		}
+
+		$fiche = array();
+		foreach ( self::entreprise_champs() as $groupe ) {
+			foreach ( array_keys( $groupe['champs'] ) as $cle ) {
+				$fiche[ $cle ] = $lire( 'ent_' . $cle );
+			}
+		}
+		// `false` : jamais autoloadée. Une fiche consultée quelques fois par an n'a
+		// rien à faire dans la mémoire de chaque page produit.
+		update_option( self::OPTION_ENTREPRISE, $fiche, false );
+
+		wp_send_json_success( array( 'message' => __( 'Fiche enregistrée.', 'aod-client-dashboard' ) ) );
 	}
 
 	/** Le calculateur de bénéfices. */

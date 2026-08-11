@@ -4638,7 +4638,11 @@ html[dir="rtl"] .aod-cd-findep__card .aod-cd-fincost__seg{transform-origin:right
 .aod-cd-findep__mnt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .aod-cd-findep__t td:nth-child(3){min-width:200px}
 .aod-cd-findep__vide{color:var(--cd-muted)}
-.aod-cd-findep__notes{margin-top:var(--cd-sp-5)}
+/* Les notes de bas d'écran du pôle : même respiration partout. Un sélecteur de
+   plus ici plutôt qu'une règle jumelle plus bas — deux règles identiques
+   dérivent au premier ajustement, et c'est un espacement qu'on ajuste. */
+.aod-cd-findep__notes,
+.aod-cd-finent__notes{margin-top:var(--cd-sp-5)}
 /* Une suppression prend la couleur de ce qu'elle fait — mais SEULEMENT au
    survol : sept corbeilles rouges en colonne feraient d'un registre ordinaire
    une liste d'avertissements. */

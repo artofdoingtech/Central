@@ -188,6 +188,22 @@ const statutAjax = ( page, action, champs = {} ) => page.evaluate( async ( [ act
 		ok( ecranShip.includes( 'name="home[' ), 'Contre-épreuve : la GRILLE TARIFAIRE reste rendue au porteur de la cap' );
 		ok( ! ecranShip.includes( 'aod-cd-carrier-test-btn' ), 'PORTÉE : le bloc « Transporteurs » n’est PAS rendu au confirmateur (31.1)' );
 
+		// ── AC4bis · Finance : la fiche société ne s'ouvre pas par son URL ─────
+		//
+		// 🚨 L'ÉCRAN « Entreprise » ÉCRIT SUR LUI-MÊME : « cette page n'est visible
+		// que du gérant, un confirmateur ne peut pas l'ouvrir par son adresse ».
+		// Une phrase pareille, affichée à côté d'un RIB, ne doit pas reposer sur
+		// une relecture de code : c'est une promesse faite à l'utilisateur, elle
+		// s'éprouve. Le routeur ne rend ni 404 ni 403 sur une section non
+		// autorisée — il retombe EN SILENCE sur la première section visible
+		// (`maybe_render()`), donc le signal est la section RENDUE, jamais le code
+		// HTTP. Même piège que la redirection wp-admin vingt lignes plus bas.
+		await page.goto( `${ BASE }/gestion/finance?outil=entreprise`, { waitUntil: 'networkidle' } );
+		const ecranEnt = await page.content();
+		ok( 'finance' !== await sectionRendue( page ), 'PORTÉE : /gestion/finance ne s’ouvre PAS au confirmateur (le routeur le renvoie ailleurs)' );
+		ok( ! ecranEnt.includes( 'name="ent_rib"' ), '🔒 Le champ RIB de la fiche société n’est nulle part dans la page servie au confirmateur' );
+		ok( ! ecranEnt.includes( 'aod-cd-finent__form' ), 'PORTÉE : le formulaire « Entreprise » n’est pas rendu du tout' );
+
 		// ── AC5 · Garde AJAX, direction « TROU » : un droit refusé bloque ───────
 		//
 		// Charge utile inoffensive : si une garde cédait, la requête ne doit RIEN

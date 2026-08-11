@@ -151,7 +151,17 @@ function aod_test_pcs_census() {
 			// d'une LISTE FERMÉE (`depenses_cats()`), et le libellé libre d'une
 			// dépense — le seul texte saisi de l'écran — n'y entre pas du tout. Il est
 			// rendu dans le tableau, par `esc_html()`, sans dérogation.
-			'n'        => 189,
+			//
+			// 189 → 193 le 2026-08-11 (fiche « Entreprise »). ⬆️ QUATRE de plus,
+			// toutes du motif déjà recensé : `page_head()` (composant qui échappe
+			// lui-même ses entrées) et `AOD_CD_Icon::svg()` × 3 (catalogue FERMÉ —
+			// un nom validé contre une liste, aucune donnée saisie n'y entre).
+			// ⚠️ Aucune ne couvre un champ de la fiche. Raison sociale, RC, NIF, RIB
+			// et l'adresse publique sont TOUS rendus par `esc_attr()` dans la valeur
+			// d'un `<input>`, sans dérogation — et c'est le contenu le plus sensible
+			// de l'écran : une dérogation sur ce chemin ferait d'un champ de saisie
+			// gérant un vecteur d'injection stockée.
+			'n'        => 193,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '
@@ -307,7 +317,17 @@ function aod_test_pcs_census() {
 			// promesse de commentaire : elle est inscrite dans `aod_test_nonce_helpers()`,
 			// qui EXIGE que tous ses appelants noncent et rougit au premier qui ne le
 			// ferait pas.
-			'n'        => 19,
+			// 19 → 20 le 2026-08-11 (fiche « Entreprise »). ⬆️ UNE de plus, et elle est
+			// du motif le plus sûr de cette famille : la lecture est dans une CLÔTURE
+			// déclarée À L'INTÉRIEUR de `ajax_entreprise()`, cinq lignes sous son
+			// `check_ajax_referer()`. Le nonce est donc vérifié avant que la clôture
+			// n'existe, et elle n'est appelable de nulle part ailleurs — contrairement
+			// à `entrees_du_post()`, méthode privée dont le contrat repose sur ses
+			// appelants et que `test-nonce-contract.php` garde à ce titre.
+			// ⚠️ Ce que la dérogation NE dispense pas : la valeur passe par
+			// `wp_unslash()` puis `sanitize_text_field()` puis une coupe à 120
+			// caractères, dans le corps même de la clôture.
+			'n'        => 20,
 			'securite' => true,
 			'quoi'     => 'Contrôle CSRF désarmé. Majoritairement des lectures $_GET de navigation (langue, section) sans effet de bord. '
 				. 'La 18ᵉ (étape 47.6, class-aod-cd-upload.php, handle()) : lecture de `$_FILES[ $field ]` '

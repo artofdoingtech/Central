@@ -4435,3 +4435,132 @@ msgstr[2] "مصروفان"
 msgstr[3] "%d مصاريف"
 msgstr[4] "%d مصروفًا"
 msgstr[5] "%d مصروف"
+
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Adresse de la boutique"
+msgstr "عنوان المتجر"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Agence"
+msgstr "الوكالة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Article d’imposition"
+msgstr "مادة الإخضاع الضريبي"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Banque"
+msgstr "البنك"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Bâtiment, étage, local…"
+msgstr "عمارة، طابق، محل…"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Capital social"
+msgstr "رأس المال الاجتماعي"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Cette page n’est visible que du gérant. Un confirmateur ne la voit pas dans le menu et ne peut pas l’ouvrir par son adresse."
+msgstr "هذه الصفحة لا يراها إلا المسيّر. لا تظهر لمؤكِّد الطلبيات في القائمة، ولا يمكنه فتحها عبر عنوانها."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Code postal"
+msgstr "الرمز البريدي"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Complément d’adresse"
+msgstr "تتمة العنوان"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Coordonnées bancaires"
+msgstr "المعلومات البنكية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "C’est l’adresse affichée sur votre page Contact publique."
+msgstr "هو العنوان الذي يظهر في صفحة « اتصل بنا » العلنية."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "EURL, SARL, SPA, auto-entrepreneur…"
+msgstr "مؤسسة فردية، شركة ذات مسؤولية محدودة، شركة مساهمة…"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Enregistrer la fiche"
+msgstr "حفظ البطاقة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Fiche enregistrée."
+msgstr "تم حفظ البطاقة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Forme juridique"
+msgstr "الشكل القانوني"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Identification fiscale (NIF)"
+msgstr "رقم التعريف الجبائي (NIF)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Identification statistique (NIS)"
+msgstr "رقم التعريف الإحصائي (NIS)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Identité"
+msgstr "الهوية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Informations fiscales"
+msgstr "المعلومات الجبائية"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "La fiche de votre société : ce qu’on vous demande de recopier, rangé une fois pour toutes."
+msgstr "بطاقة شركتك: ما يُطلب منك نسخه في كل مرة، مرتّبٌ هنا مرة واحدة."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le compte sur lequel la boutique encaisse. Visible du gérant seul."
+msgstr "الحساب الذي يُحصّل عليه المتجر. لا يراه إلا المسيّر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Le nom sous lequel la société est enregistrée — pas nécessairement celui de la boutique."
+msgstr "الاسم الذي سُجّلت به الشركة — وليس بالضرورة اسم المتجر."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Les numéros que réclament un contrat transporteur, une facture ou un dossier administratif."
+msgstr "الأرقام التي يطلبها عقد شركة التوصيل أو فاتورة أو ملف إداري."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Nom légal de la société"
+msgstr "الاسم القانوني للشركة"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Numéro et rue"
+msgstr "الرقم والشارع"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Prénom et nom du gérant"
+msgstr "اسم المسيّر ولقبه"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "RIB / numéro de compte"
+msgstr "الحساب البنكي (RIB)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Raison sociale"
+msgstr "الاسم التجاري"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Registre de commerce (RC)"
+msgstr "السجل التجاري (RC)"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Représentant légal"
+msgstr "الممثّل القانوني"
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Seule l’adresse quitte cette page : elle s’affiche sur votre page Contact. Le reste est une fiche de référence — ce que vous recopiez sur un contrat transporteur, une facture ou un dossier. Rien n’est envoyé à l’extérieur."
+msgstr "لا يخرج من هذه الصفحة إلا العنوان: فهو يظهر في صفحة « اتصل بنا ». أمّا الباقي فبطاقة مرجعية — ما تنسخه في عقد شركة توصيل أو فاتورة أو ملف. لا يُرسَل أيّ شيء إلى الخارج."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Ville"
+msgstr "المدينة"

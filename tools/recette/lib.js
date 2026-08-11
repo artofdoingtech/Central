@@ -443,7 +443,7 @@ const SECTIONS = [
  * page qui se comporte exactement comme prévu. Les portes qui savent lire une
  * chaîne de requête les balaient EN PLUS.
  */
-const OUTILS_FINANCE = [ 'finance?outil=calculateur', 'finance?outil=produits', 'finance?outil=depenses' ];
+const OUTILS_FINANCE = [ 'finance?outil=calculateur', 'finance?outil=produits', 'finance?outil=depenses', 'finance?outil=entreprise' ];
 
 /**
  * Slug de la section RÉELLEMENT rendue (l'entrée active de la barre latérale).
