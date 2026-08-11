@@ -415,10 +415,35 @@ echo $n;`.replace( /\n/g, ' ' );
 // `landing` est routable mais volontairement ABSENTE : elle exige `?produit=<id>`
 // (sans lui, elle rend l'état vide « Produit introuvable »). Elle a sa propre
 // porte — `tools/recette/landing-produit.js`.
+// 🔴 `finance` A MANQUÉ À CETTE LISTE PENDANT TROIS COMMITS (ajoutée le
+// 2026-08-11). La section a été livrée le 2026-08-10 avec son hub, son
+// calculateur, sa rentabilité par produit puis ses dépenses — et AUCUNE porte
+// navigateur ne l'a jamais ouverte. `noms`, `rtl` et `contraste` bouclent sur
+// cette liste : ce qui n'y figure pas n'est pas audité, et le rapport final
+// n'en dit rien puisqu'il compte ce qu'il a visité, pas ce qui existe.
+// 🚨 Trois séries de « portes vertes » ont donc été annoncées sur des écrans que
+// ces portes n'avaient pas regardés. Le vert était exact et sans valeur.
+// *Une liste de couverture écrite à la main est une dette qui ne se signale
+// jamais : elle vieillit à chaque section ajoutée, en restant verte.*
+// ⚠️ Y AJOUTER TOUTE SECTION NOUVELLE, dans le même commit qu'elle. Le registre
+// qui fait foi est `AOD_CD_Dashboard::sections()` ; cette liste en est une copie
+// manuelle, et c'est précisément ce qui la rend faillible.
 const SECTIONS = [
 	'home', 'orders', 'abandoned', 'products', 'stock', 'categories',
 	'shipping', 'tracking', 'marketing', 'whatsapp', 'team', 'account',
+	'finance',
 ];
+
+/**
+ * Les outils du pôle Finance, qui vivent derrière `?outil=`.
+ *
+ * Hors de `SECTIONS` pour la même raison que `landing` : ce ne sont pas des
+ * slugs nus, et un mois sans dépense rend légitimement un état vide — les
+ * compter dans le décompte « sections garnies » ferait rougir D29 pour une
+ * page qui se comporte exactement comme prévu. Les portes qui savent lire une
+ * chaîne de requête les balaient EN PLUS.
+ */
+const OUTILS_FINANCE = [ 'finance?outil=calculateur', 'finance?outil=produits', 'finance?outil=depenses' ];
 
 /**
  * Slug de la section RÉELLEMENT rendue (l'entrée active de la barre latérale).
@@ -606,4 +631,4 @@ async function confirmerMaison( page, timeout = 5000 ) {
 	await page.waitForTimeout( 400 );
 }
 
-module.exports = { launch, login, whoAmI, scanPhp, ok, BASE, SHOTS, SECTIONS, PURGE_VERROUS_COD, sectionRendue, etatDonnees, garerSouris, chercheDansPages, confirmerMaison, echecReseauHorsOrigine };
+module.exports = { launch, login, whoAmI, scanPhp, ok, BASE, SHOTS, SECTIONS, OUTILS_FINANCE, PURGE_VERROUS_COD, sectionRendue, etatDonnees, garerSouris, chercheDansPages, confirmerMaison, echecReseauHorsOrigine };

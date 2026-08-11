@@ -412,8 +412,28 @@
 			// déjà traduit. Aucune chaîne nouvelle, et le nom dit de quelle date il
 			// s'agit — ce qu'un « Ouvrir le calendrier » générique ne ferait pas
 			// sur un écran qui en porte deux.
+			// 🔴 DEUX FAÇONS D'ÉTIQUETER UN CHAMP, ET ON N'EN LISAIT QU'UNE.
+			// Cette recherche ne connaissait que le `label[for=…]` explicite. Or la
+			// moitié de `/gestion` emploie l'autre patron — un `<label>` qui
+			// ENVELOPPE son champ, sans `for` ni `id` (c'est celui de
+			// `.aod-cd-field`). Sur ces champs-là, `lab` restait nul, `aria-label`
+			// aussi, et le bouton naissait avec un nom VIDE : un lecteur d'écran
+			// annonçait « bouton », sans dire de quelle date.
+			// 🚨 Le défaut existait depuis que ce widget existe ; il n'a été vu que
+			// le 2026-08-11, quand la porte `noms` a enfin visité une page qui en
+			// portait un — la section Finance manquait à sa liste de couverture.
+			// *Un garde-fou ne trouve rien sur les pages qu'on ne lui donne pas.*
+			// On préfère `.aod-cd-label` au texte entier du label enveloppant : ce
+			// dernier contient aussi l'aide sous le champ, et lire deux phrases pour
+			// nommer un bouton, c'est le rendre inutilisable au clavier.
 			var lab = input.id ? document.querySelector( 'label[for="' + input.id + '"]' ) : null;
-			btn.setAttribute( 'aria-label', ( lab ? lab.textContent : input.getAttribute( 'aria-label' ) || '' ).trim() );
+			if ( ! lab && input.closest ) { lab = input.closest( 'label' ); }
+			var nom = '';
+			if ( lab ) {
+				nom = ( lab.querySelector( '.aod-cd-label' ) || lab ).textContent || '';
+			}
+			if ( ! nom.trim() ) { nom = input.getAttribute( 'aria-label' ) || ''; }
+			btn.setAttribute( 'aria-label', nom.trim() );
 			// SVG rendu par le catalogue fermé (AOD_CD_Icon), pas fabriqué ici.
 			btn.innerHTML = ( CD.icons && CD.icons.calendar ) || '';
 			wrap.appendChild( btn );

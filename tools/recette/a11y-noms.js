@@ -4,9 +4,12 @@
 //
 // Le `placeholder` NE COMPTE PAS comme intitulé : il disparaît à la première
 // frappe, et beaucoup de lecteurs d'écran ne l'annoncent pas.
-const { launch, login, ok, BASE, SECTIONS, sectionRendue } = require( './lib.js' );
+const { launch, login, ok, BASE, SECTIONS, OUTILS_FINANCE, sectionRendue } = require( './lib.js' );
 
-const PAGES = [ ...SECTIONS, 'products?action=new' ];
+// Les trois outils du pôle Finance sont balayés EN PLUS des sections : ils
+// portent l'essentiel des champs de saisie de ce pôle (onze pour le seul
+// calculateur), et un champ sans nom accessible y serait aussi muet qu'ailleurs.
+const PAGES = [ ...SECTIONS, 'products?action=new', ...OUTILS_FINANCE ];
 
 const AUDIT = function () {
 	function nom( el ) {

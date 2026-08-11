@@ -3,7 +3,12 @@
 // bascule RTL effective en arabe. Une capture est prise pour chaque échec.
 const path = require( 'path' );
 const fs = require( 'fs' );
-const { launch, login, ok, BASE, SHOTS, SECTIONS, sectionRendue, etatDonnees, echecReseauHorsOrigine } = require( './lib.js' );
+const { launch, login, ok, BASE, SHOTS, SECTIONS, OUTILS_FINANCE, sectionRendue, etatDonnees, echecReseauHorsOrigine } = require( './lib.js' );
+
+// Les outils du pôle Finance sont balayés EN PLUS des sections : c'est là que
+// vivent les deux tableaux et la composition à deux colonnes du pôle, donc tout
+// ce qui peut déborder à 390 px.
+const PAGES = [ ...SECTIONS, ...OUTILS_FINANCE ];
 
 // Le domaine du cookie doit suivre l'URL réelle du clone (pas toujours localhost).
 const HOST = new URL( BASE ).hostname;
@@ -73,10 +78,15 @@ const HOST = new URL( BASE ).hostname;
 			await ctx.addCookies( [ { name: 'aod_lang', value: 'ar', domain: HOST, path: '/' } ] );
 		}
 
-		for ( const s of SECTIONS ) {
+		for ( const s of PAGES ) {
 			console_.length = 0;
 			await page.goto( `${ BASE }/gestion/${ s }`, { waitUntil: 'networkidle' } );
 			const php = scanPhp( await page.content() );
+			// `PAGES` n'est PAS une liste de slugs nus (les outils Finance portent
+			// `?outil=`) : on compare la SECTION rendue, pas l'URL — sinon le
+			// contrôle de routage rougirait sur une page qui se route très bien.
+			// Même correctif qu'`a11y-noms.js` avait déjà pour `products?action=new`.
+			const attendue = s.split( '?' )[ 0 ];
 
 			// 🚨 On vérifie qu'on regarde bien LA section demandée (31.5). Sans
 			// ça, un slug qui ne se route plus fait retomber le routeur sur la
@@ -84,7 +94,11 @@ const HOST = new URL( BASE ).hostname;
 			// imprimant 12 ✅. Cf. `sectionRendue()` dans lib.js.
 			const rendue = await sectionRendue( page );
 			const donnees = await etatDonnees( page );
-			if ( donnees.creuse ) { creuses.add( s ); }
+			// Le décompte « sections garnies » (D29) ne porte que sur les SECTIONS :
+			// un mois sans dépense rend légitimement un état vide, et le compter
+			// comme une fixture manquée ferait rougir la porte pour un écran qui se
+			// comporte exactement comme prévu.
+			if ( donnees.creuse && ! s.includes( '?' ) ) { creuses.add( s ); }
 
 			const r = await page.evaluate( () => {
 				const de = document.documentElement;
@@ -359,7 +373,7 @@ const HOST = new URL( BASE ).hostname;
 			const cases = jugeCibles ? ( r.cases || [] ) : [];
 			if ( jugeCibles ) { ciblesTotal += r.cibles || 0; casesTotal += r.casesTotal || 0; }
 
-			const okPage = r.racine && rendue === s && php.length === 0 && console_.length === 0 && overflow <= 2
+			const okPage = r.racine && rendue === attendue && php.length === 0 && console_.length === 0 && overflow <= 2
 				&& tablesLarges.length === 0
 				&& petits.length === 0
 				&& cases.length === 0
@@ -372,7 +386,7 @@ const HOST = new URL( BASE ).hostname;
 			fails++;
 			console.log( `  ❌ /${ s }` );
 			if ( ! r.racine )      { console.log( '        RACINE   : body.aod-cd INTROUVABLE — page /gestion absente, renommée ou refusée. Rien n’a été audité.' ); }
-			if ( rendue !== s )    { console.log( `        ROUTAGE  : /${ s } a rendu « ${ rendue } » — la section ne se route plus (le routeur retombe en silence). Cette page N’A PAS été auditée.` ); }
+			if ( rendue !== attendue ) { console.log( `        ROUTAGE  : /${ s } a rendu « ${ rendue } » — la section ne se route plus (le routeur retombe en silence). Cette page N’A PAS été auditée.` ); }
 			if ( php.length )      { console.log( `        PHP      : ${ php.join( ' | ' ) }` ); }
 			if ( console_.length ) { console.log( `        console  : ${ console_.join( ' | ' ) }` ); }
 			if ( overflow > 2 )    { console.log( `        overflow : ${ overflow }px — ${ r.worst ? r.worst.sel + ' dépasse de ' + r.worst.over + 'px' : '?' }` ); }

@@ -4563,18 +4563,87 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 .aod-cd-fintot td{border-top:2px solid var(--cd-line);font-weight:700;background:var(--cd-bg)}
 
 /* ── Dépenses ──────────────────────────────────────────────────────────
-   Presque rien de neuf : l'écran emprunte la barre « Où part l'argent » du
-   calculateur, les fieldsets `.aod-cd-finset` du formulaire, et la rampe de
-   couleurs des postes. Ce qui suit ne fait qu'accorder le tableau. */
-.aod-cd-findep__card{margin-bottom:var(--cd-sp-5)}
-.aod-cd-findep__form{margin-bottom:var(--cd-sp-5)}
-/* La pastille du poste, reprise de la légende : le tableau et la barre se
+   L'écran emprunte tout ce qu'il peut : la barre « Où part l'argent » du
+   calculateur, les fieldsets `.aod-cd-finset`, la rampe de couleurs des postes,
+   la cascade d'entrée générale et le patron carte des tableaux. Ce qui suit est
+   ce qu'aucun de ces composants ne pouvait donner — une COMPOSITION. */
+
+/* 🔴 DEUX COLONNES, PARCE QU'EMPILÉ SUR 1300 px CET ÉCRAN ÉTAIT ILLISIBLE.
+   Mesuré à la capture : dans la légende de la ventilation, le nom d'un poste
+   était à l'extrême gauche et son montant à l'extrême droite — sept lignes que
+   l'œil ne pouvait pas apparier. Et le formulaire, quatre champs dans une bande
+   pleine largeur, laissait sa barre d'enregistrement presque vide.
+   ⚠️ `:has(> * + *)` À L'INTÉRIEUR de la requête média, jamais au-dessus. La
+   règle vaut (0,3,0) contre (0,1,0) : écrite dehors, elle gagnerait la cascade
+   DANS les points de rupture et imposerait deux colonnes à 390 px. C'est
+   exactement le défaut payé le 2026-08-10 sur la rangée de tuiles de Suivi.
+   Ce qu'elle garde : un mois vide ne rend pas la carte de ventilation, le
+   formulaire reste alors seul et doit prendre toute la largeur. */
+/* `align-items:start` : sans lui les deux colonnes s'étirent à la plus haute, et
+   la barre d'enregistrement — une bande bordée — se retrouvait allongée sur
+   100 px de vide sous son bouton. Deux cartes de hauteurs différentes côte à
+   côte se lisent mieux qu'une carte à moitié creuse. */
+.aod-cd-findep__grid{display:grid;gap:var(--cd-sp-5);margin-bottom:var(--cd-sp-5);grid-template-columns:minmax(0,1fr);align-items:start}
+@media(min-width:1081px){
+	.aod-cd-findep__grid:has(> * + *){grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
+}
+.aod-cd-findep__card,
+.aod-cd-findep__form{margin-bottom:0;min-width:0}
+/* Dans une colonne étroite, un bouton d'action collé à gauche d'une bande vide
+   ressemble à un oubli. Il prend la largeur qu'on lui a donnée. */
+.aod-cd-findep__form .aod-cd-savebar{flex-wrap:wrap}
+.aod-cd-findep__form .aod-cd-savebar .aod-cd-btn{flex:1 1 auto;justify-content:center}
+
+/* ---- La ventilation ------------------------------------------------------
+   La barre reste : elle dit la composition d'un seul regard, et c'est la même
+   grammaire que le calculateur — deux écrans du même pôle ne doivent pas
+   dessiner la même chose de deux façons. Ce qui change est la légende, qui
+   devient une LISTE de lignes serrées plutôt que deux colonnes aux antipodes. */
+.aod-cd-findep__card .aod-cd-fincost__bar{height:26px}
+.aod-cd-findep__card .aod-cd-fincost__leg{gap:var(--cd-sp-1)}
+.aod-cd-findep__card .aod-cd-fincost__li{
+	padding:var(--cd-sp-2) var(--cd-sp-2);border-radius:var(--cd-r-sm);
+	transition:background .18s var(--cd-ease-out);
+}
+.aod-cd-findep__card .aod-cd-fincost__li:hover{background:var(--cd-bg)}
+.aod-cd-findep__card .aod-cd-fincost__nom{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aod-cd-findep__card .aod-cd-fincost__pct{min-width:0;margin-inline-start:var(--cd-sp-3)}
+
+/* ---- La construction de la barre ----------------------------------------
+   Les segments se déploient du plus gros au plus petit, chacun depuis son bord
+   d'attaque. C'est la seule animation propre à cet écran : elle raconte que le
+   total se compose, ce qu'une barre déjà faite ne dit pas.
+   🔒 `transform`, pas `width` : la largeur porte la DONNÉE (elle est posée en
+   ligne par le PHP). L'animer voudrait dire qu'un rendu interrompu laisse un
+   graphique faux — même précaution que la courbe de l'Accueil.
+   ⚠️ L'origine est PHYSIQUE (`left`) donc mirroir explicite en RTL : en arabe la
+   barre se lit de droite à gauche, un segment qui pousse depuis la gauche
+   partirait à contresens du reste de la page. */
+@keyframes aod-cd-findep-seg{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.aod-cd-findep__card .aod-cd-fincost__seg{
+	transform-origin:left center;
+	animation:aod-cd-findep-seg .55s var(--cd-ease-out) both;
+	animation-delay:calc(var(--rang,0) * .06s);
+}
+html[dir="rtl"] .aod-cd-findep__card .aod-cd-fincost__seg{transform-origin:right center}
+.aod-cd-findep__card .aod-cd-fincost__li{
+	animation:aod-cd-rise .4s var(--cd-ease-out) both;
+	animation-delay:calc(.2s + var(--rang,0) * .05s);
+}
+
+/* ---- Le registre ---------------------------------------------------------
+   La pastille du poste est celle de la légende : le tableau et la barre se
    lisent l'un contre l'autre au lieu de demander qu'on compte les parts. */
 .aod-cd-findep__poste{display:inline-flex;align-items:center;gap:var(--cd-sp-2)}
 .aod-cd-findep__mnt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .aod-cd-findep__t td:nth-child(3){min-width:200px}
 .aod-cd-findep__vide{color:var(--cd-muted)}
 .aod-cd-findep__notes{margin-top:var(--cd-sp-5)}
+/* Une suppression prend la couleur de ce qu'elle fait — mais SEULEMENT au
+   survol : sept corbeilles rouges en colonne feraient d'un registre ordinaire
+   une liste d'avertissements. */
+.aod-cd-findep__del{transition:color .18s var(--cd-ease-out),border-color .18s var(--cd-ease-out),transform .18s var(--cd-ease-out)}
+.aod-cd-findep__del:hover{color:var(--cd-bad);border-color:var(--cd-bad);transform:translateY(-1px)}
 
 /* ── L'historique ────────────────────────────────────────────────────── */
 .aod-cd-finhist{margin-top:var(--cd-sp-6)}
@@ -6654,6 +6723,17 @@ html[dir="rtl"] .aod-cd-content .aod-cd-pagehead::before{
 	.aod-cd-finmod--pret:hover .aod-cd-finmod__go{transform:none}
 	[dir="rtl"] .aod-cd-finmod--pret:hover .aod-cd-finmod__go{transform:none}
 	.aod-cd-finres [data-res].is-maj{animation:none}
+	/* Dépenses : la barre se CONSTRUISAIT segment par segment et ses lignes de
+	   légende montaient l'une après l'autre. Les deux partent — c'est de la mise
+	   en scène, pas de la donnée. La LARGEUR des segments, elle, n'est pas
+	   touchée : elle est posée en ligne par le PHP et reste entière même si rien
+	   ne joue (`transform`, jamais `width` — cf. la règle qu'on annule ici).
+	   ⚠️ Sélecteurs repris AU CARACTÈRE PRÈS (R3). La surcharge RTL de
+	   `transform-origin` n'a pas de miroir : elle n'anime rien, et neutraliser
+	   l'animation à (0,2,0) la rend sans objet. */
+	.aod-cd-findep__card .aod-cd-fincost__seg{animation:none}
+	.aod-cd-findep__card .aod-cd-fincost__li{animation:none}
+	.aod-cd-findep__del:hover{transform:none}
 	.aod-cd-content > *{animation:none}
 	.aod-cd-todo > *,
 	.aod-cd-kpis > *,

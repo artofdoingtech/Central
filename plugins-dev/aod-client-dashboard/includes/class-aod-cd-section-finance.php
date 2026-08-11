@@ -941,8 +941,21 @@ class AOD_CD_Section_Finance {
 		echo '</form>';
 
 		$this->render_depenses_kpis( $vent, $total_prec['total'], $cats, $prec );
-		$this->render_depenses_form( $mois, $cats, count( $lignes ) );
+
+		// 🚨 UNE COMPOSITION, PAS UNE PILE. Empilés sur toute la largeur, la
+		// ventilation et le formulaire donnaient deux dalles de 1300 px : dans la
+		// première, le nom d'un poste et son montant se retrouvaient à un mètre
+		// l'un de l'autre — MESURÉ à la capture, et c'est ce qui rendait la
+		// légende illisible ; dans la seconde, quatre champs et un bouton
+		// flottaient dans une bande vide. Côte à côte, chacun retrouve sa largeur
+		// utile. La bande retombe en une colonne sous 1081 px, et le formulaire y
+		// passe seul si le mois est vide (la carte ne se rend pas) — d'où le
+		// `:has()` en CSS plutôt qu'un test de plus ici.
+		echo '<div class="aod-cd-findep__grid">';
 		$this->render_depenses_bar( $vent, $cats );
+		$this->render_depenses_form( $mois, $cats, count( $lignes ) );
+		echo '</div>';
+
 		$this->render_depenses_table( $mois, $lignes, $vent, $cats );
 		$this->render_depenses_notes( $mois, $vent );
 
@@ -979,9 +992,25 @@ class AOD_CD_Section_Finance {
 			}
 		}
 		$part = ( $vent['total'] > 0 && '' !== $tete ) ? ( $max / $vent['total'] ) * 100 : 0.0;
+		// 🔴 LE MONTANT GARDE SON BALISAGE, ET C'EST TOUT LE CORRECTIF. Le symbole
+		// de la devise algérienne (د.ج) est de sens DROITE-À-GAUCHE : posé au
+		// milieu d'une chaîne, il emporte avec lui les caractères neutres qui le
+		// suivent, et la ligne s'affichait « 103 000,00 د.ج 36,1 · % » — le
+		// séparateur rejeté entre le nombre et son signe pourcent. Rien n'était
+		// faux, tout était illisible.
+		// 🚨 La cause n'était pas l'absence d'isolation : c'était `wp_strip_all_tags`
+		// qui la RETIRAIT. `wc_price()` enveloppe déjà son montant dans un `<bdi>`,
+		// et c'est pour ça que les grandes valeurs des tuiles, elles, s'affichaient
+		// bien. *Aplatir du HTML pour « juste garder le texte » enlève aussi ce que
+		// ce HTML portait de sens.* Le pourcentage, lui, gagne son propre `<bdi>` :
+		// il n'en avait aucun.
+		// ⚠️ Le défaut existe en FRANÇAIS aussi — c'est la devise qui est RTL, pas
+		// la langue de l'écran. Une vérification faite seulement en arabe l'aurait
+		// manqué à l'envers.
 		$sous = ( '' === $tete )
 			? ''
-			: '<span class="aod-cd-kpi__vs">' . esc_html( wp_strip_all_tags( self::prix( $max ) ) . ' · ' . number_format_i18n( $part, 1 ) . ' %' ) . '</span>';
+			: '<span class="aod-cd-kpi__vs">' . wp_kses_post( self::prix( $max ) ) . ' · <bdi>'
+				. esc_html( number_format_i18n( $part, 1 ) . ' %' ) . '</bdi></span>';
 
 		echo AOD_CD_Dashboard::kpis( array( // phpcs:ignore WordPress.Security.EscapeOutput -- composant : libellés échappés à l'intérieur.
 			array(
@@ -990,6 +1019,11 @@ class AOD_CD_Section_Finance {
 				'money',
 				'blue',
 				AOD_CD_Section_Home::instance()->kpi_delta( $vent['total'], $prec, false ),
+				// `primary` : c'est LE nombre de la page. Le modificateur porte le
+				// dégradé d'accent de l'en-tête et réduit la valeur des cartes
+				// voisines (`:has()`), donc il crée la hiérarchie au lieu de la
+				// décrire. Trois cartes de même poids ne disaient pas laquelle lire.
+				'primary',
 			),
 			array(
 				__( 'Poste principal', 'aod-client-dashboard' ),
@@ -1101,19 +1135,39 @@ class AOD_CD_Section_Finance {
 		if ( $vent['total'] <= 0 ) {
 			return;
 		}
-		$segments = '';
-		$legende  = '';
-		$i        = 0;
+		// 🚨 LA COULEUR SUIT LE POSTE, L'ORDRE SUIT LE MONTANT — et les deux
+		// décisions sont indépendantes. L'indice `--part` reste celui du poste
+		// dans `depenses_cats()`, donc « le vert foncé » désigne la publicité en
+		// juillet comme en août : c'est ce qui rend deux mois comparables. Le
+		// RANG, lui, se lit du plus gros au plus petit — c'est la question qu'on
+		// pose à cet écran, et un ordre alphabétique déguisé en classement
+		// obligerait à comparer sept nombres de tête.
+		$rangs = array_flip( array_keys( $cats ) );
+		$parts = array();
 		foreach ( $vent['par_cat'] as $cle => $montant ) {
 			if ( $montant > 0 ) {
-				$pct       = ( $montant / $vent['total'] ) * 100;
-				$segments .= '<span class="aod-cd-fincost__seg" style="--part:' . (int) $i . ';width:' . esc_attr( number_format( $pct, 2, '.', '' ) ) . '%" title="' . esc_attr( $cats[ $cle ] ) . '"></span>';
-				$legende  .= '<li class="aod-cd-fincost__li"><span class="aod-cd-fincost__dot" style="--part:' . (int) $i . '" aria-hidden="true"></span>'
-					. '<span class="aod-cd-fincost__nom">' . esc_html( $cats[ $cle ] ) . '</span>'
-					. '<span class="aod-cd-fincost__val">' . wp_kses_post( self::prix( $montant ) ) . '</span>'
-					. '<span class="aod-cd-fincost__pct">' . esc_html( number_format_i18n( $pct, 1 ) . ' %' ) . '</span></li>';
+				$parts[] = array( 'cle' => $cle, 'mnt' => $montant );
 			}
-			$i++;
+		}
+		usort( $parts, static function ( $a, $b ) {
+			return ( $b['mnt'] < $a['mnt'] ) ? -1 : ( ( $b['mnt'] > $a['mnt'] ) ? 1 : 0 );
+		} );
+
+		$segments = '';
+		$legende  = '';
+		$rang     = 0;
+		foreach ( $parts as $p ) {
+			$part = (int) $rangs[ $p['cle'] ];
+			$pct  = ( $p['mnt'] / $vent['total'] ) * 100;
+			// `--rang` sert au DÉCALAGE de l'animation, `--part` à la couleur :
+			// les segments se construisent du plus gros au plus petit, mais
+			// gardent la teinte de leur poste.
+			$segments .= '<span class="aod-cd-fincost__seg" style="--part:' . $part . ';--rang:' . (int) $rang . ';width:' . esc_attr( number_format( $pct, 2, '.', '' ) ) . '%" title="' . esc_attr( $cats[ $p['cle'] ] ) . '"></span>';
+			$legende  .= '<li class="aod-cd-fincost__li" style="--rang:' . (int) $rang . '"><span class="aod-cd-fincost__dot" style="--part:' . $part . '" aria-hidden="true"></span>'
+				. '<span class="aod-cd-fincost__nom">' . esc_html( $cats[ $p['cle'] ] ) . '</span>'
+				. '<span class="aod-cd-fincost__val">' . wp_kses_post( self::prix( $p['mnt'] ) ) . '</span>'
+				. '<span class="aod-cd-fincost__pct">' . esc_html( number_format_i18n( $pct, 1 ) . ' %' ) . '</span></li>';
+			$rang++;
 		}
 
 		echo '<div class="aod-cd-chartcard aod-cd-fincost aod-cd-findep__card">';
