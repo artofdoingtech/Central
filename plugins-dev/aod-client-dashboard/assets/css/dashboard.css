@@ -838,7 +838,10 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	.aod-cd-brand{padding:var(--cd-sp-4) var(--cd-sp-5);border-bottom:0}
 	.aod-cd-navtoggle{
 		display:inline-flex;flex-direction:column;justify-content:center;gap:5px;
-		margin-inline-start:auto;width:44px;height:38px;padding:0 10px;flex:0 0 auto;
+		/* 44 px et non 38 : c'est LE seul accès à la navigation au pouce, et il
+		   était sous la cible tactile de la 46.6 depuis que celle-ci existe —
+		   invisible parce que la sonde de la porte ne connaît que sept classes. */
+		margin-inline-start:auto;width:44px;height:44px;padding:0 10px;flex:0 0 auto;
 		background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
 		border-radius:var(--cd-r-sm);cursor:pointer;
 	}
@@ -5595,6 +5598,116 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 	   32 px de large — sous le seuil, et la porte `rtl` le dirait. */
 	.aod-cd-btn--ico{width:44px}
 	.aod-cd-page{height:44px;min-width:44px}
+
+	/* ── 2026-08-11 · LA LISTE CI-DESSUS EN NOMMAIT SEPT. LE TABLEAU DE BORD EN
+	   COMPTE VINGT-SIX. ────────────────────────────────────────────────────────
+	 *
+	 * 🚨 CE N'EST PAS UN OUBLI DE LA 46.6, C'EST SON MODE DE MESURE. La porte
+	 * `rtl` juge les cibles tactiles avec la MÊME liste de sept sélecteurs que
+	 * celle écrite ci-dessus : ce qui n'y figure pas n'est jamais regardé. Elle
+	 * publiait donc « 678 cibles mesurées, 0 échec » — exact, et sans valeur, de
+	 * la même façon que `SECTIONS` n'a jamais ouvert une page Finance pendant que
+	 * trois portes se déclaraient vertes dessus. Le paragraphe du 2026-08-08
+	 * l'avait déjà entrevu (« il reste un cinquième membre hors liste ») ; il en
+	 * restait vingt.
+	 *
+	 * Recensé le 2026-08-11 sur les 17 pages de /gestion à 390 px, en balayant
+	 * TOUS les contrôles interactifs au lieu de sept classes :
+	 *
+	 *   `.aod-cd-lang__btn`     37 × 23 — le sélecteur FR/AR, sur CHAQUE page.
+	 *                           Le contrôle le plus structurant d'un produit
+	 *                           bilingue, à la moitié de la taille requise.
+	 *   `.aod-cd-navtoggle`     44 × 38 — l'ouverture du menu. Sur CHAQUE page,
+	 *                           et c'est le seul accès à la navigation au pouce.
+	 *   `.aod-cd-client__tel`   69 × 18 — 40 instances : le lien « appeler le
+	 *                           client » des tableaux Commandes et Abandonnées.
+	 *   `.aod-cd-calbtn`        28 × 28 — l'ouverture du calendrier.
+	 *   `.aod-cd-csel-btn`      41 px  — le select maison générique. C'est le
+	 *                           « cinquième membre » que la note du 2026-08-08
+	 *                           laissait de côté faute de mesure ; elle existe.
+	 *   ligne de Catégories     36 à 38 px sur les quatre champs, 30 × 30 sur la
+	 *                           suppression.
+	 *
+	 * ⚠️ TROIS FAUX POSITIFS ÉCARTÉS, à ne pas « corriger » si on remesure : les
+	 * `<select>` natifs mesurent 2 × 2 et 20 × 14 px, mais ils portent
+	 * `opacity:0; position:absolute` — ce sont les contrôles CACHÉS derrière les
+	 * listes maison, la vraie cible étant `.aod-cd-csel-btn`. Et `input[type=date]`
+	 * paraît haut de 18 px alors qu'il fait bien 44 : c'est son `<label>` EN LIGNE
+	 * qui rend une boîte dégénérée autour d'enfants en bloc. Mesurer l'étiquette
+	 * plutôt que le contrôle est juste pour une case à cocher (46.6bis), faux ici.
+	 *
+	 * `min-width` sur `.aod-cd-btn` : 11 boutons rendaient 43 × 44 — la hauteur
+	 * était acquise depuis la 46.6, la largeur jamais regardée (la sonde ne
+	 * comparait que `height`). */
+	.aod-cd-lang__btn{
+		min-height:44px;min-width:44px;
+		display:inline-flex;align-items:center;justify-content:center;
+	}
+	.aod-cd-btn{min-width:44px}
+	.aod-cd-csel-btn,
+	.aod-cd-code,
+	.aod-cd-fincalc__nom{min-height:44px}
+	/* Le lien téléphone est le geste le plus fréquent de ces deux tableaux, et le
+	   seul qui déclenche une action HORS du site. `inline-flex` plutôt que
+	   `min-height` seul : posé sur un `<a>` en ligne, `min-height` ne fait rien. */
+	.aod-cd-client__tel{display:inline-flex;align-items:center;min-height:44px}
+	/* Le déclencheur du calendrier est en position absolue DANS le champ : sa
+	   largeur mange la réserve de texte, qui passe donc de 38 à 52 px. Sans ça,
+	   la date se glisserait sous le bouton. */
+	.aod-cd-calbtn{width:44px;height:44px}
+	.aod-cd-datewrap.has-cal input[type=date]{padding-inline-end:52px}
+	/* Les quatre champs d'une ligne de Catégories, et sa suppression. */
+	.aod-cd-cat-name,
+	.aod-cd-cat-name-ar,
+	.aod-cd-cat-parent,
+	.aod-cd-cat-home-order{min-height:44px}
+	.aod-cd-color-del{width:44px;height:44px}
+	/* 🔴 CELUI-CI S'ARRÊTE À 28 px, ET LA GÉOMÉTRIE L'IMPOSE. `.aod-cd-cat-thumb`
+	   mesure 46 × 46 px et EST elle-même le contrôle d'envoi d'image. Un bouton
+	   de suppression à 44 × 44 posé dans son coin la recouvrirait presque
+	   entièrement : on gagnerait une cible atteignable en en perdant une autre,
+	   au même endroit, sans que rien ne le signale. 28 px franchit le seuil WCAG
+	   2.5.8 (24 × 24) sans atteindre les 44 px de la spec maison — c'est un
+	   arbitrage assumé, pas un reste à faire, et il est déclaré tel quel dans
+	   `rtl-mobile.js` (CIBLES_CONTRAINTES) plutôt que caché dans une exemption
+	   muette. Le jour où la vignette grandit, cette ligne tombe. */
+	.aod-cd-cat-imgdel{width:28px;height:28px;top:-8px;inset-inline-end:-8px}
+
+	/* ── LE RESTE EST SYSTÉMIQUE, ET LA SONDE GÉNÉRALE L'A MONTRÉ D'UN COUP ────
+	 *
+	 * Les règles ci-dessus nomment des classes. Celles-ci nomment des ÉLÉMENTS, et
+	 * c'est le bon niveau : le défaut n'était pas dans dix composants, il était
+	 * dans le fait qu'AUCUN plancher tactile ne s'appliquait aux champs.
+	 *
+	 * 🚨 POURQUOI LES CHAMPS ÉCHAPPAIENT À LA 46.6. Les deux rangs de hauteur de
+	 * la charte — `--cd-ctl-h:42px` (formulaire) et `--cd-ctl-h-sm:34px` (dense) —
+	 * sont posés à travers des `@media(min-width:781px)`, précisément pour laisser
+	 * le `min-height:44px` du pouce gagner. L'intention était juste ; il manquait
+	 * la moitié qui l'applique. Au pouce, les champs ne retombaient donc pas sur
+	 * 44 px : ils retombaient sur RIEN, c'est-à-dire sur leur hauteur naturelle —
+	 * 42 px pour un champ ordinaire, 21 px pour un champ en ligne, 38 à 40 px
+	 * pour les listes. Relevé par la sonde générale : `input@268×42 × 15` sur une
+	 * seule page.
+	 *
+	 * ⚠️ Les cases et les boutons radio sont EXCLUS, et il ne faut pas les
+	 * réintégrer : ce sont les seuls contrôles dont la cible légitime est le
+	 * `<label>` qui les enveloppe (règle 46.6bis, mesurée). Les grossir à 44 px
+	 * déformerait la case elle-même sans rien gagner.
+	 *
+	 * `summary` : seuls ceux SANS classe ont besoin du calage vertical.
+	 * `.aod-cd-acc-sum` est déjà en `flex` avec son propre padding et rend 50 px —
+	 * lui ajouter du padding le ferait grandir sans raison.
+	 *
+	 * `.aod-cd-prod__name` est un LIEN EN LIGNE : sa boîte vaut sa ligne de texte,
+	 * soit 21 px. `min-height` seul ne fait rien sur un élément en ligne — d'où
+	 * `inline-flex`. C'est le nom du produit dans Produits et dans Stock, donc la
+	 * porte d'entrée de l'édition. */
+	body.aod-cd input:not([type=checkbox]):not([type=radio]):not([type=hidden]),
+	body.aod-cd select,
+	body.aod-cd textarea,
+	body.aod-cd summary{min-height:44px}
+	body.aod-cd summary:not([class]){padding-block:var(--cd-sp-3)}
+	body.aod-cd .aod-cd-prod__name{display:inline-flex;align-items:center;min-height:44px}
 }
 
 /* ==========================================================================

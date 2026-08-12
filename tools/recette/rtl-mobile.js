@@ -25,6 +25,7 @@ const HOST = new URL( BASE ).hostname;
 	let tablesTotal = 0;
 	// 46.6 — cibles tactiles réellement mesurées, sur les DEUX passages mobiles.
 	let ciblesTotal = 0;
+	let tousTotal   = 0;
 	// 46.6bis — les cases/radios sont comptées A PART : leur regle juge les DEUX
 	// dimensions, celle des boutons seulement la hauteur (cf. la sonde).
 	let casesTotal = 0;
@@ -238,6 +239,71 @@ const HOST = new URL( BASE ).hostname;
 					}
 				} );
 
+				/* 🔴 2026-08-11 — LA SONDE QUI NE CONNAÎT AUCUNE LISTE DE CLASSES.
+				 *
+				 * Les deux sondes ci-dessus énumèrent. La première nomme SEPT
+				 * classes de boutons, la seconde les cases. Ce qui n'y figure pas
+				 * n'a jamais été mesuré — et la porte publiait « 678 cibles, 0
+				 * échec », un nombre exact posé à côté d'un trou. C'est la TROISIÈME
+				 * fois que ce mode d'échec se produit dans ce dépôt : la 46.6bis l'a
+				 * corrigé pour les cases, `SECTIONS` l'a subi sur Finance (trois
+				 * portes vertes sur des pages jamais ouvertes), et il recommençait
+				 * ici. *Une liste d'INCLUSION omet en silence ; une liste
+				 * d'EXCLUSION oblige à écrire pourquoi.* D'où l'inversion.
+				 *
+				 * Recensé à 390 px avec cette sonde, avant correctif : 26 classes
+				 * distinctes sous 44 px sur les 17 pages, dont `.aod-cd-lang__btn`
+				 * (37 × 23 — le sélecteur FR/AR, sur chaque page), `.aod-cd-navtoggle`
+				 * (44 × 38 — le seul accès au menu), `.aod-cd-client__tel` (69 × 18,
+				 * 40 instances — « appeler le client »), `.aod-cd-calbtn` (28 × 28)
+				 * et `.aod-cd-csel-btn` (41 px).
+				 *
+				 * ⚠️ ON MESURE LE CONTRÔLE, PAS SON ÉTIQUETTE — l'inverse de la
+				 * sonde des cases, et pour la même raison qu'elle mesure l'étiquette :
+				 * ce qui compte est ce que le doigt doit atteindre. Une case de 16 px
+				 * est atteignable par son `<label>` de 44 ; un `<select>` de 38 px ne
+				 * le devient pas parce qu'un libellé le surmonte. Et remonter au
+				 * `<label>` produisait ici un FAUX NÉGATIF mesuré : `input[type=date]`
+				 * fait bien 44 px, mais son `<label>` EN LIGNE rend une boîte
+				 * dégénérée de 18 px autour d'enfants en bloc — on aurait signalé un
+				 * champ conforme.
+				 *
+				 * ⚠️ `opacity:0` / `visibility:hidden` sont ÉCARTÉS, et ce n'est pas
+				 * une commodité : les `<select>` natifs cachés derrière les listes
+				 * maison mesurent 2 × 2 px. Les signaler enverrait corriger un
+				 * contrôle que personne ne voit ni ne touche, pendant que la vraie
+				 * cible — `.aod-cd-csel-btn` — resterait à 41. */
+				const CONTRAINTES = {
+					// Seule exception, et elle est géométrique : `.aod-cd-cat-thumb`
+					// mesure 46 × 46 px et EST le contrôle d'envoi d'image. Un « ✕ »
+					// à 44 × 44 dans son coin la recouvrirait presque entièrement —
+					// une cible gagnée contre une cible perdue, au même endroit.
+					// Plancher WCAG 2.5.8 (24 × 24) au lieu des 44 px maison.
+					'aod-cd-cat-imgdel': 24,
+				};
+				const tous = [];
+				document.querySelectorAll(
+					'body.aod-cd a[href], body.aod-cd button, body.aod-cd select,'
+					+ ' body.aod-cd input:not([type=hidden]):not([type=checkbox]):not([type=radio]),'
+					+ ' body.aod-cd [role="button"], body.aod-cd summary'
+				).forEach( ( el ) => {
+					const b = el.getBoundingClientRect();
+					if ( ! b.height || ! b.width ) { return; }
+					const cs = getComputedStyle( el );
+					if ( '0' === cs.opacity || 'hidden' === cs.visibility ) { return; }
+					const w = Math.round( b.width );
+					const h = Math.round( b.height );
+					const cls = ( el.getAttribute( 'class' ) || '' )
+						.split( /\s+/ ).filter( ( c ) => c.startsWith( 'aod-cd' ) ).slice( 0, 2 ).join( '.' );
+					let seuil = 44;
+					for ( const k of Object.keys( CONTRAINTES ) ) {
+						if ( el.classList.contains( k ) ) { seuil = CONTRAINTES[ k ]; }
+					}
+					if ( w < seuil || h < seuil ) {
+						tous.push( { cls: cls || el.tagName.toLowerCase(), w, h, seuil } );
+					}
+				} );
+
 				return {
 					racine,
 					dir: de.getAttribute( 'dir' ) || getComputedStyle( document.body ).direction,
@@ -248,6 +314,12 @@ const HOST = new URL( BASE ).hostname;
 					tables,
 					petits,
 					cases,
+					tous,
+					tousTotal: document.querySelectorAll(
+						'body.aod-cd a[href], body.aod-cd button, body.aod-cd select,'
+						+ ' body.aod-cd input:not([type=hidden]):not([type=checkbox]):not([type=radio]),'
+						+ ' body.aod-cd [role="button"], body.aod-cd summary'
+					).length,
 					casesTotal: document.querySelectorAll( 'body.aod-cd input[type=checkbox], body.aod-cd input[type=radio]' ).length,
 					cibles: document.querySelectorAll(
 						'body.aod-cd a.aod-cd-btn, body.aod-cd button.aod-cd-btn, body.aod-cd .aod-cd-seg__btn,'
@@ -386,12 +458,15 @@ const HOST = new URL( BASE ).hostname;
 			// 46.6bis — même règle mobile-seulement que les boutons : sur desktop une
 			// case de 16 px visée à la souris est un choix de densité, pas un défaut.
 			const cases = jugeCibles ? ( r.cases || [] ) : [];
-			if ( jugeCibles ) { ciblesTotal += r.cibles || 0; casesTotal += r.casesTotal || 0; }
+			// Même règle mobile-seulement que ses deux aînées (D3).
+			const tous = jugeCibles ? ( r.tous || [] ) : [];
+			if ( jugeCibles ) { ciblesTotal += r.cibles || 0; casesTotal += r.casesTotal || 0; tousTotal += r.tousTotal || 0; }
 
 			const okPage = r.racine && rendue === attendue && php.length === 0 && console_.length === 0 && overflow <= 2
 				&& tablesLarges.length === 0
 				&& petits.length === 0
 				&& cases.length === 0
+				&& tous.length === 0
 				&& ( ! mode.ar || r.dir === 'rtl' );
 
 			if ( okPage ) {
@@ -417,6 +492,13 @@ const HOST = new URL( BASE ).hostname;
 				for ( const c of cases ) { vues[ `${ c.cls }@${ c.w }×${ c.h }` ] = ( vues[ `${ c.cls }@${ c.w }×${ c.h }` ] || 0 ) + 1; }
 				for ( const [ k, n ] of Object.entries( vues ) ) {
 					console.log( `        case     : ${ k } × ${ n } — cible sous 44 px au pouce. Envelopper la case d'un <label class="aod-cd-checkwrap"> plutot que de grossir la case.` );
+				}
+			}
+			if ( tous.length ) {
+				const vus = {};
+				for ( const c of tous ) { vus[ `${ c.cls }@${ c.w }×${ c.h }` ] = ( vus[ `${ c.cls }@${ c.w }×${ c.h }` ] || 0 ) + 1; }
+				for ( const [ k, n ] of Object.entries( vus ) ) {
+					console.log( `        contrôle : ${ k } × ${ n } — sous 44 px au pouce, et HORS des sept classes que la sonde 46.6 énumère (spec UX §5.3)` );
 				}
 			}
 			for ( const t of tablesLarges ) {
@@ -500,6 +582,21 @@ const HOST = new URL( BASE ).hostname;
 		casesTotal >= 60,
 		`🔴 46.6bis : ${ casesTotal } case(s)/radio(s) réellement mesurée(s) à 390 px`,
 		casesTotal >= 60 ? '' : 'moins de 60 : le sélecteur ne trouve plus les cases — c’est le trou même que cette sonde ferme'
+	) ) {
+		fails++;
+	}
+
+	/* 2026-08-11 — témoin de couverture de la sonde GÉNÉRALE. Il est le plus
+	 * important des trois, parce que c'est lui qui garde l'inversion : les deux
+	 * sondes précédentes ne peuvent voir que ce qu'elles nomment, celle-ci voit
+	 * tout ce qui est interactif. Un sélecteur devenu faux la rendrait vide, et le
+	 * vert reviendrait exactement là où il était trompeur.
+	 * Plancher à 300 : mesuré à plus de 700 sur les deux passages mobiles. */
+	console.log( `Contrôles interactifs mesurés (2 passages mobiles) : ${ tousTotal }` );
+	if ( ! ok(
+		tousTotal >= 300,
+		`🔴 Sonde générale : ${ tousTotal } contrôle(s) interactif(s) réellement mesuré(s) à 390 px — sans liste de classes`,
+		tousTotal >= 300 ? '' : 'moins de 300 : la sonde ne balaie plus les contrôles — c’est le trou que l’inversion ferme'
 	) ) {
 		fails++;
 	}
