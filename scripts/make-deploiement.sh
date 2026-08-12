@@ -165,7 +165,21 @@ memory_limit = 256M
 max_execution_time = 120
 INI
 
-( cd "$STAGE" && zip -q -r -9 "$ROOT/$OUTDIR/public_html.zip" . -x '*.DS_Store' )
+# 🪤 WINDOWS — LE CHEMIN DE SORTIE DOIT ÊTRE ÉCRIT À LA MODE WINDOWS, et les deux
+# besoins de ce dépôt sont contradictoires sur ce point.
+#   · `zip` est un binaire NATIF : il ne sait pas lire `/c/Users/...`. Git Bash le
+#     convertit d'ordinaire tout seul.
+#   · Mais la recette navigateur exporte `MSYS_NO_PATHCONV=1` — sans quoi les
+#     chemins Docker (`/scripts/...`, `/var/www/...`) sont mutilés en
+#     `C:/Program Files/Git/scripts/...`. Ce réglage désarme la conversion ICI.
+# Résultat mesuré le 2026-08-12 : avec la variable, `zip` échoue
+# (« Could not create output file ») ; sans elle, c'est l'export de la BASE qui
+# échoue, parce que les arguments passés à `docker compose exec` sont réécrits.
+# Autrement dit, aucune valeur de la variable ne fait marcher le script entier.
+# On convertit donc explicitement, ce qui le rend indifférent au réglage.
+ZIP_OUT="$ROOT/$OUTDIR/public_html.zip"
+if command -v cygpath >/dev/null 2>&1; then ZIP_OUT="$( cygpath -w "$ZIP_OUT" )"; fi
+( cd "$STAGE" && zip -q -r -9 "$ZIP_OUT" . -x '*.DS_Store' )
 grn "public_html.zip ($(du -h "$OUTDIR/public_html.zip" | cut -f1))"
 
 # ── 4) wp-config.php modèle ─────────────────────────────────────────────────
