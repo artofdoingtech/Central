@@ -593,7 +593,12 @@ class AOD_CD_Section_Abandoned {
 		$product = $lead->product_id ? wc_get_product( (int) $lead->product_id ) : null;
 		$pname   = $product ? $product->get_name() : '—';
 
-		$wilaya_name = ( $lead->wilaya && class_exists( 'AOD_COD_Data' ) ) ? AOD_COD_Data::wilaya_name( (int) $lead->wilaya ) : '';
+		// Couple { fr, ar } comme la colonne Wilaya de Commandes et le graphique de
+		// l'Accueil. Corrigé le même jour et par le même geste : n'en traiter qu'un
+		// aurait laissé deux tableaux voisins nommer la même wilaya dans deux langues.
+		$wilaya_name = ( $lead->wilaya && class_exists( 'AOD_COD_Data' ) )
+			? AOD_COD_Data::label( AOD_COD_Data::wilaya_name( (int) $lead->wilaya ), AOD_COD_Data::wilaya_name_ar( (int) $lead->wilaya ) )
+			: '';
 
 		echo '<tr>';
 

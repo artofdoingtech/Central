@@ -1344,7 +1344,18 @@ class AOD_COD_Form {
 				$line_product = ( $line['pid'] === $product->get_id() ) ? $product : wc_get_product( $line['pid'] );
 				$item_id      = $order->add_product( $line_product, $line['qty'] );
 				if ( $item_id ) {
-					$item = $order->get_item( $item_id );
+					// 🔴 `false` = L'INSTANCE DÉJÀ EN MÉMOIRE, PAS UNE COPIE RELUE EN BASE.
+					// `get_item( $id )` vaut `get_item( $id, true )` : WooCommerce rend un
+					// objet NEUF, détaché de la commande. Le prix posé dessus s'écrit bien
+					// dans la ligne — mais `calculate_totals()` (plus bas) additionne
+					// `$order->get_items()`, c'est-à-dire les objets MIS EN CACHE par
+					// `add_product()`, restés au prix catalogue. Le total encaissé ignorait
+					// donc tout écart au tarif de base : prix de lot, supplément de variante.
+					// Mesuré sur le bac à sable le 2026-08-15 : commande de 2 sacs à
+					// 5 250 (prix de lot) totalisée à 2 × 5 400 — 300 د.ج de trop, réclamés
+					// à la livraison ; et un casque à +500 de supplément encaissé 500 de
+					// moins. Le montant COD, c'est ce total : l'écart part chez le client.
+					$item = $order->get_item( $item_id, false );
 					if ( $item ) {
 						$item->set_subtotal( $line_total );
 						$item->set_total( $line_total );

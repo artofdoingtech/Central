@@ -192,14 +192,25 @@ class AOD_CD_Section_Orders {
 		// pour noncée, et à éteindre la garde qui surveille ses lectures de `$_GET`.
 		// Le filtre de statut courant est repris : on exporte CE QU'ON REGARDE, sinon
 		// le gérant qui a filtré « Confirmées » reçoit tout et croit le filtre ignoré.
-		$export_url = add_query_arg(
+		// … et les autres filtres avec lui : le lien doit décrire l'écran, sinon la
+		// promesse ci-dessus ne tient que pour le statut. Les vides sont retirés
+		// pour ne pas fabriquer une URL qui prétend filtrer sur rien.
+		$export_args = array_filter(
 			array(
-				'action' => 'aod_cd_export_orders',
-				'statut' => $current,
-				'nonce'  => wp_create_nonce( 'aod_cd' ),
+				'action'        => 'aod_cd_export_orders',
+				'statut'        => $current,
+				's'             => $search,
+				'date_from'     => $range['from'],
+				'date_to'       => $range['to'],
+				'confirmateur'  => $confirmer_filter ? $confirmer_filter : '',
+				'non_assignees' => $non_assignees ? '1' : '',
 			),
-			admin_url( 'admin-ajax.php' )
+			function ( $v ) {
+				return '' !== (string) $v;
+			}
 		);
+		$export_args['nonce'] = wp_create_nonce( 'aod_cd' );
+		$export_url           = add_query_arg( $export_args, admin_url( 'admin-ajax.php' ) );
 		echo AOD_CD_Dashboard::page_head( // phpcs:ignore WordPress.Security.EscapeOutput
 			__( 'Commandes', 'aod-client-dashboard' ),
 			__( 'Suivez, confirmez et expédiez les commandes COD.', 'aod-client-dashboard' ),
@@ -226,6 +237,14 @@ class AOD_CD_Section_Orders {
 			if ( $confirmer_filter ) {
 				$keep['confirmateur'] = $confirmer_filter;
 			}
+			// « Non assignées » survit au changement d'onglet, comme les quatre filtres
+			// ci-dessus. Il était le SEUL à sauter : le gérant qui triait ses commandes
+			// sans confirmateur passait de « Toutes » à « En attente » et récupérait
+			// toute la boutique, sans que rien ne signale la perte — la pastille du
+			// filtre repassait simplement à l'état éteint, deux lignes plus bas.
+			if ( $non_assignees ) {
+				$keep['non_assignees'] = 1;
+			}
 			printf(
 				'<a class="aod-cd-seg__btn%1$s" href="%2$s"%3$s>%4$s<span class="aod-cd-seg__count">%5$d</span></a>',
 				$slug === $current ? ' is-active' : '',
@@ -238,7 +257,7 @@ class AOD_CD_Section_Orders {
 		echo '</div>';
 
 		// Recherche (n° de commande, nom ou téléphone du client).
-		AOD_CD_Dashboard::render_search_bar( $base_url, $search, __( 'Rechercher : n°, nom, téléphone…', 'aod-client-dashboard' ), array( 'statut' => $current, 'date_from' => $range['from'], 'date_to' => $range['to'], 'confirmateur' => $confirmer_filter ? $confirmer_filter : '' ) );
+		AOD_CD_Dashboard::render_search_bar( $base_url, $search, __( 'Rechercher : n°, nom, téléphone…', 'aod-client-dashboard' ), array( 'statut' => $current, 'date_from' => $range['from'], 'date_to' => $range['to'], 'confirmateur' => $confirmer_filter ? $confirmer_filter : '', 'non_assignees' => $non_assignees ? '1' : '' ) );
 		echo '</div>';
 
 		// Filtre par date (43.1) + confirmateur (43.2) — formulaire GET distinct
@@ -317,46 +336,17 @@ class AOD_CD_Section_Orders {
 			}
 		}
 
-		$args = array(
-			'type'     => 'shop_order', // Exclut les remboursements (shop_order_refund) du listing.
-			'limit'    => $per_page,
-			'paged'    => $paged,
-			'paginate' => true,
-			'orderby'  => 'date',
-			'order'    => 'DESC',
-			'status'   => $query_status,
+		$args = array_merge(
+			array(
+				'type'     => 'shop_order', // Exclut les remboursements (shop_order_refund) du listing.
+				'limit'    => $per_page,
+				'paged'    => $paged,
+				'paginate' => true,
+				'orderby'  => 'date',
+				'order'    => 'DESC',
+			),
+			$this->list_filter_args( $query_status, $search, $range, $confirmer_filter, $non_assignees )
 		);
-		// Étape 12.1 : une commande expédiée quitte « Commandes » pour « Suivi ».
-		$exclude_shipped = $this->unshipped_meta_query();
-		if ( $exclude_shipped ) {
-			$args['meta_query'] = $exclude_shipped; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-		}
-		// Filtre « Non assignées » (42.5) — fusionné en AND, jamais un
-		// écrasement (même patron que le cumul d'assignation en lecture, 42.3).
-		if ( $non_assignees ) {
-			$unassigned_clause = array( 'key' => '_aod_assigned_confirmer', 'compare' => 'NOT EXISTS' );
-			$args['meta_query'] = ! empty( $args['meta_query'] ) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- filtre gérant only (rattrapage 42.5), fusionné AND avec un éventuel filtre déjà présent.
-				? array( 'relation' => 'AND', $args['meta_query'], $unassigned_clause )
-				: array( $unassigned_clause );
-		}
-		// Filtre par confirmateur (43.2) — même patron de fusion AND. Combinable
-		// avec « Non assignées » sans garde spéciale : les deux ensemble rendent
-		// un résultat vide, honnêtement (cf. story, AC 5).
-		if ( $confirmer_filter ) {
-			$confirmer_clause   = array( 'key' => '_aod_assigned_confirmer', 'value' => $confirmer_filter );
-			$args['meta_query'] = ! empty( $args['meta_query'] ) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- filtre gérant only, fusionné AND avec un éventuel filtre déjà présent.
-				? array( 'relation' => 'AND', $args['meta_query'], $confirmer_clause )
-				: array( $confirmer_clause );
-		}
-		if ( '' !== $search ) {
-			$args['s'] = $search;
-		}
-		// Filtre par date (43.1) — seulement si au moins une borne est posée
-		// (jamais une chaîne vide dans $args, cf. story AC 2).
-		$date_created = AOD_CD_Dashboard::date_created_query_arg( $range['from'], $range['to'] );
-		if ( null !== $date_created ) {
-			$args['date_created'] = $date_created;
-		}
 		$result = $this->scoped_orders( $args );
 		$orders = $result->orders;
 
@@ -559,7 +549,7 @@ class AOD_CD_Section_Orders {
 		}
 		echo '</tbody></table></div>';
 
-		AOD_CD_Dashboard::render_pagination( $base_url, $paged, (int) $result->max_num_pages, array( 'statut' => $current, 's' => $search, 'date_from' => $range['from'], 'date_to' => $range['to'], 'confirmateur' => $confirmer_filter ? $confirmer_filter : '' ) );
+		AOD_CD_Dashboard::render_pagination( $base_url, $paged, (int) $result->max_num_pages, array( 'statut' => $current, 's' => $search, 'date_from' => $range['from'], 'date_to' => $range['to'], 'confirmateur' => $confirmer_filter ? $confirmer_filter : '', 'non_assignees' => $non_assignees ? '1' : '' ) );
 	}
 
 	/**
@@ -569,9 +559,15 @@ class AOD_CD_Section_Orders {
 	 * @param array    $status_options
 	 */
 	protected function render_order_row( $order, $status_options, $can_delete = false, $can_assign = false, $can_carrier = false ) {
+		// `label()` = le couple { fr, ar } de la wilaya, pas son seul nom français.
+		// Sur un /gestion passé en arabe, cette colonne écrivait « Alger » pendant
+		// que le graphique des wilayas de l'ACCUEIL, deux clics plus loin, écrivait
+		// « الجزائر » — le nom arabe existait déjà en base (`wilaya_name_ar()`), il
+		// n'était simplement pas demandé ici. Règle 4 du dépôt : tout le visible est
+		// bilingue, et un écran sur deux ne compte pas.
 		$wilaya_code = (int) $order->get_meta( '_aod_wilaya_code' );
 		$wilaya      = $wilaya_code && class_exists( 'AOD_COD_Data' )
-			? AOD_COD_Data::wilaya_name( $wilaya_code )
+			? AOD_COD_Data::label( AOD_COD_Data::wilaya_name( $wilaya_code ), AOD_COD_Data::wilaya_name_ar( $wilaya_code ) )
 			: $order->get_billing_state();
 		$phone  = $order->get_billing_phone();
 		$status = 'wc-' . $order->get_status();
@@ -1546,6 +1542,27 @@ class AOD_CD_Section_Orders {
 		// filtre respecté.
 		$status = $this->status_keys_for( $slug );
 
+		// … et les QUATRE AUTRES filtres de l'écran, qui ne franchissaient pas la
+		// frontière. Mêmes tamis qu'au rendu, à la ligne près : « non assignées »
+		// et « confirmateur » sont gérant-only (un confirmateur ne doit pas
+		// apprendre le nom d'un collègue par une URL forgée), et l'ID de
+		// confirmateur est vérifié contre le vivier éligible avant d'être cru.
+		$can_assign    = current_user_can( 'manage_woocommerce' );
+		$search        = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+		$range         = AOD_CD_Dashboard::resolve_date_range( AOD_CD_Dashboard::parse_date_param( 'date_from' ), AOD_CD_Dashboard::parse_date_param( 'date_to' ) );
+		$non_assignees = $can_assign && isset( $_GET['non_assignees'] ) && '1' === $_GET['non_assignees'];
+		$confirmer     = 0;
+		if ( $can_assign && isset( $_GET['confirmateur'] ) ) {
+			$posted = absint( $_GET['confirmateur'] );
+			if ( in_array( $posted, wp_list_pluck( AOD_CD_Roles::eligible_confirmers( array(), true ), 'ID' ), true ) ) {
+				$confirmer = $posted;
+			}
+		}
+		// `false` sur le dernier argument : l'export garde les commandes expédiées.
+		// Ce n'est pas un oubli d'alignement, c'est son objet même — cf. le ⚠️ de
+		// `list_filter_args()`.
+		$filters = $this->list_filter_args( $status, $search, $range, $confirmer, $non_assignees, false );
+
 		$cols = self::export_columns();
 
 		nocache_headers();
@@ -1567,14 +1584,16 @@ class AOD_CD_Section_Orders {
 		$page = 1;
 		do {
 			$res = $this->scoped_orders(
-				array(
-					'type'     => 'shop_order',
-					'status'   => $status,
-					'limit'    => 200,
-					'page'     => $page,
-					'paginate' => true,
-					'orderby'  => 'date',
-					'order'    => 'DESC',
+				array_merge(
+					array(
+						'type'     => 'shop_order',
+						'limit'    => 200,
+						'page'     => $page,
+						'paginate' => true,
+						'orderby'  => 'date',
+						'order'    => 'DESC',
+					),
+					$filters
 				)
 			);
 			$orders = isset( $res->orders ) ? $res->orders : array();
@@ -1590,6 +1609,80 @@ class AOD_CD_Section_Orders {
 
 		fclose( $out );
 		exit;
+	}
+
+	/**
+	 * Traduction des filtres de l'écran « Commandes » en arguments `wc_get_orders()`.
+	 *
+	 * UN SEUL CORPS POUR DEUX APPELANTS : le tableau (`render()`) et l'export CSV
+	 * (`ajax_export_orders()`). C'est délibéré, et la raison est écrite dans
+	 * l'export lui-même : « on exporte CE QU'ON REGARDE ». Cette promesse n'a
+	 * jamais tenu que sur le STATUT — les quatre autres filtres (recherche, bornes
+	 * de date, confirmateur, non assignées) ne franchissaient pas la frontière. Un
+	 * gérant qui restreignait son écran au mois d'août puis cliquait « Exporter en
+	 * CSV » recevait la boutique entière, dans un fichier qui ne dit nulle part ce
+	 * qu'il contient. Le pire cas n'est pas le fichier trop gros : c'est celui
+	 * qu'on donne au comptable en croyant l'avoir filtré.
+	 *
+	 * ⚠️ UNE EXCEPTION ASSUMÉE, ET ELLE VA DANS L'AUTRE SENS : `$exclude_shipped`.
+	 * Le tableau écarte les commandes expédiées (12.1 — elles vivent dans « Suivi »).
+	 * Aligner l'export dessus aurait été cohérent en apparence et FAUX en pratique :
+	 * son objet, écrit dans `ajax_export_orders()`, est de rapprocher l'argent
+	 * encaissé par le transporteur des commandes LIVRÉES — c'est-à-dire exactement
+	 * celles que l'écran ne montre plus. Le comptable aurait reçu un fichier vide de
+	 * ce qu'il vient chercher. La cohérence d'un écran se juge contre l'usage, pas
+	 * contre l'écran d'à côté.
+	 *
+	 * 🔒 Les arguments arrivent DÉJÀ tamisés par l'appelant (statut résolu par
+	 * `status_keys_for()`, confirmateur vérifié contre le vivier éligible,
+	 * « non assignées » réservé au gérant). Cette méthode ne lit aucune
+	 * superglobale : chaque appelant lit la sienne, sous son propre contrôle
+	 * d'accès — c'est ce qui permet à l'export de rester noncé sans que la
+	 * mutualisation ouvre une lecture non gardée (cf. `test-nonce-contract.php`).
+	 *
+	 * @param string[] $status        Statuts déjà résolus (jamais un slug d'onglet).
+	 * @param string   $search        Terme de recherche, '' si aucun.
+	 * @param array    $range         Bornes de date normalisées : { from, to }.
+	 * @param int      $confirmer     ID du confirmateur filtré, 0 si aucun.
+	 * @param bool     $non_assignees Filtre « Non assignées » actif.
+	 * @param bool     $exclude_shipped Écarter les commandes déjà expédiées (cf. ⚠️ ci-dessus).
+	 * @return array Fragment d'arguments à fusionner avec la pagination de l'appelant.
+	 */
+	protected function list_filter_args( $status, $search, $range, $confirmer, $non_assignees, $exclude_shipped = true ) {
+		$args = array( 'status' => $status );
+
+		// Étape 12.1 : une commande expédiée quitte « Commandes » pour « Suivi ».
+		$unshipped = $exclude_shipped ? $this->unshipped_meta_query() : array();
+		if ( $unshipped ) {
+			$args['meta_query'] = $unshipped; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+		}
+		// Filtre « Non assignées » (42.5) — fusionné en AND, jamais un
+		// écrasement (même patron que le cumul d'assignation en lecture, 42.3).
+		if ( $non_assignees ) {
+			$unassigned_clause  = array( 'key' => '_aod_assigned_confirmer', 'compare' => 'NOT EXISTS' );
+			$args['meta_query'] = ! empty( $args['meta_query'] ) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- filtre gérant only (rattrapage 42.5), fusionné AND avec un éventuel filtre déjà présent.
+				? array( 'relation' => 'AND', $args['meta_query'], $unassigned_clause )
+				: array( $unassigned_clause );
+		}
+		// Filtre par confirmateur (43.2) — même patron de fusion AND. Combinable
+		// avec « Non assignées » sans garde spéciale : les deux ensemble rendent
+		// un résultat vide, honnêtement (cf. story, AC 5).
+		if ( $confirmer ) {
+			$confirmer_clause   = array( 'key' => '_aod_assigned_confirmer', 'value' => $confirmer );
+			$args['meta_query'] = ! empty( $args['meta_query'] ) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- filtre gérant only, fusionné AND avec un éventuel filtre déjà présent.
+				? array( 'relation' => 'AND', $args['meta_query'], $confirmer_clause )
+				: array( $confirmer_clause );
+		}
+		if ( '' !== $search ) {
+			$args['s'] = $search;
+		}
+		// Filtre par date (43.1) — seulement si au moins une borne est posée
+		// (jamais une chaîne vide dans $args, cf. story AC 2).
+		$date_created = AOD_CD_Dashboard::date_created_query_arg( $range['from'], $range['to'] );
+		if ( null !== $date_created ) {
+			$args['date_created'] = $date_created;
+		}
+		return $args;
 	}
 
 	public function scoped_orders( $args ) {
@@ -2726,7 +2819,10 @@ class AOD_CD_Section_Orders {
 				}
 
 				$iid  = isset( $row['id'] ) ? absint( $row['id'] ) : 0;
-				$item = $iid ? $order->get_item( $iid ) : null;
+				// Lecture seule ici, mais MÊME instance que la boucle d'écriture plus
+				// bas : deux objets vivants pour une même ligne, c'est exactement la
+				// façon dont ce défaut s'est installé. Une seule règle dans ce handler.
+				$item = $iid ? $order->get_item( $iid, false ) : null;
 				if ( ! $item instanceof WC_Order_Item_Product ) {
 					continue;
 				}
@@ -2764,7 +2860,14 @@ class AOD_CD_Section_Orders {
 
 			// 1) Modifications / retraits des lignes existantes.
 			foreach ( $plan as $iid => $p ) {
-				$item = $order->get_item( $iid );
+				// `false` : l'instance en mémoire, celle que `calculate_totals()` lira
+				// plus bas. Sans ce drapeau, WooCommerce rend une COPIE relue en base :
+				// la quantité et le prix ci-dessous s'enregistrent dans la ligne, mais
+				// le total de la commande se recalcule sur les valeurs d'AVANT. Même
+				// cause que la création COD (`AOD_COD_Form::handle_submit()`), même
+				// conséquence — un montant à encaisser qui ne correspond pas au détail
+				// affiché juste au-dessus de lui.
+				$item = $order->get_item( $iid, false );
 				if ( ! $item ) {
 					continue;
 				}
@@ -2801,7 +2904,7 @@ class AOD_CD_Section_Orders {
 				if ( ! $item_id ) {
 					continue;
 				}
-				$item = $order->get_item( $item_id );
+				$item = $order->get_item( $item_id, false ); // Cf. ci-dessus : l'instance en mémoire, pas une copie.
 				if ( ! $item ) {
 					continue;
 				}
@@ -3233,12 +3336,26 @@ class AOD_CD_Section_Orders {
 	 * @param WC_Order $order
 	 */
 	protected function render_order_detail( $order ) {
+		// Même couple { fr, ar } que la colonne Wilaya de la liste : les deux métas
+		// arabes sont écrites à la création (`_aod_wilaya_name_ar`, `_aod_commune_ar`)
+		// et n'étaient relues nulle part dans cet écran. Repli sur le français si
+		// l'arabe manque — une commande antérieure à ces métas doit rester lisible,
+		// pas afficher du vide.
+		// ⚠️ `class_exists()` PARTOUT, y compris sur le simple choix de langue :
+		// `/gestion` doit survivre à un `aod-cod-form` désactivé (précédent 32.1 —
+		// les gardes `AOD_CD_Cod::active()` sur `tracking_tone()`, sans lesquelles la
+		// page mourait). Sans le greffon, on retombe sur le français déjà en base.
+		$has_data    = class_exists( 'AOD_COD_Data' );
 		$wilaya_code = (int) $order->get_meta( '_aod_wilaya_code' );
-		$wilaya      = $order->get_meta( '_aod_wilaya_name' );
-		if ( ! $wilaya && $wilaya_code && class_exists( 'AOD_COD_Data' ) ) {
-			$wilaya = AOD_COD_Data::wilaya_name( $wilaya_code );
+		$wilaya      = $has_data
+			? AOD_COD_Data::label( $order->get_meta( '_aod_wilaya_name' ), $order->get_meta( '_aod_wilaya_name_ar' ) )
+			: $order->get_meta( '_aod_wilaya_name' );
+		if ( ! $wilaya && $wilaya_code && $has_data ) {
+			$wilaya = AOD_COD_Data::label( AOD_COD_Data::wilaya_name( $wilaya_code ), AOD_COD_Data::wilaya_name_ar( $wilaya_code ) );
 		}
-		$commune  = $order->get_meta( '_aod_commune' );
+		$commune = $has_data
+			? AOD_COD_Data::label( $order->get_meta( '_aod_commune' ), $order->get_meta( '_aod_commune_ar' ) )
+			: $order->get_meta( '_aod_commune' );
 		$delivery = $order->get_meta( '_aod_delivery_type' );
 		$tracking = $order->get_meta( '_aod_ship_tracking' );
 		$phone    = $order->get_billing_phone();

@@ -309,7 +309,11 @@ function aod_cmd_creer_commande( array $c, array $items, $ts ) {
 	foreach ( $est['lines'] as $line ) {
 		$product = wc_get_product( $line['pid'] );
 		$item_id = $order->add_product( $product, $line['qty'] );
-		$item    = $item_id ? $order->get_item( $item_id ) : null;
+		// `false` : l'instance en mémoire — celle que `calculate_totals()` additionnera.
+		// Sans ce drapeau, le jeu de démonstration naît avec des totaux qui ignorent
+		// les prix de lot et les suppléments de variante, et c'est le tableau de bord
+		// qu'on accuse. Même correctif que `AOD_COD_Form::handle_submit()`.
+		$item    = $item_id ? $order->get_item( $item_id, false ) : null;
 		if ( $item ) {
 			$item->set_subtotal( $line['line_total'] );
 			$item->set_total( $line['line_total'] );
