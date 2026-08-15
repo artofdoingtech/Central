@@ -333,6 +333,7 @@ class AOD_CD_Dashboard {
 			base:    <?php echo wp_json_encode( $base ); ?>,
 			i18nCatDelConfirm: <?php echo wp_json_encode( __( 'Supprimer cette catégorie ? Les produits concernés perdront ce classement.', 'aod-client-dashboard' ) ); ?>,
 			i18nCatZero:    <?php echo wp_json_encode( __( '0 produit', 'aod-client-dashboard' ) ); ?>,
+			money: <?php echo wp_json_encode( array( 'dec' => wc_get_price_decimal_separator(), 'sep' => wc_get_price_thousand_separator(), 'n' => wc_get_price_decimals() ) ); // Réglages MONÉTAIRES de la boutique, pour que le JS formate comme wc_price() — sans quoi le calculateur suivait la locale du NAVIGATEUR (deux employés, deux formats, aucun conforme au reste de /gestion). ?>,
 			i18nNetErr:     <?php echo wp_json_encode( __( 'Erreur réseau.', 'aod-client-dashboard' ) ); ?>,
 			// Repli générique des toasts d'échec. Le chemin normal affiche le message
 			// du serveur (traduit par __()) ; ce repli ne sert que si l'échec arrive

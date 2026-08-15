@@ -422,6 +422,61 @@
 	 * @param {Function} place  Repositionne le menu sous le bouton.
 	 * @param {Function} close  Ferme le menu.
 	 */
+	/**
+	 * Place un menu flottant sous son bouton (ou au-dessus s'il déborde en bas).
+	 *
+	 * UN SEUL CORPS pour les cinq widgets qui en avaient chacun une copie
+	 * (statut, assignation, transporteur, `.aod-cd-csel`, prospects) : cinq
+	 * copies identiques au caractère près, donc cinq endroits où corriger le
+	 * défaut ci-dessous — et le sixième widget serait né sans le correctif.
+	 *
+	 * 🔴 LE DÉFAUT QU'IL CORRIGE (mesuré le 2026-08-15, Commandes).
+	 * `position:fixed` NE SE RÉSOUT PAS TOUJOURS PAR RAPPORT AU VIEWPORT : tout
+	 * ancêtre portant `transform`, `filter`, `backdrop-filter`, `perspective`,
+	 * `contain` ou `will-change` devient son bloc conteneur. Or
+	 * `.aod-cd-table tbody tr` porte `animation:aod-cd-rise … both` : le
+	 * `fill-mode` maintient la propriété `transform` sous contrôle de
+	 * l'animation APRÈS sa fin, et le `transform:none` du dernier cran se
+	 * résout alors en `matrix(1,0,0,1,0,0)` — une identité, mais pas `none`.
+	 * Chaque ligne de tableau était donc un bloc conteneur.
+	 * Conséquence relevée : `menu.style.top` valait 322,8 px (la bascule
+	 * vers le haut avait BIEN été calculée) pendant que le menu s'affichait à
+	 * 939 px, sous une fenêtre de 855 px — et sur une liste courte la page ne
+	 * défile pas, donc le menu était proprement inatteignable. Le calcul était
+	 * juste ; c'est le référentiel qui avait changé sous lui.
+	 * → On mesure ce qu'on a OBTENU et on corrige de l'écart, plutôt que de
+	 *   supposer un référentiel. Le remède ne dépend ainsi d'aucune promesse
+	 *   sur ce que les ancêtres ont le droit de porter, aujourd'hui ou plus tard.
+	 *
+	 * @param {HTMLElement} btn  Bouton d'ancrage.
+	 * @param {HTMLElement} menu Menu à placer (doit être visible : on le mesure).
+	 */
+	function placeFloatingMenu( btn, menu ) {
+		var r  = btn.getBoundingClientRect();
+		var mh = menu.offsetHeight;
+		var mw = menu.offsetWidth;
+		var vw = window.innerWidth;
+		var vh = window.innerHeight;
+		var left = Math.max( 8, Math.min( r.left, vw - mw - 8 ) );
+		var top  = r.bottom + 6;
+		if ( top + mh > vh - 8 && r.top - 6 - mh > 8 ) { top = r.top - 6 - mh; }
+
+		menu.style.left     = left + 'px';
+		menu.style.top      = top + 'px';
+		menu.style.minWidth = r.width + 'px';
+
+		// Ce qu'on a demandé n'est pas forcément ce qu'on a obtenu (cf. ci-dessus).
+		// Une seule passe suffit : l'écart entre référentiels est une translation
+		// constante, pas une fonction de la position.
+		var got = menu.getBoundingClientRect();
+		var dy  = top - got.top;
+		var dx  = left - got.left;
+		if ( Math.abs( dy ) > 0.5 || Math.abs( dx ) > 0.5 ) {
+			menu.style.top  = ( top + dy ) + 'px';
+			menu.style.left = ( left + dx ) + 'px';
+		}
+	}
+
 	function bindFloatingMenu( btn, menu, isOpen, place, close ) {
 		var pending = false;
 
@@ -594,19 +649,7 @@
 					menu.appendChild( opt );
 				} );
 			}
-			function place() {
-				var r  = btn.getBoundingClientRect();
-				var mh = menu.offsetHeight;
-				var mw = menu.offsetWidth;
-				var vw = window.innerWidth;
-				var vh = window.innerHeight;
-				var left = Math.max( 8, Math.min( r.left, vw - mw - 8 ) );
-				var top  = r.bottom + 6;
-				if ( top + mh > vh - 8 && r.top - 6 - mh > 8 ) { top = r.top - 6 - mh; }
-				menu.style.left     = left + 'px';
-				menu.style.top      = top + 'px';
-				menu.style.minWidth = r.width + 'px';
-			}
+			function place() { placeFloatingMenu( btn, menu ); }
 			function setOpen( on ) {
 				if ( on ) {
 					buildMenu();
@@ -837,7 +880,11 @@
 		// ⚠️ `sharedModal` N'EST PAS un binder : ni dans ORDER, ni register()é.
 		sharedModal: sharedModal,
 		bindFloatingMenu: bindFloatingMenu,
-		bindListboxKeys: bindListboxKeys
+		bindListboxKeys: bindListboxKeys,
+		// ⚠️ À utiliser pour TOUT menu flottant : il porte le correctif de
+		// référentiel `position:fixed` (cf. son docblock). Réécrire un `place()`
+		// local, c'est réintroduire le défaut du 2026-08-15.
+		placeFloatingMenu: placeFloatingMenu
 	};
 
 	// Binders encore dans la coque (les sections extraites s'enregistrent

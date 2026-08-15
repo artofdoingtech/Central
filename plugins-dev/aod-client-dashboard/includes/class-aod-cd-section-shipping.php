@@ -392,15 +392,56 @@ class AOD_CD_Section_Shipping {
 						// source du support stop-desk du formulaire public. D'où son
 						// nouveau nom : ce n'est plus « le livreur de l'envoi auto ».
 						?>
+						<?php
+						/*
+						 * 🔴 LE DÉFAUT POUVAIT ÊTRE UN TRANSPORTEUR NON CONNECTÉ, EN SILENCE
+						 * (corrigé le 2026-08-15). Constaté sur un clone : le défaut valait
+						 * « EcoTrack (non configuré) » alors que TROIS transporteurs étaient
+						 * connectés. La mention « (non configuré) » existait déjà dans l'option —
+						 * mais elle nomme un état, elle ne dit pas la conséquence, et une fois le
+						 * menu refermé il ne reste qu'un nom d'apparence normale. Résultat visible
+						 * deux pages plus loin : les 21 commandes affichaient « Non configuré » en
+						 * colonne Transporteur et aucune n'était expédiable, sans que rien, ici, ne
+						 * relie les deux.
+						 * On ne VERROUILLE pas le choix : désigner un transporteur avant d'en saisir
+						 * les identifiants est une façon légitime de préparer sa boutique. On sépare
+						 * les connectés des autres pour que le bon choix soit celui qu'on voit
+						 * d'abord, et on dit la conséquence quand elle s'applique.
+						 */
+						$carriers_ok = array_filter( $carriers, function ( $c ) { return $c->is_configured(); } );
+						$carriers_ko = array_filter( $carriers, function ( $c ) { return ! $c->is_configured(); } );
+						$default_c   = isset( $carriers[ $auto['carrier'] ] ) ? $carriers[ $auto['carrier'] ] : null;
+						$default_ko  = ( $default_c && ! $default_c->is_configured() );
+						?>
 						<label class="aod-cd-field aod-cd-field--md">
 							<span class="aod-cd-label"><?php esc_html_e( 'Transporteur par défaut de la boutique', 'aod-client-dashboard' ); ?></span>
 							<select name="auto[carrier]" data-aod-select>
-								<?php foreach ( $carriers as $id => $c ) : ?>
-									<option value="<?php echo esc_attr( $id ); ?>" <?php selected( $auto['carrier'], $id ); ?>>
-										<?php echo esc_html( $c->label() ); ?><?php echo $c->is_configured() ? '' : ' ' . esc_html__( '(non configuré)', 'aod-client-dashboard' ); ?>
-									</option>
-								<?php endforeach; ?>
+								<?php if ( $carriers_ok ) : ?>
+									<optgroup label="<?php esc_attr_e( 'Connectés', 'aod-client-dashboard' ); ?>">
+										<?php foreach ( $carriers_ok as $id => $c ) : ?>
+											<option value="<?php echo esc_attr( $id ); ?>" <?php selected( $auto['carrier'], $id ); ?>><?php echo esc_html( $c->label() ); ?></option>
+										<?php endforeach; ?>
+									</optgroup>
+								<?php endif; ?>
+								<?php if ( $carriers_ko ) : ?>
+									<optgroup label="<?php esc_attr_e( 'Pas encore connectés', 'aod-client-dashboard' ); ?>">
+										<?php foreach ( $carriers_ko as $id => $c ) : ?>
+											<option value="<?php echo esc_attr( $id ); ?>" <?php selected( $auto['carrier'], $id ); ?>><?php echo esc_html( $c->label() ); ?> <?php esc_html_e( '(non configuré)', 'aod-client-dashboard' ); ?></option>
+										<?php endforeach; ?>
+									</optgroup>
+								<?php endif; ?>
 							</select>
+							<?php if ( $default_ko ) : ?>
+								<span class="aod-cd-warn-inline">
+									<?php
+									printf(
+										/* translators: %s = nom du transporteur choisi par défaut. */
+										esc_html__( '%s n’a pas encore ses identifiants API : aucune commande ne pourra partir tant qu’il reste le transporteur par défaut. Connectez-le ci-dessous, ou choisissez-en un qui l’est déjà.', 'aod-client-dashboard' ),
+										'<strong>' . esc_html( $default_c->label() ) . '</strong>'
+									);
+									?>
+								</span>
+							<?php endif; ?>
 						</label>
 
 						<div class="aod-cd-subsec">

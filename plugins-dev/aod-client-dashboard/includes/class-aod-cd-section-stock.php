@@ -559,10 +559,40 @@ class AOD_CD_Section_Stock {
 		echo '<div class="aod-cd-legend__body">';
 		echo '<p class="aod-cd-note">' . esc_html__( 'Vendus = quantités des commandes en cours, confirmées et terminées créées sur la période. Couverture = stock ÷ vitesse ; « ∞ » = aucune vente sur la période. « Stock bas » dès que le stock atteint le seuil d’alerte (seuil du produit, sinon seuil global WooCommerce).', 'aod-client-dashboard' ) . '</p>';
 		echo '<p class="aod-cd-note">' . esc_html__( 'Les produits sans gestion de stock WooCommerce sont listés « non suivi » (activez « Gérer le stock ? » sur la fiche produit pour les suivre).', 'aod-client-dashboard' ) . '</p>';
-		if ( current_user_can( 'edit_products' ) ) {
+		// ⚠️ Cette phrase parle d'un geste — « après un ajustement » — qui n'existe
+		// que si au moins une ligne porte un champ. Elle s'affichait pourtant dès
+		// qu'on avait le droit de modifier des produits, y compris sur un
+		// catalogue entièrement géré à la variante : le tableau était alors en
+		// lecture seule d'un bout à l'autre, et la page décrivait une manipulation
+		// introuvable. C'est ce qui m'a fait conclure, à tort, que l'ajustement
+		// n'était pas implémenté — il l'est, il ne s'appliquait simplement à aucun
+		// produit de ce clone. Une notice doit parler de CE tableau-ci.
+		if ( $this->has_editable_row( $rows ) ) {
 			echo '<p class="aod-cd-note">' . esc_html__( 'Après un ajustement, le classement du tableau se met à jour au rechargement de la page.', 'aod-client-dashboard' ) . '</p>';
 		}
 		echo '</div></div>';
+	}
+
+	/**
+	 * Le tableau contient-il au moins une ligne réellement modifiable ?
+	 *
+	 * MÊME condition que `$editable` dans le rendu d'une ligne — extraite ici
+	 * pour que la notice de bas de page et les champs ne puissent pas diverger.
+	 * Les recopier aurait suffi aujourd'hui et menti au premier changement.
+	 *
+	 * @param array[] $rows Lignes issues de `stock_rows()`.
+	 * @return bool
+	 */
+	protected function has_editable_row( $rows ) {
+		if ( ! current_user_can( 'edit_products' ) ) {
+			return false;
+		}
+		foreach ( (array) $rows as $r ) {
+			if ( null !== $r['stock'] && empty( $r['variant_managed'] ) && current_user_can( 'edit_product', $r['pid'] ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -37,6 +37,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class AOD_CD_Section_Orders {
 
+	/**
+	 * Slug de l'onglet de repli « Autres » (statuts hors cycle de vie COD).
+	 *
+	 * Ce n'est PAS un statut WooCommerce : `status_keys_for()` le détend en la
+	 * liste des statuts résiduels. Le mot est volontairement hors du jeu des
+	 * slugs de statut (`sanitize_key()` d'un statut Woo ne produit jamais
+	 * « autres ») pour qu'aucune collision ne soit possible.
+	 */
+	const TAB_OTHER = 'autres';
+
 	/** @var AOD_CD_Section_Orders|null */
 	protected static $instance = null;
 
@@ -97,23 +107,50 @@ class AOD_CD_Section_Orders {
 		$can_assign     = current_user_can( 'manage_woocommerce' );
 		$non_assignees  = $can_assign && isset( $_GET['non_assignees'] ) && '1' === $_GET['non_assignees'];
 
-		// Onglets de filtrage par statut (avec compteurs).
+		// Onglets de filtrage par statut (avec compteurs) — le cycle de vie COD,
+		// dans l'ordre où une commande le parcourt.
+		//
+		// ⚠️ « En cours » (wc-processing) a manqué à cette liste jusqu'au
+		// 2026-08-15, et c'est le statut d'une commande COD FRAÎCHEMENT PASSÉE :
+		// sur un clone actif, 19 commandes sur 21 étaient invisibles depuis les
+		// onglets — joignables uniquement en forgeant `?statut=processing`, qui
+		// fonctionnait déjà parfaitement. Le tableau les affichait bien sous
+		// « Toutes », mais la somme des onglets nommés valait 2 sur 21 : un
+		// gérant qui clique onglet par onglet en concluait que sa boutique était
+		// vide. Ne pas retirer cette entrée.
 		$tabs = array(
-			'all'          => __( 'Toutes', 'aod-client-dashboard' ),
-			'pending'      => __( 'En attente', 'aod-client-dashboard' ),
-			'aod-confirmed'=> __( 'Confirmées', 'aod-client-dashboard' ),
-			'completed'    => __( 'Terminées', 'aod-client-dashboard' ),
-			'cancelled'    => __( 'Annulées', 'aod-client-dashboard' ),
+			'all'           => __( 'Toutes', 'aod-client-dashboard' ),
+			'pending'       => __( 'En attente', 'aod-client-dashboard' ),
+			'processing'    => __( 'En cours', 'aod-client-dashboard' ),
+			'aod-confirmed' => __( 'Confirmées', 'aod-client-dashboard' ),
+			'completed'     => __( 'Terminées', 'aod-client-dashboard' ),
+			'cancelled'     => __( 'Annulées', 'aod-client-dashboard' ),
 		);
+
+		// Les statuts hors cycle de vie (En pause, Remboursée, Échouée,
+		// Brouillon…) tiennent dans UN onglet de repli, affiché seulement s'il
+		// compte quelque chose. Sans lui, une commande remboursée resterait
+		// hors de portée des onglets : le défaut ci-dessus se reproduirait à
+		// l'identique, en plus discret. Un seul compteur de plus, pas un par
+		// statut résiduel — ces requêtes portent un meta_query (exclusion des
+		// expédiées), elles ne sont pas gratuites.
+		if ( $this->residual_status_keys() ) {
+			$tabs[ self::TAB_OTHER ] = __( 'Autres', 'aod-client-dashboard' );
+		}
 
 		// Compteurs (calculés une seule fois, réutilisés par le bouton et le menu).
 		$counts = array();
 		foreach ( $tabs as $slug => $label ) {
 			$counts[ $slug ] = (int) $this->count_orders( $slug );
 		}
-		$query_status = ( 'all' === $current )
-			? $this->all_order_status_keys()
-			: array( 'wc-' . $current );
+
+		// Onglet de repli vide = onglet muet : on le retire plutôt que d'afficher
+		// « Autres 0 » sur la quasi-totalité des clones.
+		if ( isset( $counts[ self::TAB_OTHER ] ) && 0 === $counts[ self::TAB_OTHER ] && self::TAB_OTHER !== $current ) {
+			unset( $tabs[ self::TAB_OTHER ], $counts[ self::TAB_OTHER ] );
+		}
+
+		$query_status = $this->status_keys_for( $current );
 
 		// Compteur du filtre « Non assignées » — sur le statut courant, pour
 		// rester cohérent avec les onglets déjà affichés (même patron que
@@ -1048,6 +1085,66 @@ class AOD_CD_Section_Orders {
 	}
 
 	/**
+	 * Statuts couverts par un onglet nommé du cycle de vie COD.
+	 *
+	 * Source unique : `render()` construit ses onglets dessus, et
+	 * `residual_status_keys()` s'en sert pour définir son complément. Écrire
+	 * cette liste à deux endroits laisserait un statut tomber entre les deux
+	 * sans que rien ne le signale — exactement le défaut que l'onglet de repli
+	 * est censé rendre impossible.
+	 *
+	 * @return string[] Clés préfixées wc-.
+	 */
+	protected function lifecycle_status_keys() {
+		return array(
+			'wc-pending',
+			'wc-processing',
+			'wc-aod-confirmed',
+			'wc-completed',
+			'wc-cancelled',
+		);
+	}
+
+	/**
+	 * Statuts réellement enregistrés qui n'ont PAS d'onglet nommé.
+	 *
+	 * Typiquement : En pause, Remboursée, Échouée, Brouillon — plus tout statut
+	 * ajouté par une extension tierce. Ils alimentent l'onglet « Autres », qui
+	 * garantit qu'aucune commande n'est hors de portée des onglets.
+	 *
+	 * @return string[] Clés préfixées wc- (tableau vide si tout est couvert).
+	 */
+	protected function residual_status_keys() {
+		return array_values(
+			array_diff( $this->all_order_status_keys(), $this->lifecycle_status_keys() )
+		);
+	}
+
+	/**
+	 * Traduit un slug d'onglet en liste de statuts pour wc_get_orders().
+	 *
+	 * Source unique pour le listing ET les compteurs : les deux divergeaient
+	 * dès qu'un slug cessait d'être un simple `wc-<slug>` (cas de « Autres »).
+	 *
+	 * @param string $slug Slug d'onglet (`all`, `autres`, ou un statut sans préfixe).
+	 * @return string[] Clés de statut préfixées wc-.
+	 */
+	protected function status_keys_for( $slug ) {
+		if ( 'all' === $slug ) {
+			return $this->all_order_status_keys();
+		}
+		if ( self::TAB_OTHER === $slug ) {
+			$keys = $this->residual_status_keys();
+			// Jamais un tableau vide : wc_get_orders() interprète `status => []`
+			// comme « tous les statuts » et l'onglet de repli afficherait alors
+			// la boutique entière. Un statut impossible rend zéro ligne, ce qui
+			// est la bonne réponse quand il n'y a pas de résiduel.
+			return $keys ? $keys : array( 'wc-aod-none' );
+		}
+		return array( 'wc-' . $slug );
+	}
+
+	/**
 	 * Filtre meta_query excluant les commandes DÉJÀ EXPÉDIÉES (colis créé chez le
 	 * transporteur → méta _aod_ship_tracking non vide) de la liste « Commandes »
 	 * (étape 12.1).
@@ -1096,9 +1193,7 @@ class AOD_CD_Section_Orders {
 		// limit=1 + paginate=true renvoie ->total sans charger toutes les lignes.
 		// HPOS-safe, contrairement à un wc_get_orders( limit => -1 ) qui chargeait
 		// tous les IDs de chaque statut à chaque affichage de la page Commandes.
-		$status = ( 'all' === $slug )
-			? $this->all_order_status_keys()
-			: array( 'wc-' . $slug );
+		$status = $this->status_keys_for( $slug );
 
 		$args = array(
 			'type'     => 'shop_order', // Cohérent avec le listing : pas de remboursements dans les compteurs.
@@ -1444,8 +1539,12 @@ class AOD_CD_Section_Orders {
 			wp_die( esc_html__( 'Accès refusé.', 'aod-client-dashboard' ), '', array( 'response' => 403 ) );
 		}
 
-		$slug   = isset( $_GET['statut'] ) ? sanitize_key( wp_unslash( $_GET['statut'] ) ) : 'all';
-		$status = ( 'all' === $slug ) ? $this->all_order_status_keys() : array( 'wc-' . $slug );
+		$slug = isset( $_GET['statut'] ) ? sanitize_key( wp_unslash( $_GET['statut'] ) ) : 'all';
+		// MÊME résolution que le listing (`status_keys_for()`) : l'export exporte
+		// ce qu'on regarde. Recopier ici `'wc-' . $slug` ferait de l'onglet
+		// « Autres » un export de la boutique entière — le gérant croirait son
+		// filtre respecté.
+		$status = $this->status_keys_for( $slug );
 
 		$cols = self::export_columns();
 
@@ -3226,17 +3325,68 @@ class AOD_CD_Section_Orders {
 			echo '<td>' . wp_kses_post( wc_price( $item->get_total(), array( 'currency' => $order->get_currency() ) ) ) . '</td>';
 			echo '</tr>';
 		}
-		// Décomposition du montant. Ces deux lignes portent les colonnes « Prix
-		// produit » et « Prix livraison » retirées du tableau (étape 5.4) : elles
-		// sont donc INCONDITIONNELLES — une livraison gratuite doit s'afficher à 0,
-		// pas disparaître.
+		/*
+		 * Décomposition du montant. Ces lignes portent les colonnes « Prix
+		 * produit » et « Prix livraison » retirées du tableau (étape 5.4) : elles
+		 * sont donc INCONDITIONNELLES — une livraison gratuite doit s'afficher à 0,
+		 * pas disparaître.
+		 *
+		 * 🔴 « PRIX PRODUIT » NE SE DÉDUIT PAS DU TOTAL (corrigé le 2026-08-15).
+		 * Il valait `get_total() − livraison`, c'est-à-dire un RESTE. Tant que le
+		 * total d'une commande égale la somme de ses lignes plus la livraison, le
+		 * reste tombe juste ; dès qu'il s'en écarte, la soustraction ABSORBE
+		 * l'écart en silence et le fait passer pour un prix produit.
+		 * Constaté sur deux commandes du même clone, dans les deux sens :
+		 *   · #22 — lignes 10 500, livraison 300, total 11 100 → « prix produit »
+		 *     affichait 10 800. Le prix de lot porté par la ligne était perdu.
+		 *   · #23 — lignes 9 400 (dont 500 de supplément de variante), livraison
+		 *     650, total 9 550 → « prix produit » affichait 8 900. Le supplément
+		 *     avait disparu du récapitulatif.
+		 * Dans les deux cas le tableau se contredisait LUI-MÊME, à trois lignes
+		 * d'écart, sans que rien ne le signale.
+		 *
+		 * On additionne donc les lignes — la seule valeur qui dise ce qui a été
+		 * vendu — et on NOMME l'écart s'il en reste un, au lieu de le noyer. Un
+		 * écart visible est un problème qu'on peut traiter ; un écart absorbé est
+		 * un chiffre faux qu'on recopie.
+		 */
 		$currency      = $order->get_currency();
 		$shipping_cost = (float) $order->get_shipping_total();
-		$products_cost = (float) $order->get_total() - $shipping_cost;
+		$products_cost = 0.0;
+		foreach ( $order->get_items() as $item ) {
+			$products_cost += (float) $item->get_total();
+		}
+		$fees = 0.0;
+		foreach ( $order->get_items( 'fee' ) as $fee ) {
+			$fees += (float) $fee->get_total();
+		}
+		$tax         = (float) $order->get_total_tax();
+		$order_total = (float) $order->get_total();
+		// Tolérance d'un centime : une somme de lignes arrondies ne retombe pas
+		// toujours au centime sur le total, et signaler ça comme une anomalie
+		// apprendrait au gérant à ignorer le signal.
+		$gap = $order_total - ( $products_cost + $shipping_cost + $fees + $tax );
+		if ( abs( $gap ) < 0.01 ) {
+			$gap = 0.0;
+		}
 
 		echo '</tbody><tfoot>';
 		echo '<tr><td colspan="2">' . esc_html__( 'Prix produit', 'aod-client-dashboard' ) . '</td><td>' . wp_kses_post( wc_price( $products_cost, array( 'currency' => $currency ) ) ) . '</td></tr>';
 		echo '<tr><td colspan="2">' . esc_html__( 'Prix livraison', 'aod-client-dashboard' ) . '</td><td>' . wp_kses_post( wc_price( $shipping_cost, array( 'currency' => $currency ) ) ) . '</td></tr>';
+		// Frais et taxes : émis SEULEMENT s'ils existent. Sur une boutique COD
+		// algérienne ils valent zéro, et deux lignes à 0 dans chaque commande
+		// noieraient les deux qui parlent.
+		if ( abs( $fees ) >= 0.01 ) {
+			echo '<tr><td colspan="2">' . esc_html__( 'Frais', 'aod-client-dashboard' ) . '</td><td>' . wp_kses_post( wc_price( $fees, array( 'currency' => $currency ) ) ) . '</td></tr>';
+		}
+		if ( abs( $tax ) >= 0.01 ) {
+			echo '<tr><td colspan="2">' . esc_html__( 'Taxes', 'aod-client-dashboard' ) . '</td><td>' . wp_kses_post( wc_price( $tax, array( 'currency' => $currency ) ) ) . '</td></tr>';
+		}
+		if ( 0.0 !== $gap ) {
+			echo '<tr class="aod-cd-od-gap"><td colspan="2">' . esc_html__( 'Écart à vérifier', 'aod-client-dashboard' )
+				. '<br><span class="aod-cd-od-gaphint">' . esc_html__( 'Le total enregistré ne correspond pas à la somme des lignes ci-dessus.', 'aod-client-dashboard' ) . '</span></td>'
+				. '<td>' . wp_kses_post( wc_price( $gap, array( 'currency' => $currency ) ) ) . '</td></tr>';
+		}
 		echo '<tr><td colspan="2"><strong>' . esc_html__( 'Total', 'aod-client-dashboard' ) . '</strong></td><td><strong>' . wp_kses_post( $order->get_formatted_order_total() ) . '</strong></td></tr>';
 		echo '</tfoot></table>';
 

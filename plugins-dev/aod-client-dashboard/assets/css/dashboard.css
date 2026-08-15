@@ -1127,6 +1127,16 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
 .aod-cd-price-margin{font-size:var(--cd-fs-xs);font-weight:600;color:var(--cd-ok)}
 .aod-cd-price-margin--neg{color:var(--cd-bad)}
 .aod-cd-price-pct{font-weight:400;opacity:.8}
+/* La promo DORMANTE — un prix promo saisi que WooCommerce n'applique pas
+   (période terminée, pas encore commencée, ou pas inférieure au prix normal).
+   Elle était muette jusqu'au 2026-08-15 : rien ne la distinguait d'une absence
+   de promo, alors que la différence se voit sur la page de vente du client.
+   🔒 Aucune couleur nouvelle : `--cd-muted`, comme le prix d'achat — c'est une
+   information de contexte, pas une alerte. Le prix affiché reste barré, parce
+   qu'il ne s'applique PAS : le barré dit exactement ça. */
+.aod-cd-price-dormant{font-size:var(--cd-fs-xs);color:var(--cd-muted);text-decoration:line-through;text-decoration-color:var(--cd-soft)}
+.aod-cd-price-dormant .aod-cd-price-tag,
+.aod-cd-price-dormant .aod-cd-price-pct{text-decoration:none}
 /* Masque le texte d'accessibilité WooCommerce (« Original price was… ») dans le dashboard. */
 .aod-cd-table .screen-reader-text{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* ---- Colonne Articles (produits + variantes) ---- */
@@ -1249,6 +1259,15 @@ html[dir="rtl"] .aod-cd-table:not(.aod-cd-carriers) tbody tr.is-selected td:firs
  * paragraphe. Propriétés LOGIQUES partout, comme la liste ci-dessus. */
 .aod-cd-ship-note-alerte{
 	margin:var(--cd-sp-3) 0 0;font-weight:600;color:var(--cd-warn);
+}
+/* 2026-08-15 — l'avertissement SOUS un champ : le transporteur par défaut n'est
+   pas connecté, donc rien ne partira. Même arbitrage que la ligne ci-dessus —
+   `--cd-warn` en ENCRE, jamais en aplat — et même jeton, déjà mesuré AA par la
+   porte `contraste`. Il vit DANS le `<label>` du champ qu'il commente : un
+   bandeau en haut de page aurait dit la même chose loin de la cause. */
+.aod-cd-warn-inline{
+	display:block;margin-top:var(--cd-sp-2);
+	font-size:var(--cd-fs-xs);line-height:1.5;font-weight:500;color:var(--cd-warn);
 }
 .aod-cd-prod{display:flex;align-items:center;gap:11px}
 /* 🔴 LE NOM DU PRODUIT ÉTAIT UN LIEN HTML NU (corrigé le 2026-08-08).
@@ -2510,6 +2529,13 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    portent du texte. */
 .aod-cd-od-prods th:nth-child(n+2),
 .aod-cd-od-prods td:nth-child(n+2){text-align:end}
+/* L'ÉCART À VÉRIFIER (2026-08-15) — la ligne qui n'apparaît que quand le total
+   enregistré ne retombe pas sur la somme des lignes. Elle porte le ton d'alerte
+   parce que c'est de l'argent qui ne s'explique pas ; elle reste une ligne de
+   tableau, pas un bandeau, parce qu'elle appartient au calcul qu'elle commente.
+   🔒 Aucune couleur nouvelle : `--cd-bad`, déjà le ton des marges négatives. */
+.aod-cd-od-gap td{color:var(--cd-bad)}
+.aod-cd-od-gaphint{display:block;font-size:var(--cd-fs-xs);font-weight:400;line-height:1.45;opacity:.85}
 
 /* ── LE TABLEAU DES PRODUITS DEVIENT UN OBJET (2026-08-09) ────────────
    Il était posé à nu au milieu de la modale : pas de cadre, pas de bande
@@ -4675,7 +4701,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 }
 html[dir="rtl"] .aod-cd-findep__card .aod-cd-fincost__seg{transform-origin:right center}
 .aod-cd-findep__card .aod-cd-fincost__li{
-	animation:aod-cd-rise .4s var(--cd-ease-out) both;
+	animation:aod-cd-rise .4s var(--cd-ease-out) backwards;
 	animation-delay:calc(.2s + var(--rang,0) * .05s);
 }
 
@@ -5746,6 +5772,12 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 
 /* Aide sous un champ (12 px, gris) — remplace `.aod-cd-note` + style inline. */
 .aod-cd-help{margin-top:4px;font-size:var(--cd-fs-xs);line-height:1.5;color:var(--cd-muted);font-weight:500}
+/* Stock géré par variante : la phrase qui REMPLACE le champ de quantité du
+   parent (2026-08-15). Elle tient la place d'un champ, donc elle prend la
+   respiration d'un champ — sinon la section paraît vide et on la croit cassée.
+   🔒 Aucune couleur nouvelle : le corps du texte, avec le total en gras. */
+.aod-cd-stock-byvariant{margin:0 0 var(--cd-sp-3);font-size:var(--cd-fs-sm);line-height:1.55;color:var(--cd-muted)}
+.aod-cd-stock-byvariant strong{color:var(--cd-ink);font-variant-numeric:tabular-nums}
 
 /* ---- Pixels : une carte par régie --------------------------------------- */
 /* 4 régies → 2×2. `auto-fit` donnait 3 colonnes puis une carte seule à la ligne. */
@@ -6631,6 +6663,24 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 /* Les deux mouvements nouveaux. `aod-cd-fade` (fin de fichier) sert le reste :
    en déclarer un troisième qui ferait la même chose serait le mode d'échec
    nommé en 46.4 — deux noms vivants pour une seule valeur. */
+/* 🔴 `backwards`, PAS `both` — et ce n'est pas un détail de style (2026-08-15).
+   Le dernier cran de `aod-cd-rise` vaut `opacity:1;transform:none`, c'est-à-dire
+   EXACTEMENT l'état naturel de l'élément : le retenir après la fin n'apporte
+   rien. Mais `both` garde la propriété `transform` sous contrôle de l'animation
+   pour toujours, et un `transform:none` ainsi retenu se résout en
+   `matrix(1,0,0,1,0,0)` — une identité, donc invisible à l'œil, mais PAS `none`
+   au sens de la cascade. Or tout élément dont le `transform` n'est pas `none`
+   devient le BLOC CONTENEUR de ses descendants en `position:fixed`.
+   Conséquence mesurée sur Commandes : chaque `<tr>` était un bloc conteneur, le
+   menu de statut recevait `top:322px` (la bascule vers le haut avait été
+   correctement calculée) et s'affichait à 939 px, sous une fenêtre de 855 px —
+   inatteignable dès que la liste est trop courte pour défiler.
+   `backwards` garde le seul état qui serve : celui d'AVANT le départ, qui évite
+   le clignotement pendant le retard. Rendu identique, effet de bord supprimé.
+   ⚠️ Le remède de fond est dans `placeFloatingMenu()` (dashboard.js) : il mesure
+   le référentiel obtenu au lieu de le supposer, donc il tient même si un futur
+   `filter`/`contain`/`will-change` recrée un bloc conteneur ici. Les deux se
+   complètent — celui-ci retire la cause connue, l'autre couvre les inconnues. */
 @keyframes aod-cd-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes aod-cd-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 
@@ -6665,7 +6715,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    seconde le contenu du bas. La borne d'origine (« la cascade entière tient en
    0,55 s ») devient ainsi une propriété de la règle, plus une valeur recopiée
    sur chaque ligne. */
-.aod-cd-content > *{animation:aod-cd-rise .42s var(--cd-ease-out) both}
+.aod-cd-content > *{animation:aod-cd-rise .42s var(--cd-ease-out) backwards}
 .aod-cd-content > *:nth-child(2){animation-delay:.05s}
 .aod-cd-content > *:nth-child(3){animation-delay:.10s}
 .aod-cd-content > *:nth-child(4){animation-delay:.15s}
@@ -6692,7 +6742,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
 .aod-cd-pxcards > *,
 .aod-cd-cats > *,
 .aod-cd-tracking > *,
-.aod-cd-acc-form > .aod-cd-acc{animation:aod-cd-rise .42s var(--cd-ease-out) both}
+.aod-cd-acc-form > .aod-cd-acc{animation:aod-cd-rise .42s var(--cd-ease-out) backwards}
 .aod-cd-todo > *:nth-child(2),.aod-cd-kpis > *:nth-child(2),.aod-cd-pxcards > *:nth-child(2),.aod-cd-cats > *:nth-child(2),.aod-cd-tracking > *:nth-child(2),.aod-cd-acc-form > .aod-cd-acc:nth-child(2){animation-delay:.04s}
 .aod-cd-todo > *:nth-child(3),.aod-cd-kpis > *:nth-child(3),.aod-cd-pxcards > *:nth-child(3),.aod-cd-cats > *:nth-child(3),.aod-cd-tracking > *:nth-child(3),.aod-cd-acc-form > .aod-cd-acc:nth-child(3){animation-delay:.08s}
 .aod-cd-todo > *:nth-child(4),.aod-cd-kpis > *:nth-child(4),.aod-cd-pxcards > *:nth-child(4),.aod-cd-cats > *:nth-child(4),.aod-cd-tracking > *:nth-child(4),.aod-cd-acc-form > .aod-cd-acc:nth-child(4){animation-delay:.12s}
@@ -6715,7 +6765,7 @@ html[dir="rtl"] .aod-cd-todo-tile:hover .aod-cd-todo-tile__go{transform:translat
    ⏱️ Pas de 0,03 s (deux fois plus serré que les blocs) et plafond au rang 8 :
    une page de 30 commandes ne peut pas défiler pendant une seconde. */
 .aod-cd-content > .aod-cd-tablewrap{animation:none}
-.aod-cd-table tbody tr{animation:aod-cd-rise .42s var(--cd-ease-out) both}
+.aod-cd-table tbody tr{animation:aod-cd-rise .42s var(--cd-ease-out) backwards}
 .aod-cd-table tbody tr:nth-child(2){animation-delay:.03s}
 .aod-cd-table tbody tr:nth-child(3){animation-delay:.06s}
 .aod-cd-table tbody tr:nth-child(4){animation-delay:.09s}

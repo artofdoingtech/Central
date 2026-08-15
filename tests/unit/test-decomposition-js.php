@@ -173,7 +173,27 @@ AOD_Test::group( 'Décomposition JS 33 — R1 : la coque ne regrossit pas' );
 // écrivant la confirmation dans une fenêtre fermée — donc nulle part. Le binder
 // est PARTAGÉ par tous les formulaires de réglages : l'écrire dans un module
 // section-*.js le ferait recopier, la dérive que la Phase 46 a fermée.
-$aod_djs_plafond = 850;
+// REMONTÉE ASSUMÉE 850 → 896 (+46, 2026-08-15) : `placeFloatingMenu()` — le
+// placement UNIQUE des menus flottants (statut, assignation, transporteur,
+// `.aod-cd-csel`, assignation de prospect) — plus le bloc de commentaire qui
+// porte sa raison d'être, lequel pèse ici plus que le code.
+// Croissance de COQUE légitime, et c'est le cas le plus net depuis `toast()` :
+// le corps existait en CINQ COPIES identiques au caractère près (dashboard.js,
+// section-orders.js ×3, section-abandoned.js). Les modules MAIGRISSENT — chacun
+// passe de 13 lignes à une : la contrepartie attendue est bien là, rien n'a été
+// réabsorbé.
+// 🚨 Et il ne s'agit pas d'esthétique : ces cinq copies portaient toutes le même
+// défaut, un menu qui s'ouvrait HORS DE L'ÉCRAN et devenait inatteignable dès que
+// la page était trop courte pour défiler. `position:fixed` ne se résout par
+// rapport au viewport que si aucun ancêtre ne porte `transform`/`filter`/
+// `contain`/`will-change` — or `.aod-cd-table tbody tr` portait un
+// `animation:…both` dont le `transform:none` retenu se résout en matrice
+// identité. Mesuré : `top` demandé à 322 px, menu rendu à 939 px sous une fenêtre
+// de 855. Corriger cinq copies aurait laissé la sixième naître sans le correctif.
+// La règle que le docblock nomme ne se redécouvre pas toute seule ; la tailler
+// pour rentrer sous un compteur paierait la lisibilité du garde-fou au prix de la
+// connaissance qu'il protège (même arbitrage qu'en 46.3, 47.4 et 2026-08-10).
+$aod_djs_plafond = 896;
 
 $aod_djs_coque  = AOD_CD_PATH . 'assets/js/dashboard.js';
 $aod_djs_src    = is_readable( $aod_djs_coque ) ? (string) file_get_contents( $aod_djs_coque ) : '';

@@ -513,6 +513,55 @@ class AOD_CD_Section_Products {
 		<?php
 	}
 
+	/**
+	 * État réel d'une promotion — SOURCE UNIQUE.
+	 *
+	 * La liste des produits et la fiche répondaient chacune à leur façon à la
+	 * question « y a-t-il une promo ? » : la liste via `is_on_sale()` (donc
+	 * dates comprises), la fiche via la simple présence d'un prix promo. Les
+	 * deux se contredisaient dès qu'une période était échue — et c'est la fiche,
+	 * l'écran où l'on décide, qui avait tort.
+	 *
+	 * @param WC_Product|null $product Produit.
+	 * @return string 'none' | 'active' | 'ended' | 'scheduled' | 'ineffective'
+	 */
+	protected function sale_state( $product ) {
+		if ( ! $product || '' === (string) $product->get_sale_price() ) {
+			return 'none';
+		}
+		if ( $product->is_on_sale() ) {
+			return 'active';
+		}
+		$to   = $product->get_date_on_sale_to();
+		$from = $product->get_date_on_sale_from();
+		$now  = time();
+		if ( $to && $to->getTimestamp() < $now ) {
+			return 'ended';
+		}
+		if ( $from && $from->getTimestamp() > $now ) {
+			return 'scheduled';
+		}
+		// Ni terminée ni à venir : WooCommerce refuse d'appliquer un prix promo
+		// qui n'est pas INFÉRIEUR au prix normal. Aucune date ne l'explique.
+		return 'ineffective';
+	}
+
+	/**
+	 * Libellé lisible d'un état de promotion (cf. `sale_state()`).
+	 *
+	 * @param string $state État rendu par `sale_state()`.
+	 * @return string Chaîne traduite, vide pour 'none'.
+	 */
+	protected function sale_state_label( $state ) {
+		$labels = array(
+			'active'      => __( 'promo active', 'aod-client-dashboard' ),
+			'ended'       => __( 'promo terminée', 'aod-client-dashboard' ),
+			'scheduled'   => __( 'promo programmée', 'aod-client-dashboard' ),
+			'ineffective' => __( 'promo sans effet', 'aod-client-dashboard' ),
+		);
+		return isset( $labels[ $state ] ) ? $labels[ $state ] : '';
+	}
+
 	protected function render_price_cell( $p ) {
 		$cost    = (string) $p->get_meta( '_aod_cost_price' );
 		$current = null; // Prix actuel sous forme numérique, pour la marge (produits simples).
@@ -541,6 +590,19 @@ class AOD_CD_Section_Products {
 				// montant dans la COLONNE DES LIBELLÉS. Un produit sans promotion voyait
 				// donc son prix décalé à gauche de tous les autres.
 				$out .= '<span class="aod-cd-price-now"><span class="aod-cd-price-tag">' . esc_html__( 'Prix', 'aod-client-dashboard' ) . '</span> ' . ( '' !== (string) $price ? wp_kses_post( wc_price( $price ) ) : '&mdash;' ) . '</span>';
+
+				// 🔴 Une promo qui EXISTE sans s'appliquer était totalement muette ici
+				// (2026-08-15). Le gérant lisait le prix normal, la marge calculée
+				// dessus, et rien ne laissait deviner qu'un prix promo dormait dans la
+				// fiche. C'est l'angle mort qui a laissé le bouton d'appel à l'action
+				// d'une page de vente annoncer 8 900 د.ج pendant que le formulaire
+				// facturait 12 900 : personne n'avait de raison d'aller voir.
+				// La marge, elle, reste calculée sur le prix EFFECTIVEMENT appliqué —
+				// c'est bien celui-là qui entre en caisse.
+				$sale_state = $this->sale_state( $p );
+				if ( 'none' !== $sale_state ) {
+					$out .= '<span class="aod-cd-price-dormant"><span class="aod-cd-price-tag">' . esc_html__( 'Promo', 'aod-client-dashboard' ) . '</span> <span class="aod-cd-price-val">' . wp_kses_post( wc_price( $sale ) ) . ' <span class="aod-cd-price-pct">(' . esc_html( $this->sale_state_label( $sale_state ) ) . ')</span></span></span>';
+				}
 			}
 		}
 
@@ -636,7 +698,27 @@ class AOD_CD_Section_Products {
 		$sum_prix   = array();
 		$sale_price = $product ? (string) $product->get_sale_price() : '';
 		if ( '' !== $sale_price ) {
-			$sum_prix[] = __( 'promo active', 'aod-client-dashboard' );
+			/*
+			 * 🔴 « promo active » ne se déduit PAS de la présence d'un prix promo.
+			 *
+			 * Jusqu'au 2026-08-15, ce résumé disait « promo active » dès qu'un prix
+			 * promo existait en base — période de programmation ignorée. Constaté sur
+			 * un clone : promo 8 900 د.ج programmée du 03/08 au 10/08, consultée le
+			 * 15/08. WooCommerce avait correctement arrêté la promo (le formulaire
+			 * public facturait bien le prix normal, 12 900) et la LISTE des produits
+			 * n'affichait déjà plus de prix barré — mais la fiche affirmait
+			 * l'inverse, en gros, au-dessus des dates qui la démentaient.
+			 * Le gérant n'avait alors aucune raison de rafraîchir le libellé de son
+			 * bouton d'appel à l'action, qui continuait d'annoncer 8 900 د.ج à des
+			 * visiteurs à qui le formulaire demandait 12 900.
+			 *
+			 * `is_on_sale()` est la MÊME source que la liste et que le rendu public :
+			 * il applique les deux bornes de date. On ne s'arrête pas à corriger le
+			 * mensonge — on dit POURQUOI la promo ne s'applique pas, sans quoi le
+			 * gérant lit « pas active » devant un prix promo bien rempli et n'a
+			 * toujours pas de quoi agir.
+			 */
+			$sum_prix[] = $this->sale_state_label( $this->sale_state( $product ) );
 		}
 		if ( $offers ) {
 			/* translators: %d = nombre d'offres de lot. */
@@ -651,8 +733,29 @@ class AOD_CD_Section_Products {
 			? sprintf( _n( '%d photo', '%d photos', $n_photos, 'aod-client-dashboard' ), $n_photos )
 			: __( 'aucune photo', 'aod-client-dashboard' );
 
+		/*
+		 * 🔴 QUAND LE STOCK EST GÉRÉ PAR VARIANTE, LA QUANTITÉ DU PRODUIT NE VEUT
+		 * RIEN DIRE — et jusqu'au 2026-08-15 c'était pourtant elle qu'on affichait.
+		 *
+		 * Constaté sur un clone : la fiche annonçait « stock géré · 61 en stock »
+		 * pendant que la liste des produits ET la page Stock affichaient 80 — la
+		 * somme réelle des variantes (40 + 25 + 15). Les deux autres écrans
+		 * passaient déjà par `variant_stock_summary()` ; seule la fiche lisait le
+		 * `_stock` du produit parent, une valeur devenue orpheline le jour où les
+		 * variantes ont pris la main (40.3 : la somme est CALCULÉE, jamais recopiée
+		 * dans `_stock`).
+		 *
+		 * Ce n'était pas qu'un affichage : le champ juste en dessous propose de
+		 * MODIFIER ce nombre. Un gérant pouvait donc corriger son stock en toute
+		 * bonne foi sans que rien ne bouge, ni sur sa boutique, ni sur sa page Stock.
+		 * Le champ est désormais neutralisé dans ce cas (cf. plus bas).
+		 */
+		$vstock    = AOD_CD_Section_Stock::instance()->variant_stock_summary( $product );
 		$sum_stock = __( 'stock non géré', 'aod-client-dashboard' );
-		if ( $product && $product->get_manage_stock() ) {
+		if ( $vstock['managed'] ) {
+			/* translators: %s = somme des stocks de variantes. */
+			$sum_stock = sprintf( __( 'géré par variante · %s en stock', 'aod-client-dashboard' ), (string) (int) $vstock['total'] );
+		} elseif ( $product && $product->get_manage_stock() ) {
 			/* translators: %s = quantité en stock. */
 			$sum_stock = sprintf( __( 'stock géré · %s en stock', 'aod-client-dashboard' ), (string) (int) $product->get_stock_quantity() );
 		}
@@ -916,6 +1019,39 @@ class AOD_CD_Section_Products {
 			<details class="aod-cd-acc">
 				<summary class="aod-cd-acc-sum"><span class="aod-cd-acc-ic"><?php echo AOD_CD_Icon::svg( 'products', array( 'size' => 18 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span> <?php esc_html_e( 'Stock & logistique', 'aod-client-dashboard' ); ?> <span class="aod-cd-acc-sub"><?php echo esc_html( $sum_stock ); ?></span></summary>
 				<div class="aod-cd-acc-body">
+					<?php if ( $vstock['managed'] ) : ?>
+						<?php
+						/*
+						 * Stock géré par variante : la quantité du produit est une valeur
+						 * MORTE (cf. le commentaire de `$sum_stock`). On ne l'affiche donc
+						 * plus en champ modifiable — un champ qui accepte une saisie sans
+						 * effet est pire qu'un champ absent — et on dit où le stock se règle
+						 * vraiment : la section « Options & variantes », dans CE formulaire.
+						 *
+						 * ⚠️ LES VALEURS SONT REPORTÉES EN CHAMPS CACHÉS, à dessein. Retirer
+						 * simplement les champs aurait fait disparaître `manage_stock` du
+						 * POST, donc `save()` aurait éteint la gestion de stock du parent au
+						 * premier enregistrement — une MUTATION SILENCIEUSE de la donnée, sur
+						 * un écran ouvert pour tout autre chose. Corriger un affichage
+						 * trompeur ne doit pas coûter un changement d'état invisible : on
+						 * rend le nombre non modifiable, on ne le change pas.
+						 */
+						?>
+						<input type="hidden" name="manage_stock" value="<?php echo $manage ? '1' : ''; ?>">
+						<?php if ( $manage ) : ?>
+							<input type="hidden" name="stock_quantity" value="<?php echo esc_attr( (string) $qty ); ?>">
+							<input type="hidden" name="low_stock_amount" value="<?php echo esc_attr( $low_stock ); ?>">
+						<?php endif; ?>
+						<p class="aod-cd-stock-byvariant">
+							<?php
+							printf(
+								/* translators: %s = somme des stocks de variantes (nombre, en gras). */
+								esc_html__( 'Le stock de ce produit est géré variante par variante — %s au total. Il se modifie dans « Options & variantes », plus bas dans cette page.', 'aod-client-dashboard' ),
+								'<strong>' . esc_html( (string) (int) $vstock['total'] ) . '</strong>'
+							);
+							?>
+						</p>
+					<?php else : ?>
 					<div class="aod-cd-field">
 						<label class="aod-cd-check">
 							<input type="checkbox" name="manage_stock" value="1" <?php checked( $manage ); ?> class="aod-cd-stock-toggle">
@@ -933,6 +1069,7 @@ class AOD_CD_Section_Products {
 						<input type="number" name="stock_quantity" class="aod-cd-stock-qty" value="<?php echo esc_attr( (string) $qty ); ?>" placeholder="<?php esc_attr_e( 'Quantité', 'aod-client-dashboard' ); ?>" <?php echo $manage ? '' : 'style="display:none"'; ?>>
 						<input type="number" min="0" name="low_stock_amount" class="aod-cd-stock-qty" value="<?php echo esc_attr( $low_stock ); ?>" placeholder="<?php esc_attr_e( 'Alerte stock bas (optionnel)', 'aod-client-dashboard' ); ?>" <?php echo $manage ? '' : 'style="display:none"'; ?>>
 					</div>
+					<?php endif; ?>
 
 					<div class="aod-cd-row2">
 						<label class="aod-cd-field">

@@ -13,6 +13,7 @@
 	// widget jumeau des commandes, cf. section-orders.js).
 	var bindFloatingMenu = core.bindFloatingMenu;
 	var bindListboxKeys = core.bindListboxKeys;
+	var placeFloatingMenu = core.placeFloatingMenu;
 
 	/* Bouton « Commander » : convertit un panier abandonné en commande (AJAX).
 	   39.1 s'arrête à : la commande existe, la ligne disparaît. L'ouverture de la
@@ -187,19 +188,7 @@
 		if ( ! btn || ! menu ) { return; }
 		var txt = btn.querySelector( '.aod-cd-leadassignsel-text' );
 
-		function place() {
-			var r  = btn.getBoundingClientRect();
-			var mh = menu.offsetHeight;
-			var mw = menu.offsetWidth;
-			var vw = window.innerWidth;
-			var vh = window.innerHeight;
-			var left = Math.max( 8, Math.min( r.left, vw - mw - 8 ) );
-			var top  = r.bottom + 6;
-			if ( top + mh > vh - 8 && r.top - 6 - mh > 8 ) { top = r.top - 6 - mh; }
-			menu.style.left     = left + 'px';
-			menu.style.top      = top + 'px';
-			menu.style.minWidth = r.width + 'px';
-		}
+		function place() { placeFloatingMenu( btn, menu ); }
 
 		function setOpen( on ) {
 			if ( on ) {

@@ -139,16 +139,49 @@
 			return e;
 		}
 
+		/*
+		 * 🔴 `toLocaleString()` SANS ARGUMENT SUIT LE NAVIGATEUR, PAS LA BOUTIQUE
+		 * (corrigé le 2026-08-15). Le reste de /gestion formate ses montants avec
+		 * `wc_price()`, donc avec les réglages WooCommerce du client — « 282,150.00
+		 * د.ج » sur l'Accueil. Ici, le même montant sortait « 282 150 د.ج » sur un
+		 * poste en fr-FR et « 282,150 » sur un poste en en-US : le calculateur ne
+		 * s'accordait ni avec le reste de l'application, ni avec lui-même d'un
+		 * employé à l'autre. Un tableau de bord financier qui change de ponctuation
+		 * selon la machine oblige à relire deux fois chaque chiffre.
+		 * On lit donc les MÊMES réglages que le PHP (`CD.money`).
+		 */
+		var MONEY = ( CD && CD.money ) || { dec: '.', sep: ',', n: 2 };
+
+		function nombre( v, dec ) {
+			var neg = v < 0;
+			var s   = Math.abs( v ).toFixed( dec );
+			var p   = s.split( '.' );
+			// Séparateur de milliers posé à la main : c'est le seul moyen de suivre
+			// les réglages de la boutique plutôt que ceux du navigateur.
+			p[0] = p[0].replace( /\B(?=(\d{3})+(?!\d))/g, MONEY.sep );
+			return ( neg ? '-' : '' ) + p.join( p[1] ? MONEY.dec : '' );
+		}
+
+		// Taux et multiplicateurs ne sont PAS de la monnaie : ils gardent leur
+		// écriture courte (« 8 », pas « 8,00 » ; « 0 % », pas « 0,0 % »). Seuls le
+		// séparateur de milliers et la virgine décimale suivent la boutique.
+		// Le séparateur décimal vient des réglages de la boutique : il peut être
+		// n'importe quel caractère, y compris un métacaractère d'expression
+		// régulière. On l'échappe plutôt que de parier sur « ce sera . ou , ».
+		var DEC_RE = new RegExp( MONEY.dec.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ) + '?0+$' );
+
+		function court( v, dec ) {
+			return nombre( v, dec ).replace( DEC_RE, '' );
+		}
+
 		function montant( v ) {
-			var s = Math.abs( v ) >= 1000
-				? Math.round( v ).toLocaleString()
-				: ( Math.round( v * 100 ) / 100 ).toLocaleString();
+			var s = nombre( v, MONEY.n );
 			return devise ? s + ' ' + devise : s;
 		}
 
 		function afficher( cle, v ) {
-			if ( PCT[ cle ] ) { return ( Math.round( v * 10 ) / 10 ).toLocaleString() + ' %'; }
-			if ( FOIS[ cle ] ) { return v > 0 ? '×' + ( Math.round( v * 100 ) / 100 ).toLocaleString() : '—'; }
+			if ( PCT[ cle ] ) { return court( Math.round( v * 10 ) / 10, 1 ) + ' %'; }
+			if ( FOIS[ cle ] ) { return v > 0 ? '×' + court( Math.round( v * 100 ) / 100, 2 ) : '—'; }
 			return montant( v );
 		}
 
@@ -354,19 +387,32 @@
 				return;
 			}
 
-			if ( ev.target.closest( '.aod-cd-finhist__del' ) ) {
-				var data = new FormData();
-				data.append( 'action', 'aod_cd_finance_delete' );
-				data.append( 'nonce', CD.nonce || '' );
-				data.append( 'calc', ligne.getAttribute( 'data-id' ) || '' );
-				fetch( CD.ajaxUrl, { method: 'POST', credentials: 'same-origin', body: data } )
-					.then( function ( r ) { return r.json(); } )
-					.then( function ( r ) {
-						if ( r && r.success ) {
-							ligne.remove();
-							if ( toast ) { toast( r.data.message || '' ); }
-						}
-					} );
+			var del = ev.target.closest( '.aod-cd-finhist__del' );
+			if ( del ) {
+				// ⚠️ `confirmModal` rend une PROMESSE — la suite DOIT être en
+				// continuation (même piège que `bindDepenses()` : un `if ( !
+				// confirmModal(…) )` ne se déclenche jamais, donc supprime sans
+				// demander). Le geste est aligné sur celui des dépenses, qui
+				// confirmait déjà : c'était la seule corbeille de la section à
+				// partir au premier clic.
+				core.confirmModal( {
+					message: del.getAttribute( 'data-confirm' ) || '',
+					danger: true
+				} ).then( function ( ok ) {
+					if ( ! ok ) { return; }
+					var data = new FormData();
+					data.append( 'action', 'aod_cd_finance_delete' );
+					data.append( 'nonce', CD.nonce || '' );
+					data.append( 'calc', ligne.getAttribute( 'data-id' ) || '' );
+					fetch( CD.ajaxUrl, { method: 'POST', credentials: 'same-origin', body: data } )
+						.then( function ( r ) { return r.json(); } )
+						.then( function ( r ) {
+							if ( r && r.success ) {
+								ligne.remove();
+								if ( toast ) { toast( r.data.message || '' ); }
+							}
+						} );
+				} );
 			}
 		} );
 	}

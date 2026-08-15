@@ -71,7 +71,14 @@ class AOD_CD_Section_Tracking {
 		// compte des dizaines de white-labels EcoTrack, inutilisables ici.
 		$carriers = AOD_Shipping::instance()->configured();
 		$f_car    = isset( $_GET['transporteur'] ) ? sanitize_key( wp_unslash( $_GET['transporteur'] ) ) : '';
-		if ( '' !== $f_car && ! isset( $carriers[ $f_car ] ) ) {
+		// ⚠️ La whitelist porte sur TOUS les transporteurs connus, pas seulement
+		// les configurés — c'est le jumeau du défaut que `filterable_carriers()`
+		// corrige juste en dessous. Un colis peut parfaitement porter un
+		// transporteur déconfiguré depuis : le proposer au menu sans accepter sa
+		// valeur en retour aurait donné un filtre qui se vide tout seul au clic,
+		// ce qui est pire que pas de filtre du tout. Ça reste une whitelist :
+		// une valeur inventée est toujours ignorée.
+		if ( '' !== $f_car && ! AOD_Shipping::instance()->carrier( $f_car ) ) {
 			$f_car = '';
 		}
 		$states = $this->tracking_state_choices();
@@ -145,7 +152,7 @@ class AOD_CD_Section_Tracking {
 
 		// La barre de filtres est TOUJOURS rendue — sinon un filtre sans résultat
 		// masquerait le moyen de l'annuler.
-		$this->render_tracking_filters( $base_url, $carriers, $states, $f_car, $f_st, $range, $confirmers, $confirmer_filter );
+		$this->render_tracking_filters( $base_url, $this->filterable_carriers( $carriers, $orders, $f_car ), $states, $f_car, $f_st, $range, $confirmers, $confirmer_filter );
 
 		if ( empty( $orders ) ) {
 			if ( $filtered ) {
@@ -396,6 +403,65 @@ class AOD_CD_Section_Tracking {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Transporteurs proposables au filtre = ceux qu'on a configurés, PLUS ceux
+	 * qui apparaissent réellement dans les colis affichés.
+	 *
+	 * 🔴 LE DÉFAUT (constaté le 2026-08-15). Le filtre ne listait que
+	 * `AOD_Shipping::configured()`. La raison écrite au-dessus était bonne — la
+	 * liste complète compte des dizaines de white-labels EcoTrack, inutilisables
+	 * ici — mais elle répondait à la mauvaise question : « lesquels puis-je
+	 * utiliser ? » au lieu de « lesquels sont devant moi ? ». Sur un clone,
+	 * quatre colis sur onze partaient chez Yalidine, non configuré : le tableau
+	 * les affichait, et le seul outil prévu pour les isoler ne les connaissait
+	 * pas. Le cas se produit dès qu'un transporteur est déconfiguré après coup —
+	 * les colis déjà partis, eux, restent.
+	 *
+	 * On part donc de la donnée à l'écran plutôt que d'une requête de plus : le
+	 * menu couvre TOUJOURS ce que la page montre. Aucun cache, donc aucun état
+	 * qui puisse dériver ; aucune requête supplémentaire ; et aucune question de
+	 * périmètre, puisque seules les commandes déjà visibles par l'utilisateur
+	 * courant alimentent la liste (un confirmateur ne peut donc pas y découvrir
+	 * un transporteur employé hors de son périmètre).
+	 *
+	 * @param array      $configured Transporteurs configurés (id => AOD_Carrier).
+	 * @param WC_Order[] $orders     Colis de la page courante.
+	 * @param string     $active     Filtre transporteur actif ('' si aucun).
+	 * @return array id => AOD_Carrier
+	 */
+	protected function filterable_carriers( $configured, $orders, $active ) {
+		$out = is_array( $configured ) ? $configured : array();
+
+		$ids = array();
+		foreach ( (array) $orders as $order ) {
+			if ( ! $order instanceof WC_Order ) {
+				continue;
+			}
+			$cid = (string) $order->get_meta( AOD_Carrier::META_CARRIER );
+			if ( '' !== $cid ) {
+				$ids[ $cid ] = true;
+			}
+		}
+		// Le filtre actif reste toujours proposable, sinon l'annuler demanderait
+		// de deviner l'URL : sur une page de résultats vide, aucun colis ne porte
+		// plus son transporteur.
+		if ( '' !== $active ) {
+			$ids[ $active ] = true;
+		}
+
+		foreach ( array_keys( $ids ) as $cid ) {
+			if ( isset( $out[ $cid ] ) ) {
+				continue;
+			}
+			$carrier = AOD_Shipping::instance()->carrier( $cid );
+			if ( $carrier ) {
+				$out[ $cid ] = $carrier;
+			}
+		}
+
+		return $out;
 	}
 
 	/**

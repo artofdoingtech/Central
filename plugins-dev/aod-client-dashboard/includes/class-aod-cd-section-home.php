@@ -2635,7 +2635,16 @@ class AOD_CD_Section_Home {
 			. esc_attr__( 'Répartition du chiffre d’affaires par produit', 'aod-client-dashboard' ) . '">';
 		echo $svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG assemblé ci-dessus : chaque attribut variable passe par esc_attr(), les nombres par number_format() ; l'échapper ici rendrait le balisage en texte.
 		echo '</svg>';
-		echo '<div class="aod-cd-donut__mid"><span class="aod-cd-donut__midlab">' . esc_html__( 'Total', 'aod-client-dashboard' ) . '</span>'
+		// ⚠️ « Produits », pas « Total » (2026-08-15). Ce centre affiche `$prod_rev`
+		// — le chiffre d'affaires des PRODUITS — pendant que la carte « Chiffre
+		// d'affaires », deux blocs plus haut, affiche produits + livraison. Écrire
+		// « Total » sous un nombre plus petit que le total de la page posait une
+		// question à laquelle rien ne répondait (ici : 261 200 contre 282 150, soit
+		// 20 950 de livraison). Le calcul était juste ; c'est le mot qui mentait.
+		// Un camembert par produit ne PEUT pas ventiler la livraison, qui n'est
+		// portée par aucun produit : on nomme donc son périmètre au lieu de
+		// l'inventer.
+		echo '<div class="aod-cd-donut__mid"><span class="aod-cd-donut__midlab">' . esc_html__( 'Produits', 'aod-client-dashboard' ) . '</span>'
 			. '<b class="aod-cd-donut__midval">' . wp_kses_post( wc_price( $prod_rev ) ) . '</b></div>';
 		echo '</div>';
 

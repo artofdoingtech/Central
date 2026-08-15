@@ -9,6 +9,7 @@
 	var skeleton = core.skeleton;
 	var bindFloatingMenu = core.bindFloatingMenu;
 	var bindListboxKeys = core.bindListboxKeys;
+	var placeFloatingMenu = core.placeFloatingMenu;
 	var netErr = core.netErr;
 	var confirmModal = core.confirmModal;
 	var openOverlayModal = core.openOverlayModal;
@@ -111,19 +112,7 @@
 		// Menu en position:fixed : on le place sous le bouton (ou au-dessus
 		// s'il dépasse en bas), ce qui évite tout rognage par l'overflow du
 		// tableau et le replace toujours au bon endroit.
-		function place() {
-			var r  = btn.getBoundingClientRect();
-			var mh = menu.offsetHeight;
-			var mw = menu.offsetWidth;
-			var vw = window.innerWidth;
-			var vh = window.innerHeight;
-			var left = Math.max( 8, Math.min( r.left, vw - mw - 8 ) );
-			var top  = r.bottom + 6;
-			if ( top + mh > vh - 8 && r.top - 6 - mh > 8 ) { top = r.top - 6 - mh; }
-			menu.style.left     = left + 'px';
-			menu.style.top      = top + 'px';
-			menu.style.minWidth = r.width + 'px';
-		}
+		function place() { placeFloatingMenu( btn, menu ); }
 
 		function setOpen( on ) {
 			if ( on ) {
@@ -199,19 +188,7 @@
 		if ( ! btn || ! menu ) { return; }
 		var txt = btn.querySelector( '.aod-cd-assignsel-text' );
 
-		function place() {
-			var r  = btn.getBoundingClientRect();
-			var mh = menu.offsetHeight;
-			var mw = menu.offsetWidth;
-			var vw = window.innerWidth;
-			var vh = window.innerHeight;
-			var left = Math.max( 8, Math.min( r.left, vw - mw - 8 ) );
-			var top  = r.bottom + 6;
-			if ( top + mh > vh - 8 && r.top - 6 - mh > 8 ) { top = r.top - 6 - mh; }
-			menu.style.left     = left + 'px';
-			menu.style.top      = top + 'px';
-			menu.style.minWidth = r.width + 'px';
-		}
+		function place() { placeFloatingMenu( btn, menu ); }
 
 		function setOpen( on ) {
 			if ( on ) {
@@ -318,19 +295,7 @@
 		if ( ! btn || ! menu ) { return; }
 		var txt = btn.querySelector( '.aod-cd-carriersel-text' );
 
-		function place() {
-			var r  = btn.getBoundingClientRect();
-			var mh = menu.offsetHeight;
-			var mw = menu.offsetWidth;
-			var vw = window.innerWidth;
-			var vh = window.innerHeight;
-			var left = Math.max( 8, Math.min( r.left, vw - mw - 8 ) );
-			var top  = r.bottom + 6;
-			if ( top + mh > vh - 8 && r.top - 6 - mh > 8 ) { top = r.top - 6 - mh; }
-			menu.style.left     = left + 'px';
-			menu.style.top      = top + 'px';
-			menu.style.minWidth = r.width + 'px';
-		}
+		function place() { placeFloatingMenu( btn, menu ); }
 
 		function setOpen( on ) {
 			if ( on ) {

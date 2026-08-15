@@ -4585,3 +4585,59 @@ msgstr "طلب عدّة منتجات في طلبية واحدة"
 #: includes/class-aod-cd-section-shipping.php
 msgid "À renseigner"
 msgstr "يُرجى ملءه"
+
+#: includes/class-aod-cd-section-orders.php
+msgid "Autres"
+msgstr "أخرى"
+
+#: includes/class-aod-cd-section-orders.php
+msgid "Frais"
+msgstr "رسوم"
+
+#: includes/class-aod-cd-section-orders.php
+msgid "Taxes"
+msgstr "الضرائب"
+
+#: includes/class-aod-cd-section-orders.php
+msgid "Écart à vérifier"
+msgstr "فارق يجب التحقق منه"
+
+#: includes/class-aod-cd-section-orders.php
+msgid "Le total enregistré ne correspond pas à la somme des lignes ci-dessus."
+msgstr "الإجمالي المسجَّل لا يطابق مجموع السطور أعلاه."
+
+#: includes/class-aod-cd-section-products.php
+msgid "promo terminée"
+msgstr "انتهى العرض"
+
+#: includes/class-aod-cd-section-products.php
+msgid "promo programmée"
+msgstr "عرض مُبرمَج"
+
+#: includes/class-aod-cd-section-products.php
+msgid "promo sans effet"
+msgstr "عرض بلا مفعول"
+
+#: includes/class-aod-cd-section-products.php
+msgid "géré par variante · %s en stock"
+msgstr "يُدار حسب المتغيّر · %s في المخزون"
+
+#: includes/class-aod-cd-section-products.php
+msgid "Le stock de ce produit est géré variante par variante — %s au total. Il se modifie dans « Options & variantes », plus bas dans cette page."
+msgstr "مخزون هذا المنتج يُدار متغيّرًا بمتغيّر — %s في المجموع. يُعدَّل من « الخيارات والمتغيّرات »، أسفل هذه الصفحة."
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "Connectés"
+msgstr "متصلون"
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "Pas encore connectés"
+msgstr "غير متصلين بعد"
+
+#: includes/class-aod-cd-section-shipping.php
+msgid "%s n’a pas encore ses identifiants API : aucune commande ne pourra partir tant qu’il reste le transporteur par défaut. Connectez-le ci-dessous, ou choisissez-en un qui l’est déjà."
+msgstr "%s لا يملك بعد معرّفات API: لن يُشحن أي طلب ما دام هو الناقل الافتراضي. اربطه أدناه، أو اختر ناقلًا متصلًا بالفعل."
+
+#: includes/class-aod-cd-section-finance.php
+msgid "Supprimer le calcul « %s » ? Il ne sera plus rechargeable."
+msgstr "حذف الحساب « %s »؟ لن يمكن استرجاعه بعد الآن."

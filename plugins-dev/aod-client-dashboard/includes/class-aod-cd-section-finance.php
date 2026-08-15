@@ -1819,7 +1819,15 @@ class AOD_CD_Section_Finance {
 			echo '<span class="aod-cd-finhist__net' . ( $c['net'] < 0 ? ' is-bad' : '' ) . '">' . wp_kses_post( self::prix( $c['net'] ) ) . '</span>';
 			echo '<span class="aod-cd-finhist__at">' . esc_html( $c['at'] ) . '</span>';
 			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-finhist__load">' . esc_html__( 'Recharger', 'aod-client-dashboard' ) . '</button>';
-			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ico aod-cd-finhist__del" aria-label="' . esc_attr__( 'Supprimer ce calcul', 'aod-client-dashboard' ) . '">' . AOD_CD_Icon::svg( 'trash', array( 'size' => 15 ) ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
+			// ⚠️ `data-confirm` : supprimer un calcul enregistré partait AU PREMIER
+			// CLIC jusqu'au 2026-08-15, alors que supprimer une dépense — juste à
+			// côté, dans la même section, par le même geste — demandait confirmation.
+			// Deux grammaires pour un même bouton-corbeille : on apprend la
+			// deuxième en perdant quelque chose. La suppression est irréversible
+			// (l'option est réécrite sans la ligne), donc elle se confirme.
+			/* translators: %s = nom du calcul enregistré. */
+			$del_confirm = sprintf( __( 'Supprimer le calcul « %s » ? Il ne sera plus rechargeable.', 'aod-client-dashboard' ), $c['titre'] );
+			echo '<button type="button" class="aod-cd-btn aod-cd-btn-sm aod-cd-btn--ico aod-cd-finhist__del" data-confirm="' . esc_attr( $del_confirm ) . '" aria-label="' . esc_attr__( 'Supprimer ce calcul', 'aod-client-dashboard' ) . '">' . AOD_CD_Icon::svg( 'trash', array( 'size' => 15 ) ) . '</button>'; // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue fermé.
 			echo '</li>';
 		}
 		echo '</ul>';
