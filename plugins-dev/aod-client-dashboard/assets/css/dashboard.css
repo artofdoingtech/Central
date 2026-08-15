@@ -889,7 +889,7 @@ html[dir="rtl"] .aod-cd-i[data-dir]{transform:scaleX(-1)}
 	.aod-cd-side.is-open .aod-cd-side-head,
 	.aod-cd-side.is-open .aod-cd-nav,
 	.aod-cd-side.is-open .aod-cd-side-foot{display:flex}
-	.aod-cd-side.is-open .aod-cd-navlink{animation:aodNavIn .26s ease both}
+	.aod-cd-side.is-open .aod-cd-navlink{animation:aodNavIn .26s ease backwards}
 	.aod-cd-side.is-open .aod-cd-navlink:nth-child(1){animation-delay:.02s}
 	.aod-cd-side.is-open .aod-cd-navlink:nth-child(2){animation-delay:.06s}
 	.aod-cd-side.is-open .aod-cd-navlink:nth-child(3){animation-delay:.10s}
@@ -2065,7 +2065,7 @@ html[dir="rtl"] .aod-cd-cal__nav--next .aod-cd-cal__chev{transform:rotate(45deg)
 	border:0;border-radius:var(--cd-r-sm);background:none;font-family:inherit;
 	font-size:var(--cd-fs-sm);font-weight:600;color:var(--cd-ink);cursor:pointer;
 	transition:background-color .12s var(--cd-ease-out),color .12s var(--cd-ease-out);
-	animation:aod-cd-cal-day .26s var(--cd-ease-out) both;
+	animation:aod-cd-cal-day .26s var(--cd-ease-out) backwards;
 }
 .aod-cd-cal__day:hover{background:var(--cd-accent-wash)}
 .aod-cd-cal__day:focus-visible{outline:none;box-shadow:var(--cd-focus)}
@@ -2474,9 +2474,20 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    ⚠️ La neutralisation est en fin de fichier, sélecteur recopié au caractère
    près (`.aod-cd-modal-body > *`), avec les retards remis à zéro — un fondu
    échelonné sur 200 ms reste du mouvement pour qui demande à ne pas en avoir.
-   ⚠️ `both` : chaque bloc reste à `opacity:0` pendant son retard. Sans ce mode,
-   les quatre apparaîtraient d'abord ensemble puis se ré-animeraient. */
-.aod-cd-modal-body > *{animation:aod-cd-pop .3s var(--cd-ease-out) both}
+   ⚠️ `backwards` ET NON `both` : chaque bloc doit rester à `opacity:0` pendant
+   son retard — sans quoi les quatre apparaîtraient d'abord ensemble puis se
+   ré-animeraient. C'est la moitié ARRIÈRE du mode qui rend ce service, et elle
+   seule. La moitié AVANT (`forwards`) retenait le dernier cran de `aod-cd-pop`,
+   c'est-à-dire `transform:none` — qui se résout en `matrix(1,0,0,1,0,0)`.
+   🔴 Une identité, invisible à l'œil, mais pas `none` au sens de la cascade :
+   elle faisait de CHAQUE bloc direct d'une modale un CONTEXTE D'EMPILEMENT.
+   Un menu flottant ouvert depuis l'en-tête du détail d'une commande se peignait
+   alors DERRIÈRE les cartes qui le suivent, quel que soit son `z-index` — 1000
+   ne pèse rien face à un ancêtre qui empile. Constaté sur le bac à sable le
+   2026-08-15 : seul le mot « Annulée » dépassait entre deux cartes.
+   ⚠️ Ce n'est pas une modale qui est en cause, c'est LE sélecteur : toutes les
+   modales du tableau de bord passaient par ici. Cf. `test-empilement-menus.php`. */
+.aod-cd-modal-body > *{animation:aod-cd-pop .3s var(--cd-ease-out) backwards}
 .aod-cd-modal-body > :nth-child(2){animation-delay:.05s}
 .aod-cd-modal-body > :nth-child(3){animation-delay:.1s}
 .aod-cd-modal-body > :nth-child(4){animation-delay:.15s}
@@ -3510,7 +3521,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    ⚠️ Plafonné au 6ᵉ rang : au-delà, une boutique à trente catégories ferait
    attendre plus d'une seconde avant d'afficher la dernière. Une cascade qui
    dure plus longtemps que la patience n'est plus une cascade, c'est un délai. */
-.aod-cd-cat-list > *{animation:aod-cd-pop .26s var(--cd-ease-out) both}
+.aod-cd-cat-list > *{animation:aod-cd-pop .26s var(--cd-ease-out) backwards}
 .aod-cd-cat-list > :nth-child(2){animation-delay:.04s}
 .aod-cd-cat-list > :nth-child(3){animation-delay:.08s}
 .aod-cd-cat-list > :nth-child(4){animation-delay:.12s}
@@ -4029,7 +4040,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
    ferait sautiller un nombre qu'on est en train de lire.
    ⚠️ C'est un DÉPLACEMENT : sa neutralisation est en fin de fichier, sélecteur
    recopié au caractère près (cf. `test-mouvement-reduit.php`). */
-.aod-cd-bulkbar:not(.is-vide) .aod-cd-bulkbar-n{animation:aod-cd-pop .26s var(--cd-ease-out) both}
+.aod-cd-bulkbar:not(.is-vide) .aod-cd-bulkbar-n{animation:aod-cd-pop .26s var(--cd-ease-out) backwards}
 /* Le nombre monte d'un cran et passe aux chiffres tabulaires : « 1 » et « 11 »
    ne doivent pas faire sauter le libellé qui suit à chaque case cochée — Barlow
    rend des chiffres proportionnels par défaut. */
@@ -4696,7 +4707,7 @@ html[dir="rtl"] .aod-cd-cal__grid.is-prev{animation-name:aod-cd-cal-next}
 @keyframes aod-cd-findep-seg{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .aod-cd-findep__card .aod-cd-fincost__seg{
 	transform-origin:left center;
-	animation:aod-cd-findep-seg .55s var(--cd-ease-out) both;
+	animation:aod-cd-findep-seg .55s var(--cd-ease-out) backwards;
 	animation-delay:calc(var(--rang,0) * .06s);
 }
 html[dir="rtl"] .aod-cd-findep__card .aod-cd-fincost__seg{transform-origin:right center}
@@ -4959,7 +4970,7 @@ html[dir="rtl"] .aod-cd-imp-table td .aod-cd-imp-arrow{display:inline-block;tran
 .aod-cd-seg__btn.is-active::after{
 	content:"";position:absolute;inset-inline:var(--cd-sp-3);inset-block-end:5px;height:2px;
 	background:var(--cd-accent-on-dark);border-radius:var(--cd-r-pill);
-	animation:aod-cd-seg-in .3s var(--cd-ease-out) .1s both;
+	animation:aod-cd-seg-in .3s var(--cd-ease-out) .1s backwards;
 }
 /* Le filet se déplie depuis le bord d'attaque du texte — donc de la droite en
    arabe. `transform-origin` doit suivre le sens de lecture, sinon le mouvement
