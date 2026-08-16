@@ -1238,8 +1238,8 @@ msgstr ""
 msgid "Chiffre d’affaires"
 msgstr ""
 
-#: includes/class-aod-cd-section-home.php:1324
-msgid "Commandes encaissées"
+#: includes/class-aod-cd-section-home.php:1349
+msgid "Commandes validées"
 msgstr ""
 
 #: includes/class-aod-cd-section-home.php:1325
@@ -1254,8 +1254,8 @@ msgstr ""
 msgid "Taux de marge"
 msgstr ""
 
-#: includes/class-aod-cd-section-home.php:1328
-msgid "En attente (en cours)"
+#: includes/class-aod-cd-section-home.php:1362
+msgid "En attente (à ce jour)"
 msgstr ""
 
 #: includes/class-aod-cd-section-home.php:1329
@@ -1300,8 +1300,8 @@ msgstr ""
 msgid "Comment ces chiffres sont calculés"
 msgstr ""
 
-#: includes/class-aod-cd-section-home.php:1415
-msgid "CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée. « En attente » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues."
+#: includes/class-aod-cd-section-home.php:1449
+msgid "CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée — c’est exactement ce que compte « Commandes validées ». En paiement à la livraison, l’argent n’entre qu’à la remise du colis : « Suivi commande » dit où en sont les livraisons. « En attente (à ce jour) » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues."
 msgstr ""
 
 #: includes/class-aod-cd-section-home.php:1417

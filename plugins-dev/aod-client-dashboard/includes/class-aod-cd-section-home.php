@@ -1328,11 +1328,38 @@ class AOD_CD_Section_Home {
 			// Elles retombent donc sur `--cd-accent-soft`, la teinte du client : la page
 			// gagne en cohérence de marque ET rend leur signal au rouge et à l'ambre.
 			array( __( 'Chiffre d’affaires', 'aod-client-dashboard' ), wp_kses_post( wc_price( $d['revenue'] ) ), 'money', 'accent', $this->kpi_delta( $d['revenue'], $p['revenue'] ), 'primary' ),
-			array( __( 'Commandes encaissées', 'aod-client-dashboard' ), (string) $d['nb_paid'], 'orders', 'accent', $this->kpi_delta( $d['nb_paid'], $p['nb_paid'] ) ),
+			// 🔴 « ENCAISSÉES » ÉTAIT UN MENSONGE AU PASSÉ, ET SUR UNE BOUTIQUE COD
+			// C'EST LE PIRE MOT POSSIBLE. Le nombre compte `processing`,
+			// `aod-confirmed` et `completed` — donc toute commande non annulée,
+			// EXPÉDIÉE OU NON. Mesuré sur le bac à sable le 2026-08-15 : la carte
+			// annonçait 31 « encaissées » pendant que « Suivi commande », deux clics
+			// plus loin, comptait 2 colis LIVRÉS, 2 bloqués et 1 échec de livraison.
+			// En paiement à la livraison, l'argent n'entre qu'à la porte du client et
+			// une commande peut être refusée : dire « encaissé » avant la remise, c'est
+			// annoncer une trésorerie qui n'existe pas.
+			// ⚠️ Le périmètre exact ÉTAIT écrit — mais dans le `<details>` replié en bas
+			// de page, dont le commentaire qui l'introduit dit lui-même qu'on « le lit
+			// une fois, à la prise en main, puis plus jamais ». Une réserve qu'il faut
+			// déplier ne corrige pas une affirmation lue en gros caractères.
+			// 🚨 Le nombre, lui, NE CHANGE PAS : c'est un choix de périmètre assumé
+			// (même jeu de statuts que le CA, sinon le panier moyen ne serait plus le
+			// quotient de deux nombres de la même page). Seul le libellé cesse de
+			// promettre autre chose. Même geste qu'en 48.4 : nommer le périmètre là où
+			// le nombre est lu, plutôt qu'ajouter une carte de plus.
+			array( __( 'Commandes validées', 'aod-client-dashboard' ), (string) $d['nb_paid'], 'orders', 'accent', $this->kpi_delta( $d['nb_paid'], $p['nb_paid'] ) ),
 			array( __( 'Panier moyen', 'aod-client-dashboard' ), wp_kses_post( wc_price( $avg ) ), 'cart', 'accent', $this->kpi_delta( $avg, $p_avg ) ),
 			array( __( 'Marge estimée', 'aod-client-dashboard' ), wp_kses_post( wc_price( $margin ) ), 'trend-up', 'green', $this->kpi_delta( $margin, $p_margin ) ),
 			array( __( 'Taux de marge', 'aod-client-dashboard' ), esc_html( number_format_i18n( $margin_rate, 1 ) . ' %' ), 'percent', 'green', $this->kpi_delta( $margin_rate, $p_mrate, true, true ) ),
-			array( __( 'En attente (en cours)', 'aod-client-dashboard' ), (string) $d['nb_pending'], 'pending', 'amber' ),
+			// 🔴 « (EN COURS) » EMPRUNTAIT LE NOM D'UN AUTRE STATUT. La parenthèse
+			// voulait dire « à cet instant » — cette carte est le seul INSTANTANÉ
+			// TOUTES PÉRIODES du lot (cf. `stats_data()`, argument de date vide) —
+			// mais « En cours » est, sur l'écran d'à côté, le libellé officiel de
+			// `wc-processing` (`AOD_CD_Section_Orders::status_labels()`), et son onglet
+			// en comptait 20 le jour du constat pendant que cette carte affichait 2.
+			// Le libellé nommait DEUX statuts et n'en comptait qu'UN : un gérant qui
+			// additionne ce qu'il lit attend 22. « À ce jour » dit la même chose sans
+			// emprunter un mot déjà pris.
+			array( __( 'En attente (à ce jour)', 'aod-client-dashboard' ), (string) $d['nb_pending'], 'pending', 'amber' ),
 			array( __( 'Annulées', 'aod-client-dashboard' ), (string) $d['nb_cancel'], 'cancel', 'red', $this->kpi_delta( $d['nb_cancel'], $p['nb_cancel'], false ) ),
 			array( __( 'Produits en ligne', 'aod-client-dashboard' ), (string) $d['nb_prod'], 'products', 'accent' ),
 		);
@@ -1419,7 +1446,7 @@ class AOD_CD_Section_Home {
 		// trouvable par la recherche du navigateur, contrairement à une infobulle.
 		echo '<details class="aod-cd-note-fold">';
 		echo '<summary>' . esc_html__( 'Comment ces chiffres sont calculés', 'aod-client-dashboard' ) . '</summary>';
-		echo '<p class="aod-cd-note">' . esc_html__( 'CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée. « En attente » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues.', 'aod-client-dashboard' ) . '</p>';
+		echo '<p class="aod-cd-note">' . esc_html__( 'CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée — c’est exactement ce que compte « Commandes validées ». En paiement à la livraison, l’argent n’entre qu’à la remise du colis : « Suivi commande » dit où en sont les livraisons. « En attente (à ce jour) » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues.', 'aod-client-dashboard' ) . '</p>';
 		if ( $filters['produit'] ) {
 			echo '<p class="aod-cd-note">' . esc_html__( 'Filtre produit actif : CA, marge et graphe ne comptent que les lignes de ce produit (hors livraison et hors autres produits des mêmes commandes) ; « En attente » et « Annulées » ne comptent que les commandes le contenant.', 'aod-client-dashboard' ) . '</p>';
 		}

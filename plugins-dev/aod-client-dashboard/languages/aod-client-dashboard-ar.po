@@ -1274,8 +1274,8 @@ msgid "Chiffre d’affaires"
 msgstr "رقم الأعمال"
 
 #: includes/class-aod-cd-section-home.php:1324
-msgid "Commandes encaissées"
-msgstr "الطلبات المحصّلة"
+msgid "Commandes validées"
+msgstr "الطلبات المحتسَبة"
 
 #: includes/class-aod-cd-section-home.php:1325
 msgid "Panier moyen"
@@ -1290,8 +1290,8 @@ msgid "Taux de marge"
 msgstr "نسبة الهامش"
 
 #: includes/class-aod-cd-section-home.php:1328
-msgid "En attente (en cours)"
-msgstr "قيد الانتظار (حاليًا)"
+msgid "En attente (à ce jour)"
+msgstr "قيد الانتظار (حتى اليوم)"
 
 #: includes/class-aod-cd-section-home.php:1329
 #: includes/class-aod-cd-section-orders.php:106
@@ -1328,8 +1328,8 @@ msgid "Marge"
 msgstr "الهامش"
 
 #: includes/class-aod-cd-section-home.php:1415
-msgid "CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée. « En attente » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues."
-msgstr "رقم الأعمال = إجمالي الطلبات الجارية والمؤكدة والمكتملة خلال الفترة المحددة. «قيد الانتظار» و«المنتجات المنشورة» تعكسان الحالة الحالية بغض النظر عن الفترة."
+msgid "CA = total des commandes en cours, confirmées et terminées sur la période sélectionnée — c’est exactement ce que compte « Commandes validées ». En paiement à la livraison, l’argent n’entre qu’à la remise du colis : « Suivi commande » dit où en sont les livraisons. « En attente (à ce jour) » et « Produits en ligne » reflètent l’état actuel, toutes périodes confondues."
+msgstr "رقم الأعمال = إجمالي الطلبات الجارية والمؤكدة والمكتملة خلال الفترة المحددة — وهو بالضبط ما تعدّه «الطلبات المحتسَبة». في الدفع عند الاستلام، لا يدخل المال إلا عند تسليم الطرد: «تتبع الطلب» يبيّن أين وصلت عمليات التسليم. «قيد الانتظار (حتى اليوم)» و«المنتجات المنشورة» تعكسان الحالة الحالية بغض النظر عن الفترة."
 
 #: includes/class-aod-cd-section-home.php:1417
 msgid "Filtre produit actif : CA, marge et graphe ne comptent que les lignes de ce produit (hors livraison et hors autres produits des mêmes commandes) ; « En attente » et « Annulées » ne comptent que les commandes le contenant."
