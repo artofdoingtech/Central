@@ -38,6 +38,9 @@
 	--ac-r-sm: 6px;
 	--ac-r-md: 8px;
 	--ac-r-lg: 12px;
+	/* Surimpression des cartes (2026-09-08, demande owner) : blanc à 10 %
+	 * d'opacité, en jeton plutôt qu'en littéral (porté de Template-Full). */
+	--ac-quick-bg: rgba(255, 255, 255, .1);
 }
 
 /* `display:flex` écraserait le `display:none` que l'attribut `hidden` donne
@@ -473,7 +476,7 @@ li.product > .aod-cart__quickgrp,
 	width: 100%;
 	padding: 10px 12px;
 	border-radius: 0;
-	background: rgba(255, 255, 255, .1);
+	background: var(--ac-quick-bg);
 	color: var(--ac-ink);
 	font-size: 13px;
 	font-weight: 600;
@@ -489,7 +492,7 @@ li.product > .aod-cart__quickgrp,
 	width: 100%;
 	padding: 10px 12px;
 	border-radius: 0;
-	background: rgba(255, 255, 255, .1);
+	background: var(--ac-quick-bg);
 	color: var(--ac-ink);
 	font-size: 13px;
 	font-weight: 600;

@@ -51,32 +51,39 @@
  * la classe `button` avait déjà été retirée du markup) : `class="aod-home__btn
  * button"` → `class="aod-home__btn"` dans `class-aod-cod-pages.php`, et cette
  * feuille reprend la main sur la couleur.
- * 🎨 Vert `#008060` FIXE, demande owner explicite (même vert que le prix et
- * les boutons rapides des cartes, ailleurs dans ce fichier).
- * ⛔ Arrondi : demande owner. La zone tactile reste à 44 px. */
+ * 🎨 Vert FIXE, demande owner explicite (même vert que le prix et les boutons
+ * rapides des cartes, ailleurs dans ce fichier).
+ * ⛔ Arrondi : demande owner. La zone tactile reste à 44 px.
+ * ⛔ Posé en propriétés personnalisées SUR LE SÉLECTEUR (porté de
+ * Template-Full) : `var(--x)` n'est pas un littéral, même si Template-Full-Design
+ * n'a pas encore le cliquet `test-couleurs-publiques.php`/
+ * `test-surfaces-publiques.php` qui l'exigerait — même patron, par cohérence. */
 .aod-home__btn {
+	--aod-home-btn-fg: #008060;
+	--aod-home-btn-fg-dark: #006e52;
+	--aod-home-btn-ink: #fff;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	min-height: 44px;
 	padding-block: 0.75rem;
 	padding-inline: 1.75rem;
-	border: 1.5px solid #008060;
+	border: 1.5px solid var(--aod-home-btn-fg);
 	border-radius: 8px;
-	background: #008060;
-	color: #fff;
+	background: var(--aod-home-btn-fg);
+	color: var(--aod-home-btn-ink);
 	font-weight: 600;
 	text-decoration: none;
 	transition: background-color .15s ease, color .15s ease;
 }
 .aod-home__btn:hover,
 .aod-home__btn:focus {
-	background: #006e52;
-	border-color: #006e52;
-	color: #fff;
+	background: var(--aod-home-btn-fg-dark);
+	border-color: var(--aod-home-btn-fg-dark);
+	color: var(--aod-home-btn-ink);
 }
 .aod-home__btn:focus-visible {
-	outline: 2px solid #006e52;
+	outline: 2px solid var(--aod-home-btn-fg-dark);
 	outline-offset: 2px;
 }
 /* 🚨 Un soulignement blanc traversait le texte, mesuré et identifié :
