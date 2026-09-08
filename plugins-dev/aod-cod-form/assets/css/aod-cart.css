@@ -422,12 +422,26 @@ body.aod-cart-open { overflow: hidden; }
  * sombre devenait illisible sur les photos sombres. */
 
 .aod-cart__qwrap { position: relative; display: block; }
-.aod-cart__quickadd {
+
+/* Groupe positionné en bas de l'image : « Ajouter au panier » PUIS « Commander »,
+ * empilés (2026-09-08, demande owner). Le groupe porte la position ; chaque
+ * bouton garde SA peau dans SON PROPRE bloc `{ … }` — R3 de `test-panier-peau.php`
+ * lit le sélecteur `quickadd` ISOLÉ (jamais combiné par une virgule) pour
+ * vérifier qu'il déclare un fond explicite ; un bloc combiné le rendrait
+ * introuvable. */
+.aod-cart__quickgrp {
 	position: absolute;
 	inset-inline: 10px;
 	inset-block-end: 10px;
 	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	transition: opacity .18s ease;
+}
+.aod-cart__quickadd {
 	display: block;
+	width: 100%;
 	padding: 10px 12px;
 	border-radius: var(--ac-r-md);
 	background: rgba(255, 255, 255, .94);
@@ -438,24 +452,42 @@ body.aod-cart-open { overflow: hidden; }
 	text-align: center;
 	cursor: pointer;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
-	transition: opacity .18s ease, background-color .18s ease, color .18s ease;
+	transition: background-color .18s ease, color .18s ease;
 }
-.aod-cart__quickadd:hover { background: var(--ac-accent); color: #fff; }
-.aod-cart__quickadd:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+/* Même peau que « Ajouter » : une paire, pas deux boutons étrangers. */
+.aod-cart__quickorder {
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: var(--ac-r-md);
+	background: rgba(255, 255, 255, .94);
+	color: var(--ac-ink);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	cursor: pointer;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+	transition: background-color .18s ease, color .18s ease;
+}
+.aod-cart__quickadd:hover,
+.aod-cart__quickorder:hover { background: var(--ac-accent); color: #fff; }
+.aod-cart__quickadd:focus-visible,
+.aod-cart__quickorder:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
 .aod-cart__quickadd.is-added,
 .aod-cart__quickadd.is-added:hover {
 	background: var(--ac-accent-wash);
 	color: var(--ac-accent-dark);
 }
 
-/* Le survol n'existe qu'à la souris : au tactile le bouton est PERMANENT
+/* Le survol n'existe qu'à la souris : au tactile le groupe est PERMANENT
  * (mobile d'abord — l'apparition au survol est la variante desktop). */
 @media (hover: hover) {
-	.aod-cart__qwrap .aod-cart__quickadd { opacity: 0; }
-	li.product:hover .aod-cart__quickadd,
-	.aod-cart__sugcard:hover .aod-cart__quickadd,
-	.aod-cart__qwrap:hover .aod-cart__quickadd,
-	.aod-cart__quickadd:focus-visible { opacity: 1; }
+	.aod-cart__qwrap .aod-cart__quickgrp { opacity: 0; pointer-events: none; }
+	li.product:hover .aod-cart__quickgrp,
+	.aod-cart__sugcard:hover .aod-cart__quickgrp,
+	.aod-cart__qwrap:hover .aod-cart__quickgrp,
+	.aod-cart__quickgrp:focus-within { opacity: 1; pointer-events: auto; }
 }
 
 /* ---- Panneau de CHOIX ouvert depuis une carte de grille (2026-08-02) ----
@@ -621,7 +653,9 @@ body.aod-cart-open { overflow: hidden; }
 	.aod-cart__qty button,
 	.aod-cart__remove,
 	.aod-cart__order,
+	.aod-cart__quickgrp,
 	.aod-cart__quickadd,
+	.aod-cart__quickorder,
 	.aod-cart__sugcard {
 		transition: none;
 	}

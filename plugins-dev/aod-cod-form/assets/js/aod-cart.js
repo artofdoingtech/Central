@@ -509,7 +509,7 @@
 		var nodes = document.querySelectorAll( '.aod-cart__carddata' );
 		Array.prototype.forEach.call( nodes, function ( node ) {
 			var card = node.closest ? node.closest( 'li.product, .aod-cart__sugcard' ) : null;
-			if ( ! card || card.querySelector( '.aod-cart__quickadd' ) ) {
+			if ( ! card || card.querySelector( '.aod-cart__quickgrp' ) ) {
 				return;
 			}
 			var img = card.querySelector( 'img' );
@@ -523,6 +523,12 @@
 			wrap.className = 'aod-cart__qwrap';
 			img.parentNode.insertBefore( wrap, img );
 			wrap.appendChild( img );
+
+			// Groupe empilé (2026-09-08, demande owner) : « Ajouter au panier »
+			// PUIS « Commander », posés l'un sous l'autre, même peau.
+			var grp = document.createElement( 'span' );
+			grp.className = 'aod-cart__quickgrp';
+			wrap.appendChild( grp );
 
 			var btn = document.createElement( 'span' );
 			btn.className = 'aod-cart__quickadd';
@@ -544,7 +550,7 @@
 			// peut pas s'ouvrir. Remettre `hasOpts` ici rouvrirait le défaut.
 			// Gardé par `bash tools/recette/run.sh panier` (témoin à variantes).
 			btn.textContent = CFG.i18n.add;
-			wrap.appendChild( btn );
+			grp.appendChild( btn );
 
 			function act( e ) {
 				e.preventDefault();
@@ -581,6 +587,45 @@
 					act( e );
 				}
 			} );
+
+			/*
+			 * « Commander » (2026-09-08, demande owner) : posé SOUS « Ajouter au
+			 * panier », même peau, visible dans le même geste. Même ajout que
+			 * « Ajouter » (`add()`), sur un produit à variantes le panneau de choix
+			 * s'ouvre d'abord (on ne devine pas la couleur) — cf. `sheetGoOrder`.
+			 * ⛔ CE CLONE N'A PAS ENCORE LA PAGE `/commander` (Phase 77, absente
+			 * ici) : le repli est le même que celui déjà écrit pour le bouton
+			 * « Commander » du tiroir un peu plus haut — ouvrir le panier, où
+			 * l'acheteur voit sa ligne et le propre bouton du tiroir.
+			 */
+			var order = document.createElement( 'span' );
+			order.className = 'aod-cart__quickorder';
+			order.setAttribute( 'role', 'button' );
+			order.setAttribute( 'tabindex', '0' );
+			order.textContent = CFG.i18n.order;
+			grp.appendChild( order );
+
+			function actOrder( e ) {
+				e.preventDefault();
+				e.stopPropagation();
+				if ( hasOpts ) {
+					ouvrirChoix( node.getAttribute( 'data-pid' ), function () {
+						window.location.href = node.getAttribute( 'data-url' );
+					}, true );
+					return;
+				}
+				if ( ! add( node.getAttribute( 'data-pid' ), [ { qty: 1, opt: {} } ] ) ) {
+					open( CFG.i18n.full );
+					return;
+				}
+				open();
+			}
+			order.addEventListener( 'click', actOrder );
+			order.addEventListener( 'keydown', function ( e ) {
+				if ( 'Enter' === e.key || ' ' === e.key ) {
+					actOrder( e );
+				}
+			} );
 		} );
 	}
 
@@ -603,9 +648,14 @@
 	var sheetMsg  = sheet ? sheet.querySelector( '.aod-cart__sheet-msg' ) : null;
 	var sheetAdd  = sheet ? sheet.querySelector( '.aod-cart__sheet-add' ) : null;
 	var sheetPid  = 0;
+	// « Commander » depuis une carte à variantes (2026-09-08) : posé par
+	// `ouvrirChoix( pid, replier, true )`, lu une fois par le clic d'ajout du
+	// panneau.
+	var sheetGoOrder = false;
 
-	function ouvrirChoix( pid, replier ) {
+	function ouvrirChoix( pid, replier, goOrder ) {
 		if ( ! sheet ) { replier(); return; }
+		sheetGoOrder      = !! goOrder;
 		sheetPid          = parseInt( pid, 10 ) || 0;
 		sheetMsg.textContent = '';
 		sheetBody.innerHTML  = '';
@@ -674,6 +724,11 @@
 				return;
 			}
 			fermerBoite();
+			if ( sheetGoOrder ) {
+				// Entré par « Commander » (2026-09-08) : l'ajout a réussi, on ouvre
+				// directement le panier — pas de page `/commander` sur ce clone.
+				open();
+			}
 		} );
 	}
 
