@@ -51,6 +51,7 @@ $aod_pk_files = array(
 	'cart_php'  => $aod_pk_root . 'includes/class-aod-cod-cart.php',
 	'form_php'  => $aod_pk_root . 'includes/class-aod-cod-form.php',
 	'cart_js'   => $aod_pk_root . 'assets/js/aod-cart.js',
+	'pages_php' => $aod_pk_root . 'includes/class-aod-cod-pages.php',
 );
 
 $aod_pk_src = array();
@@ -345,16 +346,24 @@ AOD_Test::group( 'R7 — s\'habiller soi-même OU déléguer au thème, jamais l
  * mensonge, et le contraste dépend d'une valeur qu'on ne contrôle pas.
  *
  * ⚠️ CE N'EST PAS « jamais de classe de thème ». Certains composants DÉLÈGUENT
- * leur apparence au thème **à dessein** — les CTA de l'accueil et des pages de
- * vente sont du mobilier de page, ils doivent avoir l'air natifs chez chaque
- * client, et leur CSS ne déclare volontairement aucun fond (la raison est
- * écrite dans `aod-cod-pages.css`). Leur retirer la classe les laisserait NUS.
- * Ils sont donc déclarés ici, avec leur raison : une délégation sans raison
- * écrite est un échec de revue, pas une tolérance.
+ * leur apparence au thème **à dessein** — les CTA des pages de vente sont du
+ * mobilier de page, ils doivent avoir l'air natifs chez chaque client, et leur
+ * CSS ne déclare volontairement aucun fond (la raison est écrite dans
+ * `aod-cod-pages.css`). Leur retirer la classe les laisserait NUS. Ils sont
+ * donc déclarés ici, avec leur raison : une délégation sans raison écrite est
+ * un échec de revue, pas une tolérance.
+ *
+ * ⚠️ `aod-home__btn` EST SORTI DE CETTE LISTE le 2026-09-08, demande owner
+ * explicite (vert plein + arrondi, quel que soit le thème du clone) — la
+ * délégation au thème n'est plus la règle pour LUI. La classe `button` a été
+ * retirée de son markup dans `class-aod-cod-pages.php`, et `aod-cod-pages.css`
+ * lui déclare désormais un fond (en jetons, cf. son en-tête). Il rejoint donc
+ * `$aod_pk_autonomes` ci-dessous, comme n'importe quel composant qui s'habille
+ * lui-même. Les deux CTA de la page de vente, eux, n'ont pas reçu cette
+ * demande : ils restent délégués.
  */
 $aod_pk_delegue = array(
-	'aod-home__btn'           => 'Mobilier de page (CTA Accueil) : doit avoir l\'air natif chez chaque client. `aod-cod-pages.css` ne déclare AUCUN fond pour lui — la classe du thème EST son habillage.',
-	'aod-landing__cta'        => 'Idem, CTA d\'une page de vente : composition du gérant, apparence héritée du thème du clone.',
+	'aod-landing__cta'        => 'CTA d\'une page de vente : composition du gérant, apparence héritée du thème du clone.',
 	'aod-landing__sticky-cta' => 'Idem, barre « Commander » mobile de la page de vente.',
 );
 
@@ -364,6 +373,7 @@ $aod_pk_autonomes = array(
 	'aod-cod__submit'  => $aod_pk_src['form_php'],
 	'aod-cod__addcart' => $aod_pk_src['form_php'],
 	'aod-cart__order'  => $aod_pk_src['cart_php'],
+	'aod-home__btn'    => $aod_pk_src['pages_php'],
 );
 
 $aod_pk_contact = is_readable( $aod_pk_root . 'includes/class-aod-cod-contact.php' )
