@@ -43,14 +43,89 @@
 	text-align: center;
 }
 
-/* On ne redéfinit PAS l'apparence du bouton : `.button` est la classe de bouton du
-   thème, il l'habille lui-même. On ne fait qu'agrandir la zone tactile — 44 px est
-   le minimum d'une cible au doigt. */
+/* 🚨 CE BLOC LAISSAIT LE THÈME HABILLER LE BOUTON via la classe `button` — et
+ * c'était le bug (2026-09-08) : Astra imprime son CSS en `<style>` inline
+ * (`.woocommerce-js a.button`, (0,2,1)), qui bat un simple `.aod-home__btn`
+ * (0,1,0). Résultat mesuré : bouton BLEU (`#046BD2`, la couleur Astra), coin
+ * à 4px — jamais choisi par personne. Porté de Template-Full (Phase 50, où
+ * la classe `button` avait déjà été retirée du markup) : `class="aod-home__btn
+ * button"` → `class="aod-home__btn"` dans `class-aod-cod-pages.php`, et cette
+ * feuille reprend la main sur la couleur.
+ * 🎨 Vert `#008060` FIXE, demande owner explicite (même vert que le prix et
+ * les boutons rapides des cartes, ailleurs dans ce fichier).
+ * ⛔ Arrondi : demande owner. La zone tactile reste à 44 px. */
 .aod-home__btn {
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	min-height: 44px;
 	padding-block: 0.75rem;
 	padding-inline: 1.75rem;
+	border: 1.5px solid #008060;
+	border-radius: 8px;
+	background: #008060;
+	color: #fff;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-home__btn:hover,
+.aod-home__btn:focus {
+	background: #006e52;
+	border-color: #006e52;
+	color: #fff;
+}
+.aod-home__btn:focus-visible {
+	outline: 2px solid #006e52;
+	outline-offset: 2px;
+}
+/* 🚨 Un soulignement blanc traversait le texte, mesuré et identifié :
+ * `.ast-single-post .entry-content a, …` (0,2,1) — un ancêtre porte
+ * `.entry-content`, même sur cette page. `(0,2,0)` ne suffisait pas (mesuré :
+ * toujours souligné) ; le triplet passe à (0,3,1), qui l'emporte par le
+ * calcul. */
+a.aod-home__btn.aod-home__btn.aod-home__btn {
+	text-decoration: none;
+}
+
+/* ─────────────────────────────────────────────────── Le prix affiché ─────── */
+/*
+ * Prix des cartes produit (Boutique/Accueil/produits liés) — demande owner
+ * (2026-09-08) : une couleur, une taille plus grande, « stylé ».
+ * ⚠️ Ce clone n'a pas encore les jetons `--aod-a-text`/`--aod-fs-*` (portés de
+ * Template-Full, Phase 50/51) : chaque `var()` porte donc un REPLI explicite —
+ * `#008060`, le même accent que `--ac-accent` plus haut dans ce dépôt — pour
+ * que la règle marche dès aujourd'hui, et se mette à jour d'elle-même le jour
+ * où ces jetons seront portés ici aussi.
+ * ⚠️ Scopé à `li.product` (la grille), jamais au résumé de la fiche produit.
+ *
+ * 🚨 SPÉCIFICITÉ (0,5,1..2), mesurée : Astra imprime en CSS inline
+ * `.woocommerce-js ul.products li.product .price, .woocommerce-page
+ * ul.products li.product .price` — (0,4,2). Un simple `li.product .price`
+ * (0,2,1) perdait (la taille restait celle d'Astra). Le triplet `.product.product`
+ * + `.price.price.price` porte le total à (0,5,x), qui l'emporte par le calcul. */
+body li.product.product .price.price.price {
+	display: block;
+	margin-block: 2px 0;
+	font-size: var(--aod-fs-lg, 18px);
+}
+body li.product.product .price.price.price ins {
+	color: var(--aod-a-text, #008060);
+	font-weight: 700;
+	text-decoration: none;
+}
+body li.product.product .price.price.price del {
+	color: rgba(0, 0, 0, .45);
+	font-size: var(--aod-fs-sm, 14px);
+}
+
+/* ⚠️ MARGE VERTICALE RESSERRÉE (2026-09-08, demande owner) — mêmes marges
+ * Astra en `em`, même découplage en px fixes, même triplet de spécificité. */
+body li.product.product .ast-woo-product-category.ast-woo-product-category.ast-woo-product-category {
+	margin-block-end: 2px;
+}
+body li.product.product h2.woocommerce-loop-product__title.woocommerce-loop-product__title.woocommerce-loop-product__title {
+	margin-block-end: 2px;
 }
 
 .aod-home__section {

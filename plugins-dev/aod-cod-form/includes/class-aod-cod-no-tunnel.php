@@ -68,6 +68,11 @@ class AOD_COD_No_Tunnel {
 		add_filter( 'woocommerce_product_add_to_cart_text', array( $this, 'cta_text' ), 99 );
 		add_filter( 'woocommerce_product_add_to_cart_description', array( $this, 'cta_text' ), 99 );
 
+		// b-bis) SA CLASSE (porté de Template-Full, 2026-09-08). Nous possédons déjà
+		//    l'URL et le libellé de ce bouton : sans son nom de classe, `aod-cod-pages.css`
+		//    ne peut pas le cibler sans écrire une règle sur le thème du clone.
+		add_filter( 'woocommerce_loop_add_to_cart_args', array( $this, 'loop_cta_args' ), 99, 2 );
+
 		// c) Le JS. wc-add-to-cart intercepte le clic sur `.ajax_add_to_cart` et
 		//    ajoute au panier en AJAX, sans jamais suivre le href. Déchargé, le clic
 		//    suit le lien — donc va sur la page produit.
@@ -128,6 +133,27 @@ class AOD_COD_No_Tunnel {
 	 */
 	public function cta_text() {
 		return __( 'Commander', 'aod-cod-form' );
+	}
+
+	/**
+	 * Ajoute NOTRE classe au bouton d'achat des grilles (porté de Template-Full).
+	 *
+	 * Ce bouton est rendu par `woocommerce_template_loop_add_to_cart()` sur la
+	 * Boutique, l'Accueil et les produits liés. La classe s'AJOUTE, jamais ne
+	 * remplace : Astra et les extensions passent par ce même filtre.
+	 *
+	 * @param array       $args    Arguments du bouton (dont `class`).
+	 * @param \WC_Product $product Produit de la boucle.
+	 * @return array
+	 */
+	public function loop_cta_args( $args, $product = null ) {
+		unset( $product );
+		if ( ! is_array( $args ) ) {
+			return $args;
+		}
+		$classes       = isset( $args['class'] ) ? trim( (string) $args['class'] ) : '';
+		$args['class'] = trim( $classes . ' aod-loop-cta' );
+		return $args;
 	}
 
 	/**

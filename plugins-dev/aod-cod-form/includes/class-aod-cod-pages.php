@@ -293,7 +293,7 @@ class AOD_COD_Pages {
 					<p class="aod-home__tagline"><?php echo esc_html( $tagline ); ?></p>
 				<?php endif; ?>
 				<p class="aod-home__cta">
-					<a class="aod-home__btn button" href="<?php echo esc_url( $shop_url ); ?>">
+					<a class="aod-home__btn" href="<?php echo esc_url( $shop_url ); ?>">
 						<?php esc_html_e( 'Découvrir la boutique', 'aod-cod-form' ); ?>
 					</a>
 				</p>
@@ -313,7 +313,7 @@ class AOD_COD_Pages {
 				<h2 class="aod-home__h2"><?php esc_html_e( 'Nos produits', 'aod-cod-form' ); ?></h2>
 				<?php echo do_shortcode( '[products limit="8" columns="4" orderby="date" order="DESC"]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<p class="aod-home__cta">
-					<a class="aod-home__btn button" href="<?php echo esc_url( $shop_url ); ?>">
+					<a class="aod-home__btn" href="<?php echo esc_url( $shop_url ); ?>">
 						<?php esc_html_e( 'Voir tous les produits', 'aod-cod-form' ); ?>
 					</a>
 				</p>

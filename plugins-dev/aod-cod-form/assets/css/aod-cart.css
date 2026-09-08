@@ -423,35 +423,64 @@ body.aod-cart-open { overflow: hidden; }
 
 .aod-cart__qwrap { position: relative; display: block; }
 
-/* Groupe positionné en bas de l'image : « Ajouter au panier » PUIS « Commander »,
- * empilés (2026-09-08, demande owner). Le groupe porte la position ; chaque
- * bouton garde SA peau dans SON PROPRE bloc `{ … }` — R3 de `test-panier-peau.php`
- * lit le sélecteur `quickadd` ISOLÉ (jamais combiné par une virgule) pour
- * vérifier qu'il déclare un fond explicite ; un bloc combiné le rendrait
- * introuvable. */
+/* Groupe empilé : « Ajouter au panier » PUIS « Commander » (2026-09-08, demande
+ * owner).
+ *
+ * 🚨 DEUX EMPLACEMENTS SELON L'APPAREIL (2026-09-08, demande owner) — décidé par
+ * le JS à la construction (`initQuickAdd`, `(hover: none)`), jamais par une media
+ * query CSS :
+ *   · souris (`hover: hover`) — le groupe reste nesté dans `.aod-cart__qwrap` et
+ *     flotte SUR l'image, révélé au survol (voir plus bas) ;
+ *   · tactile (`hover: none`) — le groupe est un enfant DIRECT de la carte,
+ *     APRÈS `.astra-shop-summary-wrap` (donc après le prix).
+ * Ce bloc ne porte que ce que les DEUX emplacements partagent. */
 .aod-cart__quickgrp {
-	position: absolute;
-	inset-inline: 10px;
-	inset-block-end: 10px;
-	z-index: 2;
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
 	transition: opacity .18s ease;
 }
+/* ---- Emplacement SOURIS : surimpression sur l'image ---- */
+.aod-cart__qwrap .aod-cart__quickgrp {
+	position: absolute;
+	inset-inline: 0;
+	inset-block-end: 10px;
+	z-index: 2;
+}
+/* ---- Emplacement TACTILE : bloc statique, sous le prix ----
+ * ⛔ Marge et écart réduits (2026-09-08, demande owner). */
+li.product > .aod-cart__quickgrp,
+.aod-cart__sugcard > .aod-cart__quickgrp {
+	margin-block-start: 8px;
+	gap: 4px;
+}
+/*
+ * ⚠️ Le groupe porte la POSITION ; chaque bouton garde SA peau dans SON PROPRE
+ * bloc `{ … }` — R3 de `test-panier-peau.php` lit le sélecteur `quickadd`
+ * ISOLÉ (jamais combiné par une virgule) pour vérifier qu'il déclare un fond
+ * explicite ; un bloc combiné le rendrait introuvable.
+ *
+ * ⛔ PLEINE LARGEUR (demande owner) : chaque bouton égale la largeur de son
+ * groupe, donc de la carte.
+ * 🎨 Blanc transparent, opacité 10 % (demande owner, ajustée deux fois — 70 %
+ * puis 10 %), au lieu de 94 %.
+ * ⛔ Coins DROITS par défaut (demande owner) — nécessaire à la souris : les
+ * boutons touchent les deux bords de l'IMAGE.
+ * 🎨 Coins ARRONDIS au doigt (demande owner, 2026-09-08) — le groupe ne touche
+ * plus l'image mais la carte, sous un texte : l'arrondi y est attendu. */
 .aod-cart__quickadd {
 	display: block;
 	width: 100%;
 	padding: 10px 12px;
-	border-radius: var(--ac-r-md);
-	background: rgba(255, 255, 255, .94);
+	border-radius: 0;
+	background: rgba(255, 255, 255, .1);
 	color: var(--ac-ink);
 	font-size: 13px;
 	font-weight: 600;
 	line-height: 1.2;
 	text-align: center;
 	cursor: pointer;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+	box-shadow: none;
 	transition: background-color .18s ease, color .18s ease;
 }
 /* Même peau que « Ajouter » : une paire, pas deux boutons étrangers. */
@@ -459,16 +488,40 @@ body.aod-cart-open { overflow: hidden; }
 	display: block;
 	width: 100%;
 	padding: 10px 12px;
-	border-radius: var(--ac-r-md);
-	background: rgba(255, 255, 255, .94);
+	border-radius: 0;
+	background: rgba(255, 255, 255, .1);
 	color: var(--ac-ink);
 	font-size: 13px;
 	font-weight: 600;
 	line-height: 1.2;
 	text-align: center;
 	cursor: pointer;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+	box-shadow: none;
 	transition: background-color .18s ease, color .18s ease;
+}
+/* 🎨 COULEUR + PADDING RÉDUIT au doigt (2026-09-08, demande owner) — le blanc
+ * à 10 % devenait quasi invisible sous le prix (fond blanc de la carte). Fond
+ * plein `--ac-accent`. `display:flex` + centrage : nécessaire pour que le
+ * texte reste centré si un plancher de hauteur s'ajoute plus tard. */
+li.product > .aod-cart__quickgrp .aod-cart__quickadd,
+li.product > .aod-cart__quickgrp .aod-cart__quickorder,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickadd,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickorder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-accent);
+	color: #fff;
+	box-shadow: none;
+}
+li.product > .aod-cart__quickgrp .aod-cart__quickadd:hover,
+li.product > .aod-cart__quickgrp .aod-cart__quickorder:hover,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickadd:hover,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickorder:hover {
+	background: var(--ac-accent-dark);
+	color: #fff;
 }
 .aod-cart__quickadd:hover,
 .aod-cart__quickorder:hover { background: var(--ac-accent); color: #fff; }
@@ -489,6 +542,19 @@ body.aod-cart-open { overflow: hidden; }
 	.aod-cart__qwrap:hover .aod-cart__quickgrp,
 	.aod-cart__quickgrp:focus-within { opacity: 1; pointer-events: auto; }
 }
+
+/* ---- Bouton natif WooCommerce des grilles, retiré (2026-09-08, demande owner) ----
+ * `.aod-loop-cta` (posé par `AOD_COD_No_Tunnel::loop_cta_args`) est un TROISIÈME
+ * « Commander » sous le prix, en plus des deux boutons de `.aod-cart__quickgrp`
+ * sur l'image — panier actif, ils couvrent déjà « Ajouter au panier » et
+ * « Commander ». Porté de Template-Full.
+ * ⛔ Cette feuille n'est chargée QUE si `AOD_COD_Form::cart_enabled()` : la
+ * règle ne s'applique jamais sur un clone au panier éteint, où `.aod-loop-cta`
+ * reste le seul contrôle d'achat de la grille.
+ * ⚠️ SPÉCIFICITÉ (0,2,2) : un simple `.aod-loop-cta` (0,1,0) perd contre le CSS
+ * inline d'Astra (`.woocommerce-js a.button`, (0,2,1)) — mesuré, le bouton
+ * restait affiché. */
+body a.aod-loop-cta.aod-loop-cta { display: none; }
 
 /* ---- Panneau de CHOIX ouvert depuis une carte de grille (2026-08-02) ----
  * Il monte du BAS (le tiroir du panier vient du côté) : le geste part d'une

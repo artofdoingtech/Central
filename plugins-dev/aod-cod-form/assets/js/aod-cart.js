@@ -519,16 +519,27 @@
 			// Le produit porte-t-il des options à choisir ? Ça ne change PAS le
 			// libellé (cf. plus bas) — seulement ce que fait le clic.
 			var hasOpts = '1' === node.getAttribute( 'data-hasopts' );
-			var wrap    = document.createElement( 'span' );
-			wrap.className = 'aod-cart__qwrap';
-			img.parentNode.insertBefore( wrap, img );
-			wrap.appendChild( img );
 
 			// Groupe empilé (2026-09-08, demande owner) : « Ajouter au panier »
 			// PUIS « Commander », posés l'un sous l'autre, même peau.
 			var grp = document.createElement( 'span' );
 			grp.className = 'aod-cart__quickgrp';
-			wrap.appendChild( grp );
+
+			// 🚨 SUR MOBILE, LE GROUPE NE FLOTTE PLUS SUR L'IMAGE (2026-09-08, demande
+			// owner, porté de Template-Full) : `(hover: none)` — même signal que la
+			// feuille de style pour distinguer tactile et souris. Le groupe rejoint la
+			// carte APRÈS `.astra-shop-summary-wrap` (donc après le prix) ; la
+			// surimpression `.aod-cart__qwrap` n'est créée QUE pour la souris.
+			var mobile = !! ( window.matchMedia && window.matchMedia( '(hover: none)' ).matches );
+			if ( mobile ) {
+				card.appendChild( grp );
+			} else {
+				var wrap = document.createElement( 'span' );
+				wrap.className = 'aod-cart__qwrap';
+				img.parentNode.insertBefore( wrap, img );
+				wrap.appendChild( img );
+				wrap.appendChild( grp );
+			}
 
 			var btn = document.createElement( 'span' );
 			btn.className = 'aod-cart__quickadd';
