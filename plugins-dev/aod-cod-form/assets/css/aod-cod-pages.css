@@ -135,6 +135,151 @@ body li.product.product h2.woocommerce-loop-product__title.woocommerce-loop-prod
 	margin-block-end: 2px;
 }
 
+/* ── Le bouton « Commander » des grilles ── */
+/*
+ * Demande owner (2026-09-10) : panier COD désactivé (comportement par défaut,
+ * cf. `AOD_COD_Form::cart_enabled()`), la carte produit et le bouton
+ * « Commander » doivent avoir le même aspect en mobile et en desktop.
+ *
+ * 🚨 CE QUI SEMBLAIT ÊTRE LE DÉFAUT NE L'ÉTAIT QU'À MOITIÉ (2026-09-10) — un
+ * premier correctif fixait le padding du bouton (15px/30px, sans media query :
+ * Astra le réduit par palier, 14px/28px ≤921px puis 12px/24px ≤544px). Mesuré
+ * ensuite (getBoundingClientRect) : le bouton faisait bien DÉJÀ 148px de large
+ * des deux côtés — le padding n'était jamais le problème visible.
+ * 🔴 LE VRAI COUPABLE : `.aod-loop-cta` reste `display:inline-block`, donc de
+ * largeur FIXE, posé dans une colonne de grille dont la largeur, elle, change
+ * énormément (2 colonnes étroites en mobile vs colonnes bien plus larges en
+ * desktop). Un bouton de 148px REMPLIT presque une colonne mobile étroite
+ * mais flotte, minuscule et calé à gauche, dans une colonne desktop large —
+ * même bouton, mais un rapport bouton/carte totalement différent selon
+ * l'écran. C'est CE rapport que l'œil compare, pas les pixels du bouton seul.
+ * On l'aligne sur le patron déjà choisi pour le panier COD actif
+ * (`.aod-cart__quickadd`/`.aod-cart__quickorder`, `aod-cart.css`) : bouton en
+ * BLOC, largeur 100% de la carte, à toutes les tailles d'écran — le rapport
+ * bouton/carte reste alors constant, lui.
+ *
+ * 🚨 SPÉCIFICITÉ (0,2,1) chez Astra (`.woocommerce-js a.button`, même valeur
+ * dans la règle de base ET dans les deux media queries de padding) : le
+ * doublement de classe porte notre règle à (0,2,2), qui l'emporte par le
+ * calcul plutôt que par l'ordre de chargement — même patron que `aod-cart.css`
+ * (bouton masqué) et que `.price.price.price` plus haut dans ce fichier.
+ * ⚠️ Scopé à `.aod-loop-cta` (Boutique/Accueil/produits liés) : n'existe plus
+ * sur la fiche produit elle-même (formulaire COD, règle 3 de TEMPLATE.md), et
+ * le panier COD actif (`aod-cart.css`) gère déjà ce bouton à sa façon (cette
+ * règle est donc invisible tant que le panier est actif). */
+body a.aod-loop-cta.aod-loop-cta {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	/* 🎨 Coins arrondis + hauteur réduite (demande owner, 2026-09-10) : Astra
+	 * livre ce bouton en coins presque droits (2px) et haut de 46px (padding
+	 * 15px). Même arrondi que `.aod-home__btn` plus haut dans ce fichier —
+	 * une seule valeur de coin sur tout le visible public. */
+	border-radius: 8px;
+	padding: 10px 16px;
+	font-size: 16px;
+	line-height: 1em;
+	text-align: center;
+	/* 🎨 Vert FIXE (demande owner explicite, 2026-09-10) — même vert que le prix
+	 * et `.aod-home__btn` plus haut dans ce fichier, PAS la couleur d'accent du
+	 * thème (`--ast-global-color-0`, réglable dans le Personnalisateur). Défaut
+	 * de repli : c'est CETTE valeur qui s'applique au tactile (toujours visible,
+	 * cf. plus bas) — le blanc translucide, lui, est réservé à la surimpression
+	 * sur l'image (`.aod-loop-qwrap`, en bas de ce bloc), où il se lirait sur du
+	 * blanc uni sinon. */
+	background: #008060;
+	color: #fff;
+}
+
+/* ---- Révélé au survol, en desktop seulement (demande owner, 2026-09-10) ----
+ * Même philosophie que `.aod-cart__quickgrp` (panier COD actif, `aod-cart.css`,
+ * ligne 539 : « le survol n'existe qu'à la souris : au tactile le groupe est
+ * PERMANENT — mobile d'abord, l'apparition au survol est la variante desktop »).
+ * ⚠️ `opacity`/`pointer-events`, jamais `display:none` : le lien reste
+ * atteignable au clavier — `:focus-within` sur `li.product` le révèle dès que
+ * le Tab l'atteint, avant même le clic.
+ * `(hover: hover)` exclut le tactile : sans lui, un mobile qui ne déclenche
+ * jamais `:hover` perdrait le SEUL bouton d'achat de la grille.
+ * ⚠️ Cette règle s'applique QUE le bouton ait été déplacé sur l'image
+ * (`.aod-loop-qwrap`, ci-dessous) OU non : c'est le filet de secours si
+ * `aod-cod-pages.js` n'a pas tourné (JS désactivé) — le bouton reste alors
+ * sous le prix, mais révélé au survol plutôt que jamais visible. */
+@media (hover: hover) {
+	body a.aod-loop-cta.aod-loop-cta {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity .18s ease;
+	}
+	li.product:hover a.aod-loop-cta.aod-loop-cta,
+	li.product:focus-within a.aod-loop-cta.aod-loop-cta {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+/* ---- Surimpression sur l'image (demande owner, 2026-09-10) ----
+ * « Le bouton Commander ne doit pas s'afficher sous la carte produit, il doit
+ * l'afficher SUR la carte, comme quand on active le panier. » `aod-cod-pages.js`
+ * (souris uniquement, même signal `(hover: hover)` que ci-dessus) déplace le
+ * bouton dans un nouveau conteneur `.aod-loop-qwrap`, FRÈRE du lien-image —
+ * jamais dedans, deux `<a>` imbriqués sont invalides (cf. le fichier JS).
+ *
+ * `.aod-loop-qwrap` ne contient QUE ce lien-image + notre bouton
+ * (`position:absolute`, retiré du flux) : sa hauteur colle donc à celle de
+ * l'image SEULE, jamais à celle de la carte entière — c'est ce qui ancre le
+ * bouton en bas de la PHOTO plutôt qu'en bas du prix ou du titre.
+ * ⚠️ `position:relative` posé ICI, sur `.aod-loop-qwrap`, jamais sur
+ * `.astra-shop-thumbnail-wrap` : ce dernier porte déjà le badge Promo et
+ * l'icône propre d'Astra, tous deux ancrés sur `li.product` (qui est déjà
+ * `position:relative` chez Astra) — le rendre positionné à SON TOUR changerait
+ * leur référentiel et les déplacerait. Notre bouton, lui, n'existe que DANS
+ * `.aod-loop-qwrap` : aucun risque de ricochet sur ce qui y vivait déjà.
+ * Bord à bord, coins DROITS (demande owner, 2026-09-10 — revient sur l'essai
+ * précédent en pilule à 10px des bords) : même parti pris que `aod-cart.css`
+ * pour sa variante souris (« les boutons touchent les deux bords de l'image »)
+ * — nécessaire ici aussi, un seul bouton au lieu d'un groupe n'y change rien.
+ * `border-radius:0` explicite ci-dessous : la règle de base (8px, plus haut)
+ * a une spécificité MOINDRE (0,2,2 contre 0,3,1 ici, `.aod-loop-qwrap` en
+ * plus) donc perd de toute façon — mais un lecteur qui ne recalcule pas la
+ * spécificité doit voir le 0 écrit, pas le déduire. */
+.aod-loop-qwrap {
+	position: relative;
+	display: block;
+}
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta {
+	position: absolute;
+	/* 🚨 `width:auto` EXPLICITE : la règle de base plus haut pose `width:100%`
+	 * pour le bloc pleine largeur (tactile/repli). En position absolue, ce
+	 * `100%` se recalcule sur `.aod-loop-qwrap` (335px, ici) et IGNORE
+	 * `inset-inline` — mesuré : le bouton débordait de 10px à droite au lieu
+	 * de laisser 10px de marge des deux côtés. `auto` laisse les deux insets
+	 * calculer la largeur eux-mêmes. */
+	width: auto;
+	inset-inline: 0;
+	inset-block-end: 10px;
+	border-radius: 0;
+	z-index: 2;
+	/* 🎨 Blanc translucide 30% par défaut, vert plein au survol DU BOUTON
+	 * (demande owner, 2026-09-10) — distinct du survol DE LA CARTE plus haut
+	 * (qui ne fait que le RÉVÉLER, opacity 0→1) : ici c'est sa propre couleur
+	 * qui change une fois qu'il est déjà visible et que le curseur est dessus.
+	 * Encre sombre sur le blanc translucide (illisible en blanc sur blanc,
+	 * cf. `.aod-cart__quickadd`/`--ac-quick-bg` + `--ac-ink`, même parti pris) ;
+	 * blanc sur le vert au survol (même vert que la règle de base ci-dessus). */
+	background: rgba(255, 255, 255, .3);
+	color: #1a1a1a;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta:hover,
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta:focus-visible {
+	background: #008060;
+	color: #fff;
+}
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta:focus-visible {
+	outline: 2px solid #008060;
+	outline-offset: 2px;
+}
+
 .aod-home__section {
 	padding-block: clamp(1.5rem, 5vw, 3rem);
 }

@@ -78,11 +78,24 @@ class AOD_COD_Pages {
 	/**
 	 * CSS des pages publiques. Chargé partout : le menu et le pied de page en ont
 	 * besoin, pas seulement les 2 pages qui portent un shortcode.
+	 *
+	 * Le JS de surimpression du bouton « Commander » (demande owner, 2026-09-10),
+	 * lui, ne part QUE si le panier COD est éteint — même logique que
+	 * `AOD_COD_Cart::assets()` en miroir : panier ACTIF = `.aod-loop-cta` est
+	 * retiré du DOM affiché (`display:none`, `aod-cart.css`) et ce script n'a
+	 * plus rien à déplacer. Toggle ON = zéro octet de ce fichier-ci.
 	 */
 	public function assets() {
 		$path = AOD_COD_PATH . 'assets/css/aod-cod-pages.css';
 		$ver  = file_exists( $path ) ? (string) filemtime( $path ) : AOD_COD_VERSION;
 		wp_enqueue_style( 'aod-cod-pages', AOD_COD_URL . 'assets/css/aod-cod-pages.css', array(), $ver );
+
+		if ( AOD_COD_Form::cart_enabled() ) {
+			return;
+		}
+		$js_path = AOD_COD_PATH . 'assets/js/aod-cod-pages.js';
+		$js_ver  = file_exists( $js_path ) ? (string) filemtime( $js_path ) : AOD_COD_VERSION;
+		wp_enqueue_script( 'aod-cod-pages', AOD_COD_URL . 'assets/js/aod-cod-pages.js', array(), $js_ver, true );
 	}
 
 	/**
