@@ -287,7 +287,21 @@
 			+ '<div class="aod-cart__list"></div>'
 			+ '<div class="aod-cart__totalrow"><span>' + esc( CFG.i18n.total ) + '</span> <strong class="aod-cart__total"></strong></div>'
 			+ '<p class="aod-cart__note">' + esc( CFG.i18n.shipping ) + '</p>';
-		host.parentNode.insertBefore( box, host );
+		// Colonne côte à côte sur grand écran (2026-09-10, demande owner) : le
+		// panier et le formulaire partagent un conteneur commun — CSS Grid a
+		// besoin des deux comme ENFANTS DIRECTS du MÊME parent pour les mettre
+		// côte à côte et les réordonner (`order`, cf. aod-cart.css) ; deux
+		// voisins insérés l'un après l'autre dans `.summary.entry-summary` ne le
+		// permettent pas proprement. `host` (le formulaire) change donc de
+		// PARENT — sa place dans la page ne bouge pas, seul son parent immédiat
+		// le fait. Vérifié : aucun sélecteur CSS de ce plugin ne dépend du
+		// parent direct de `.aod-cod` (seuls `.summary.entry-summary > …`
+		// ciblent les éléments propres à WooCommerce, pas le formulaire).
+		var wrap = document.createElement( 'div' );
+		wrap.className = 'aod-cart__checkout';
+		host.parentNode.insertBefore( wrap, host );
+		wrap.appendChild( box );
+		wrap.appendChild( host );
 		bindLineActions( box.querySelector( '.aod-cart__list' ) );
 		return box;
 	}

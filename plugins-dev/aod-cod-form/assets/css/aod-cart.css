@@ -693,6 +693,68 @@ body a.aod-loop-cta.aod-loop-cta { display: none; }
 }
 .aod-cart__box .aod-cart__note { margin: 6px 0 0; }
 
+/* ---- Panier + formulaire côte à côte, sur colonne assez large (2026-09-10,
+ * demande owner) ----
+ * `.aod-cart__checkout` (posé par `ensureBox()`) regroupe les deux cartes —
+ * empilées par défaut (mobile ET tablette), côte à côte à partir d'un
+ * viewport assez large.
+ *
+ * ⚠️ REVIREMENT (même jour) : la première version utilisait une REQUÊTE DE
+ * CONTENEUR (`container-type` posé sur `.aod-cart__checkout` lui-même) plutôt
+ * qu'un point de rupture viewport — parce que la colonne qui contient tout ça
+ * (`.summary.entry-summary` sur Astra) empile galerie+résumé sous 922 px puis
+ * les met côte à côte au-delà (cf. le commentaire en tête de `.aod-cod`,
+ * aod-cod-form.css), donc sa largeur réelle ne suit pas le viewport de façon
+ * monotone. L'idée tenait en théorie ; **mesurée par l'owner, elle est restée
+ * empilée après un simple rechargement** — sans navigateur ici pour
+ * diagnostiquer si la cause est un seuil trop haut ou un défaut de support de
+ * `@container`, mieux vaut revenir à un point de rupture VIEWPORT classique :
+ * la même technique que `.aod-cod` (922 px) juste au-dessus dans ce fichier,
+ * déjà éprouvée sur ce gabarit précis. 1024 px, un cran au-dessus du
+ * basculement galerie/résumé d'Astra, pour laisser le résumé déjà élargi
+ * avant d'y ajouter une seconde colonne.
+ * ⚠️ Seuil ENCORE estimé, pas mesuré (toujours aucun navigateur disponible
+ * ici) — à confirmer en responsive sur le clone, cf. TEMPLATE.md §5. */
+@media (min-width: 1024px) {
+	.aod-cart__checkout {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+		align-items: start;
+		gap: 24px;
+		/* `.aod-cod` perd son propre `margin: 24px auto` ci-dessous (il
+		 * centrerait au lieu de remplir la colonne) : la coquille porte donc
+		 * elle-même l'espace qui la séparait de ce qui précède. */
+		margin-block-start: 24px;
+		/* 🚨 CENTRÉ, PAS ÉTIRÉ (2026-09-10, retour owner) : sans plafond, la
+		 * grille remplit toute la largeur de la colonne résumé — sur un
+		 * conteneur large, le formulaire (qui prend tout l'espace restant,
+		 * `1fr`) devient démesuré pendant que le panier reste collé au bord
+		 * droit. 960px ≈ 640px de formulaire (son plafond historique en solo,
+		 * cf. `.aod-cod` plus haut dans aod-cod-form.css) + 300px de panier +
+		 * l'écart : les deux cartes gardent leur gabarit connu, juste
+		 * accolées, et l'ensemble se centre dans ce qui reste de place.
+		 * `margin-inline` : centré pareil en RTL, sans règle miroir. */
+		max-width: 960px;
+		margin-inline: auto;
+	}
+	/* Les deux cartes perdent leurs marges/plafonds pensés pour un empilement
+	 * pleine largeur : en grille, c'est la colonne qui donne la largeur — une
+	 * marge `auto` centrerait la carte AU LIEU de la faire remplir sa colonne.
+	 * `order` place le formulaire à GAUCHE, le panier à DROITE quel que soit
+	 * l'ordre du DOM (le panier reste avant le formulaire dans la source, pour
+	 * l'empilement mobile — cf. `ensureBox()`). */
+	.aod-cart__checkout .aod-cod {
+		order: 1;
+		margin: 0;
+		max-width: none;
+	}
+	.aod-cart__checkout .aod-cart__box {
+		order: 2;
+		margin: 0;
+		max-width: none;
+	}
+}
+
 /* ---- La fiche du produit-hôte s'efface derrière le panier (2026-09-09) ----
  * « Commander » n'a pas encore de page dédiée (Phase 77, absente ici) : il
  * atterrit sur la fiche du 1ᵉʳ article du panier. Sans cette règle, cette
@@ -740,23 +802,46 @@ body.aod-cart-checkout .summary.entry-summary > .woocommerce-product-details__sh
 	display: none !important;
 }
 
-/* ---- L'ancre de prix « solo » du formulaire s'efface derrière le panier
- * (2026-09-09) ----
- * `class-aod-cod-form.php` affiche, quand le produit n'a qu'UNE offre (pas de
- * lot à choisir), son prix nu juste sous le titre — commentaire d'origine :
- * « une page de vente n'affiche aucun prix hors du formulaire, le retirer la
- * priverait de son ancre ». Raison valable SANS panier. Avec un panier actif,
- * ce prix devient un TROISIÈME chiffre contradictoire sur la même page — celui
- * du produit-hôte, entre le total du panier (au-dessus) et le Sous-total/Total
- * du récapitulatif (en dessous), pour un article qui n'est peut-être même pas
- * dans la commande. Mesuré : « 1 500 DA » flottant seul, sans rapport visuel
- * avec le bouton « Ajouter au panier » bien plus bas dans le formulaire.
- * ⚠️ On masque le PRIX SEUL, jamais la carte ni la radio : `aod-cod-form.js`
- * lit encore `data-qty`/`data-price` sur `.aod-cod__offer-card` pour que
- * « Ajouter au panier » (plus bas) continue d'ajouter le produit-hôte à la
- * commande en cours — cette action reste valide, panier actif ou non. */
-body.aod-cart-checkout .aod-cod__offers--solo .aod-cod__offer-price {
-	display: none;
+/* ---- Le sélecteur de variantes du produit-hôte s'efface aussi (2026-09-10,
+ * demande owner) ----
+ * ⚠️ REVIREMENT sur la règle du 2026-09-09 juste en dessous, qui gardait ce
+ * bloc VISIBLE à dessein. La raison d'alors ne tient plus : `handle_submit()`
+ * côté JS (`aod-cod-form.js`) lit déjà `window.aodCart.items()` dès que le
+ * panier a des lignes (`usedCart`) — la sélection faite ICI, dans ce panneau,
+ * n'a donc plus aucun effet sur ce qui part réellement en commande. L'acheteur
+ * pouvait choisir une couleur, une quantité, cliquer « Confirmer la commande »,
+ * et voir partir tout autre chose : les lignes de SON panier, pas son choix
+ * ici. Une UI qui reste interactive sans rien piloter n'est pas un détail
+ * visuel, c'est un mensonge sur ce que le clic va faire.
+ * `#aod-options` — le pickhint, les cartes d'offres, les sections de
+ * variantes — et son bouton `.aod-cod__addcart` (qui LISAIT cette sélection
+ * pour ajouter le produit-hôte) partent donc ensemble : rien à choisir dans un
+ * panneau invisible. Le récapitulatif (`.aod-cod__summary`, plus bas dans le
+ * formulaire) reste, lui, INTACT — il est déjà piloté par
+ * `window.aodCart.total()`, jamais par ce panneau. */
+body.aod-cart-checkout #aod-options,
+body.aod-cart-checkout .aod-cod__config-msg,
+body.aod-cart-checkout .aod-cod__addcart {
+	display: none !important;
+}
+
+/* ---- La colonne résumé reprend la place de la galerie masquée (2026-09-10,
+ * retour owner : « le duo panier/formulaire n'est pas centré ») ----
+ * `display:none` sur la galerie la retire du FLUX, mais pas de la MISE EN
+ * PAGE : WooCommerce pose `div.summary{float:right;width:48%}` (core, pas
+ * Astra — `woocommerce-layout.css`) INDÉPENDAMMENT de ce que fait la galerie.
+ * `.aod-cart__checkout` se centrait donc correctement… dans les 48% de large
+ * qui restaient, collé à un bord de la page plutôt que centré dessus. Une
+ * fois la galerie réellement invisible, ses 48% sont un vide mort : on les
+ * rend au résumé.
+ * 🚨 `!important` DÉLIBÉRÉ, comme pour la galerie plus haut : la règle Woo
+ * (`.woocommerce div.product div.summary`) est plus spécifique que la nôtre à
+ * classes égales (deux `div` de plus) — sans lui, elle gagne et rien ne
+ * bouge. Pas de `clearfix` à ajouter : un enfant non flottant contribue déjà
+ * normalement à la hauteur de son parent, contrairement à un flottant. */
+body.aod-cart-checkout .summary.entry-summary {
+	float: none !important;
+	width: 100% !important;
 }
 
 /* ---- « Complétez votre commande » ---- */
