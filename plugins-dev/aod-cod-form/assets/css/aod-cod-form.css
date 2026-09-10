@@ -657,6 +657,34 @@
 }
 .aod-cod__optpick:empty{display:none}
 
+/* ---- Sélecteur déroulant d'une section (mode "dropdown", 2026-09-10) ----
+ * Jusqu'ici un <select> natif SANS AUCUNE règle — ni ici, ni nulle part
+ * ailleurs dans ce fichier. Même famille visuelle que les pastilles : bordure
+ * fine, même rayon, chevron en SVG (`currentColor`) plutôt que le triangle du
+ * système — qui varie d'un navigateur/OS à l'autre et ne suit ni la charte ni
+ * le RTL. */
+.aod-cod__optselect{
+	display:block;width:100%;box-sizing:border-box;min-height:44px;
+	padding:10px 40px 10px 14px;
+	border:1px solid var(--sh-line);border-radius:var(--sh-radius-sm);
+	background-color:#fff;
+	background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23616161' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5 10 12.5 15 7.5'/%3E%3C/svg%3E");
+	background-repeat:no-repeat;background-position:right 12px center;background-size:14px;
+	appearance:none;-webkit-appearance:none;
+	font:inherit;font-size:13px;font-weight:500;color:var(--sh-text);
+	cursor:pointer;transition:border-color .12s,box-shadow .12s;
+}
+/* Le chevron suit le sens de lecture : à droite en français, à gauche en
+ * arabe. Même sélecteur physique que le reste du plugin (cf. aod-landing.css). */
+html[dir="rtl"] .aod-cod__optselect{
+	background-position:left 12px center;padding:10px 14px 10px 40px;
+}
+.aod-cod__optselect:hover{border-color:var(--sh-line-strong)}
+.aod-cod__optselect:focus-visible{
+	outline:2px solid var(--sh-accent);outline-offset:2px;border-color:var(--sh-accent);
+}
+.aod-cod__optselect option:disabled{color:var(--sh-muted)}
+
 /* 🚨 GRILLE, et non plus `flex-wrap`. En flex, six pointures se tassaient à
    gauche et la septième partait seule à la ligne : un ruban irrégulier qui se
    lisait comme un défaut d'affichage. Une grille à colonnes égales range les
@@ -684,8 +712,11 @@
 	   colonnes au pixel au lieu de les faire dépendre de la longueur du texte. */
 	width:100%;box-sizing:border-box;
 	/* 44 px : cible tactile. Le template est mobile-first et l'ancienne valeur
-	   (32 px) obligeait à viser. */
-	min-height:44px;padding:6px 10px;
+	   (32 px) obligeait à viser. Padding élargi (2026-09-10, demande owner,
+	   refonte « premium ») : plus d'air autour du texte, même bordure fine et
+	   même rayon — aucune couleur ne bouge (les tests de contraste AA restent
+	   valables tels quels). */
+	min-height:44px;padding:8px 13px;
 	border:1px solid var(--sh-line);border-radius:var(--sh-radius-sm);background:#fff;
 	font-size:13px;font-weight:500;color:var(--sh-text);text-align:center;
 	/* Survol, coché et focus ne changent que bordure / ombre / fond. */

@@ -176,11 +176,45 @@ class AOD_COD_Cart {
 		if ( 'publish' !== $product->get_status() || ! $product->is_purchasable() ) {
 			return;
 		}
+		$aod_nc = $this->needschoice_attrs( $product );
 		printf(
-			'<span class="aod-cart__carddata" hidden data-pid="%d" data-hasopts="%s" data-url="%s"></span>',
+			'<span class="aod-cart__carddata" hidden data-pid="%d" data-hasopts="%s" data-needschoice="%s" data-autoopt="%s" data-url="%s"></span>',
 			(int) $product->get_id(),
 			AOD_COD_Form::instance()->has_options( $product ) ? '1' : '0',
-			esc_url( $this->card_url( $product ) )
+			$aod_nc[0],
+			$aod_nc[1],
+			$aod_nc[2]
+		);
+	}
+
+	/**
+	 * `data-needschoice` + `data-autoopt` d'une carte (carte premium,
+	 * 2026-09-10) : calculés au RENDU, pas en AJAX — un produit sans vrai
+	 * choix (needs_variant_choice() === false) s'ajoute donc directement au
+	 * clic, sans aller-retour réseau pour demander une réponse déjà connue.
+	 * Partagé par loop_card_data() et render_suggestions() : les deux grilles
+	 * doivent répondre pareil à la même question.
+	 *
+	 * @param WC_Product $product
+	 * @return array [ needschoice '0'|'1', autoopt JSON (esc_attr-safe), url (esc_url-safe) ]
+	 */
+	protected function needschoice_attrs( $product ) {
+		$form         = AOD_COD_Form::instance();
+		$has_opts     = $form->has_options( $product );
+		$needs_choice = $has_opts && $form->needs_variant_choice( $product );
+		$auto         = ( $has_opts && ! $needs_choice ) ? $form->only_choice_for( $product ) : array();
+		return array(
+			$needs_choice ? '1' : '0',
+			// 🚨 `(object)`, PAS le tableau brut. `$auto` porte des clés entières
+			// TOUJOURS séquentielles à partir de 0 (l'index de section), donc
+			// `wp_json_encode()` l'aurait rendu en NOTATION TABLEAU (`["Rouge"]`)
+			// plutôt qu'en objet (`{"0":"Rouge"}`) — fonctionnellement lisible
+			// pareil côté JS (`Object.keys()` traite les deux identiquement ici),
+			// mais un contrat qui ne tient que par coïncidence de séquence. Le
+			// forcer en objet rend le contrat vrai par CONSTRUCTION, pas par
+			// hasard — trouvé par `tests/unit/test-carte-premium.php`.
+			esc_attr( (string) wp_json_encode( (object) $auto ) ),
+			esc_url( $this->card_url( $product ) ),
 		);
 	}
 
@@ -233,7 +267,8 @@ class AOD_COD_Cart {
 							<span class="aod-cart__sugtitle"><?php echo esc_html( get_the_title( $p->get_id() ) ); ?></span>
 							<span class="aod-cart__sugprice"><?php echo wp_kses_post( $p->get_price_html() ); ?></span>
 						</a>
-						<span class="aod-cart__carddata" hidden data-pid="<?php echo (int) $p->get_id(); ?>" data-hasopts="<?php echo $form->has_options( $p ) ? '1' : '0'; ?>" data-url="<?php echo esc_url( $this->card_url( $p ) ); ?>"></span>
+						<?php $aod_sug_nc = $this->needschoice_attrs( $p ); ?>
+						<span class="aod-cart__carddata" hidden data-pid="<?php echo (int) $p->get_id(); ?>" data-hasopts="<?php echo $form->has_options( $p ) ? '1' : '0'; ?>" data-needschoice="<?php echo esc_attr( $aod_sug_nc[0] ); ?>" data-autoopt="<?php echo $aod_sug_nc[1]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- déjà esc_attr() dans needschoice_attrs(). ?>" data-url="<?php echo $aod_sug_nc[2]; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- déjà esc_url() dans needschoice_attrs(). ?>"></span>
 					</div>
 				<?php endforeach; ?>
 			</div>
@@ -263,26 +298,13 @@ class AOD_COD_Cart {
 		</button>
 		<div class="aod-cart__overlay" id="aod-cart-overlay" hidden></div>
 		<?php
-		// Panneau de CHOIX (2026-08-02) — ouvert depuis une carte de grille pour
-		// un produit à variantes. Il est vide au rendu : son contenu est demandé
-		// au serveur à l'ouverture (`ajax_options`), comme les lignes du panier
-		// le sont à chaque peinture, et pour la même raison — les noms, les prix
-		// et l'état de rupture doivent être ceux de MAINTENANT, dans la langue
-		// courante.
+		// 🚨 Il n'y a plus de coquille de panneau ici (2026-09-10, refonte owner).
+		// Le choix de variantes n'est plus une fenêtre flottante (tiroir bas / boîte
+		// centrée, Phases 35-37) : il s'ouvre DANS la carte de la grille elle-même,
+		// bâti à la volée par `aod-cart.js` (voir « panneau de variantes INLINE »).
+		// `ajax_options()` sert toujours le même markup serveur — seul l'endroit où
+		// il atterrit a changé.
 		?>
-		<aside class="aod-cart__sheet" id="aod-cart-sheet" role="dialog" aria-modal="true" aria-labelledby="aod-cart-sheet-title" hidden>
-			<div class="aod-cart__head">
-				<h2 class="aod-cart__title" id="aod-cart-sheet-title"><?php esc_html_e( 'Choisir les options', 'aod-cod-form' ); ?></h2>
-				<button type="button" class="aod-cart__close" aria-label="<?php esc_attr_e( 'Fermer', 'aod-cod-form' ); ?>"><?php echo AOD_COD_Icon::svg( 'close', array( 'size' => 20 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG d'un catalogue fermé, jamais d'une saisie (cf. AOD_COD_Icon). ?></button>
-			</div>
-			<p class="aod-cart__sheet-name"></p>
-			<div class="aod-cart__sheet-body"></div>
-			<p class="aod-cart__sheet-msg" role="alert"></p>
-			<div class="aod-cart__foot">
-				<?php // `disabled` de naissance : il ne s'arme qu'une fois les options peintes (même raison que « Commander »). ?>
-				<button type="button" class="aod-cart__sheet-add" disabled><?php esc_html_e( 'Ajouter au panier', 'aod-cod-form' ); ?></button>
-			</div>
-		</aside>
 		<aside class="aod-cart__drawer" id="aod-cart-drawer" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Votre panier', 'aod-cod-form' ); ?>" hidden>
 			<div class="aod-cart__head">
 				<h2 class="aod-cart__title"><?php esc_html_e( 'Votre panier', 'aod-cod-form' ); ?></h2>
@@ -346,10 +368,12 @@ class AOD_COD_Cart {
 			// le savoir plutôt que d'ouvrir une boîte vide.
 			wp_send_json_error( array( 'message' => __( 'Produit indisponible.', 'aod-cod-form' ) ), 404 );
 		}
+		// 🚨 NI titre, ni prix, ni photo dans cette réponse (2026-09-10) : le
+		// panneau s'ouvre désormais DANS la carte, qui montre déjà les trois — les
+		// répéter y ferait doublon. Ancienne moitié de contrat retirée avec la
+		// coquille `#aod-cart-sheet` qui les affichait.
 		wp_send_json_success( array(
-			'title'      => get_the_title( $pid ),
-			'price_html' => $p->get_price_html(),
-			'options'    => $html,
+			'options' => $html,
 		) );
 	}
 

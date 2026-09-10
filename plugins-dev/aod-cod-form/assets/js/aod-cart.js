@@ -102,7 +102,6 @@
 	if ( ! fab || ! drawer || ! overlay ) {
 		return; // Coque absente (page d'admin, thème exotique) : store seul.
 	}
-	var sheet    = document.getElementById( 'aod-cart-sheet' );
 	var list     = drawer.querySelector( '.aod-cart__list' );
 	var totalEl  = drawer.querySelector( '.aod-cart__total' );
 	var orderBtn = drawer.querySelector( '.aod-cart__order' );
@@ -434,7 +433,7 @@
 			// ⚠️ Le bouton flottant N'EST PAS exclu : il vit hors de la boîte, donc
 			// il doit devenir inerte avec le reste. L'avoir épargné le laissait
 			// atteignable au Tab depuis une modale — mesuré, fuite au 6ᵉ Tab.
-			if ( n === overlay || n === drawer || n === sheet ) { return; }
+			if ( n === overlay || n === drawer ) { return; }
 			if ( actif ) {
 				if ( 'inert' in HTMLElement.prototype ) { n.inert = true; }
 				n.setAttribute( 'data-aod-inert', '1' );
@@ -535,6 +534,19 @@
 			// Le produit porte-t-il des options à choisir ? Ça ne change PAS le
 			// libellé (cf. plus bas) — seulement ce que fait le clic.
 			var hasOpts = '1' === node.getAttribute( 'data-hasopts' );
+			// Un VRAI choix reste-t-il à faire (2026-09-10) ? Calculé au RENDU
+			// (`needs_variant_choice()`), pas ici : un produit à options dont
+			// chaque section n'a plus qu'UNE valeur jouable n'a rien à demander —
+			// `autoOpt` porte alors cette combinaison, prête pour `add()`.
+			var needsChoice = hasOpts && '1' === node.getAttribute( 'data-needschoice' );
+			var autoOpt     = {};
+			if ( hasOpts && ! needsChoice ) {
+				try {
+					autoOpt = JSON.parse( node.getAttribute( 'data-autoopt' ) || '{}' );
+				} catch ( e ) {
+					autoOpt = {};
+				}
+			}
 
 			// Groupe empilé (2026-09-08, demande owner) : « Ajouter au panier »
 			// PUIS « Commander », posés l'un sous l'autre, même peau.
@@ -582,18 +594,16 @@
 			function act( e ) {
 				e.preventDefault();
 				e.stopPropagation();
-				if ( hasOpts ) {
-					// Variantes à choisir : le panneau les demande SUR PLACE. Le repli
-					// — la fiche, ancrée sur le bloc de choix — reste le chemin quand le
-					// panneau ne peut pas s'ouvrir (serveur qui refuse, réseau coupé,
-					// coque absente sur un thème exotique) : le geste aboutit toujours
-					// quelque part, jamais dans le vide.
-					ouvrirChoix( node.getAttribute( 'data-pid' ), function () {
-						window.location.href = node.getAttribute( 'data-url' );
-					} );
+				if ( needsChoice ) {
+					// Vrai choix à faire : le panneau le demande SUR PLACE, dans la
+					// carte. Le repli — la fiche, ancrée sur le bloc de choix — reste
+					// le chemin quand le panneau ne peut pas s'ouvrir (serveur qui
+					// refuse, réseau coupé, coque absente sur un thème exotique) : le
+					// geste aboutit toujours quelque part, jamais dans le vide.
+					abrirInline( card, btn, node.getAttribute( 'data-pid' ), node.getAttribute( 'data-url' ), false );
 					return;
 				}
-				if ( ! add( node.getAttribute( 'data-pid' ), [ { qty: 1, opt: {} } ] ) ) {
+				if ( ! add( node.getAttribute( 'data-pid' ), [ { qty: 1, opt: autoOpt } ] ) ) {
 					// Plafond atteint (D35). La carte n'a aucune surface de message :
 					// on OUVRE le panier avec la phrase. L'acheteur y lit la raison
 					// ET voit la ligne qu'il peut retirer — un « Ajouté ✓ » menteur,
@@ -618,8 +628,9 @@
 			/*
 			 * « Commander » (2026-09-08, demande owner) : posé SOUS « Ajouter au
 			 * panier », même peau, visible dans le même geste. Même ajout que
-			 * « Ajouter » (`add()`), sur un produit à variantes le panneau de choix
-			 * s'ouvre d'abord (on ne devine pas la couleur) — cf. `sheetGoOrder`.
+			 * « Ajouter » (`add()`), sur un produit à vrai choix le panneau
+			 * inline s'ouvre d'abord (on ne devine pas la couleur) — cf.
+			 * `abrirInline( …, goOrder )`.
 			 * ⛔ CE CLONE N'A PAS ENCORE LA PAGE `/commander` (Phase 77, absente
 			 * ici) : le repli est le même que celui déjà écrit pour le bouton
 			 * « Commander » du tiroir un peu plus haut — ouvrir le panier, où
@@ -635,13 +646,11 @@
 			function actOrder( e ) {
 				e.preventDefault();
 				e.stopPropagation();
-				if ( hasOpts ) {
-					ouvrirChoix( node.getAttribute( 'data-pid' ), function () {
-						window.location.href = node.getAttribute( 'data-url' );
-					}, true );
+				if ( needsChoice ) {
+					abrirInline( card, btn, node.getAttribute( 'data-pid' ), node.getAttribute( 'data-url' ), true );
 					return;
 				}
-				if ( ! add( node.getAttribute( 'data-pid' ), [ { qty: 1, opt: {} } ] ) ) {
+				if ( ! add( node.getAttribute( 'data-pid' ), [ { qty: 1, opt: autoOpt } ] ) ) {
 					open( CFG.i18n.full );
 					return;
 				}
@@ -656,68 +665,124 @@
 		} );
 	}
 
-	/* ------------------------- panneau de CHOIX sur la grille (2026-08-02) */
-
-	// Ce que ce panneau répare : sur une carte de produit À VARIANTES, le bouton
-	// disait « Ajouter au panier » et menait à la fiche — on ne devine pas une
-	// couleur. Mesuré, le visiteur ne faisait pas le lien : il appuyait sur un
-	// bouton d'ajout, la page sautait, le compteur ne bougeait pas. Le bouton
-	// promettait ce qu'il ne faisait pas.
-	// Ici, le geste ABOUTIT : on choisit dans le panneau, ça s'ajoute, la page
-	// ne bouge pas. Le libellé unique devient vrai pour tous les produits.
+	/* --------------------- panneau de variantes INLINE dans la carte (2026-09-10) */
 	//
-	// 🚨 Le contenu du panneau est SERVI PAR LE SERVEUR (`aod_cod_cart_options`),
-	// pas fabriqué ici : c'est le markup de la fiche, avec l'état de rupture
-	// (`disabled`) et les noms localisés. Un second rendu en JS aurait divergé
-	// le jour d'une rupture — donc sur une commande impossible.
-	var sheetBody = sheet ? sheet.querySelector( '.aod-cart__sheet-body' ) : null;
-	var sheetName = sheet ? sheet.querySelector( '.aod-cart__sheet-name' ) : null;
-	var sheetMsg  = sheet ? sheet.querySelector( '.aod-cart__sheet-msg' ) : null;
-	var sheetAdd  = sheet ? sheet.querySelector( '.aod-cart__sheet-add' ) : null;
-	var sheetPid  = 0;
-	// « Commander » depuis une carte à variantes (2026-09-08) : posé par
-	// `ouvrirChoix( pid, replier, true )`, lu une fois par le clic d'ajout du
-	// panneau.
-	var sheetGoOrder = false;
+	// Refonte demandée par l'owner : le choix de variantes n'est plus une
+	// fenêtre flottante (tiroir bas puis boîte centrée, Phases 35-37) — il
+	// s'ouvre DANS la carte de la grille, sous les infos produit, comme une
+	// extension naturelle de la carte plutôt qu'un composant à part.
+	//
+	// 🚨 Le contenu est toujours SERVI PAR LE SERVEUR (`aod_cod_cart_options`),
+	// jamais fabriqué ici : c'est le markup de la fiche, avec l'état de rupture
+	// (`disabled`), les noms localisés, et — depuis needs_variant_choice() — une
+	// section à valeur unique déjà pré-cochée. Un second rendu en JS aurait
+	// divergé le jour d'une rupture — donc sur une commande impossible.
+	//
+	// Ce N'EST PAS une modale : pas de piège de focus, pas de fond rendu inerte
+	// (`ouvrirBoite`/`inerterFond`, réservés au tiroir DU panier, ne servent pas
+	// ici). C'est un disclosure ordinaire — le reste de la page reste utilisable
+	// pendant que le panneau est ouvert. Un seul panneau ouvert à la fois sur
+	// toute la grille : en ouvrir un referme l'éventuel précédent, pour que le
+	// remous (ouvrir une carte agrandit sa RANGÉE dans la grille — comportement
+	// CSS Grid normal d'Astra, inévitable dès qu'on choisit d'intégrer le
+	// panneau DANS la carte plutôt que par-dessus) reste localisé à un endroit.
+	var openInline = null; // { card, panel, trigger, pid, goOrder } | null
 
-	function ouvrirChoix( pid, replier, goOrder ) {
-		if ( ! sheet ) { replier(); return; }
-		sheetGoOrder      = !! goOrder;
-		sheetPid          = parseInt( pid, 10 ) || 0;
-		sheetMsg.textContent = '';
-		sheetBody.innerHTML  = '';
-		sheetName.textContent = '';
-		sheetAdd.disabled     = true;
+	function fermerInline( sansRendreLeFocus ) {
+		if ( ! openInline ) { return; }
+		var prev = openInline;
+		openInline = null;
+		prev.panel.classList.remove( 'is-open' );
+		prev.trigger.setAttribute( 'aria-expanded', 'false' );
+		if ( ! sansRendreLeFocus && prev.trigger.focus ) { prev.trigger.focus(); }
+		// La transition retire le nœud une fois finie (durée alignée sur le CSS,
+		// cf. `--aod-cart-inline-ms` dans aod-cart.css) : le laisser en vie masqué
+		// garderait des radios/labels dans l'ordre de tabulation.
+		window.setTimeout( function () {
+			if ( prev.panel && prev.panel.parentNode ) { prev.panel.parentNode.removeChild( prev.panel ); }
+		}, 320 );
+	}
+
+	function abrirInline( card, trigger, pid, fallbackUrl, goOrder ) {
+		if ( openInline && openInline.card === card ) {
+			// Même carte déjà ouverte : « Commander » qui rejoint « Ajouter »
+			// (ou l'inverse) — on garde juste l'intention, sans relancer la
+			// requête ni faire clignoter le panneau.
+			openInline.goOrder = !! goOrder;
+			return;
+		}
+		fermerInline( true );
+
+		var panel = document.createElement( 'div' );
+		panel.className = 'aod-cart__inline';
+		panel.innerHTML = '<div class="aod-cart__inline-clip"><div class="aod-cart__inline-body">'
+			+ '<p class="aod-cart__inline-load">…</p>'
+			+ '</div></div>';
+		card.appendChild( panel );
+		trigger.setAttribute( 'aria-expanded', 'true' );
+		openInline = { card: card, panel: panel, trigger: trigger, pid: pid, goOrder: !! goOrder };
+		// Ouvre au cadre suivant : une classe posée le même tick que la création
+		// du nœud ne transitionne pas (rien à animer DEPUIS, l'état de départ
+		// n'a pas encore été peint).
+		window.requestAnimationFrame( function () {
+			window.requestAnimationFrame( function () {
+				if ( openInline && openInline.panel === panel ) { panel.classList.add( 'is-open' ); }
+			} );
+		} );
 
 		var body = new URLSearchParams();
 		body.set( 'action', 'aod_cod_cart_options' );
 		body.set( 'nonce', CFG.nonce );
-		body.set( 'product_id', sheetPid );
+		body.set( 'product_id', pid );
 		window.fetch( CFG.ajax_url, { method: 'POST', body: body, credentials: 'same-origin' } )
 			.then( function ( r ) { return r.json(); } )
 			.then( function ( res ) {
+				if ( ! openInline || openInline.panel !== panel ) { return; } // fermé entre-temps
 				if ( ! res || ! res.success || ! res.data || ! res.data.options ) {
 					// Le serveur refuse (produit parti, options disparues, toggle
-					// coupé) : on REPLIE sur la fiche plutôt que d'ouvrir une boîte
-					// vide — le visiteur garde un chemin.
-					replier();
+					// coupé) : on REPLIE sur la fiche plutôt que de garder une
+					// carte ouverte sur une boîte vide.
+					fermerInline( true );
+					window.location.href = fallbackUrl;
 					return;
 				}
-				sheetName.innerHTML = esc( res.data.title ) + ' <span class="aod-cart__sheet-price">' + ( res.data.price_html || '' ) + '</span>';
-				sheetBody.innerHTML = res.data.options;
-				sheetAdd.disabled   = false;
-				ouvrirBoite( sheet );
+				peindreInline( panel, res.data.options );
+				var f = focusables( panel );
+				( f[ 0 ] || panel ).focus();
 			} )
-			.catch( replier );
+			.catch( function () {
+				fermerInline( true );
+				window.location.href = fallbackUrl;
+			} );
 	}
 
-	if ( sheet ) {
-		sheet.querySelector( '.aod-cart__close' ).addEventListener( 'click', fermerBoite );
+	function peindreInline( panel, optionsHtml ) {
+		var body = panel.querySelector( '.aod-cart__inline-body' );
+		body.innerHTML = '<div class="aod-cart__inline-opts">' + optionsHtml + '</div>'
+			+ '<div class="aod-cart__inline-foot">'
+			+ '<span class="aod-cart__qty">'
+			+ '<button type="button" class="aod-cart__less" aria-label="' + esc( CFG.i18n.less ) + '">−</button>'
+			+ '<span class="aod-cart__qtyval">1</span>'
+			+ '<button type="button" class="aod-cart__more" aria-label="' + esc( CFG.i18n.more ) + '">+</button>'
+			+ '</span>'
+			+ '<button type="button" class="aod-cart__inline-add"><span class="aod-cart__inline-add-label">' + esc( CFG.i18n.add ) + '</span></button>'
+			+ '</div>'
+			+ '<p class="aod-cart__inline-msg" role="alert"></p>';
 
-		// L'état visuel « choisi » est porté par une CLASSE sur la fiche (c'est son
-		// JS qui la pose). Le panneau sert le même markup : il doit la poser aussi,
-		// sinon la pastille cochée ne se distingue pas des autres.
-		sheetBody.addEventListener( 'change', function ( e ) {
+		// État visuel initial des pastilles : le PHP pré-coche déjà la valeur
+		// unique d'une section sans vrai choix (needs_variant_choice()), et une
+		// section À CHOIX RÉEL peut cohabiter avec elle dans le même produit —
+		// sans ce passage, la pastille auto-choisie resterait visuellement nue
+		// jusqu'à un `change` que l'acheteur n'a aucune raison de déclencher.
+		Array.prototype.forEach.call( body.querySelectorAll( '.aod-cod__optsec' ), function ( sec ) {
+			var checked = sec.querySelector( 'input[type="radio"]:checked' );
+			if ( ! checked ) { return; }
+			var opt = checked.closest( '.aod-cod__opt' );
+			if ( opt ) { opt.classList.add( 'is-selected' ); }
+		} );
+
+		var msgEl = body.querySelector( '.aod-cart__inline-msg' );
+		body.addEventListener( 'change', function ( e ) {
 			var input = e.target;
 			if ( ! input || 'radio' !== input.type ) { return; }
 			var sec = input.closest( '.aod-cod__optsec' );
@@ -725,13 +790,26 @@
 			Array.prototype.forEach.call( sec.querySelectorAll( '.aod-cod__opt' ), function ( o ) { o.classList.remove( 'is-selected' ); } );
 			var opt = input.closest( '.aod-cod__opt' );
 			if ( opt ) { opt.classList.add( 'is-selected' ); }
-			sheetMsg.textContent = '';
+			msgEl.textContent = '';
 		} );
 
-		sheetAdd.addEventListener( 'click', function () {
-			var opt     = {};
-			var manque  = false;
-			Array.prototype.forEach.call( sheetBody.querySelectorAll( '.aod-cod__optsec' ), function ( sec ) {
+		var qty    = 1;
+		var qtyVal = body.querySelector( '.aod-cart__qtyval' );
+		body.querySelector( '.aod-cart__more' ).addEventListener( 'click', function () {
+			qty = Math.min( 99, qty + 1 );
+			qtyVal.textContent = String( qty );
+		} );
+		body.querySelector( '.aod-cart__less' ).addEventListener( 'click', function () {
+			qty = Math.max( 1, qty - 1 );
+			qtyVal.textContent = String( qty );
+		} );
+
+		var addBtn = body.querySelector( '.aod-cart__inline-add' );
+		addBtn.addEventListener( 'click', function () {
+			if ( addBtn.classList.contains( 'is-loading' ) || addBtn.classList.contains( 'is-added' ) ) { return; }
+			var opt    = {};
+			var manque = false;
+			Array.prototype.forEach.call( body.querySelectorAll( '.aod-cod__optsec' ), function ( sec ) {
 				var si  = sec.getAttribute( 'data-si' );
 				var sel = sec.querySelector( 'select.aod-cod__optselect' );
 				var val = sel ? sel.value : ( ( sec.querySelector( 'input[type="radio"]:checked' ) || {} ).value || '' );
@@ -740,24 +818,51 @@
 			if ( manque ) {
 				// Même exigence que le formulaire : on n'ajoute jamais une option
 				// devinée, y compris depuis ce panneau.
-				sheetMsg.textContent = CFG.i18n.pick_missing;
+				msgEl.textContent = CFG.i18n.pick_missing;
 				return;
 			}
-			if ( ! add( sheetPid, [ { qty: 1, opt: opt } ] ) ) {
-				// Plafond atteint : on reste OUVERT. Fermer sur un refus rendrait le
-				// geste indistinguable d'un ajout réussi — c'est précisément le
-				// défaut que le panneau est venu réparer.
-				sheetMsg.textContent = CFG.i18n.full;
-				return;
-			}
-			fermerBoite();
-			if ( sheetGoOrder ) {
-				// Entré par « Commander » (2026-09-08) : l'ajout a réussi, on ouvre
-				// directement le panier — pas de page `/commander` sur ce clone.
-				open();
-			}
+			var pid = openInline ? openInline.pid : 0;
+			// État « chargement » (demande owner) : bref et volontaire — l'ajout
+			// lui-même est instantané (localStorage), ce court passage évite un
+			// double-clic et donne au geste le temps de se lire.
+			addBtn.classList.add( 'is-loading' );
+			window.setTimeout( function () {
+				addBtn.classList.remove( 'is-loading' );
+				if ( ! add( pid, [ { qty: qty, opt: opt } ] ) ) {
+					// Plafond atteint : on reste OUVERT. Fermer sur un refus rendrait
+					// le geste indistinguable d'un ajout réussi — c'est précisément
+					// le défaut que ce panneau (et son ancêtre le tiroir bas) est
+					// venu réparer.
+					msgEl.textContent = CFG.i18n.full;
+					return;
+				}
+				addBtn.classList.add( 'is-added' );
+				var goOrder = !! ( openInline && openInline.goOrder );
+				var ok = document.createElement( 'p' );
+				ok.className = 'aod-cart__inline-ok';
+				ok.setAttribute( 'role', 'status' );
+				ok.innerHTML = ( ( CFG.icons && CFG.icons.check ) ? CFG.icons.check : '' ) + '<span>' + esc( CFG.i18n.added ) + '</span>';
+				body.appendChild( ok );
+				window.setTimeout( function () {
+					// Le focus revient au bouton déclencheur — SAUF si le tiroir du
+					// panier va s'ouvrir dans la foulée (`goOrder`) : il pose lui-même
+					// le focus sur son premier élément, cf. `ouvrirBoite()`. Sans cette
+					// distinction, un clavier qui vient d'ajouter perdrait le focus au
+					// milieu de la page (le bouton disparaît avec le panneau).
+					fermerInline( goOrder );
+					if ( goOrder ) { open(); }
+				}, 1200 );
+			}, 320 );
 		} );
 	}
+
+	// Escape ferme le panneau ouvert et rend le focus à son déclencheur — le
+	// même geste que le tiroir/l'ancien panneau, même si ce n'en est plus un.
+	document.addEventListener( 'keydown', function ( e ) {
+		if ( openInline && 'Escape' === e.key ) {
+			fermerInline();
+		}
+	} );
 
 	/* ---------------------------------------------------------------- API */
 

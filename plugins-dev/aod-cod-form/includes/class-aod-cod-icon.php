@@ -51,6 +51,9 @@ class AOD_COD_Icon {
 		return array(
 			'cart'  => 'shopping-cart-simple',
 			'close' => 'x',
+			// Confirmation d'ajout au panier inline (2026-09-10) — même mapping
+			// que `AOD_CD_Icon` côté /gestion, copie octet à octet (R6).
+			'check' => 'check-circle',
 			// Modes de livraison + réassurance du formulaire COD (Phase 38.3).
 			// Ils remplacent 🏠 🏢 🔒 : un emoji est rendu par l'OS, donc trois
 			// acheteurs sur trois systèmes ne voyaient pas le même formulaire.
@@ -162,6 +165,7 @@ class AOD_COD_Icon {
 	public static function js_map() {
 		return array(
 			'close' => self::svg( 'close', array( 'size' => 16 ) ),
+			'check' => self::svg( 'check', array( 'size' => 15 ) ),
 		);
 	}
 }

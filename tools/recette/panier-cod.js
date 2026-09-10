@@ -116,56 +116,61 @@ function ok( cond, label ) {
 	ok( '1' === dataVar, 'ON — ANCRAGE : le témoin Gamma est bien reconnu À VARIANTES (sinon le libellé serait juste par vacuité)' );
 	const libVar = ( await carteVar.locator( '.aod-cart__quickadd' ).innerText() ).trim();
 	ok( libVar === libSimple && ! /Choisir/i.test( libVar ), `ON — même libellé sur une carte à variantes que sur une carte simple (lu : « ${ libVar } » vs « ${ libSimple } »)` );
-	/* --- PANNEAU DE CHOIX (2026-08-02) : le geste aboutit SUR LA GRILLE -----
+	/* --- PANNEAU DE VARIANTES INLINE (refonte 2026-09-10) : le geste aboutit
+	 * SUR LA GRILLE, DANS LA CARTE ----------------------------------------
 	 * Le bouton disait « Ajouter au panier » et menait à la fiche — il promettait
-	 * ce qu'il ne faisait pas. Il ouvre désormais un panneau qui DEMANDE la
-	 * variante : on choisit, ça s'ajoute, la page ne bouge pas. Ce qui ne change
-	 * pas : on n'ajoute jamais une option devinée. */
+	 * ce qu'il ne faisait pas. Il ouvre désormais, DANS LA CARTE elle-même, un
+	 * panneau qui DEMANDE la variante : on choisit, ça s'ajoute, la page ne
+	 * bouge pas. Ce qui ne change pas : on n'ajoute jamais une option devinée.
+	 * Ce N'EST PLUS une modale (Phases 35-37 retirées, refonte owner) : pas de
+	 * piège de focus à vérifier, pas de fond rendu inerte — c'est un disclosure
+	 * ordinaire dans le flux normal de la carte. */
 	const badgeAvantVar = await page.locator( '.aod-cart__badge' ).innerText();
 	const urlAvantVar   = page.url();
+	const panneauVar    = carteVar.locator( '.aod-cart__inline' );
 	await carteVar.locator( '.aod-cart__quickadd' ).hover();
 	await carteVar.locator( '.aod-cart__quickadd' ).click();
-	await page.waitForSelector( '#aod-cart-sheet:not([hidden])', { timeout: 10000 } ).catch( () => {} );
-	ok( await page.locator( '#aod-cart-sheet' ).isVisible(), 'PANNEAU — le clic sur une carte à variantes OUVRE le panneau de choix' );
+	await page.waitForSelector( 'li.product .aod-cart__inline .aod-cod__optsec', { timeout: 10000 } ).catch( () => {} );
+	ok( await panneauVar.isVisible(), 'PANNEAU — le clic sur une carte à variantes OUVRE le panneau, DANS la carte' );
 	ok( page.url() === urlAvantVar, `PANNEAU — …SANS quitter la grille (lu : ${ page.url().replace( BASE, '' ) })` );
 	ok( badgeAvantVar === ( await page.locator( '.aod-cart__badge' ).innerText() ),
 		'PANNEAU — …et sans rien ajouter tant que rien n’est choisi' );
 	// Le markup vient du SERVEUR : c'est ce qui fait hériter l'état de rupture et
 	// les noms localisés. On vérifie qu'il est bien là, sinon le panneau serait
 	// une boîte vide et les assertions suivantes vraies par vacuité.
-	ok( await page.locator( '#aod-cart-sheet .aod-cod__optsec' ).count() >= 1,
+	ok( await panneauVar.locator( '.aod-cod__optsec' ).count() >= 1,
 		'PANNEAU — ANCRAGE : les sections d’options sont servies par le serveur' );
+	// Le focus REJOINT le panneau à l'ouverture (disclosure, pas modale : on ne
+	// vérifie plus un piège, juste que le clavier n'est pas laissé en arrière).
+	ok( await page.evaluate( () => !! ( document.activeElement && document.activeElement.closest && document.activeElement.closest( '.aod-cart__inline' ) ) ),
+		'PANNEAU — le focus rejoint le panneau à son ouverture' );
 
 	// Ajouter sans choisir : refusé, et dit.
-	await page.locator( '.aod-cart__sheet-add' ).click();
+	await panneauVar.locator( '.aod-cart__inline-add' ).click();
 	await page.waitForTimeout( 400 );
-	ok( '' !== ( await page.locator( '.aod-cart__sheet-msg' ).innerText() ).trim(),
+	ok( '' !== ( await panneauVar.locator( '.aod-cart__inline-msg' ).innerText() ).trim(),
 		'PANNEAU — ajouter sans choisir est refusé, avec un message' );
 	ok( badgeAvantVar === ( await page.locator( '.aod-cart__badge' ).innerText() ),
 		'PANNEAU — …et le panier n’a pas bougé' );
 
-	// D34 — le piège de focus. Les deux boîtes se déclarent `aria-modal` ; la
-	// tabulation SORTAIT dans la page derrière (mesuré, avant : dès le 5ᵉ Tab),
-	// alors que le défilement du corps était bloqué.
-	let fuites = 0;
-	for ( let i = 0; i < 12; i++ ) {
-		await page.keyboard.press( 'Tab' );
-		if ( ! ( await page.evaluate( () => !! ( document.activeElement.closest && document.activeElement.closest( '#aod-cart-sheet' ) ) ) ) ) { fuites++; }
-	}
-	ok( 0 === fuites, `PANNEAU — le focus ne sort pas de la boîte (fuites sur 12 Tab : ${ fuites })` );
-	ok( await page.evaluate( () => {
-		const n = Array.from( document.body.children ).find( ( c ) => c.hasAttribute && c.hasAttribute( 'data-aod-inert' ) );
-		return !! n;
-	} ), 'PANNEAU — la page derrière est rendue inerte' );
+	// Escape referme le panneau et rend le focus à son déclencheur — le même
+	// geste qu'avant, même si ce n'est plus une modale.
+	await page.keyboard.press( 'Escape' );
+	await page.waitForTimeout( 500 );
+	ok( 0 === ( await carteVar.locator( '.aod-cart__inline' ).count() ),
+		'PANNEAU — Escape referme le panneau (retiré de la carte)' );
+	ok( await page.evaluate( () => !! ( document.activeElement && document.activeElement.classList && document.activeElement.classList.contains( 'aod-cart__quickadd' ) ) ),
+		'PANNEAU — …et rend le focus au bouton qui l’a ouvert' );
 
-	// Choisir puis ajouter : le geste aboutit, sur place.
-	await page.locator( '#aod-cart-sheet .aod-cod__opt' ).first().click();
-	await page.locator( '.aod-cart__sheet-add' ).click();
-	await page.waitForTimeout( 900 );
-	ok( ! ( await page.locator( '#aod-cart-sheet' ).isVisible() ), 'PANNEAU — le choix fait, le panneau se referme' );
+	// Choisir puis ajouter : le geste aboutit, sur place, DANS la carte.
+	await carteVar.locator( '.aod-cart__quickadd' ).click();
+	await page.waitForSelector( 'li.product .aod-cart__inline .aod-cod__optsec', { timeout: 10000 } ).catch( () => {} );
+	await carteVar.locator( '.aod-cart__inline .aod-cod__opt' ).first().click();
+	await carteVar.locator( '.aod-cart__inline .aod-cart__inline-add' ).click();
+	await page.waitForTimeout( 1900 );
+	ok( 0 === ( await carteVar.locator( '.aod-cart__inline' ).count() ), 'PANNEAU — le choix fait, le panneau se referme (retiré de la carte)' );
 	ok( page.url() === urlAvantVar, 'PANNEAU — …toujours sans quitter la grille' );
 	ok( '2' === ( await page.locator( '.aod-cart__badge' ).innerText() ), 'PANNEAU — …et l’article EST au panier (badge 1 → 2)' );
-	ok( await page.evaluate( () => ! document.querySelector( '[data-aod-inert]' ) ), 'PANNEAU — l’inertie de la page est retirée à la fermeture' );
 	// On revient à un panier d'UN article : la suite de la porte compte dessus.
 	await page.evaluate( () => {
 		var c = JSON.parse( window.localStorage.getItem( 'aod_cart' ) || '[]' );
@@ -321,13 +326,13 @@ function ok( cond, label ) {
 	const carteVar2 = page.locator( 'li.product' ).filter( { has: page.locator( `a[href="${ URL3 }"]` ) } );
 	await carteVar2.locator( '.aod-cart__quickadd' ).hover();
 	await carteVar2.locator( '.aod-cart__quickadd' ).click();
-	await page.waitForSelector( '#aod-cart-sheet:not([hidden])', { timeout: 10000 } ).catch( () => {} );
-	await page.locator( '#aod-cart-sheet .aod-cod__opt' ).first().click();
-	await page.locator( '.aod-cart__sheet-add' ).click();
+	await page.waitForSelector( 'li.product .aod-cart__inline .aod-cod__optsec', { timeout: 10000 } ).catch( () => {} );
+	await carteVar2.locator( '.aod-cart__inline .aod-cod__opt' ).first().click();
+	await carteVar2.locator( '.aod-cart__inline .aod-cart__inline-add' ).click();
 	await page.waitForTimeout( 700 );
-	ok( await page.locator( '#aod-cart-sheet' ).isVisible(),
-		'PLAFOND — 🔴 le panneau de choix RESTE ouvert quand le plafond refuse' );
-	ok( '' !== ( await page.locator( '.aod-cart__sheet-msg' ).innerText() ).trim() && MAX === await nbLignes(),
+	ok( 1 === ( await carteVar2.locator( '.aod-cart__inline' ).count() ),
+		'PLAFOND — 🔴 le panneau RESTE dans la carte quand le plafond refuse' );
+	ok( '' !== ( await carteVar2.locator( '.aod-cart__inline-msg' ).innerText() ).trim() && MAX === await nbLignes(),
 		`PLAFOND — …il dit pourquoi, et rien n’est ajouté (lignes ${ await nbLignes() })` );
 	await page.keyboard.press( 'Escape' );
 
@@ -614,9 +619,9 @@ function ok( cond, label ) {
 	await page.goto( `${ BASE }/boutique/`, { waitUntil: 'load' } );
 	await page.locator( 'li.product' ).filter( { has: page.locator( `a[href="${ URL3 }"]` ) } )
 		.locator( '.aod-cart__quickadd' ).click();
-	await page.waitForSelector( '#aod-cart-sheet:not([hidden])', { timeout: 10000 } ).catch( () => {} );
+	await page.waitForSelector( 'li.product .aod-cart__inline .aod-cod__optsec', { timeout: 10000 } ).catch( () => {} );
 	const etatBleu = await page.evaluate( () => {
-		const i = document.querySelector( '#aod-cart-sheet input[value="Bleu"]' );
+		const i = document.querySelector( '.aod-cart__inline input[value="Bleu"]' );
 		return i ? { present: true, desactive: i.disabled } : { present: false };
 	} );
 	ok( etatBleu.present && etatBleu.desactive,

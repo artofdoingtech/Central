@@ -322,6 +322,76 @@ class AOD_COD_Form {
 	}
 
 	/**
+	 * Un VRAI choix reste-t-il à faire avant d'ajouter ce produit au panier
+	 * depuis la grille ? (carte premium, 2026-09-10)
+	 *
+	 * Diffère de has_options() : un produit peut porter des sections d'options
+	 * (has_options() === true) sans qu'aucune décision ne reste possible —
+	 * chaque section n'a plus qu'UNE valeur disponible, les autres étant en
+	 * rupture. Poser quand même la question ouvrirait un panneau pour une
+	 * réponse déjà connue — l'exact inverse de « ne demander que les choix
+	 * nécessaires ».
+	 *
+	 * Retourne aussi `true` si une section n'a AUCUNE valeur disponible : le
+	 * choix reste nécessaire pour que l'acheteur VOIE la rupture (le panneau
+	 * sert alors à le dire), plutôt que de refuser l'ajout sans un mot.
+	 *
+	 * @param WC_Product $product
+	 * @return bool
+	 */
+	public function needs_variant_choice( $product ) {
+		$sections = $this->get_product_options( $product );
+		if ( ! $sections ) {
+			return false;
+		}
+		foreach ( $sections as $sec ) {
+			if ( 1 !== count( $this->available_values( $sec ) ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * La combinaison UNIQUE jouable d'un produit sans vrai choix
+	 * (needs_variant_choice() === false) : la seule valeur disponible de
+	 * chaque section, en clé canonique FR — prête à partir telle quelle vers
+	 * `add()` côté client, sans détour par le panneau.
+	 *
+	 * @param WC_Product $product
+	 * @return array section_index => nom canonique FR
+	 */
+	public function only_choice_for( $product ) {
+		$picked = array();
+		foreach ( $this->get_product_options( $product ) as $si => $sec ) {
+			$avail = $this->available_values( $sec );
+			if ( 1 === count( $avail ) ) {
+				$picked[ $si ] = $avail[0]['name'];
+			}
+		}
+		return $picked;
+	}
+
+	/**
+	 * Valeurs NON en rupture d'une section (helper partagé par les deux
+	 * méthodes ci-dessus et par option_sections_html()). Même critère de
+	 * rupture que le rendu : stock GÉRÉ et ≤ 0 (jamais quand non géré = '').
+	 *
+	 * @param array $sec Une section de get_product_options().
+	 * @return array Valeurs disponibles, dans leur ordre d'origine.
+	 */
+	protected function available_values( $sec ) {
+		$out = array();
+		foreach ( $sec['values'] as $val ) {
+			$is_rupture = isset( $val['stock'] ) && '' !== $val['stock'] && (int) $val['stock'] <= 0;
+			if ( ! $is_rupture ) {
+				$out[] = $val;
+			}
+		}
+		return $out;
+	}
+
+	/**
 	 * Sections d'options d'un produit pour l'affichage (Taille, Couleur…).
 	 *
 	 * Lit la méta `_aod_options` ; à défaut, migre un ancien produit variable
@@ -715,6 +785,16 @@ class AOD_COD_Form {
 					break;
 				}
 			}
+			/*
+			 * Une SEULE valeur jouable dans cette section : rien à décider, on la
+			 * PRÉ-SÉLECTIONNE (2026-09-10) — sans ça, la fiche forçait un clic sur
+			 * un choix qui n'en est pas un (`collectItems()` exige un radio coché
+			 * ou une option choisie, faute de quoi l'ajout est refusé). Une section
+			 * à choix réel, elle, reste vierge : on ne devine jamais À LA PLACE de
+			 * l'acheteur, cf. needs_variant_choice() plus haut, même critère.
+			 */
+			$aod_lone_avail = $this->available_values( $sec );
+			$aod_lone_name  = ( 1 === count( $aod_lone_avail ) ) ? $aod_lone_avail[0]['name'] : null;
 			?>
 			<div class="aod-cod__field aod-cod__optsec<?php echo $sec['visual'] ? ' is-visual' : ''; ?><?php echo $has_media ? ' has-media' : ''; ?><?php echo $is_dropdown ? ' is-dropdown' : ''; ?>" data-si="<?php echo esc_attr( $si ); ?>" data-label="<?php echo esc_attr( $sec['label'] ); ?>">
 				<?php
@@ -740,7 +820,7 @@ class AOD_COD_Form {
 								$opt_label .= '  (+' . wp_strip_all_tags( wc_price( $val['price'] ) ) . ')';
 							}
 							?>
-							<option value="<?php echo esc_attr( $val['name'] ); ?>" data-si="<?php echo esc_attr( $si ); ?>" data-name="<?php echo esc_attr( $val['name'] ); ?>" data-price="<?php echo esc_attr( $val['price'] ); ?>" data-img="<?php echo esc_url( $val['img'] ); ?>" data-img-id="<?php echo esc_attr( $val['img_id'] ); ?>" data-img-full="<?php echo esc_url( $val['img_full'] ); ?>" data-img-w="<?php echo esc_attr( $val['img_w'] ); ?>" data-img-h="<?php echo esc_attr( $val['img_h'] ); ?>" data-srcset="<?php echo esc_attr( $val['srcset'] ); ?>"<?php disabled( $is_rupture ); ?>><?php echo esc_html( $opt_label ); ?></option>
+							<option value="<?php echo esc_attr( $val['name'] ); ?>" data-si="<?php echo esc_attr( $si ); ?>" data-name="<?php echo esc_attr( $val['name'] ); ?>" data-price="<?php echo esc_attr( $val['price'] ); ?>" data-img="<?php echo esc_url( $val['img'] ); ?>" data-img-id="<?php echo esc_attr( $val['img_id'] ); ?>" data-img-full="<?php echo esc_url( $val['img_full'] ); ?>" data-img-w="<?php echo esc_attr( $val['img_w'] ); ?>" data-img-h="<?php echo esc_attr( $val['img_h'] ); ?>" data-srcset="<?php echo esc_attr( $val['srcset'] ); ?>"<?php disabled( $is_rupture ); selected( $aod_lone_name === $val['name'] ); ?>><?php echo esc_html( $opt_label ); ?></option>
 						<?php endforeach; ?>
 					</select>
 				<?php else : ?>
@@ -764,9 +844,15 @@ class AOD_COD_Form {
 						if ( $is_rupture ) {
 							$opt_class .= ' aod-cod__opt--rupture';
 						}
+						// État visuel du choix auto (2026-09-10) : posé ICI, côté serveur,
+						// pour que la pastille se lise déjà « choisie » au premier rendu —
+						// sans lui, l'écran mentirait jusqu'à ce que le JS s'exécute.
+						if ( $aod_lone_name === $val['name'] ) {
+							$opt_class .= ' is-selected';
+						}
 						?>
 						<label class="<?php echo esc_attr( $opt_class ); ?>" for="<?php echo esc_attr( $oid ); ?>">
-							<input type="radio" id="<?php echo esc_attr( $oid ); ?>" name="aod-opt-<?php echo esc_attr( $prefix . '-' . (int) $si ); ?>" value="<?php echo esc_attr( $val['name'] ); ?>" data-si="<?php echo esc_attr( $si ); ?>" data-name="<?php echo esc_attr( $val['name'] ); ?>" data-price="<?php echo esc_attr( $val['price'] ); ?>" data-img="<?php echo esc_url( $val['img'] ); ?>" data-img-id="<?php echo esc_attr( $val['img_id'] ); ?>" data-img-full="<?php echo esc_url( $val['img_full'] ); ?>" data-img-w="<?php echo esc_attr( $val['img_w'] ); ?>" data-img-h="<?php echo esc_attr( $val['img_h'] ); ?>" data-srcset="<?php echo esc_attr( $val['srcset'] ); ?>"<?php disabled( $is_rupture ); echo $is_rupture ? ' aria-disabled="true"' : ''; ?>>
+							<input type="radio" id="<?php echo esc_attr( $oid ); ?>" name="aod-opt-<?php echo esc_attr( $prefix . '-' . (int) $si ); ?>" value="<?php echo esc_attr( $val['name'] ); ?>" data-si="<?php echo esc_attr( $si ); ?>" data-name="<?php echo esc_attr( $val['name'] ); ?>" data-price="<?php echo esc_attr( $val['price'] ); ?>" data-img="<?php echo esc_url( $val['img'] ); ?>" data-img-id="<?php echo esc_attr( $val['img_id'] ); ?>" data-img-full="<?php echo esc_url( $val['img_full'] ); ?>" data-img-w="<?php echo esc_attr( $val['img_w'] ); ?>" data-img-h="<?php echo esc_attr( $val['img_h'] ); ?>" data-srcset="<?php echo esc_attr( $val['srcset'] ); ?>"<?php disabled( $is_rupture ); checked( $aod_lone_name === $val['name'] ); echo $is_rupture ? ' aria-disabled="true"' : ''; ?>>
 							<span class="aod-cod__opt-card">
 								<?php if ( $is_visual && $val['img'] ) : ?>
 									<span class="aod-cod__opt-thumb" style="background-image:url('<?php echo esc_url( $val['img'] ); ?>')"></span>

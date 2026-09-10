@@ -559,67 +559,109 @@ li.product > .aod-cart__quickgrp .aod-cart__quickorder:hover,
  * restait affiché. */
 body a.aod-loop-cta.aod-loop-cta { display: none; }
 
-/* ---- Panneau de CHOIX ouvert depuis une carte de grille (2026-08-02) ----
- * Il monte du BAS (le tiroir du panier vient du côté) : le geste part d'une
- * carte sous le pouce, la réponse doit arriver là où le pouce est déjà.
- * Il emprunte la peau du tiroir — mêmes jetons, même en-tête, même bouton de
- * fermeture : deux surfaces qui font le même métier ne s'habillent pas
- * différemment. */
+/* ---- Panneau de variantes INLINE dans la carte (refonte 2026-09-10) ----
+ * Remplace la fenêtre flottante (tiroir bas puis boîte centrée, Phases 35-37,
+ * retirées) : le choix s'ouvre DANS la carte de la grille, sous les infos
+ * produit — jamais un composant à part, jamais de fenêtre.
+ *
+ * Technique d'expansion : `grid-template-rows: 0fr → 1fr` sur le conteneur
+ * externe, pas une hauteur mesurée en JS — le panneau s'ouvre juste, quelle
+ * que soit la longueur du texte (une traduction AR plus longue, une section
+ * de plus) sans qu'aucun script n'ait à la mesurer. `.aod-cart__inline-clip`
+ * est la seule cellule de la grille et porte le SEUL `overflow:hidden` : sans
+ * lui, `0fr` ne clippe rien et le contenu déborderait pendant la transition. */
+.aod-cart__inline {
+	display: grid;
+	grid-template-rows: 0fr;
+	margin-block-start: 10px;
+	transition: grid-template-rows .32s cubic-bezier(.4, 0, .2, 1);
+}
+.aod-cart__inline.is-open { grid-template-rows: 1fr; }
+.aod-cart__inline-clip { overflow: hidden; min-height: 0; }
+.aod-cart__inline-body {
+	padding-block-start: 14px;
+	border-block-start: 1px solid var(--ac-line-soft);
+	opacity: 0;
+	transform: translateY(-6px);
+	transition: opacity .24s ease .05s, transform .24s ease .05s;
+}
+.aod-cart__inline.is-open .aod-cart__inline-body { opacity: 1; transform: translateY(0); }
+.aod-cart__inline-load {
+	margin: 0;
+	padding: 8px 0;
+	color: var(--ac-ink-2);
+	font-size: 12.5px;
+	text-align: center;
+}
 
-.aod-cart__sheet {
-	position: fixed;
-	inset-inline: 0;
-	inset-block-end: 0;
-	z-index: 100000;
+.aod-cart__inline-foot {
 	display: flex;
-	flex-direction: column;
-	max-height: 85vh;
-	padding: 0 16px 16px;
-	overflow-y: auto;
-	background: var(--ac-surface, #fff);
-	border-start-start-radius: var(--ac-r-lg);
-	border-start-end-radius: var(--ac-r-lg);
-	box-shadow: 0 -8px 32px rgba(15, 23, 42, .18);
+	align-items: center;
+	gap: 10px;
+	margin-top: 4px;
 }
-.aod-cart__sheet[hidden] { display: none; }
-.aod-cart__sheet .aod-cart__head {
-	position: sticky;
-	inset-block-start: 0;
-	background: var(--ac-surface, #fff);
-}
-.aod-cart__sheet-name {
-	margin: 0 0 12px;
-	font-weight: 600;
-	line-height: 1.35;
-	color: var(--ac-ink);
-}
-.aod-cart__sheet-price { display: block; font-weight: 700; color: var(--ac-accent-dark); }
-.aod-cart__sheet-body { flex: 1 1 auto; }
-.aod-cart__sheet-msg {
-	margin: 8px 0 0;
-	min-height: 1.2em;
-	font-size: .9em;
-	font-weight: 500;
-	color: #b42318;
-}
-.aod-cart__sheet-msg:empty { min-height: 0; }
-/* Même bouton d'achat que « Commander » : c'est le même geste, il se lit pareil. */
-.aod-cart__sheet-add {
-	display: block;
-	width: 100%;
-	padding: 13px 16px;
+.aod-cart__inline-add {
+	position: relative;
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	padding: 12px 16px;
 	border: 0;
 	border-radius: var(--ac-r-md);
 	background: var(--ac-accent);
 	color: #fff;
-	font-size: 1em;
-	font-weight: 700;
+	font-size: 13.5px;
+	font-weight: 600;
+	letter-spacing: .01em;
 	cursor: pointer;
+	transition: background-color .18s ease, transform .12s ease;
 }
-.aod-cart__sheet-add:hover,
-.aod-cart__sheet-add:focus-visible { background: var(--ac-accent-dark); }
-.aod-cart__sheet-add:focus-visible { outline: 2px solid var(--ac-accent-dark); outline-offset: 2px; }
-.aod-cart__sheet-add[disabled] { opacity: .55; cursor: default; }
+.aod-cart__inline-add:hover,
+.aod-cart__inline-add:focus { background: var(--ac-accent-dark); }
+.aod-cart__inline-add:focus-visible { outline: 2px solid var(--ac-accent-dark); outline-offset: 2px; }
+.aod-cart__inline-add:active { transform: scale(.98); }
+/* État « chargement » : le libellé s'efface, un anneau prend sa place — le
+ * bouton garde sa taille (l'anneau est en position absolue, pas en flux). */
+.aod-cart__inline-add.is-loading .aod-cart__inline-add-label { opacity: 0; }
+.aod-cart__inline-add.is-loading { cursor: default; }
+.aod-cart__inline-add.is-loading::after {
+	content: "";
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, .4);
+	border-block-start-color: #fff;
+	animation: aod-cart-spin .6s linear infinite;
+}
+.aod-cart__inline-add.is-added { background: var(--ac-accent-dark); cursor: default; pointer-events: none; }
+@keyframes aod-cart-spin { to { transform: rotate(360deg); } }
+
+.aod-cart__inline-msg {
+	margin: 8px 0 0;
+	min-height: 1.2em;
+	font-size: 12.5px;
+	font-weight: 500;
+	color: var(--ac-danger);
+}
+.aod-cart__inline-msg:empty { min-height: 0; }
+/* Confirmation discrète, sous le bouton — pas une bannière : « Article ajouté
+ * au panier. », déjà traduite FR/AR (même chaîne que `added_short`, la variante
+ * courte du LIBELLÉ du bouton). */
+.aod-cart__inline-ok {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin: 10px 0 0;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--ac-accent-dark);
+	animation: aod-cart-fadein .2s ease;
+}
+.aod-cart__inline-ok .aod-i { width: 15px; height: 15px; flex: 0 0 auto; }
+@keyframes aod-cart-fadein { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---- Bloc de gestion sur la page du formulaire ----
  * Même largeur, même bordure, même rayon que `.aod-cod` : les deux cartes
@@ -791,10 +833,18 @@ body.aod-cart-checkout .aod-cod__offers--solo .aod-cod__offer-price {
 	.aod-cart__quickgrp,
 	.aod-cart__quickadd,
 	.aod-cart__quickorder,
-	.aod-cart__sugcard {
+	.aod-cart__sugcard,
+	.aod-cart__inline,
+	.aod-cart__inline-body,
+	.aod-cart__inline-add {
 		transition: none;
 	}
 	.aod-cart__fab:hover { transform: none; }
 	/* Décor, pas du positionnement (piège Phase 19) : neutraliser est sûr. */
 	.aod-cart__sugcard:hover { transform: none; }
+	.aod-cart__inline-add:active { transform: none; }
+	/* Panneau inline (2026-09-10) : l'expansion part, l'acquittement reste —
+	 * le panneau s'ouvre directement dans son état final. */
+	.aod-cart__inline-add.is-loading::after,
+	.aod-cart__inline-ok { animation: none; }
 }

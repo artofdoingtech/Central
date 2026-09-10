@@ -290,11 +290,24 @@
 					render();
 				} );
 
-				// État initial : une section peut arriver déjà cochée (retour arrière du
-				// navigateur, remplissage automatique). Sans ce passage, l'écho resterait
-				// vide alors qu'une valeur EST sélectionnée — un affichage qui ment.
+				// État initial : une section peut arriver déjà cochée — retour arrière du
+				// navigateur, remplissage automatique, OU (2026-09-10) une valeur UNIQUE
+				// disponible pré-cochée par le serveur (needs_variant_choice()). Sans ce
+				// passage, l'écho resterait vide alors qu'une valeur EST sélectionnée —
+				// un affichage qui ment.
 				$offers.find( '.aod-cod__optsec' ).each( function () {
-					echoPick( $( this ) );
+					var $sec = $( this );
+					echoPick( $sec );
+					// La pastille elle-même : `.is-selected` n'est posée que par le
+					// `change` ci-dessus, jamais à l'initialisation. Le PHP pose déjà
+					// cette classe pour une valeur unique (repli en l'absence de JS),
+					// mais un retour arrière du navigateur peut cocher une AUTRE radio
+					// sans que le HTML servi le sache — on relit donc l'état réel.
+					var $checked = $sec.find( 'input[type="radio"]:checked' );
+					if ( $checked.length ) {
+						$sec.find( '.aod-cod__opt' ).removeClass( 'is-selected' );
+						$checked.closest( '.aod-cod__opt' ).addClass( 'is-selected' );
+					}
 				} );
 			}
 
