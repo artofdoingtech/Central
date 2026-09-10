@@ -177,6 +177,21 @@
 				// lui qui sera commandé. Le total vient de l'estimation serveur
 				// (formule exacte de handle_submit), jamais recalculé ici ; tant
 				// qu'elle n'est pas arrivée, on garde le produit de la page.
+				//
+				// 🚨 « garder le produit de la page », justement, EST le défaut
+				// (2026-09-09) : `count()` sait tout de suite (localStorage, lecture
+				// synchrone) que le panier n'est pas vide, mais `hasTotal()` attend
+				// l'aller-retour réseau de `fetchEstimate()`. Entre les deux —
+				// quelques dizaines de ms en local, sensiblement plus sur un réseau
+				// mobile DZ — le Sous-total/Total affichait le prix d'UN SEUL produit
+				// (celui de cette page) alors que le panier peut en contenir
+				// plusieurs. Mesuré : 4 articles à 5 000 DA affichés « 1 000 DA » le
+				// temps que la vraie estimation arrive. Un chiffre qu'on SAIT faux ne
+				// doit jamais s'afficher, même une fraction de seconde — `render()`
+				// est déjà rebranché sur `aod:cart-total` (plus bas) donc l'écran se
+				// corrige de lui-même dès l'estimation reçue ; ici on se contente de
+				// ne rien afficher de trompeur en attendant.
+				var cartPending = !! ( window.aodCart && window.aodCart.count() && ! window.aodCart.hasTotal() );
 				if ( window.aodCart && window.aodCart.count() && window.aodCart.hasTotal() ) {
 					subtotal = window.aodCart.total();
 				}
@@ -192,6 +207,12 @@
 						$p.text( v > 0 ? fmt( v ) : '' );
 					}
 				} );
+
+				if ( cartPending ) {
+					$box.find( '.aod-cod__subtotal, .aod-cod__shipping, .aod-cod__total' ).text( '…' );
+					$hint.attr( 'hidden', 'hidden' ).text( '' );
+					return;
+				}
 
 				var type = $form.find( 'input[name="delivery"]:checked' ).val();
 				var base = baseShip( type );

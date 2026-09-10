@@ -304,9 +304,25 @@
 			// [hidden] reste interrogeable et ment à qui le compte.
 			b.hidden = true;
 			b.querySelector( '.aod-cart__list' ).innerHTML = '';
+			// La fiche du produit-hôte (image, prix, titre) redevient légitime :
+			// « Commander » n'ayant pas encore de page dédiée (Phase 77 absente
+			// ici), on atterrit sur la fiche du 1ᵉʳ article du panier — sans cette
+			// classe, son image/prix restait affiché même une fois le panier vidé
+			// depuis ce même bloc, sans rapport avec le formulaire juste dessous.
+			document.body.classList.remove( 'aod-cart-checkout' );
 			return;
 		}
 		b.hidden = false;
+		// 🚨 « Commander » n'ouvre pas une page dédiée : il atterrit sur la fiche
+		// du 1ᵉʳ article du panier, qui affiche SA propre image/titre/prix — alors
+		// que le formulaire, juste dessous, peut soumettre PLUSIEURS produits
+		// différents (ceux de `.aod-cart__box`, juste au-dessus). L'acheteur lisait
+		// deux histoires contradictoires sur la même page. Cette classe masque la
+		// fiche du produit-hôte (aod-cart.css) tant que le panier — donc CE bloc —
+		// est visible : ne reste que « Votre panier » (les vraies lignes) + le
+		// formulaire. Posée ici et nulle part ailleurs : c'est CE bloc, pas un état
+		// de panier générique, qui décide si la fiche est redondante sur CETTE page.
+		document.body.classList.add( 'aod-cart-checkout' );
 		fetchEstimate( function ( err, data ) {
 			if ( err ) {
 				b.querySelector( '.aod-cart__list' ).innerHTML = '<p class="aod-cart__empty">' + esc( err ) + '</p>';
