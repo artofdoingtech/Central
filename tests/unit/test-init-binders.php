@@ -168,8 +168,8 @@ $aod_ib_exemptions = array(
 		'raison'   => '—',
 	),
 	'aod-cart.js'        => array(
-		'attendus' => 1,
-		'raison'   => 'localStorage.setItem (35.3) : en navigation privée ou stockage plein, écrire lève — le panier redevient alors VOLATIL (l’état repart de la page), ce qui est le comportement voulu sur le chemin d’achat : jamais une erreur visible pour un confort de persistance. La lecture, elle, récupère explicitement (retour []).',
+		'attendus' => 2,
+		'raison'   => 'localStorage.setItem (35.3) : en navigation privée ou stockage plein, écrire lève — le panier redevient alors VOLATIL (l’état repart de la page), ce qui est le comportement voulu sur le chemin d’achat : jamais une erreur visible pour un confort de persistance. La lecture, elle, récupère explicitement (retour []). · URLSearchParams (marqueur de validation du panier, 2026-09-13) : un navigateur trop ancien pour le supporter retombe simplement sur la vue panier+fiche habituelle — jamais bloquant, jamais visible.',
 	),
 );
 

@@ -24,6 +24,38 @@
 	var CFG = window.AOD_CART;
 	var KEY = 'aod_cart';
 
+	/* ------------------------------------------ marqueur de validation (36.3) */
+	//
+	// 2026-09-13 (retour owner) : « quand on valide un panier, n'afficher que
+	// le formulaire et le total » — mais UNIQUEMENT à cet instant-là. La fiche
+	// produit garde par ailleurs le droit de toujours dire la vérité sur
+	// elle-même (revirement plus haut le même jour, cf. aod-cart.css) : un
+	// acheteur qui a 2 articles au panier et clique un 3ᵉ produit SANS RAPPORT
+	// depuis la grille doit voir SA fiche, pas un panier qui n'a rien à faire
+	// là. `body.aod-cart-checkout` (posée dès que le panier a ≥ 1 ligne, peu
+	// importe comment on est arrivé sur la page) ne peut donc pas porter cette
+	// vue « validation » — il faut un signal qui distingue un clic sur
+	// « Commander » d'une simple visite.
+	//
+	// Le signal : un paramètre d'URL, posé UNIQUEMENT par le clic sur
+	// « Commander » (plus bas), lu ICI une seule fois puis RETIRÉ de l'URL
+	// (`history.replaceState`) — sinon un rechargement, un lien partagé ou un
+	// retour arrière rouvriraient indéfiniment la vue « validation » sur une
+	// page que l'acheteur ne fait plus que consulter. Aucun état serveur,
+	// aucun cookie : cohérent avec un panier qui ne vit qu'en `localStorage`.
+	var CHECKOUT_PARAM  = 'aod_panier_valide';
+	var checkoutIntent  = false;
+	try {
+		var aodParams = new URLSearchParams( window.location.search );
+		if ( aodParams.has( CHECKOUT_PARAM ) ) {
+			checkoutIntent = true;
+			aodParams.delete( CHECKOUT_PARAM );
+			var aodQs  = aodParams.toString();
+			var aodUrl = window.location.pathname + ( aodQs ? '?' + aodQs : '' ) + window.location.hash;
+			window.history.replaceState( null, '', aodUrl );
+		}
+	} catch ( e ) { /* URLSearchParams indisponible : tant pis, vue normale. */ }
+
 	/* ---------------------------------------------------------------- store */
 
 	function read() {
@@ -326,6 +358,7 @@
 			b.hidden = true;
 			b.querySelector( '.aod-cart__list' ).innerHTML = '';
 			document.body.classList.remove( 'aod-cart-checkout' );
+			document.body.classList.remove( 'aod-cart-review' );
 			return;
 		}
 		b.hidden = false;
@@ -335,6 +368,14 @@
 		// (galerie/titre/prix/description) reste TOUJOURS affichée, panier vide
 		// ou non, produit dans le panier ou non — cf. le commentaire du CSS.
 		document.body.classList.add( 'aod-cart-checkout' );
+		// `aod-cart-review` (même jour, revirement PARTIEL du commentaire
+		// ci-dessus) : posée seulement si CETTE page a été atteinte via
+		// « Commander » (`checkoutIntent`, cf. plus haut) — jamais par simple
+		// navigation. Elle masque la fiche du produit-hôte pour ne garder que
+		// le panier (total) et le formulaire ; le principe « une fiche dit
+		// toujours la vérité sur elle-même » reste donc intact pour tout le
+		// reste de la navigation.
+		document.body.classList.toggle( 'aod-cart-review', checkoutIntent );
 		fetchEstimate( function ( err, data ) {
 			if ( err ) {
 				b.querySelector( '.aod-cart__list' ).innerHTML = '<p class="aod-cart__empty">' + esc( err ) + '</p>';
@@ -650,7 +691,12 @@
 
 	orderBtn.addEventListener( 'click', function () {
 		if ( firstUrl ) {
-			window.location.href = firstUrl + '#' + CFG.anchor;
+			// Marque la navigation comme une VALIDATION du panier (cf. le bloc
+			// « marqueur de validation » en tête de fichier) — c'est ce qui
+			// bascule la page cible sur `aod-cart-review` plutôt que la vue
+			// panier+fiche habituelle.
+			var sep = firstUrl.indexOf( '?' ) === -1 ? '?' : '&';
+			window.location.href = firstUrl + sep + CHECKOUT_PARAM + '=1#' + CFG.anchor;
 		}
 	} );
 

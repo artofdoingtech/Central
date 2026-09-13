@@ -811,6 +811,67 @@ body a.aod-loop-cta.aod-loop-cta { display: none; }
  * bloc juste en dessous, sur le sélecteur de variantes) ; elle ne masque plus
  * rien du produit lui-même. */
 
+/* ---- Mode « validation » : plus que le panier (total) et le formulaire
+ * (2026-09-13, retour owner : « quand on valide un panier, n'afficher que le
+ * formulaire de commande et le prix total du panier ») ----
+ * `body.aod-cart-review` est posée par `aod-cart.js` UNIQUEMENT quand cette
+ * page a été atteinte via un clic sur « Commander » (marqueur d'URL consommé
+ * puis retiré, jamais une simple visite) — le REVIREMENT juste au-dessus reste
+ * donc vrai pour tout le reste de la navigation : une fiche visitée
+ * normalement continue de montrer ses propres photos et sa description,
+ * panier vide ou non. Cet écran-ci n'est plus une fiche produit qu'on
+ * consulte, c'est l'écran de validation d'une commande : plus rien à y
+ * regarder que le prix et le formulaire.
+ *
+ * Deux niveaux, MÊME PRINCIPE : `:not()` plutôt qu'une liste de sélecteurs
+ * Woo/thème à tenir à jour (mesuré au navigateur, `div.product` a pour
+ * enfants directs la pastille Promo, la galerie, `div.summary` et les
+ * onglets `.woocommerce-tabs` — un thème ou une extension tierce pouvant en
+ * ajouter d'autres, ex. avis/upsells) :
+ * - dans `div.product`, TOUT est masqué SAUF `div.summary` (donc galerie,
+ *   pastille Promo, onglets « Informations complémentaires »/« Avis »…) ;
+ * - dans le résumé, TOUT est masqué SAUF `.aod-cart__checkout` (panier +
+ *   formulaire) — titre, prix, description courte, méta, sélecteur de
+ *   variantes (déjà masqué plus haut).
+ * `.aod-cart__suggest` (« Complétez votre commande ») est un cas à part : il
+ * vit hors de `div.product` (posé sur `woocommerce_after_single_product`,
+ * donc plus bas dans la page) et se masque donc par son propre sélecteur. */
+body.aod-cart-review div.product > *:not(div.summary) {
+	display: none !important;
+}
+body.aod-cart-review div.product div.summary > *:not(.aod-cart__checkout) {
+	display: none !important;
+}
+body.aod-cart-review .aod-cart__suggest {
+	display: none !important;
+}
+@media (min-width: 1024px) {
+	/* Plus de galerie à équilibrer (32%/64% juste au-dessus) : le résumé
+	 * reprend toute la largeur pour sa grille panier+formulaire. */
+	body.aod-cart-review div.product div.summary {
+		width: 100% !important;
+	}
+	/* Le panier n'est plus qu'un total à côté du formulaire : il n'a plus
+	 * besoin de peser AUTANT que lui dans la grille (l'équilibre `1fr 1fr` du
+	 * commentaire du 2026-09-13 juste au-dessus visait TROIS sections de même
+	 * largeur — il n'y en a plus que deux ici). Même spécificité que la règle
+	 * qu'elle corrige (`body.aod-cart-checkout .aod-cart__checkout`) : elle
+	 * gagne par ORDRE DANS LA FEUILLE, posée après elle — pas de `!important`
+	 * nécessaire sur cette seule propriété. */
+	body.aod-cart-review .aod-cart__checkout {
+		grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+	}
+}
+/* Panier réduit au total (+ la note qui le qualifie, « livraison calculée à la
+ * commande ») : la liste des lignes (vignettes, quantités, retrait) et le
+ * titre « Votre panier » n'ont plus leur place sur un écran qui ne dit plus
+ * que « voici ce que ça coûte » et « où l'envoyer ». Éditer le panier reste
+ * possible via le tiroir flottant, laissé intact. */
+body.aod-cart-review .aod-cart__box-title,
+body.aod-cart-review .aod-cart__list {
+	display: none !important;
+}
+
 /* ---- Le sélecteur de variantes du produit-hôte s'efface aussi (2026-09-10,
  * demande owner) ----
  * ⚠️ REVIREMENT sur la règle du 2026-09-09 juste en dessous, qui gardait ce
