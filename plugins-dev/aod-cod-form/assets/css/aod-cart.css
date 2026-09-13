@@ -910,6 +910,30 @@ body.aod-cart-review .aod-cod__addcart {
 body.aod-cart-checkout:not(.aod-cart-review) .aod-cod__form > *:not(#aod-options):not(.aod-cod__config-msg):not(.aod-cod__addcart):not(.aod-cod__msg):not(.aod-cod__hp) {
 	display: none !important;
 }
+/* ---- Même écran (simple navigation) : le rappel « Votre panier » disparaît
+ * aussi (2026-09-13, retour owner : « on peut l'afficher à partir de l'icône
+ * panier, donc c'est une redondance ») ----
+ * Le tiroir flottant (`#aod-cart-fab`, jamais masqué par cette page) reste LE
+ * moyen de consulter le panier pendant qu'on regarde un produit — cette carte
+ * répétait la même information juste à côté de la galerie. Elle reste, elle,
+ * INTACTE sur l'écran de validation (`body.aod-cart-review`) : celui-là NE
+ * répète rien, c'est le seul endroit qui affiche le prix total. */
+body.aod-cart-checkout:not(.aod-cart-review) .aod-cart__box {
+	display: none !important;
+}
+@media (min-width: 1024px) {
+	/* `display:none` retire déjà `.aod-cart__box` de la grille (une case
+	 * `display:none` ne réserve aucune piste) — mais les DEUX colonnes
+	 * explicites de `1fr 1fr` (règle du 2026-09-13 plus haut) restent, elles,
+	 * posées : sans cette redéfinition, la carte panier disparaît en laissant
+	 * un couloir vide à sa place, exactement le défaut du 2026-09-13 (plus
+	 * haut, panier VRAIMENT vide) rejoué ici pour une autre raison. Une seule
+	 * colonne : `.aod-cod` (options + « Ajouter au panier ») en prend toute
+	 * la largeur. */
+	body.aod-cart-checkout:not(.aod-cart-review) .aod-cart__checkout {
+		grid-template-columns: 1fr;
+	}
+}
 
 /* ---- La règle qui rendait à la colonne résumé les 48% de la galerie
  * masquée (2026-09-10) a été retirée le 2026-09-13 avec le revirement
