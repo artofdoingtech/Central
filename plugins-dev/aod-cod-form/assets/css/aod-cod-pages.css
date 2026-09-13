@@ -32,9 +32,24 @@
  * suivre le sens de lecture.
  * `!important` DÉLIBÉRÉ, même raison que les autres overrides Astra du
  * template (cf. aod-cart.css) : l'ordre d'impression entre le CSS du thème et
- * celui d'un plugin n'est pas garanti d'avance. */
+ * celui d'un plugin n'est pas garanti d'avance.
+ *
+ * 🚨 `max-width: none` AUSSI, et c'est le vrai sujet du retour owner
+ * (« je rafraîchis, rien n'a changé, la marge est toujours grande ») : le
+ * `padding` de 20 px ci-dessus est minuscule et INVISIBLE à côté du plafond
+ * `.ast-container{max-width:1640px}` (`site-content-width` = 1600, réglé par
+ * `setup.sh`, cf. CHECKLIST-THEME-CHILD.md §C9) — sur un écran large, c'est LUI
+ * qui crée le grand vide sur les côtés, pas le padding : mesuré, 140 px de
+ * chaque côté à 1920 px, 460 px à 2560 px. Sans le lever, le padding ne change
+ * strictement rien au-delà de 1640 px de large — exactement ce qui a été vu.
+ * Avec `max-width:none`, le conteneur remplit tout le viewport et le SEUL
+ * espace latéral qui reste est le padding de 0,5 cm réglé ci-dessous, à
+ * n'importe quelle largeur d'écran. `.ast-woo-shop-archive .site-content >
+ * .ast-container` (règle plus spécifique à la Boutique) est couverte par le
+ * même `!important` : la spécificité ne joue plus de rôle face à lui. */
 .ast-container,
 .ast-container-fluid {
+	max-width: none !important;
 	padding-inline: 0.5cm !important;
 }
 
