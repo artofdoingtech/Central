@@ -16,6 +16,28 @@
  *     dans les media queries.
  */
 
+/* ───────────────────────────────────────── Marge extérieure du site ──────── */
+
+/* Goutière latérale de TOUT le site (2026-09-13, demande owner) : header, pied
+ * de page, Accueil, Boutique, Contact et fiches produit — ce fichier est le
+ * SEUL du plugin chargé sans condition sur toute page publique (cf. le
+ * commentaire de AOD_COD_Pages::assets()), donc le seul endroit qui touche
+ * vraiment « tout le site » plutôt qu'une seule page.
+ *
+ * Astra pose `padding-left:20px;padding-right:20px` sur `.ast-container` /
+ * `.ast-container-fluid` (main.min.css, cœur du thème, hors media query — donc
+ * la même valeur à toutes les tailles d'écran) : mesuré au navigateur, pas
+ * deviné. `padding-inline` (règle 2 ci-dessus) plutôt que `padding-left/right` :
+ * en RTL, `left`/`right` resteraient sur le même CÔTÉ physique au lieu de
+ * suivre le sens de lecture.
+ * `!important` DÉLIBÉRÉ, même raison que les autres overrides Astra du
+ * template (cf. aod-cart.css) : l'ordre d'impression entre le CSS du thème et
+ * celui d'un plugin n'est pas garanti d'avance. */
+.ast-container,
+.ast-container-fluid {
+	padding-inline: 0.5cm !important;
+}
+
 /* ─────────────────────────────────────────────────────────── Accueil ─────── */
 
 .aod-home__hero {
