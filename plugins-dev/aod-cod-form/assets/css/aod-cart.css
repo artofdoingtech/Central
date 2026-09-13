@@ -872,26 +872,42 @@ body.aod-cart-review .aod-cart__list {
 	display: none !important;
 }
 
-/* ---- Le sélecteur de variantes du produit-hôte s'efface aussi (2026-09-10,
- * demande owner) ----
- * ⚠️ REVIREMENT sur la règle du 2026-09-09 juste en dessous, qui gardait ce
- * bloc VISIBLE à dessein. La raison d'alors ne tient plus : `handle_submit()`
- * côté JS (`aod-cod-form.js`) lit déjà `window.aodCart.items()` dès que le
- * panier a des lignes (`usedCart`) — la sélection faite ICI, dans ce panneau,
- * n'a donc plus aucun effet sur ce qui part réellement en commande. L'acheteur
- * pouvait choisir une couleur, une quantité, cliquer « Confirmer la commande »,
- * et voir partir tout autre chose : les lignes de SON panier, pas son choix
- * ici. Une UI qui reste interactive sans rien piloter n'est pas un détail
- * visuel, c'est un mensonge sur ce que le clic va faire.
- * `#aod-options` — le pickhint, les cartes d'offres, les sections de
- * variantes — et son bouton `.aod-cod__addcart` (qui LISAIT cette sélection
- * pour ajouter le produit-hôte) partent donc ensemble : rien à choisir dans un
- * panneau invisible. Le récapitulatif (`.aod-cod__summary`, plus bas dans le
- * formulaire) reste, lui, INTACT — il est déjà piloté par
- * `window.aodCart.total()`, jamais par ce panneau. */
-body.aod-cart-checkout #aod-options,
-body.aod-cart-checkout .aod-cod__config-msg,
-body.aod-cart-checkout .aod-cod__addcart {
+/* ---- Navigation simple (panier non vide, PAS de validation) : « Ajouter au
+ * panier », jamais le formulaire de commande (2026-09-13, retour owner) ----
+ * ⚠️ DEUXIÈME REVIREMENT sur la règle du 2026-09-10 (ci-dessous, gardée pour
+ * mémoire dans l'historique de ce fichier jusqu'ici) : elle masquait le
+ * sélecteur de variantes ET « Ajouter au panier » dès `body.aod-cart-checkout`
+ * — donc aussi bien en simple navigation qu'en validation — au motif que
+ * `handle_submit()` lit `window.aodCart.items()` dès que le panier a des
+ * lignes, ce qui rendait CE panneau muet pendant que « Confirmer la commande »
+ * restait affiché à côté de lui. C'était vrai tant que les deux blocs
+ * coexistaient à l'écran.
+ *
+ * Ce n'est plus le cas : en simple navigation (cet écran-ci), c'est
+ * DÉSORMAIS le formulaire de commande qui s'efface (règle suivante) — il ne
+ * reste que ce panneau et son bouton, dont le clic ajoute EXACTEMENT ce qui y
+ * est choisi. Le sélecteur redevient donc pilote de quelque chose de réel : le
+ * panneau moot du 2026-09-10 ne visait que la coexistence avec « Confirmer »,
+ * qui a disparu de cet écran.
+ *
+ * `body.aod-cart-review` (validation, cf. plus haut) reste, lui, le cas où
+ * « Confirmer la commande » redevient visible et lit le panier — remettre le
+ * sélecteur devant lui y recréerait EXACTEMENT le mensonge de 2026-09-10 :
+ * masqué SEULEMENT là. */
+body.aod-cart-review #aod-options,
+body.aod-cart-review .aod-cod__config-msg,
+body.aod-cart-review .aod-cod__addcart {
+	display: none !important;
+}
+/* Tout le reste du formulaire (nom, téléphone, wilaya/commune, livraison,
+ * adresse, récapitulatif, Turnstile, « Confirmer la commande ») s'efface en
+ * simple navigation — `:not()` plutôt qu'une liste de champs à tenir à jour,
+ * pour rester vrai même si le formulaire gagne un champ demain. `.aod-cod__msg`
+ * reste EXCLU : c'est la même ligne qui porte le retour du clic sur « Ajouter
+ * au panier » (succès/erreur, cf. `aod-cod-form.js`) — la masquer rendrait ce
+ * clic muet. `.aod-cod__hp` (honeypot) reste EXCLU par indifférence : déjà
+ * invisible pour un humain par sa propre feuille, jamais par celle-ci. */
+body.aod-cart-checkout:not(.aod-cart-review) .aod-cod__form > *:not(#aod-options):not(.aod-cod__config-msg):not(.aod-cod__addcart):not(.aod-cod__msg):not(.aod-cod__hp) {
 	display: none !important;
 }
 
