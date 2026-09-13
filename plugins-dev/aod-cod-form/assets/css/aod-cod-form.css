@@ -800,11 +800,104 @@ html[dir="rtl"] .aod-cod__optselect{
 .rtl .woocommerce-product-gallery .aod-gallery-nav--prev{left:auto;right:12px}
 .rtl .woocommerce-product-gallery .aod-gallery-nav--next{right:auto;left:12px}
 
-/* ---- Description courte, sous la galerie, en volet dépliable (2026-09-13) --
- * Déplacée ici depuis la colonne résumé par `strip_native_short_description()`
- * / `remove_astra_short_description()` (class-aod-cod-form.php) — imprimée
- * par `render_gallery_description()`, hook `woocommerce_before_single_product_summary`
- * à la priorité 25, juste après la galerie (priorité 20, cœur Woo).
+/* ---- Miniatures de la galerie en colonne, sur le côté (2026-09-13, demande
+ * owner) ----
+ * Par défaut (Woo + Astra), les miniatures s'affichent en GRILLE HORIZONTALE
+ * sous la grande photo (`.flex-control-thumbs li{float:left;width:25%}`,
+ * woocommerce-grid.min.css) — demande owner : les vouloir en colonne.
+ *
+ * `:has(.flex-control-thumbs)` : n'active la grille QUE si des miniatures
+ * existent réellement. Un produit à UNE SEULE photo n'a pas de
+ * `.flex-control-thumbs` du tout (pas de flexslider) — sans cette garde, la
+ * colonne qu'on leur réserve resterait un couloir vide à côté de l'image,
+ * même piège que la grille panier+formulaire (cf. aod-cart.css, « couloir
+ * mort »).
+ *
+ * CSS GRID, pas flex : `grid-template-areas` place la colonne miniatures et
+ * la grande photo indépendamment de leur ORDRE dans le DOM — qui varie déjà
+ * selon que le produit a 1 ou plusieurs photos (cf. initGalleryDescToggle()) —
+ * et la ligne « desc » sous les deux fait retomber le volet de description en
+ * PLEINE LARGEUR, quel que soit ce qu'il y a au-dessus.
+ * `grid-template-columns` suit NATIVEMENT le sens de lecture : Grid place la
+ * 1ʳᵉ colonne à l'INLINE-START — donc à DROITE en arabe, sans règle miroir —
+ * contrairement à `left`/`right`, qui resteraient sur le même côté physique.
+ *
+ * Sous 600px (mobile), on garde l'empilement d'origine : une colonne de
+ * miniatures serrerait une photo déjà étroite — MOBILE D'ABORD (§ TEMPLATE.md). */
+@media (min-width: 600px) {
+	.woocommerce-product-gallery:has(.flex-control-thumbs) {
+		display: grid;
+		grid-template-columns: 80px 1fr;
+		grid-template-areas:
+			"thumbs viewport"
+			"desc   desc";
+		gap: 12px;
+		align-items: start;
+	}
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-control-nav.flex-control-thumbs {
+		grid-area: thumbs;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		max-height: 600px;
+		overflow-x: hidden;
+		/* `!important` : le cœur Woo pose `overflow:hidden` (donc aussi
+		   overflow-y) sur ce même `<ol>` à une spécificité (0,4,2) plus haute
+		   que la nôtre (0,4,0) — sans lui, la liste resterait tronquée sans
+		   pouvoir défiler au-delà de 600px. */
+		overflow-y: auto !important;
+	}
+	/* Réarme le `float:left; width:25%` du cœur Woo (grille horizontale) : en
+	   colonne, chaque miniature remplit la largeur de SA colonne à elle. */
+	/* `!important` DÉLIBÉRÉ sur les trois : la règle cœur (`.woocommerce-js
+	   div.product div.images .flex-control-thumbs li` + la variante
+	   `--columns-N`, woocommerce-grid.min.css) pèse (0,4,3) — plus que notre
+	   (0,3,1), `:has()` comptant comme une seule classe. Mesuré, pas deviné :
+	   sans `!important`, `width:25%;float:left` d'Astra gagnait et les
+	   miniatures restaient en grille horizontale malgré cette règle. */
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-control-thumbs li {
+		width: 100% !important;
+		float: none !important;
+		margin: 0 !important;
+	}
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-control-thumbs li img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-viewport {
+		grid-area: viewport;
+		/* `min-width:0` : sans lui, un enfant `flex`/`grid` par défaut ne
+		   rétrécit jamais sous sa largeur INTRINSÈQUE (celle de l'image) —
+		   la colonne « viewport » aurait poussé la grille plus large que le
+		   conteneur au lieu de laisser l'image se réduire avec lui. */
+		min-width: 0;
+	}
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .aod-cod__gallery-desc {
+		grid-area: desc;
+	}
+	/* Les flèches ‹ › (position:absolute, cf. plus haut) sont ancrées au
+	   conteneur ENTIER (galerie + colonne miniatures), pas à la seule image :
+	   sans ce recalage, « précédent » (`inset-inline-start`) flotterait
+	   au-dessus des miniatures au lieu du bord de la photo. `80px` (colonne) +
+	   12px (gap de la grille) + 12px (creux d'origine de la flèche) — un SEUL
+	   calc plutôt que left+right/RTL séparés : `inset-inline-start` vaut déjà
+	   `left` en FR et `right` en AR, exactement le côté où vit la colonne
+	   miniatures dans les deux sens de lecture. « suivant » n'a pas besoin de
+	   ce recalage : son bord (`inset-inline-end`) reste celui de l'image, la
+	   colonne miniatures étant de l'autre côté. */
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .aod-gallery-nav--prev {
+		inset-inline-start: calc(80px + 12px + 12px);
+	}
+}
+
+/* ---- Description LONGUE (l'onglet natif « Description »), sous la galerie,
+ * en volet dépliable (2026-09-13, précisé après un premier essai sur la
+ * description COURTE) ----
+ * Retirée de son onglet par `remove_description_tab()`
+ * (class-aod-cod-form.php) — imprimée par `render_gallery_description()`,
+ * hook `woocommerce_before_single_product_summary` à la priorité 25, juste
+ * après la galerie (priorité 20, cœur Woo).
  * Couleurs en DUR, pas de `var(--sh-*)` : ces jetons sont scopés à `.aod-cod`
  * (aod-cod-form.css, tout en haut) — un bloc HORS de `.aod-cod` (sibling de la
  * galerie, pas de son formulaire) ne les hérite pas ; y référer aurait été un
