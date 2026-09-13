@@ -176,7 +176,19 @@ function aod_test_pcs_census() {
 			// dérogation, c'est quatre endroits où la relire et trois où oublier de la
 			// corriger. Le census n'a jamais su dire ça — il compte, il ne déduplique
 			// pas.
-			'n'        => 192,
+			//
+			// 192 → 193 le 2026-09-13 (volet « Description du produit » sous la
+			// galerie, class-aod-cod-form.php). ⬆️ UNE de plus :
+			// `render_gallery_description()` imprime `wp_kses_post( $html )`, où
+			// `$html = apply_filters( 'woocommerce_short_description', $post->post_excerpt )`
+			// — EXACTEMENT l'appel que `single-product/short-description.php` du
+			// cœur Woo fait déjà, sans dérogation là-bas puisque ce n'est pas nous
+			// qui l'imprimons d'habitude. Le déplacement sous la galerie ne change
+			// ni la donnée (la description que le gérant a écrite, pas une saisie
+			// visiteur) ni l'échappement (`wp_kses_post()`, même filtre que le
+			// template natif) — seul l'endroit où ce même contenu de confiance
+			// s'imprime a changé.
+			'n'        => 193,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '

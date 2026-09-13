@@ -715,27 +715,40 @@ body a.aod-loop-cta.aod-loop-cta { display: none; }
  * avant d'y ajouter une seconde colonne.
  * ⚠️ Seuil ENCORE estimé, pas mesuré (toujours aucun navigateur disponible
  * ici) — à confirmer en responsive sur le clone, cf. TEMPLATE.md §5. */
+/* ---- REVIREMENT (2026-09-13, retour owner : « les 3 sections doivent avoir
+ * la même largeur ») ----
+ * Le passage en grille est désormais posé sur `body.aod-cart-checkout`, pas
+ * sur `.aod-cart__checkout` seul. Raison : cette coquille existe sur TOUTE
+ * fiche produit dès que `.aod-cod` y est présent (`ensureBox()` la crée au
+ * chargement, panier vide ou non — cf. `renderBox()`), et une grille CSS
+ * réserve la largeur de SES DEUX colonnes explicites même quand une seule
+ * contient un élément visible : panier vide, `.aod-cart__box` est
+ * `display:none` (retiré de la grille), mais la 2ᵉ colonne (`minmax(240px,
+ * 300px)`) restait un couloir mort à droite du formulaire, qui n'occupait
+ * plus alors que `1fr` au lieu de toute la largeur. En ne grillant QUE l'état
+ * où le panier est réellement affiché (`body.aod-cart-checkout`, posée par
+ * `renderBox()` exactement dans ce cas), le formulaire retrouve son rendu
+ * normal (`.aod-cod`, aod-cod-form.css) le reste du temps.
+ *
+ * Largeur : les deux colonnes sont désormais des `1fr` STRICTEMENT ÉGALES,
+ * sans plafond ni centrage — la colonne résumé fait le DOUBLE de la galerie
+ * (cf. la règle 32%/64% juste en dessous), donc chaque moitié du résumé pèse
+ * exactement AUTANT que la galerie : les trois sections (galerie, panier,
+ * formulaire) ont la même largeur à l'écran.
+ * `margin` et `gap` : 0,5 cm demandés par l'owner, appliqués aux deux (marge
+ * extérieure du bloc SUR SES QUATRE CÔTÉS — pas seulement au-dessus — ET
+ * espace entre panier et formulaire) pour une seule et même unité de rythme,
+ * plutôt qu'un `24px` et un `0,5cm` arbitrairement différents côte à côte.
+ * ⚠️ REVIREMENT (même jour) : la première version ne posait que
+ * `margin-block-start` — retour owner, la marge devait entourer le bloc, pas
+ * seulement le séparer de ce qui précède. */
 @media (min-width: 1024px) {
-	.aod-cart__checkout {
+	body.aod-cart-checkout .aod-cart__checkout {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+		grid-template-columns: 1fr 1fr;
 		align-items: start;
-		gap: 24px;
-		/* `.aod-cod` perd son propre `margin: 24px auto` ci-dessous (il
-		 * centrerait au lieu de remplir la colonne) : la coquille porte donc
-		 * elle-même l'espace qui la séparait de ce qui précède. */
-		margin-block-start: 24px;
-		/* 🚨 CENTRÉ, PAS ÉTIRÉ (2026-09-10, retour owner) : sans plafond, la
-		 * grille remplit toute la largeur de la colonne résumé — sur un
-		 * conteneur large, le formulaire (qui prend tout l'espace restant,
-		 * `1fr`) devient démesuré pendant que le panier reste collé au bord
-		 * droit. 960px ≈ 640px de formulaire (son plafond historique en solo,
-		 * cf. `.aod-cod` plus haut dans aod-cod-form.css) + 300px de panier +
-		 * l'écart : les deux cartes gardent leur gabarit connu, juste
-		 * accolées, et l'ensemble se centre dans ce qui reste de place.
-		 * `margin-inline` : centré pareil en RTL, sans règle miroir. */
-		max-width: 960px;
-		margin-inline: auto;
+		gap: 0.5cm;
+		margin: 0.5cm;
 	}
 	/* Les deux cartes perdent leurs marges/plafonds pensés pour un empilement
 	 * pleine largeur : en grille, c'est la colonne qui donne la largeur — une
@@ -743,64 +756,60 @@ body a.aod-loop-cta.aod-loop-cta { display: none; }
 	 * `order` place le formulaire à GAUCHE, le panier à DROITE quel que soit
 	 * l'ordre du DOM (le panier reste avant le formulaire dans la source, pour
 	 * l'empilement mobile — cf. `ensureBox()`). */
-	.aod-cart__checkout .aod-cod {
+	body.aod-cart-checkout .aod-cart__checkout .aod-cod {
 		order: 1;
 		margin: 0;
 		max-width: none;
 	}
-	.aod-cart__checkout .aod-cart__box {
+	body.aod-cart-checkout .aod-cart__checkout .aod-cart__box {
 		order: 2;
 		margin: 0;
 		max-width: none;
 	}
+
+	/* Galerie 1/3, résumé 2/3 (au lieu du 48%/48% d'Astra,
+	 * woocommerce-layout.css) : le résumé porte deux cartes de même largeur
+	 * côte à côte, donc il doit peser le DOUBLE de la galerie pour qu'aucune
+	 * des trois sections ne l'emporte sur les autres. `!important` DÉLIBÉRÉ,
+	 * même raison que les autres overrides Astra de ce fichier : Astra pose
+	 * lui-même une variante à 46% (`.ast-woocommerce-container div.product
+	 * div.summary`, injectée en `<style>` inline par le Personnalisateur) dont
+	 * la spécificité est plus haute que la nôtre — sans `!important`, elle
+	 * gagnerait quel que soit l'ordre des feuilles.
+	 * 🚨 PAS de `.woocommerce ` en préfixe (mesuré au navigateur) : cette
+	 * classe est posée sur `<body>` lui-même (`body_class()`), PAS sur un
+	 * `<div>` séparé — `body.aod-cart-checkout .woocommerce …` exige alors
+	 * DEUX nœuds distincts (`.aod-cart-checkout` puis, plus bas dans l'arbre,
+	 * `.woocommerce`) alors que les deux classes vivent sur le MÊME `<body>`,
+	 * et ne matchait donc jamais. `body.aod-cart-checkout` suffit à isoler la
+	 * règle : elle n'est de toute façon posée que sur une page WooCommerce. */
+	body.aod-cart-checkout div.product div.images {
+		width: 32% !important;
+	}
+	body.aod-cart-checkout div.product div.summary {
+		width: 64% !important;
+	}
 }
 
-/* ---- La fiche du produit-hôte s'efface derrière le panier (2026-09-09) ----
- * « Commander » n'a pas encore de page dédiée (Phase 77, absente ici) : il
- * atterrit sur la fiche du 1ᵉʳ article du panier. Sans cette règle, cette
- * fiche affichait SA PROPRE image/titre/prix au-dessus de `.aod-cart__box` —
- * qui peut lister PLUSIEURS produits différents. L'acheteur lisait deux
- * histoires contradictoires : « vous commandez CE produit » (en haut) et
- * « votre commande contient CES produits » (juste en dessous).
- * `body.aod-cart-checkout` (posée par `renderBox()`, jamais ailleurs) est vraie
- * exactement quand `.aod-cart__box` est visible — les mêmes sélecteurs que ceux
- * qui décideraient d'afficher le bloc décident ici de masquer la fiche.
- * Classes du CŒUR WooCommerce (pas du thème) : valable sur Astra comme sur tout
- * autre thème classique du catalogue (§4 de TEMPLATE.md).
- * ⚠️ Le formulaire (`.aod-cod`) et sa page (galerie/prix/titre) partagent le
- * MÊME état côté serveur — rien n'est retiré du DOM, seulement masqué : un
- * visiteur qui vide son panier retrouve la fiche intacte, sans rechargement
- * (`renderBox()` retire la classe symétriquement).
- * 🚨 `!important` DÉLIBÉRÉ, et mesuré : `.single-product-category` restait
- * affiché SANS lui. Astra la réarme via `.woocommerce-js div.product
- * div.summary .single-product-category` — spécificité (0,4,2), qui bat notre
- * (0,2,0) sans même parler d'ordre de feuilles. Un thème classique différent
- * (§4 : GeneratePress, Neve, Blocksy, Kadence) réarmera ces mêmes classes du
- * cœur Woo à SA propre spécificité, inconnue ici — courir après spécificité
- * par spécificité, thème par thème, ne finit jamais. Ce n'est pas un
- * composant qu'on habille (où l'on veut rester dépassable) : c'est une
- * consigne « ne s'affiche jamais dans cet état », le cas d'usage exact de
- * `!important`.
- * ⚠️ `.ast-onsale-card` est SPÉCIFIQUE À ASTRA (thème de référence du template,
- * §4) : sur la fiche produit, Astra ne rend PAS le badge `.onsale` générique du
- * cœur Woo — il le REMPLACE par ce markup à lui (mesuré : `.onsale` est absent
- * du HTML servi, seul `.ast-onsale-card` existe). Positionné en absolu au
- * coin de `#product-{id}` — pas dans la galerie — masquer la galerie seule le
- * laissait flotter, superposé au fil d'ariane. Un autre thème classique (§4)
- * qui réimplémente aussi son propre badge portera un autre nom : ce sélecteur
- * ne le couvrira pas, et c'est un residuel assumé plutôt qu'une course sans fin
- * derrière chaque thème possible. */
-body.aod-cart-checkout .woocommerce-product-gallery,
-body.aod-cart-checkout span.onsale,
-body.aod-cart-checkout .ast-onsale-card,
-body.aod-cart-checkout .single-product-category,
-body.aod-cart-checkout .summary.entry-summary > .product_title,
-body.aod-cart-checkout .summary.entry-summary > .price,
-body.aod-cart-checkout .summary.entry-summary > .woocommerce-product-rating,
-body.aod-cart-checkout .summary.entry-summary > .product_meta,
-body.aod-cart-checkout .summary.entry-summary > .woocommerce-product-details__short-description {
-	display: none !important;
-}
+/* ---- REVIREMENT (2026-09-13, retour owner) : la fiche du produit-hôte NE
+ * S'EFFACE PLUS derrière le panier ----
+ * La règle du 2026-09-09 masquait galerie/titre/prix/note/méta/description dès
+ * que `.aod-cart__box` était visible — et `renderBox()` la pose au chargement
+ * de TOUTE page produit portant un `.aod-cod` dès que le panier a ≥ 1 ligne,
+ * pas seulement quand on y atterrit via « Commander ». Un acheteur qui avait
+ * déjà 2 articles au panier et cliquait un 3ᵉ produit SANS RAPPORT depuis la
+ * grille voyait donc CE produit-là privé de ses propres photos et de sa
+ * description — la page qu'il venait de choisir de consulter s'affichait nue.
+ * Le principe retenu : une fiche produit dit toujours la vérité sur ELLE-MÊME
+ * (« voici cet article, ses photos, sa description ») ; le panier dit toujours
+ * la vérité sur LUI-MÊME (« voici ce que contient votre commande ») — deux
+ * sections distinctes et correctement libellées, jamais une qui efface l'autre
+ * pour paraître cohérente. `.aod-cart__box` garde son propre titre
+ * (« Votre panier ») et ses propres lignes/vignettes : rien n'empêche qu'il
+ * coexiste avec la fiche complète du produit affiché.
+ * `body.aod-cart-checkout` reste posée par `renderBox()` (elle sert encore au
+ * bloc juste en dessous, sur le sélecteur de variantes) ; elle ne masque plus
+ * rien du produit lui-même. */
 
 /* ---- Le sélecteur de variantes du produit-hôte s'efface aussi (2026-09-10,
  * demande owner) ----
@@ -825,24 +834,12 @@ body.aod-cart-checkout .aod-cod__addcart {
 	display: none !important;
 }
 
-/* ---- La colonne résumé reprend la place de la galerie masquée (2026-09-10,
- * retour owner : « le duo panier/formulaire n'est pas centré ») ----
- * `display:none` sur la galerie la retire du FLUX, mais pas de la MISE EN
- * PAGE : WooCommerce pose `div.summary{float:right;width:48%}` (core, pas
- * Astra — `woocommerce-layout.css`) INDÉPENDAMMENT de ce que fait la galerie.
- * `.aod-cart__checkout` se centrait donc correctement… dans les 48% de large
- * qui restaient, collé à un bord de la page plutôt que centré dessus. Une
- * fois la galerie réellement invisible, ses 48% sont un vide mort : on les
- * rend au résumé.
- * 🚨 `!important` DÉLIBÉRÉ, comme pour la galerie plus haut : la règle Woo
- * (`.woocommerce div.product div.summary`) est plus spécifique que la nôtre à
- * classes égales (deux `div` de plus) — sans lui, elle gagne et rien ne
- * bouge. Pas de `clearfix` à ajouter : un enfant non flottant contribue déjà
- * normalement à la hauteur de son parent, contrairement à un flottant. */
-body.aod-cart-checkout .summary.entry-summary {
-	float: none !important;
-	width: 100% !important;
-}
+/* ---- La règle qui rendait à la colonne résumé les 48% de la galerie
+ * masquée (2026-09-10) a été retirée le 2026-09-13 avec le revirement
+ * ci-dessus : la galerie redevenant visible, la colonne résumé reprend sa
+ * largeur normale (`div.summary{float:right;width:48%}`, cœur Woo) — la
+ * forcer à 100% la ferait à nouveau chevaucher une galerie qui, elle, est
+ * bien réaffichée. */
 
 /* ---- « Complétez votre commande » ---- */
 
@@ -907,6 +904,99 @@ body.aod-cart-checkout .summary.entry-summary {
 	padding: 2px 12px 12px;
 	font-size: 13px;
 	color: var(--ac-ink-2);
+}
+
+/* ---- Aperçu image + description depuis « Votre panier » (2026-09-13) ----
+ * Un clic sur la vignette d'une ligne (bloc de la page formulaire OU tiroir
+ * flottant — `aod-cart.js`, `bindPreview()`) bascule le contenu de la galerie
+ * de la fiche courante sur la photo + description de CET article, panneau
+ * ajouté PAR-DESSUS le contenu natif de la galerie plutôt qu'à sa place :
+ * `visibility:hidden` (pas `display:none`) sur les enfants natifs pour que la
+ * galerie garde sa hauteur — l'aperçu, en position absolue, la comble
+ * exactement — et pour ne JAMAIS détruire les nœuds d'origine (zoom du cœur
+ * Woo lié à eux au chargement, cf. le commentaire du JS).
+ * `.is-previewing` se pose sur `div.product` (l'ancêtre), pas sur la galerie
+ * elle-même — mesuré au navigateur : le ruban « Promo ! »
+ * (`.onsale`/`.ast-onsale-card`) est un enfant de `div.product`, pas de la
+ * galerie (déjà signalé plus haut dans ce fichier), et restait affiché
+ * PAR-DESSUS l'aperçu tant que l'état ne portait que sur la galerie. */
+.woocommerce-product-gallery {
+	position: relative;
+}
+.product.is-previewing .onsale,
+.product.is-previewing .ast-onsale-card {
+	visibility: hidden;
+}
+.product.is-previewing .woocommerce-product-gallery > *:not(.aod-cart__preview) {
+	visibility: hidden;
+}
+/* Un SEUL interrupteur pour la visibilité du panneau : `.is-previewing` sur
+ * l'ancêtre (posée/retirée par `showPreview()`/le bouton de fermeture, JS) —
+ * jamais l'attribut `hidden` en plus, qui a fait rester le panneau invisible
+ * malgré la classe posée (mesuré au navigateur, cf. le commentaire du JS). */
+.aod-cart__preview {
+	display: none;
+	position: absolute;
+	inset: 0;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0.5cm;
+	background: var(--ac-surface);
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-lg);
+	overflow-y: auto;
+	box-sizing: border-box;
+}
+.product.is-previewing .aod-cart__preview {
+	display: flex;
+}
+.aod-cart__preview-close {
+	align-self: flex-end;
+	flex: 0 0 auto;
+	padding: 6px 12px;
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-sm);
+	background: var(--ac-surface-sub);
+	color: var(--ac-ink-2);
+	font-size: 13px;
+	line-height: 1.3;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-cart__preview-close:hover,
+.aod-cart__preview-close:focus { background: var(--ac-line-soft); color: var(--ac-ink); }
+.aod-cart__preview-close:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+.aod-cart__preview-img {
+	flex: 0 0 auto;
+	max-width: 100%;
+	max-height: 55%;
+	margin: 0 auto;
+	object-fit: contain;
+}
+.aod-cart__preview-img[hidden] { display: none; }
+.aod-cart__preview-title {
+	flex: 0 0 auto;
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--ac-ink);
+	text-align: center;
+}
+.aod-cart__preview-desc {
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--ac-ink-2);
+}
+/* La vignette devient un vrai bouton (curseur + anneau de focus) — visible
+ * dans les deux vues (`role`/`tabindex` posés par `paintInto()`, JS) : la
+ * feuille se contente de l'habiller, jamais de décider où le geste agit. */
+.aod-cart__img[role="button"] {
+	cursor: pointer;
+}
+.aod-cart__img[role="button"]:focus-visible {
+	outline: 2px solid var(--ac-accent);
+	outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

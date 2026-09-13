@@ -184,7 +184,14 @@
 			// choisi — et depuis que chaque ligne porte la photo de sa variante,
 			// l'erreur se voit à l'écran.
 			html += '<div class="aod-cart__line' + ( l.available ? '' : ' is-dead' ) + '" data-idx="' + esc( l.idx ) + '">';
-			html += l.img ? '<img class="aod-cart__img" src="' + esc( l.img ) + '" alt="">' : '<span class="aod-cart__img aod-cart__img--none"></span>';
+			// `data-pid` + `role="button"` : SEULE la vue « bloc de la page
+			// formulaire » (`.aod-cart__box`, cf. `bindPreview()`) écoute ce
+			// rôle — le tiroir flottant (`.aod-cart__drawer`) n'a pas de galerie
+			// à côté de lui pour y afficher quoi que ce soit, il garde son
+			// ancien comportement (rien au clic sur l'image).
+			html += l.img
+				? '<img class="aod-cart__img" data-pid="' + esc( l.product_id ) + '" role="button" tabindex="0" src="' + esc( l.img ) + '" alt="' + esc( CFG.i18n.preview_alt ) + '">'
+				: '<span class="aod-cart__img aod-cart__img--none" data-pid="' + esc( l.product_id ) + '" role="button" tabindex="0"></span>';
 			html += '<div class="aod-cart__body">';
 			html += '<div class="aod-cart__top">';
 			html += '<span class="aod-cart__name">' + esc( l.title ) + '</span>';
@@ -303,6 +310,7 @@
 		wrap.appendChild( box );
 		wrap.appendChild( host );
 		bindLineActions( box.querySelector( '.aod-cart__list' ) );
+		bindPreview( box.querySelector( '.aod-cart__list' ) );
 		return box;
 	}
 
@@ -317,24 +325,15 @@
 			// [hidden] reste interrogeable et ment à qui le compte.
 			b.hidden = true;
 			b.querySelector( '.aod-cart__list' ).innerHTML = '';
-			// La fiche du produit-hôte (image, prix, titre) redevient légitime :
-			// « Commander » n'ayant pas encore de page dédiée (Phase 77 absente
-			// ici), on atterrit sur la fiche du 1ᵉʳ article du panier — sans cette
-			// classe, son image/prix restait affiché même une fois le panier vidé
-			// depuis ce même bloc, sans rapport avec le formulaire juste dessous.
 			document.body.classList.remove( 'aod-cart-checkout' );
 			return;
 		}
 		b.hidden = false;
-		// 🚨 « Commander » n'ouvre pas une page dédiée : il atterrit sur la fiche
-		// du 1ᵉʳ article du panier, qui affiche SA propre image/titre/prix — alors
-		// que le formulaire, juste dessous, peut soumettre PLUSIEURS produits
-		// différents (ceux de `.aod-cart__box`, juste au-dessus). L'acheteur lisait
-		// deux histoires contradictoires sur la même page. Cette classe masque la
-		// fiche du produit-hôte (aod-cart.css) tant que le panier — donc CE bloc —
-		// est visible : ne reste que « Votre panier » (les vraies lignes) + le
-		// formulaire. Posée ici et nulle part ailleurs : c'est CE bloc, pas un état
-		// de panier générique, qui décide si la fiche est redondante sur CETTE page.
+		// Posée dès que CE bloc (le panier sous le formulaire) est visible —
+		// c'est encore ce qui décide si le sélecteur de variantes doit s'effacer
+		// (aod-cart.css) : lui seul, depuis le 2026-09-13, la fiche du produit
+		// (galerie/titre/prix/description) reste TOUJOURS affichée, panier vide
+		// ou non, produit dans le panier ou non — cf. le commentaire du CSS.
 		document.body.classList.add( 'aod-cart-checkout' );
 		fetchEstimate( function ( err, data ) {
 			if ( err ) {
@@ -360,6 +359,128 @@
 	// L'index est valable le temps d'une peinture : toute écriture repeint les
 	// vues (`aod:cart-change`), et une ligne tombée à zéro est retirée ci-dessous
 	// — les index suivants glissent, et la peinture qui suit les rétablit.
+	/* --------------------------------------- aperçu image + description (2026-09-13) */
+	//
+	// Clic sur la vignette d'une ligne du BLOC panier (`.aod-cart__box`, celui
+	// posé à côté du formulaire — PAS le tiroir flottant, qui n'a aucune
+	// galerie à côté de lui pour y afficher quoi que ce soit) : bascule la
+	// galerie de la fiche courante sur la photo et la description de CET
+	// article, SANS navigation. Le titre/prix affichés au-dessus (ceux de la
+	// vraie page où l'acheteur se trouve) ne bougent jamais : seule la galerie
+	// change de contenu — les toucher aurait fait mentir le fil d'ariane ou le
+	// H1 sur la page réellement affichée.
+	//
+	// 🚨 Le DOM natif de la galerie n'est JAMAIS réécrit : un panneau
+	// `.aod-cart__preview` est ajouté À CÔTÉ, cf. `ensurePreview()`, et une
+	// classe sur `.woocommerce-product-gallery` bascule laquelle des deux est
+	// visible (aod-cart.css). Le zoom au survol du cœur Woo est lié aux nœuds
+	// D'ORIGINE au chargement de la page : le réécrire via `innerHTML` aurait
+	// créé des nœuds neufs, sans ces gestionnaires — le zoom serait resté
+	// cassé même après être revenu à la fiche du produit-hôte.
+	var galleryEl    = document.querySelector( '.woocommerce-product-gallery' );
+	// 🚨 La classe d'état se pose sur `div.product` (l'ancêtre), PAS sur la
+	// galerie elle-même : trouvé au navigateur — le ruban « Promo ! »
+	// (`.onsale`/`.ast-onsale-card`) est un enfant de `div.product`, PAS de la
+	// galerie (déjà noté plus haut dans ce fichier, cf. aod-cart.css), et
+	// restait donc affiché PAR-DESSUS l'aperçu. Scoper l'état sur `div.product`
+	// permet de masquer les deux depuis un seul et même interrupteur.
+	var productEl    = galleryEl ? ( galleryEl.closest( '.product' ) || galleryEl.parentNode ) : null;
+	var previewEl    = null;
+	var previewCache = {}; // product_id -> réponse déjà reçue (pas de double aller-retour)
+
+	function ensurePreview() {
+		if ( previewEl || ! galleryEl ) {
+			return previewEl;
+		}
+		previewEl = document.createElement( 'div' );
+		previewEl.className = 'aod-cart__preview';
+		// Visibilité pilotée UNIQUEMENT par `.is-previewing` sur `productEl`
+		// (aod-cart.css) — jamais par l'attribut `hidden` : deux mécanismes
+		// pour un même état auraient pu diverger (c'est arrivé, cf. la version
+		// éprouvée au navigateur qui restait invisible malgré la classe posée).
+		previewEl.innerHTML = '<button type="button" class="aod-cart__preview-close">' + esc( CFG.i18n.preview_close ) + '</button>'
+			+ '<img class="aod-cart__preview-img" alt="">'
+			+ '<p class="aod-cart__preview-title"></p>'
+			+ '<div class="aod-cart__preview-desc"></div>';
+		galleryEl.appendChild( previewEl );
+		previewEl.querySelector( '.aod-cart__preview-close' ).addEventListener( 'click', function () {
+			productEl.classList.remove( 'is-previewing' );
+		} );
+		return previewEl;
+	}
+
+	function paintPreview( data ) {
+		var img = previewEl.querySelector( '.aod-cart__preview-img' );
+		if ( data.image && data.image.src ) {
+			img.src    = data.image.src;
+			img.alt    = data.image.alt || data.title || '';
+			img.hidden = false;
+		} else {
+			img.hidden = true;
+			img.removeAttribute( 'src' );
+		}
+		previewEl.querySelector( '.aod-cart__preview-title' ).textContent = data.title || '';
+		// HTML de CONFIANCE (même filtre serveur que la fiche native, cf.
+		// ajax_preview()) — même statut que `l.total_html` plus haut dans ce
+		// fichier, jamais une saisie du visiteur.
+		previewEl.querySelector( '.aod-cart__preview-desc' ).innerHTML = data.description || '';
+	}
+
+	function showPreview( pid ) {
+		var p = ensurePreview();
+		if ( ! p || ! pid ) {
+			return;
+		}
+		productEl.classList.add( 'is-previewing' );
+		if ( previewCache[ pid ] ) {
+			paintPreview( previewCache[ pid ] );
+			return;
+		}
+		p.querySelector( '.aod-cart__preview-title' ).textContent = '…';
+		p.querySelector( '.aod-cart__preview-desc' ).innerHTML = '';
+		p.querySelector( '.aod-cart__preview-img' ).hidden = true;
+		var body = new URLSearchParams();
+		body.set( 'action', 'aod_cod_cart_preview' );
+		body.set( 'nonce', CFG.nonce );
+		body.set( 'product_id', pid );
+		window.fetch( CFG.ajax_url, { method: 'POST', body: body, credentials: 'same-origin' } )
+			.then( function ( r ) { return r.json(); } )
+			.then( function ( res ) {
+				if ( ! res || ! res.success ) {
+					return;
+				}
+				previewCache[ pid ] = res.data;
+				paintPreview( res.data );
+			} )
+			.catch( function () { /* échec réseau : la galerie reste sur ce qu'elle affichait déjà. */ } );
+	}
+
+	// Délégué sur la liste du BLOC uniquement — jamais le tiroir, cf. plus haut.
+	function bindPreview( el ) {
+		if ( ! galleryEl ) {
+			return; // Pas de galerie sur cette page (thème exotique) : rien à faire.
+		}
+		function targetOf( e ) {
+			return e.target.closest ? e.target.closest( '.aod-cart__img' ) : null;
+		}
+		el.addEventListener( 'click', function ( e ) {
+			var img = targetOf( e );
+			if ( img ) {
+				showPreview( parseInt( img.getAttribute( 'data-pid' ), 10 ) || 0 );
+			}
+		} );
+		el.addEventListener( 'keydown', function ( e ) {
+			if ( 'Enter' !== e.key && ' ' !== e.key ) {
+				return;
+			}
+			var img = targetOf( e );
+			if ( img ) {
+				e.preventDefault();
+				showPreview( parseInt( img.getAttribute( 'data-pid' ), 10 ) || 0 );
+			}
+		} );
+	}
+
 	function mutate( idx, fn ) {
 		var cart = read();
 		var i    = parseInt( idx, 10 );
@@ -390,6 +511,11 @@
 	}
 
 	bindLineActions( list );
+	// Le tiroir flottant peut s'ouvrir SUR une fiche produit (galerie présente
+	// à côté de lui, sous l'overlay) tout comme sur une page sans galerie
+	// (Boutique, Accueil) — `bindPreview()` se désarme de lui-même dans le
+	// second cas (`galleryEl` absent), cf. sa propre garde.
+	bindPreview( list );
 
 	// Re-peint les vues VISIBLES (le drawer fermé n'a rien à re-peindre — il
 	// se peint à l'ouverture). Branché sur l'événement de changement : ajout

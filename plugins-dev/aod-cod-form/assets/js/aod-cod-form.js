@@ -670,6 +670,9 @@
 		// images du produit. La galerie est unique sur la page : on initialise une
 		// seule fois, hors de la boucle des formulaires.
 		initGalleryNav();
+		// Volet dépliable de la description sous la galerie (2026-09-13) — même
+		// raisonnement : unique sur la page, hors de la boucle des formulaires.
+		initGalleryDescToggle();
 	} );
 
 	// Pilote la galerie WooCommerce (flexslider) : direction ('prev'/'next') ou
@@ -686,6 +689,45 @@
 		}
 		var $link = $gallery.find( '.flex-direction-nav .flex-' + target + ' a' );
 		if ( $link.length ) { $link.trigger( 'click' ); }
+	}
+
+	// Volet dépliable « Description du produit », imprimé sous la galerie par
+	// render_gallery_description() (class-aod-cod-form.php, 2026-09-13). Repos
+	// = replié (`hidden` posé côté serveur) : un clic bascule les deux à la
+	// fois, `aria-expanded` étant la SEULE source de vérité que lit le CSS
+	// (le chevron) — jamais une classe séparée qui pourrait diverger de l'état
+	// réel du panneau.
+	function initGalleryDescToggle() {
+		var $desc = $( '.aod-cod__gallery-desc' );
+		if ( ! $desc.length ) {
+			return;
+		}
+		// 🚨 DÉPLACÉ dans la galerie, PAS laissé où PHP l'imprime. PHP
+		// (`render_gallery_description()`) le pose comme SIBLING juste après
+		// `.woocommerce-product-gallery`, dans le flux normal du thème — entre
+		// deux colonnes FLOTTANTES (galerie à gauche, résumé à droite), un bloc
+		// non flotté hérite la largeur du CONTENEUR, pas celle de la colonne : il
+		// s'étalait pleine largeur, PAR-DESSUS la galerie, repoussant le résumé
+		// plus bas que son titre/prix. Mesuré, pas deviné.
+		// La largeur exacte de la colonne galerie est un détail du THÈME (%,
+		// flex, grid — §4 de TEMPLATE.md) : la recopier en dur ici ne vaudrait
+		// que pour UN thème. Le déplacer physiquement À L'INTÉRIEUR de
+		// `.woocommerce-product-gallery` (même geste que le panneau d'aperçu du
+		// panier, aod-cart.js) lui fait hériter la largeur réelle de la colonne,
+		// quel que soit le thème classique actif. Sans JS (cas extrême), le
+		// volet reste utilisable à son emplacement PHP d'origine — juste pas
+		// confiné à la colonne.
+		var $gallery = $( '.woocommerce-product-gallery' );
+		if ( $gallery.length ) {
+			$gallery.append( $desc );
+		}
+		$desc.find( '.aod-cod__gallery-desc-toggle' ).on( 'click', function () {
+			var $btn    = $( this );
+			var $panel  = $( '#' + $btn.attr( 'aria-controls' ) );
+			var wasOpen = 'true' === $btn.attr( 'aria-expanded' );
+			$btn.attr( 'aria-expanded', wasOpen ? 'false' : 'true' );
+			$panel.prop( 'hidden', wasOpen );
+		} );
 	}
 
 	// Boutons précédent/suivant sur la galerie WooCommerce (flexslider).

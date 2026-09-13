@@ -47,6 +47,10 @@ class AOD_COD_Cart {
 		// Estimation lecture seule (visiteur compris) : le drawer peint depuis ici.
 		add_action( 'wp_ajax_aod_cod_cart_items', array( $this, 'ajax_items' ) );
 		add_action( 'wp_ajax_nopriv_aod_cod_cart_items', array( $this, 'ajax_items' ) );
+		// Aperçu image + description d'UNE ligne du bloc panier (2026-09-13,
+		// demande owner) : lecture seule elle aussi, cf. ajax_preview().
+		add_action( 'wp_ajax_aod_cod_cart_preview', array( $this, 'ajax_preview' ) );
+		add_action( 'wp_ajax_nopriv_aod_cod_cart_preview', array( $this, 'ajax_preview' ) );
 		// Choix des variantes SUR LA GRILLE (2026-08-02) — lecture seule elle aussi.
 		add_action( 'wp_ajax_aod_cod_cart_options', array( $this, 'ajax_options' ) );
 		add_action( 'wp_ajax_nopriv_aod_cod_cart_options', array( $this, 'ajax_options' ) );
@@ -132,6 +136,9 @@ class AOD_COD_Cart {
 				// qui le lisait. Clé retirée plutôt que laissée morte : une chaîne
 				// traduite que plus rien n'affiche se fait ré-employer par erreur,
 				// et sa version AR la ferait passer pour vivante.)
+				// Aperçu image + description d'une ligne du panier (2026-09-13).
+				'preview_close' => __( 'Revenir à la fiche affichée', 'aod-cod-form' ),
+				'preview_alt'   => __( 'Aperçu de cet article', 'aod-cod-form' ),
 			),
 		) );
 	}
@@ -407,6 +414,51 @@ class AOD_COD_Cart {
 	 * même produit sont deux lignes, et les cibler par produit faisait agir
 	 * « + » sur la mauvaise.
 	 */
+	/**
+	 * Aperçu image + description d'UN produit du panier (2026-09-13), affiché
+	 * DANS la galerie de la fiche courante sans navigation — l'acheteur clique
+	 * la vignette d'une ligne du bloc `.aod-cart__box` et voit la vraie photo +
+	 * description de CET article, à la place de la galerie du produit-hôte.
+	 *
+	 * 🚨 `publish` SEULEMENT, pas `is_purchasable()` (contrairement à
+	 * `ajax_options()`/`ajax_items()`) : une ligne du panier peut déjà être
+	 * marquée indisponible (rupture, produit dépublié) et l'acheteur doit
+	 * pouvoir quand même consulter ce qu'était l'article avant de le retirer —
+	 * refuser l'aperçu ici doublerait la mauvaise nouvelle sans raison.
+	 *
+	 * Description : MÊME pipeline que le template natif Woo
+	 * (`single-product/short-description.php` fait exactement cet appel) —
+	 * l'aperçu affiche donc TOUJOURS ce que la vraie fiche du produit montre,
+	 * jamais une resaisie séparée qui pourrait diverger.
+	 */
+	public function ajax_preview() {
+		check_ajax_referer( 'aod_cod_nonce', 'nonce' );
+		if ( ! AOD_COD_Form::cart_enabled() ) {
+			wp_send_json_error( array( 'message' => __( 'Produit indisponible.', 'aod-cod-form' ) ), 403 );
+		}
+		$pid = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+		$p   = $pid ? wc_get_product( $pid ) : null;
+		if ( ! $p || 'publish' !== $p->get_status() ) {
+			wp_send_json_error( array( 'message' => __( 'Produit indisponible.', 'aod-cod-form' ) ), 404 );
+		}
+		$img_id = $p->get_image_id();
+		// `woocommerce_single` : le même gabarit que la galerie native affiche
+		// déjà (mesuré 600×600 sur ce clone) — pas de saut de proportions entre
+		// la photo du produit-hôte et celle de l'aperçu.
+		$src  = $img_id ? wp_get_attachment_image_src( $img_id, 'woocommerce_single' ) : false;
+		$post = get_post( $pid );
+		wp_send_json_success( array(
+			'title'       => get_the_title( $pid ),
+			// get_the_title() est déjà filtré (7.2) : FR/AR suit le cookie
+			// aod_lang, comme partout ailleurs sur cette même page.
+			'description' => $post ? apply_filters( 'woocommerce_short_description', $post->post_excerpt ) : '',
+			'image'       => $src ? array(
+				'src' => $src[0],
+				'alt' => $img_id ? get_post_meta( $img_id, '_wp_attachment_image_alt', true ) : '',
+			) : null,
+		) );
+	}
+
 	public function ajax_items() {
 		check_ajax_referer( 'aod_cod_nonce', 'nonce' );
 		if ( ! AOD_COD_Form::cart_enabled() ) {

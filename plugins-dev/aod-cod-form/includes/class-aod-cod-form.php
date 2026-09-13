@@ -46,6 +46,21 @@ class AOD_COD_Form {
 		add_action( 'woocommerce_single_product_summary', array( $this, 'strip_native_add_to_cart' ), 1 );
 		add_filter( 'astra_woo_single_product_structure', array( $this, 'remove_astra_add_to_cart' ) );
 
+		// Description LONGUE (l'onglet « Description » du cœur Woo) déplacée
+		// dans la colonne GALERIE, en volet dépliable (2026-09-13, demande
+		// owner — précisée après un premier essai sur la description COURTE,
+		// qui n'était pas ce qui était demandé) — juste sous les photos, à la
+		// place de l'onglet séparé plus bas. Même schéma « image + détails
+		// juste dessous » que l'aperçu du panier (AOD_COD_Cart::showPreview(),
+		// aod-cart.js). Toute fiche produit CLASSIQUE (Astra ou tout autre
+		// thème du catalogue §4), panier activé ou non — ce n'est pas une
+		// variante du panier, c'est la mise en page de la fiche.
+		// La description COURTE, elle, n'est PAS touchée : elle reste à son
+		// emplacement natif (colonne résumé, près du prix) — un seul champ
+		// déplacé, celui qui a été demandé, pas les deux.
+		add_filter( 'woocommerce_product_tabs', array( $this, 'remove_description_tab' ), 20 );
+		add_action( 'woocommerce_before_single_product_summary', array( $this, 'render_gallery_description' ), 25 );
+
 		// Galerie produit : on injecte les photos des options (couleurs…) comme de vraies
 		// diapos du carrousel WooCommerce, et on tague chaque diapo avec son ID de média
 		// pour que le JS puisse sauter à la bonne photo quand une couleur est choisie.
@@ -172,6 +187,77 @@ class AOD_COD_Form {
 			$structure = array_values( array_diff( $structure, array( 'add_cart' ) ) );
 		}
 		return $structure;
+	}
+
+	/**
+	 * Retire l'onglet natif « Description » (description LONGUE) —
+	 * `render_gallery_description()` imprime le MÊME contenu sous la galerie,
+	 * À LA PLACE. Un seul bloc, jamais les deux : l'omettre ferait doublon,
+	 * l'oublier laisserait la description dans son onglet, à l'ancien endroit.
+	 *
+	 * Priorité 20 : `woocommerce_default_product_tabs()` (cœur Woo) ajoute cet
+	 * onglet à la priorité 10 sur ce même filtre — il faut courir APRÈS pour
+	 * avoir quelque chose à retirer.
+	 *
+	 * @param array $tabs
+	 * @return array
+	 */
+	public function remove_description_tab( $tabs ) {
+		unset( $tabs['description'] );
+		return $tabs;
+	}
+
+	/**
+	 * Description LONGUE (celle de l'onglet natif « Description », retiré par
+	 * `remove_description_tab()` ci-dessus), DANS la colonne galerie, en volet
+	 * dépliable (2026-09-13 — précisé après un premier essai sur la
+	 * description COURTE, qui n'était pas ce qui était demandé). Hook
+	 * `woocommerce_before_single_product_summary` à la priorité 25 : la
+	 * galerie s'y imprime à la priorité 20 (`woocommerce_show_product_images`,
+	 * cœur Woo, commun à tout thème classique du catalogue §4) — on imprime
+	 * donc juste APRÈS elle en HTML, comme SIBLING, avant que la colonne
+	 * résumé ne s'ouvre.
+	 *
+	 * 🚨 Un SIBLING de la galerie, PAS un enfant : entre deux colonnes
+	 * FLOTTANTES (galerie/résumé), un bloc non flotté hérite la largeur du
+	 * CONTENEUR entier, pas celle d'une colonne — il s'étalerait pleine
+	 * largeur, PAR-DESSUS la galerie (mesuré, pas deviné). `initGalleryDescToggle()`
+	 * (aod-cod-form.js) le DÉPLACE ensuite à l'intérieur de
+	 * `.woocommerce-product-gallery`, où il hérite la largeur réelle de la
+	 * colonne quel que soit le mécanisme du thème (%, flex, grid…). Sans JS, il
+	 * reste utilisable ici, juste pas confiné à la colonne — un repli dégradé,
+	 * pas une panne.
+	 *
+	 * ⚠️ La description COURTE n'est PAS touchée : elle reste à son
+	 * emplacement natif (colonne résumé, près du prix). Un seul champ déplacé
+	 * — celui qui a été demandé.
+	 *
+	 * Rien d'imprimé si la description est vide — pas de volet vide à déplier.
+	 */
+	public function render_gallery_description() {
+		global $product;
+		if ( ! $product instanceof WC_Product ) {
+			return;
+		}
+		$post = get_post( $product->get_id() );
+		// MÊME filtre que le template natif Woo (single-product/tabs/description.php,
+		// qui appelle the_content() — soit apply_filters('the_content', …) sur
+		// le post courant) : le volet montre donc toujours ce que l'onglet
+		// montrait, jamais une resaisie séparée qui pourrait diverger.
+		$html = $post ? apply_filters( 'the_content', $post->post_content ) : '';
+		if ( '' === trim( wp_strip_all_tags( $html ) ) ) {
+			return;
+		}
+		?>
+		<div class="aod-cod__gallery-desc">
+			<button type="button" class="aod-cod__gallery-desc-toggle" aria-expanded="false" aria-controls="aod-cod-gallery-desc-panel">
+				<?php esc_html_e( 'Description du produit', 'aod-cod-form' ); ?>
+			</button>
+			<div id="aod-cod-gallery-desc-panel" class="aod-cod__gallery-desc-panel" hidden>
+				<?php echo wp_kses_post( $html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- même filtre/contrat que le template natif Woo, échappé par wp_kses_post(). ?>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**
