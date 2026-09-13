@@ -815,9 +815,7 @@ html[dir="rtl"] .aod-cod__optselect{
  *
  * CSS GRID, pas flex : `grid-template-areas` place la colonne miniatures et
  * la grande photo indépendamment de leur ORDRE dans le DOM — qui varie déjà
- * selon que le produit a 1 ou plusieurs photos (cf. initGalleryDescToggle()) —
- * et la ligne « desc » sous les deux fait retomber le volet de description en
- * PLEINE LARGEUR, quel que soit ce qu'il y a au-dessus.
+ * selon que le produit a 1 ou plusieurs photos.
  * `grid-template-columns` suit NATIVEMENT le sens de lecture : Grid place la
  * 1ʳᵉ colonne à l'INLINE-START — donc à DROITE en arabe, sans règle miroir —
  * contrairement à `left`/`right`, qui resteraient sur le même côté physique.
@@ -828,9 +826,7 @@ html[dir="rtl"] .aod-cod__optselect{
 	.woocommerce-product-gallery:has(.flex-control-thumbs) {
 		display: grid;
 		grid-template-columns: 80px 1fr;
-		grid-template-areas:
-			"thumbs viewport"
-			"desc   desc";
+		grid-template-areas: "thumbs viewport";
 		gap: 12px;
 		align-items: start;
 	}
@@ -873,9 +869,6 @@ html[dir="rtl"] .aod-cod__optselect{
 		   conteneur au lieu de laisser l'image se réduire avec lui. */
 		min-width: 0;
 	}
-	.woocommerce-product-gallery:has(.flex-control-thumbs) .aod-cod__gallery-desc {
-		grid-area: desc;
-	}
 	/* Les flèches ‹ › (position:absolute, cf. plus haut) sont ancrées au
 	   conteneur ENTIER (galerie + colonne miniatures), pas à la seule image :
 	   sans ce recalage, « précédent » (`inset-inline-start`) flotterait
@@ -891,91 +884,11 @@ html[dir="rtl"] .aod-cod__optselect{
 	}
 }
 
-/* ---- La galerie (photo + miniatures + volet description) ne déforme plus
- * la section qui la contient (2026-09-13, retour owner) ----
- * Le volet de description vit maintenant DANS `.woocommerce-product-gallery`
- * (déplacé par `initGalleryDescToggle()`, aod-cod-form.js — cf. plus bas) :
- * l'ouvrir sur une description longue (§ « Bienfaits », « Ingrédients clés »,
- * « Mode d'emploi »…) grandissait la galerie D'AUTANT, ce qui étirait toute
- * la ligne galerie/résumé de la fiche — la colonne résumé, elle, restait à sa
- * hauteur normale, et la page prenait un vide disproportionné en dessous
- * d'elle.
- * `max-height` + `overflow-y:auto` PLAFONNENT la galerie entière (photo,
- * miniatures ET volet compris, quel que soit le nombre de photos — la règle
- * n'est pas scopée à `:has(.flex-control-thumbs)` : un produit à une seule
- * photo a lui aussi un volet de description qui peut être long) : au-delà de
- * `85vh`, on défile À L'INTÉRIEUR de la galerie plutôt que d'étirer la page.
- * `overflow-x:hidden` en prime : un mot très long dans la description ne doit
- * pas ouvrir un défilement horizontal inattendu. */
-.woocommerce-product-gallery {
-	max-height: 85vh;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
-/* ---- Description LONGUE (l'onglet natif « Description »), sous la galerie,
- * en volet dépliable (2026-09-13, précisé après un premier essai sur la
- * description COURTE) ----
- * Retirée de son onglet par `remove_description_tab()`
- * (class-aod-cod-form.php) — imprimée par `render_gallery_description()`,
- * hook `woocommerce_before_single_product_summary` à la priorité 25, juste
- * après la galerie (priorité 20, cœur Woo).
- * Couleurs en DUR, pas de `var(--sh-*)` : ces jetons sont scopés à `.aod-cod`
- * (aod-cod-form.css, tout en haut) — un bloc HORS de `.aod-cod` (sibling de la
- * galerie, pas de son formulaire) ne les hérite pas ; y référer aurait été un
- * jeton qui ment sur ce qu'il partage vraiment. */
-.aod-cod__gallery-desc {
-	margin-top: 12px;
-}
-.aod-cod__gallery-desc-toggle {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	padding: 12px 14px;
-	border: 1px solid #d9d9d9;
-	border-radius: 6px;
-	background: #ffffff;
-	color: #1a1a1a;
-	font: inherit;
-	font-weight: 600;
-	font-size: 14px;
-	line-height: 1.3;
-	text-align: start;
-	cursor: pointer;
-	-webkit-appearance: none;
-	appearance: none;
-	transition: background-color .15s ease;
-}
-.aod-cod__gallery-desc-toggle:hover { background: #f6f6f7; }
-.aod-cod__gallery-desc-toggle:focus-visible { outline: 2px solid #008060; outline-offset: 2px; }
-/* Chevron dessiné en CSS (pas d'ajout au catalogue d'icônes fermé pour un seul
- * usage) — même parti pris que `.aod-gallery-nav` juste au-dessus, en
- * caractères bruts plutôt qu'un SVG du catalogue. */
-.aod-cod__gallery-desc-toggle::after {
-	content: '';
-	flex: 0 0 auto;
-	width: 8px;
-	height: 8px;
-	margin-inline-start: 10px;
-	border-inline-end: 2px solid currentColor;
-	border-block-end: 2px solid currentColor;
-	transform: rotate(45deg);
-	transition: transform .15s ease;
-}
-.aod-cod__gallery-desc-toggle[aria-expanded="true"]::after {
-	transform: rotate(-135deg);
-}
-.aod-cod__gallery-desc-panel {
-	padding: 12px 14px;
-	border: 1px solid #d9d9d9;
-	border-top: 0;
-	border-radius: 0 0 6px 6px;
-	color: #616161;
-	font-size: 14px;
-	line-height: 1.6;
-}
-.aod-cod__gallery-desc-panel[hidden] { display: none; }
+/* ---- REVIREMENT (2026-09-13, même jour) : la description longue est
+ * repartie dans son onglet natif « Description », à côté de « Avis » (retour
+ * owner) — le plafond de hauteur de la galerie et le volet dépliable
+ * (`.aod-cod__gallery-desc*`) qui vivaient ici n'ont plus d'objet et ont été
+ * retirés avec `render_gallery_description()` (class-aod-cod-form.php). */
 
 /* ---- Mouvement réduit (ROADMAP Phase 19, étape 19.1) --------------------- *
  * `prefers-reduced-motion` est un réglage SYSTÈME, souvent posé pour un trouble
@@ -1021,11 +934,5 @@ html[dir="rtl"] .aod-cod__optselect{
 	   retombe sur le centrage, pas sur rien. */
 	.woocommerce-product-gallery .aod-gallery-nav:active {
 		transform: translateY(-50%);
-	}
-
-	/* Chevron du volet « Description du produit » : la rotation part, l'état
-	   ouvert/fermé reste (posé par le JS via aria-expanded, pas par ce style). */
-	.aod-cod__gallery-desc-toggle::after {
-		transition: none;
 	}
 }

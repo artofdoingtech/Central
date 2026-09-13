@@ -188,7 +188,14 @@ function aod_test_pcs_census() {
 			// visiteur) ni l'échappement (`wp_kses_post()`, même filtre que le
 			// template natif) — seul l'endroit où ce même contenu de confiance
 			// s'imprime a changé.
-			'n'        => 193,
+			//
+			// 193 → 192 le 2026-09-13, plus tard le même jour (retour owner : « la
+			// description doit être à côté des avis, pas dans la galerie »).
+			// ⬇️ La BAISSE annule la hausse ci-dessus : `render_gallery_description()`
+			// et son `remove_description_tab()` sont supprimés, l'onglet natif
+			// « Description » du cœur Woo (qui échappe lui-même son contenu, sans
+			// dérogation dans CE fichier) reprend sa place à côté de « Avis ».
+			'n'        => 192,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '

@@ -2,25 +2,6 @@
 ( function ( $ ) {
 	'use strict';
 
-	// 🚨 Lié ICI, AVANT `$(document).ready()`, PAS dedans. Le cœur WooCommerce
-	// (`single-product.js`) déclenche `wc-product-gallery-after-init` sur
-	// `.woocommerce-product-gallery` une fois la restructuration flexslider
-	// terminée (miniatures, viewport…) — DEPUIS SON PROPRE `ready`. Si ce
-	// fichier liait l'écouteur dans SON `ready` à lui, l'ordre entre les deux
-	// `ready` n'est pas garanti : posé après celui de Woo, l'écouteur
-	// arriverait APRÈS le déclenchement et ne verrait jamais l'événement — ce
-	// qui laissait `.aod-cod__gallery-desc` coincé au milieu de la galerie sur
-	// tout produit à PLUSIEURS photos (mesuré au navigateur, pas deviné).
-	// Un écouteur DÉLÉGUÉ sur `document`, posé dès l'exécution de ce fichier
-	// (donc avant TOUT `ready`, y compris le nôtre), n'a pas ce problème : les
-	// événements jQuery déclenchés par `.trigger()` remontent (bulle)
-	// jusqu'à `document`, qu'importe quand ce dernier a commencé à écouter.
-	$( document ).on( 'wc-product-gallery-after-init', '.woocommerce-product-gallery', function () {
-		if ( 'function' === typeof initGalleryDescToggle ) {
-			initGalleryDescToggle();
-		}
-	} );
-
 	function fmt( n ) {
 		n = Math.round( ( parseFloat( n ) || 0 ) * 100 ) / 100;
 		return n.toLocaleString( 'fr-DZ' ) + ' ' + AOD_COD.currency;
@@ -689,10 +670,6 @@
 		// images du produit. La galerie est unique sur la page : on initialise une
 		// seule fois, hors de la boucle des formulaires.
 		initGalleryNav();
-		// Chemin RAPIDE (produit à une seule photo, pas de restructuration à
-		// attendre) : cf. l'écouteur `wc-product-gallery-after-init` plus haut
-		// dans ce fichier pour le chemin correctif (plusieurs photos).
-		initGalleryDescToggle();
 	} );
 
 	// Pilote la galerie WooCommerce (flexslider) : direction ('prev'/'next') ou
@@ -709,59 +686,6 @@
 		}
 		var $link = $gallery.find( '.flex-direction-nav .flex-' + target + ' a' );
 		if ( $link.length ) { $link.trigger( 'click' ); }
-	}
-
-	// Volet dépliable « Description du produit », imprimé sous la galerie par
-	// render_gallery_description() (class-aod-cod-form.php, 2026-09-13). Repos
-	// = replié (`hidden` posé côté serveur) : un clic bascule les deux à la
-	// fois, `aria-expanded` étant la SEULE source de vérité que lit le CSS
-	// (le chevron) — jamais une classe séparée qui pourrait diverger de l'état
-	// réel du panneau.
-	// Posé une seule fois : `initGalleryDescToggle()` est appelée PLUSIEURS
-	// fois (cf. plus bas) — le déplacement doit se rejouer à chaque fois
-	// (cf. commentaire dans la fonction), mais le clic ne doit être branché
-	// qu'UNE fois, sous peine de déclencher le volet deux fois par clic.
-	var galleryDescBound = false;
-
-	function initGalleryDescToggle() {
-		var $desc = $( '.aod-cod__gallery-desc' );
-		if ( ! $desc.length ) {
-			return;
-		}
-		// 🚨 DÉPLACÉ dans la galerie, PAS laissé où PHP l'imprime, ET REJOUÉ à
-		// chaque appel — pas une seule fois. PHP (`render_gallery_description()`)
-		// le pose comme SIBLING juste après `.woocommerce-product-gallery` ; le
-		// déplacer À L'INTÉRIEUR (même geste que le panneau d'aperçu du panier,
-		// aod-cart.js) lui fait hériter la largeur réelle de la colonne, quel
-		// que soit le thème (§4). Mesuré au navigateur : entre deux colonnes
-		// FLOTTANTES, un bloc non flotté hérite sinon la largeur du CONTENEUR
-		// entier, pas celle de la colonne — il s'étalait pleine largeur,
-		// PAR-DESSUS la galerie.
-		// 🚨 REJOUÉ, PAS une seule fois : sur un produit à PLUSIEURS photos, le
-		// cœur Woo (`single-product.js`) restructure la galerie en flexslider
-		// (nouveau `.flex-viewport` + miniatures) — et selon les thèmes/versions,
-		// cette restructuration peut arriver APRÈS un premier déplacement, ce qui
-		// le laissait coincé entre les flèches ‹ › et le nouveau viewport,
-		// remonté au-dessus de l'image (mesuré, pas deviné). `.append()` sur un
-		// nœud déjà présent le remet simplement en DERNIÈRE position : rejouer
-		// l'appel après la restructuration (cf. l'écouteur `wc-product-gallery-
-		// after-init` plus bas) le fait gagner sur elle, quel que soit l'ordre
-		// réel d'exécution entre les deux scripts.
-		var $gallery = $( '.woocommerce-product-gallery' );
-		if ( $gallery.length ) {
-			$gallery.append( $desc );
-		}
-		if ( galleryDescBound ) {
-			return;
-		}
-		galleryDescBound = true;
-		$desc.find( '.aod-cod__gallery-desc-toggle' ).on( 'click', function () {
-			var $btn    = $( this );
-			var $panel  = $( '#' + $btn.attr( 'aria-controls' ) );
-			var wasOpen = 'true' === $btn.attr( 'aria-expanded' );
-			$btn.attr( 'aria-expanded', wasOpen ? 'false' : 'true' );
-			$panel.prop( 'hidden', wasOpen );
-		} );
 	}
 
 	// Boutons précédent/suivant sur la galerie WooCommerce (flexslider).
