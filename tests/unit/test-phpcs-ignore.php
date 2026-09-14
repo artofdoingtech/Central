@@ -202,7 +202,18 @@ function aod_test_pcs_census() {
 			// — EXACTEMENT le même appel, sur le même catalogue FERMÉ d'icônes, que
 			// celui déjà dérogé du panneau panier (`class-aod-cod-cart.php:318`,
 			// `aria-label="Fermer le panier"`) ; aucune saisie n'atteint ce SVG.
-			'n'        => 193,
+			//
+			// 193 → 195 le 2026-09-14 (étiquette de carte produit — Nouveau/Promo/
+			// Pack/Meilleure vente, `class-aod-cod-badge.php`). ⬆️ DEUX de plus :
+			// `AOD_COD_Badge::markup()` construit son `<span>` avec `esc_attr()`
+			// (le slug) et `esc_html()` (le libellé d'un catalogue FERMÉ de 4
+			// valeurs, jamais une saisie) puis le RETOURNE déjà échappé — les deux
+			// appelants qui l'impriment (`render_loop()` ici, et
+			// `AOD_COD_Cart::render_suggestions()` pour « Complétez votre
+			// commande ») dérogent donc pour la MÊME raison que `AOD_CD_Dashboard::pill()`
+			// plus haut dans ce census : le sniff ne sait pas lire à travers un
+			// retour de fonction déjà passé par `esc_*()`.
+			'n'        => 195,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '

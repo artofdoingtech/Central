@@ -269,6 +269,7 @@ class AOD_COD_Cart {
 			<div class="aod-cart__suggrid">
 				<?php foreach ( $products as $p ) : ?>
 					<div class="aod-cart__sugcard">
+						<?php echo AOD_COD_Badge::markup( $p->get_id() ); // phpcs:ignore WordPress.Security.EscapeOutput -- déjà esc_html()/esc_attr() dans AOD_COD_Badge::markup(). ?>
 						<a class="aod-cart__suglink" href="<?php echo esc_url( get_permalink( $p->get_id() ) ); ?>">
 							<?php echo $p->get_image( 'woocommerce_thumbnail', array( 'class' => 'aod-cart__sugimg' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- markup d'image généré par le cœur Woo (wp_get_attachment_image). ?>
 							<span class="aod-cart__sugtitle"><?php echo esc_html( get_the_title( $p->get_id() ) ); ?></span>

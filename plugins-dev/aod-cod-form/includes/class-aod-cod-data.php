@@ -116,6 +116,41 @@ class AOD_COD_Data {
 	}
 
 	/**
+	 * Branche les filtres de langue purement chrome de cette classe. Séparé
+	 * des méthodes statiques ci-dessus (appelables sans effet de bord) — à
+	 * appeler UNE fois au chargement du plugin, cf. `AOD_COD_Lang::init()`
+	 * dans aod-cod-form.php pour le même patron.
+	 */
+	public static function init() {
+		add_filter( 'woocommerce_currency_symbol', array( __CLASS__, 'currency_symbol' ), 10, 2 );
+	}
+
+	/**
+	 * Symbole du dinar algérien : « DA » en français, « د.ج » en arabe (retour
+	 * owner, 2026-09-14).
+	 *
+	 * 🚨 WooCommerce ne connaît qu'UN symbole par devise, câblé en dur dans son
+	 * cœur (`includes/wc-core-functions.php`) : pour `DZD`, c'est littéralement
+	 * « د.ج » — en arabe — QUELLE QUE SOIT la langue affichée. Un visiteur
+	 * francophone lisait donc ses prix suivis de caractères arabes. On ne
+	 * touche qu'au cas AR→FR : le symbole arabe natif de Woo reste inchangé
+	 * quand `is_arabic()` est vrai (rien à corriger côté arabe), et toute
+	 * AUTRE devise que DZD traverse ce filtre sans y être touchée (ce
+	 * template ne configure que DZD, cf. `scripts/setup.sh`, mais un clone qui
+	 * en changerait ne doit pas hériter d'un « DA » qui n'a plus de sens).
+	 *
+	 * @param string $symbol   Symbole natif de Woo pour `$currency`.
+	 * @param string $currency Code devise (ex. 'DZD').
+	 * @return string
+	 */
+	public static function currency_symbol( $symbol, $currency ) {
+		if ( 'DZD' !== $currency || self::is_arabic() ) {
+			return $symbol;
+		}
+		return 'DA';
+	}
+
+	/**
 	 * Choisit le libellé à afficher (arabe si site arabe, sinon latin).
 	 *
 	 * @param string $name    Nom latin.

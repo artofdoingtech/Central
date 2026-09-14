@@ -963,6 +963,10 @@ body.aod-cart-checkout:not(.aod-cart-review) .aod-cart__box {
 	.aod-cart__suggrid { grid-template-columns: repeat(4, 1fr); }
 }
 .aod-cart__sugcard {
+	/* Ancre l'étiquette produit (`.aod-badge`, aod-cod-pages.css) — markup
+	   construit à la main ici, pas de wrapper déjà positionné comme dans la
+	   boucle Woo standard (`li.product`, positionné par Astra). */
+	position: relative;
 	overflow: hidden;
 	border: 1px solid var(--ac-line);
 	border-radius: var(--ac-r-lg);

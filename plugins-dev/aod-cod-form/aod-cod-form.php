@@ -120,6 +120,10 @@ add_action( 'plugins_loaded', function () {
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-log.php';
 	AOD_COD_Log::boot();
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-data.php';
+	// Symbole du dinar (DA en français, د.ج en arabe) : branché tôt, avant tout
+	// rendu de prix (public ET /gestion, `get_woocommerce_currency_symbol()`
+	// filtre à chaque appel — pas de rendu à rattraper après coup).
+	AOD_COD_Data::init();
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-catalog-i18n.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-catalog-filters.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-ip.php';
@@ -133,6 +137,9 @@ add_action( 'plugins_loaded', function () {
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-icon.php';
 	// Panier COD public (35.3) — APRÈS le formulaire, dont il lit cart_enabled().
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-cart.php';
+	// Étiquette de carte produit (Nouveau/Pack/Meilleure vente) — AVANT
+	// le panier, dont `render_suggestions()` appelle `AOD_COD_Badge::markup()`.
+	require_once AOD_COD_PATH . 'includes/class-aod-cod-badge.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-admin.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-whatsapp.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-leads.php';
@@ -149,6 +156,8 @@ add_action( 'plugins_loaded', function () {
 	AOD_COD_Turnstile::instance();
 	AOD_COD_Form::instance();
 	AOD_COD_Cart::instance(); // panier COD togglable (35.3) — inerte si l'option est coupée.
+	// Étiquette de carte produit — inerte tant qu'aucun produit n'a de badge choisi.
+	AOD_COD_Badge::instance();
 	// Notif WhatsApp : doit écouter aussi en front (commande créée via AJAX).
 	AOD_COD_WhatsApp::instance();
 	// Paniers abandonnés : capture AJAX en front + migration de la table.

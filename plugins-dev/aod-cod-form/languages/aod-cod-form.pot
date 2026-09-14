@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-13T19:09:01+00:00\n"
+"POT-Creation-Date: 2026-09-14T21:24:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: aod-cod-form\n"
@@ -244,7 +244,7 @@ msgid "Wilaya d’expédition"
 msgstr ""
 
 #: includes/class-aod-carrier-yalidine.php:82
-#: includes/class-aod-cod-form.php:820
+#: includes/class-aod-cod-form.php:823
 msgid "— Choisir —"
 msgstr ""
 
@@ -396,7 +396,7 @@ msgid "Laissez vide une wilaya pour la rendre non livrable (frais à 0)."
 msgstr ""
 
 #: includes/class-aod-cod-admin.php:113
-#: includes/class-aod-cod-form.php:1215
+#: includes/class-aod-cod-form.php:1218
 #: includes/class-aod-shipping.php:1031
 msgid "Wilaya"
 msgstr ""
@@ -415,6 +415,22 @@ msgstr ""
 msgid "Enregistrer les tarifs"
 msgstr ""
 
+#: includes/class-aod-cod-badge.php:77
+msgid "Nouveau"
+msgstr ""
+
+#: includes/class-aod-cod-badge.php:78
+msgid "Promo"
+msgstr ""
+
+#: includes/class-aod-cod-badge.php:79
+msgid "Pack"
+msgstr ""
+
+#: includes/class-aod-cod-badge.php:80
+msgid "Meilleure vente"
+msgstr ""
+
 #: includes/class-aod-cod-block.php:75
 msgid "Formulaire COD : indiquez un ID de produit dans les réglages du bloc, ou placez-le sur une page produit."
 msgstr ""
@@ -424,18 +440,18 @@ msgid "Produit introuvable ou non disponible à la vente."
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:105
-#: includes/class-aod-cod-cart.php:315
-#: includes/class-aod-cod-cart.php:317
+#: includes/class-aod-cod-cart.php:316
+#: includes/class-aod-cod-cart.php:318
 msgid "Votre panier"
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:106
-#: includes/class-aod-cod-cart.php:302
+#: includes/class-aod-cod-cart.php:303
 msgid "Ouvrir le panier"
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:107
-#: includes/class-aod-cod-cart.php:318
+#: includes/class-aod-cod-cart.php:319
 msgid "Fermer le panier"
 msgstr ""
 
@@ -444,7 +460,7 @@ msgid "Votre panier est vide."
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:109
-#: includes/class-aod-cod-form.php:245
+#: includes/class-aod-cod-form.php:248
 msgid "Retirer cet article"
 msgstr ""
 
@@ -457,49 +473,49 @@ msgid "Diminuer la quantité"
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:112
-#: includes/class-aod-cod-cart.php:329
+#: includes/class-aod-cod-cart.php:330
 msgid "Total estimé"
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:113
-#: includes/class-aod-cod-cart.php:330
+#: includes/class-aod-cod-cart.php:331
 msgid "Livraison calculée à la commande, selon la wilaya."
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:114
-#: includes/class-aod-cod-cart.php:342
+#: includes/class-aod-cod-cart.php:343
 #: includes/class-aod-cod-no-tunnel.php:135
 msgid "Commander"
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:115
-#: includes/class-aod-cod-cart.php:365
-#: includes/class-aod-cod-cart.php:370
-#: includes/class-aod-cod-cart.php:376
-#: includes/class-aod-cod-cart.php:437
-#: includes/class-aod-cod-cart.php:442
-#: includes/class-aod-cod-cart.php:465
-#: includes/class-aod-cod-cart.php:600
-#: includes/class-aod-cod-form.php:1412
-#: includes/class-aod-cod-form.php:1691
-#: includes/class-aod-cod-form.php:1699
-#: includes/class-aod-cod-form.php:1870
+#: includes/class-aod-cod-cart.php:366
+#: includes/class-aod-cod-cart.php:371
+#: includes/class-aod-cod-cart.php:377
+#: includes/class-aod-cod-cart.php:438
+#: includes/class-aod-cod-cart.php:443
+#: includes/class-aod-cod-cart.php:466
+#: includes/class-aod-cod-cart.php:601
+#: includes/class-aod-cod-form.php:1415
+#: includes/class-aod-cod-form.php:1694
+#: includes/class-aod-cod-form.php:1702
+#: includes/class-aod-cod-form.php:1873
 msgid "Produit indisponible."
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:116
-#: includes/class-aod-cod-form.php:255
+#: includes/class-aod-cod-form.php:258
 msgid "Article ajouté au panier."
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:117
-#: includes/class-aod-cod-form.php:254
+#: includes/class-aod-cod-form.php:257
 msgid "Erreur réseau. Vérifiez votre connexion et réessayez."
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:118
-#: includes/class-aod-cod-form.php:1178
-#: includes/class-aod-cod-form.php:1280
+#: includes/class-aod-cod-form.php:1181
+#: includes/class-aod-cod-form.php:1283
 msgid "Ajouter au panier"
 msgstr ""
 
@@ -512,7 +528,7 @@ msgid "Choisir les options"
 msgstr ""
 
 #: includes/class-aod-cod-cart.php:122
-#: includes/class-aod-cod-form.php:231
+#: includes/class-aod-cod-form.php:234
 msgid "Veuillez sélectionner toutes les options."
 msgstr ""
 
@@ -541,20 +557,20 @@ msgstr ""
 msgid "Complétez votre commande"
 msgstr ""
 
-#: includes/class-aod-cod-cart.php:599
+#: includes/class-aod-cod-cart.php:600
 msgid "Quantité non disponible en stock."
 msgstr ""
 
 #: includes/class-aod-cod-contact.php:59
-#: includes/class-aod-cod-form.php:232
+#: includes/class-aod-cod-form.php:235
 #: includes/class-aod-shipping.php:1281
 msgid "Envoi en cours…"
 msgstr ""
 
 #: includes/class-aod-cod-contact.php:60
 #: includes/class-aod-cod-contact.php:197
-#: includes/class-aod-cod-form.php:253
-#: includes/class-aod-cod-form.php:1322
+#: includes/class-aod-cod-form.php:256
+#: includes/class-aod-cod-form.php:1325
 msgid "Une erreur est survenue. Veuillez réessayer."
 msgstr ""
 
@@ -567,7 +583,7 @@ msgid "Une question sur un produit, une commande ou une livraison ? Écrivez-nou
 msgstr ""
 
 #: includes/class-aod-cod-contact.php:146
-#: includes/class-aod-cod-form.php:1199
+#: includes/class-aod-cod-form.php:1202
 msgid "Nom complet"
 msgstr ""
 
@@ -597,7 +613,7 @@ msgid "Trop de messages envoyés depuis votre connexion. Réessayez plus tard."
 msgstr ""
 
 #: includes/class-aod-cod-contact.php:238
-#: includes/class-aod-cod-form.php:1355
+#: includes/class-aod-cod-form.php:1358
 msgid "Vérification anti-robot échouée. Rechargez la page et réessayez."
 msgstr ""
 
@@ -678,23 +694,23 @@ msgstr ""
 msgid "Formulaire COD : indiquez un ID de produit, ou placez le widget sur une page produit."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:228
-#: includes/class-aod-cod-form.php:1208
+#: includes/class-aod-cod-form.php:231
+#: includes/class-aod-cod-form.php:1211
 msgid "Choisir une wilaya"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:229
-#: includes/class-aod-cod-form.php:1219
+#: includes/class-aod-cod-form.php:232
+#: includes/class-aod-cod-form.php:1222
 msgid "Choisir une commune"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:230
+#: includes/class-aod-cod-form.php:233
 msgid "Veuillez choisir une couleur."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:233
-#: includes/class-aod-cod-form.php:1257
-#: includes/class-aod-cod-form.php:1495
+#: includes/class-aod-cod-form.php:236
+#: includes/class-aod-cod-form.php:1260
+#: includes/class-aod-cod-form.php:1498
 #: includes/class-aod-cod-leads.php:444
 #: includes/class-aod-shipping.php:514
 #: includes/class-aod-shipping.php:518
@@ -703,227 +719,227 @@ msgstr ""
 msgid "Livraison"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:234
-#: includes/class-aod-cod-form.php:1258
+#: includes/class-aod-cod-form.php:237
+#: includes/class-aod-cod-form.php:1261
 #: includes/class-aod-shipping.php:1087
 msgid "Total"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:235
+#: includes/class-aod-cod-form.php:238
 #: includes/class-aod-shipping.php:1108
 msgid "Offerte"
 msgstr ""
 
 #. translators: %s: montant restant à ajouter
-#: includes/class-aod-cod-form.php:237
+#: includes/class-aod-cod-form.php:240
 #, php-format
 msgid "Plus que %s pour la livraison gratuite !"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:238
+#: includes/class-aod-cod-form.php:241
 msgid "🎉 Livraison gratuite débloquée !"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:239
+#: includes/class-aod-cod-form.php:242
 msgid "Numéro de téléphone invalide (ex : 0550 12 34 56)."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:240
+#: includes/class-aod-cod-form.php:243
 msgid "Veuillez remplir tous les champs obligatoires."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:241
+#: includes/class-aod-cod-form.php:244
 msgid "Image précédente"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:242
+#: includes/class-aod-cod-form.php:245
 msgid "Image suivante"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:243
+#: includes/class-aod-cod-form.php:246
 msgid "Article"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:244
+#: includes/class-aod-cod-form.php:247
 msgid "Ajouter un article"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:246
-#: includes/class-aod-cod-form.php:1424
+#: includes/class-aod-cod-form.php:249
+#: includes/class-aod-cod-form.php:1427
 msgid "Veuillez ajouter au moins un article."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:247
-#: includes/class-aod-cod-form.php:1544
+#: includes/class-aod-cod-form.php:250
+#: includes/class-aod-cod-form.php:1547
 msgid "Merci ! Votre commande est bien enregistrée."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:248
+#: includes/class-aod-cod-form.php:251
 msgid "Commande N°"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:249
+#: includes/class-aod-cod-form.php:252
 msgid "Nous vous appellerons bientôt pour confirmer la livraison."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:826
+#: includes/class-aod-cod-form.php:829
 msgid "(Rupture de stock)"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:872
+#: includes/class-aod-cod-form.php:875
 msgid "Rupture de stock"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:990
+#: includes/class-aod-cod-form.php:993
 msgid "Choisissez votre offre"
 msgstr ""
 
 #. translators: %d: nombre d'unités
-#: includes/class-aod-cod-form.php:1018
+#: includes/class-aod-cod-form.php:1021
 #, php-format
 msgid "%d produit"
 msgid_plural "%d produits"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-aod-cod-form.php:1023
+#: includes/class-aod-cod-form.php:1026
 #, php-format
 msgid "Économisez %s"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1046
+#: includes/class-aod-cod-form.php:1049
 #, php-format
 msgid "Article %d"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1133
+#: includes/class-aod-cod-form.php:1136
 msgid "Commander maintenant — Paiement à la livraison"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1143
+#: includes/class-aod-cod-form.php:1146
 msgid "Ce pack contient :"
 msgstr ""
 
 #. translators: %s : libellé exact du bouton d'ajout au panier.
-#: includes/class-aod-cod-form.php:1177
+#: includes/class-aod-cod-form.php:1180
 #, php-format
 msgid "Choisissez vos options, puis « %s »."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1194
+#: includes/class-aod-cod-form.php:1197
 msgid "Ne pas remplir ce champ"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1203
+#: includes/class-aod-cod-form.php:1206
 #: includes/class-aod-cod-leads.php:441
 #: includes/class-aod-shipping.php:1011
 msgid "Téléphone"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1221
+#: includes/class-aod-cod-form.php:1224
 #: includes/class-aod-shipping.php:1038
 msgid "Commune"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1225
+#: includes/class-aod-cod-form.php:1228
 msgid "Mode de livraison"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1232
+#: includes/class-aod-cod-form.php:1235
 #: includes/class-aod-cod-whatsapp.php:225
 msgid "À domicile"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1242
+#: includes/class-aod-cod-form.php:1245
 #: includes/class-aod-cod-whatsapp.php:224
 msgid "Stop-desk (bureau)"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1252
+#: includes/class-aod-cod-form.php:1255
 #: includes/class-aod-shipping.php:1041
 msgid "Adresse"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1256
+#: includes/class-aod-cod-form.php:1259
 msgid "Sous-total"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1264
+#: includes/class-aod-cod-form.php:1267
 msgid "Confirmer la commande"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1285
+#: includes/class-aod-cod-form.php:1288
 msgid "Paiement à la livraison — vous payez à la réception, aucun versement à l’avance."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1340
+#: includes/class-aod-cod-form.php:1343
 msgid "Trop de commandes depuis votre connexion. Réessayez plus tard ou contactez-nous."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1397
+#: includes/class-aod-cod-form.php:1400
 msgid "Numéro de téléphone invalide."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1401
+#: includes/class-aod-cod-form.php:1404
 msgid "Une commande a déjà été enregistrée avec ce numéro. Réessayez dans 24 h ou contactez-nous."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1404
+#: includes/class-aod-cod-form.php:1407
 msgid "Wilaya invalide."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1407
+#: includes/class-aod-cod-form.php:1410
 msgid "Commune invalide."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1483
+#: includes/class-aod-cod-form.php:1486
 #: includes/class-aod-cod-leads.php:498
 msgid "Stop-desk"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1484
+#: includes/class-aod-cod-form.php:1487
 #: includes/class-aod-cod-leads.php:498
 #: includes/class-aod-shipping.php:1021
 msgid "Domicile"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1489
+#: includes/class-aod-cod-form.php:1492
 msgid "Livraison offerte"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1502
-#: includes/class-aod-cod-pages.php:339
+#: includes/class-aod-cod-form.php:1505
+#: includes/class-aod-cod-pages.php:419
 msgid "Paiement à la livraison"
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1516
+#: includes/class-aod-cod-form.php:1519
 msgid "Commande COD via le formulaire AOD."
 msgstr ""
 
-#: includes/class-aod-cod-form.php:1564
+#: includes/class-aod-cod-form.php:1567
 msgid "Erreur lors de la création de la commande."
 msgstr ""
 
 #. translators: 1: numéro de l'article, 2: quantité maximale autorisée.
-#: includes/class-aod-cod-form.php:1717
+#: includes/class-aod-cod-form.php:1720
 #, php-format
 msgid "Article %1$d : quantité limitée à %2$d par article."
 msgstr ""
 
 #. translators: 1: numéro de l'article, 2: nom du produit.
-#: includes/class-aod-cod-form.php:1731
+#: includes/class-aod-cod-form.php:1734
 #, php-format
 msgid "Article %1$d : « %2$s » n’est pas disponible dans cette quantité."
 msgstr ""
 
 #. translators: 1: numéro de l'article, 2: nom de la section (Taille, Couleur…)
-#: includes/class-aod-cod-form.php:1761
+#: includes/class-aod-cod-form.php:1764
 #, php-format
 msgid "Article %1$d : veuillez choisir « %2$s »."
 msgstr ""
 
 #. translators: 1: numéro de l'article, 2: nom de la variante.
-#: includes/class-aod-cod-form.php:1772
+#: includes/class-aod-cod-form.php:1775
 #, php-format
 msgid "Article %1$d : « %2$s » est en rupture de stock."
 msgstr ""
@@ -1231,51 +1247,55 @@ msgstr ""
 msgid "Purger les %d prospect(s) converti(s)"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:151
+#: includes/class-aod-cod-pages.php:154
 msgid "Accueil"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:153
+#: includes/class-aod-cod-pages.php:156
 msgid "Boutique"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:155
+#: includes/class-aod-cod-pages.php:158
 msgid "Contact"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:310
+#: includes/class-aod-cod-pages.php:191
+msgid "Fermer"
+msgstr ""
+
+#: includes/class-aod-cod-pages.php:390
 msgid "Découvrir la boutique"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:319
+#: includes/class-aod-cod-pages.php:399
 msgid "Nos catégories"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:326
+#: includes/class-aod-cod-pages.php:406
 msgid "Nos produits"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:330
+#: includes/class-aod-cod-pages.php:410
 msgid "Voir tous les produits"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:340
+#: includes/class-aod-cod-pages.php:420
 msgid "Vous payez en espèces à la réception. Aucun versement à l’avance, aucune carte bancaire."
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:344
+#: includes/class-aod-cod-pages.php:424
 msgid "Livraison dans les 58 wilayas"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:345
+#: includes/class-aod-cod-pages.php:425
 msgid "À domicile ou en point de retrait, partout en Algérie."
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:349
+#: includes/class-aod-cod-pages.php:429
 msgid "Commande en 1 minute"
 msgstr ""
 
-#: includes/class-aod-cod-pages.php:350
+#: includes/class-aod-cod-pages.php:430
 msgid "Ni panier ni création de compte : votre nom, votre téléphone, et c’est commandé."
 msgstr ""
 

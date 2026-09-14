@@ -652,6 +652,9 @@ class AOD_CD_Section_Products {
 		$manage     = $product ? $product->managing_stock() : false;
 		$qty        = $product ? $product->get_stock_quantity() : '';
 		$status     = $product ? $product->get_status() : 'publish';
+		// Étiquette de carte produit (Nouveau/Pack/Meilleure vente) — cf.
+		// bloc de sauvegarde plus bas pour le catalogue fermé des valeurs.
+		$badge      = $product ? (string) $product->get_meta( '_aod_badge' ) : '';
 		$cat_ids    = $product ? $product->get_category_ids() : array();
 		$img_url    = ( $product && $product->get_image_id() ) ? wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) : '';
 		$currency   = get_woocommerce_currency_symbol();
@@ -879,6 +882,17 @@ class AOD_CD_Section_Products {
 									<option value="publish" <?php selected( $status, 'publish' ); ?>><?php esc_html_e( 'En ligne', 'aod-client-dashboard' ); ?></option>
 									<option value="draft" <?php selected( $status, 'draft' ); ?>><?php esc_html_e( 'Brouillon', 'aod-client-dashboard' ); ?></option>
 								</select>
+							</label>
+							<label class="aod-cd-field" style="margin:14px 0 0">
+								<span class="aod-cd-label"><?php esc_html_e( 'Étiquette sur la carte produit', 'aod-client-dashboard' ); ?></span>
+								<select name="badge">
+									<option value="" <?php selected( $badge, '' ); ?>><?php esc_html_e( 'Aucune', 'aod-client-dashboard' ); ?></option>
+									<option value="new" <?php selected( $badge, 'new' ); ?>><?php esc_html_e( 'Nouveau', 'aod-client-dashboard' ); ?></option>
+									<option value="promo" <?php selected( $badge, 'promo' ); ?>><?php esc_html_e( 'Promo', 'aod-client-dashboard' ); ?></option>
+									<option value="pack" <?php selected( $badge, 'pack' ); ?>><?php esc_html_e( 'Pack', 'aod-client-dashboard' ); ?></option>
+									<option value="bestseller" <?php selected( $badge, 'bestseller' ); ?>><?php esc_html_e( 'Meilleure vente', 'aod-client-dashboard' ); ?></option>
+								</select>
+								<span class="aod-cd-note" style="font-size:12px;margin-top:2px"><?php esc_html_e( 'Affichée en surimpression sur la vignette, dans la Boutique et l’Accueil.', 'aod-client-dashboard' ); ?></span>
 							</label>
 						</div>
 					</div>
@@ -1576,6 +1590,22 @@ class AOD_CD_Section_Products {
 
 		$status = ( isset( $_POST['status'] ) && 'draft' === $_POST['status'] ) ? 'draft' : 'publish';
 		$product->set_status( $status );
+
+		// Étiquette de carte produit (Nouveau/Promo/Pack/Meilleure vente) — rendue
+		// côté public par `AOD_COD_Badge::markup()` (plugin aod-cod-form). Catalogue
+		// fermé recopié ici plutôt qu'un appel cross-plugin : cette section ne dépend
+		// pas de aod-cod-form (seul `woocommerce` est déclaré en `Requires Plugins`,
+		// même garde que `class-aod-cd-section-landing.php`). Même patron que le
+		// statut ci-dessus : on écrit la méta, ou on la supprime — jamais de valeur
+		// vide en base. « Promo » ici est un choix éditorial du gérant, sans lien
+		// avec le prix réel : le badge automatique de Woo/Astra est retiré du site
+		// (cf. AOD_COD_Badge), donc plus rien à dupliquer.
+		$badge = isset( $_POST['badge'] ) ? sanitize_key( wp_unslash( $_POST['badge'] ) ) : '';
+		if ( in_array( $badge, array( 'new', 'promo', 'pack', 'bestseller' ), true ) ) {
+			$product->update_meta_data( '_aod_badge', $badge );
+		} else {
+			$product->delete_meta_data( '_aod_badge' );
+		}
 
 		// Catégories : sélection multiple + éventuelle nouvelle.
 		$cat_ids = array();
