@@ -800,6 +800,33 @@ html[dir="rtl"] .aod-cod__optselect{
 .rtl .woocommerce-product-gallery .aod-gallery-nav--prev{left:auto;right:12px}
 .rtl .woocommerce-product-gallery .aod-gallery-nav--next{right:auto;left:12px}
 
+/* ---- Galerie et colonne d'infos à largeur ÉGALE (2026-09-14, demande owner :
+ * « pour que ce soit joli ») ----
+ * Mesuré au navigateur : Astra pose sa propre variante dynamique (réglage
+ * « largeur du contenu » du Personnalisateur, `<style>` injecté, pas les 48%/
+ * 48% du fichier statique `woocommerce-layout-grid.min.css`) —
+ * `.ast-woocommerce-container div.product div.images{width:50%}` contre
+ * `div.summary{width:46%}`, dès 922px. Résultat mesuré sur ce clone :
+ * 701px de galerie contre 645px de colonne résumé — visiblement asymétrique,
+ * pas un arrondi de sous-pixel.
+ * On restaure un partage ÉGAL, au même point de rupture qu'Astra (922px, sous
+ * lequel son propre `max-width:921px` empile déjà les deux en 100% — rien à
+ * corriger en dessous). `48%` plutôt que `50%` : c'est la valeur du fichier
+ * STATIQUE d'Astra (`woocommerce-layout-grid.min.css`, cf. plus haut dans ce
+ * fichier) — elle laisse le même espace de 4% entre les deux colonnes que le
+ * rendu actuel, déjà correct visuellement, au lieu d'un `50%/50%` qui les
+ * ferait se toucher.
+ * `!important` DÉLIBÉRÉ : la règle dynamique d'Astra n'a PAS besoin d'une
+ * spécificité mesurée pour la battre — elle n'est elle-même pas `!important` —
+ * mais un réglage de largeur de contenu changé plus tard dans le
+ * Personnalisateur ne doit pas pouvoir rouvrir l'asymétrie en silence. */
+@media (min-width: 922px) {
+	div.product div.images,
+	div.product div.summary {
+		width: 48% !important;
+	}
+}
+
 /* ---- Miniatures de la galerie en colonne, sur le côté (2026-09-13, demande
  * owner) ----
  * Par défaut (Woo + Astra), les miniatures s'affichent en GRILLE HORIZONTALE
