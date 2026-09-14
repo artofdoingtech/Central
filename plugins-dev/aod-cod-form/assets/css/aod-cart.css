@@ -731,10 +731,15 @@ body a.aod-loop-cta.aod-loop-cta { display: none; }
  * normal (`.aod-cod`, aod-cod-form.css) le reste du temps.
  *
  * Largeur : les deux colonnes sont désormais des `1fr` STRICTEMENT ÉGALES,
- * sans plafond ni centrage — la colonne résumé fait le DOUBLE de la galerie
- * (cf. la règle 32%/64% juste en dessous), donc chaque moitié du résumé pèse
- * exactement AUTANT que la galerie : les trois sections (galerie, panier,
- * formulaire) ont la même largeur à l'écran.
+ * sans plafond ni centrage.
+ * ⚠️ Ce `1fr 1fr` de base n'est PLUS JOUÉ TEL QUEL depuis les revirements du
+ * 2026-09-13/14 plus bas dans ce fichier (« navigation simple » et
+ * « validation ») : chacun des deux états RÉELS de cet écran pose sa PROPRE
+ * valeur, plus spécifique — une seule colonne en navigation simple
+ * (`.aod-cart__box` y est masqué), `minmax(…) minmax(…)` en validation. Cette
+ * valeur de base reste ici comme FILET (un état futur qui oublierait de fixer
+ * la sienne retombe sur deux colonnes égales, pas sur une grille cassée), pas
+ * comme le rendu qu'un visiteur voit réellement.
  * `margin` et `gap` : 0,5 cm demandés par l'owner, appliqués aux deux (marge
  * extérieure du bloc SUR SES QUATRE CÔTÉS — pas seulement au-dessus — ET
  * espace entre panier et formulaire) pour une seule et même unité de rythme,
@@ -766,30 +771,23 @@ body a.aod-loop-cta.aod-loop-cta { display: none; }
 		margin: 0;
 		max-width: none;
 	}
-
-	/* Galerie 1/3, résumé 2/3 (au lieu du 48%/48% d'Astra,
-	 * woocommerce-layout.css) : le résumé porte deux cartes de même largeur
-	 * côte à côte, donc il doit peser le DOUBLE de la galerie pour qu'aucune
-	 * des trois sections ne l'emporte sur les autres. `!important` DÉLIBÉRÉ,
-	 * même raison que les autres overrides Astra de ce fichier : Astra pose
-	 * lui-même une variante à 46% (`.ast-woocommerce-container div.product
-	 * div.summary`, injectée en `<style>` inline par le Personnalisateur) dont
-	 * la spécificité est plus haute que la nôtre — sans `!important`, elle
-	 * gagnerait quel que soit l'ordre des feuilles.
-	 * 🚨 PAS de `.woocommerce ` en préfixe (mesuré au navigateur) : cette
-	 * classe est posée sur `<body>` lui-même (`body_class()`), PAS sur un
-	 * `<div>` séparé — `body.aod-cart-checkout .woocommerce …` exige alors
-	 * DEUX nœuds distincts (`.aod-cart-checkout` puis, plus bas dans l'arbre,
-	 * `.woocommerce`) alors que les deux classes vivent sur le MÊME `<body>`,
-	 * et ne matchait donc jamais. `body.aod-cart-checkout` suffit à isoler la
-	 * règle : elle n'est de toute façon posée que sur une page WooCommerce. */
-	body.aod-cart-checkout div.product div.images {
-		width: 32% !important;
-	}
-	body.aod-cart-checkout div.product div.summary {
-		width: 64% !important;
-	}
 }
+/* ---- REVIREMENT (2026-09-14, retour owner : « la galerie est très petite
+ * par rapport à la section de droite ») ----
+ * Ce bloc posait ICI, sur TOUT `body.aod-cart-checkout` (donc aussi en simple
+ * navigation, panier non vide), une galerie à 32% contre 64% pour la colonne
+ * résumé — pensé pour un écran où celle-ci portait DEUX cartes de même
+ * largeur côte à côte (panier + formulaire, cf. le commentaire au-dessus). Ce
+ * partage n'a plus d'objet : en navigation simple, `.aod-cart__box` est
+ * désormais masqué (règle plus bas, « le rappel disparaît ») et la colonne
+ * résumé ne porte plus qu'UNE carte, pas deux — la garder à 64% écrasait la
+ * galerie à 32% pour rien, exactement le défaut signalé.
+ * La règle générale de `aod-cod-form.css` (48%/48%, même point de rupture)
+ * gouverne maintenant ce cas — retirer ce bloc-ci suffit à la laisser
+ * gagner ; aucune règle à ajouter ici. La colonne résumé qui porte
+ * VRAIMENT deux cartes (validation, panier + formulaire) a sa propre
+ * largeur, posée par ailleurs (`body.aod-cart-review div.product div.summary`,
+ * plus bas), pas ici. */
 
 /* ---- REVIREMENT (2026-09-13, retour owner) : la fiche du produit-hôte NE
  * S'EFFACE PLUS derrière le panier ----
