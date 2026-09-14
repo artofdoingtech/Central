@@ -517,8 +517,19 @@ function ok( cond, label ) {
 	await page.selectOption( '.aod-cod__form select[name="wilaya"]', '16' );
 	await page.waitForTimeout( 3400 ); // time-trap 32.3 : jamais sous 3 s.
 	await page.locator( '.aod-cod__submit' ).click();
-	await page.waitForSelector( '.aod-cod__done, .aod-cod__msg.is-error', { timeout: 20000 } );
-	ok( await page.locator( '.aod-cod__done' ).count() >= 1, 'La commande passe (écran de remerciement)' );
+	// Depuis le 2026-09-14, le succès redirige vers la Boutique et son bandeau
+	// `#aod-cod-thankyou` (cf. AOD_COD_Pages::render_thankyou_banner()) — il n'y
+	// a plus de panneau EN PLACE sur la fiche produit.
+	await page.waitForFunction(
+		() => {
+			const banner = document.getElementById( 'aod-cod-thankyou' );
+			if ( banner && ! banner.hidden ) { return true; }
+			return ( document.querySelector( '.aod-cod__msg.is-error' )?.textContent || '' ).trim().length > 0;
+		},
+		null,
+		{ timeout: 20000 }
+	);
+	ok( await page.locator( '#aod-cod-thankyou:not([hidden])' ).count() >= 1, 'La commande passe (bandeau de remerciement sur la Boutique)' );
 	ok( '[]' === ( await page.evaluate( () => window.localStorage.getItem( 'aod_cart' ) ) ), 'Panier vidé après succès' );
 
 	/* --- Relecture EN BASE : 2 lignes aux prix serveur ---------------------- */

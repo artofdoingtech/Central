@@ -145,19 +145,29 @@ function purge() {
 		}
 	}
 
-	/** Soumet et rend { done, error } — le panneau de remerciement, ou le message d'erreur. */
+	/**
+	 * Soumet et rend { done, error } — le bandeau de remerciement, ou le message
+	 * d'erreur.
+	 *
+	 * Depuis le 2026-09-14, le succès ne se voit plus SUR LA FICHE : la page
+	 * redirige vers la Boutique, qui affiche le bandeau `#aod-cod-thankyou`
+	 * (cf. `AOD_COD_Pages::render_thankyou_banner()`). On attend donc soit ce
+	 * bandeau VISIBLE (pas seulement présent : la coquille existe sur toute
+	 * charge de la Boutique, cachée, jusqu'à ce que le JS lise sessionStorage),
+	 * soit le message d'erreur resté sur la fiche produit.
+	 */
 	async function submit() {
 		await page.click( '.aod-cod__submit' );
 		await page.waitForFunction(
-			() => document.querySelector( '.aod-cod__done' )
-				|| ( document.querySelector( '.aod-cod__msg' )?.textContent || '' ).trim().length > 0,
+			() => {
+				const banner = document.getElementById( 'aod-cod-thankyou' );
+				if ( banner && ! banner.hidden ) { return true; }
+				return ( document.querySelector( '.aod-cod__msg' )?.textContent || '' ).trim().length > 0;
+			},
 			null,
 			{ timeout: 15000 }
 		);
-		// Au succès, le formulaire ENTIER est remplacé par le remerciement : le
-		// paragraphe de message n'existe alors plus. Le lire sans vérifier ferait
-		// échouer le test au moment précis où il devrait réussir.
-		const done = await page.locator( '.aod-cod__done' ).count() > 0;
+		const done = await page.locator( '#aod-cod-thankyou:not([hidden])' ).count() > 0;
 		const msg = page.locator( '.aod-cod__msg' );
 		const error = ( await msg.count() ) ? ( ( await msg.textContent() ) || '' ).trim() : '';
 		return { done, error };
@@ -225,13 +235,14 @@ function purge() {
 	res = await submit();
 	check( res.done, 'Une commande COD légitime est acceptée', res.error );
 
-	const done = await page.locator( '.aod-cod__done' ).textContent().catch( () => '' );
+	const done = await page.locator( '#aod-cod-thankyou .aod-cod-thankyou__order' ).textContent().catch( () => '' );
 	const m = ( done || '' ).match( /(\d{2,})/ );
 	const orderId = m ? m[ 1 ] : '';
-	check( !! orderId, 'Le remerciement affiche le numéro de commande', done.replace( /\s+/g, ' ' ).trim() );
+	check( !! orderId, 'Le bandeau de la Boutique affiche le numéro de commande', done.replace( /\s+/g, ' ' ).trim() );
 
-	check( await page.locator( '.aod-cod__form' ).count() === 0, 'Le formulaire est remplacé par le remerciement (pas de double envoi possible)' );
+	check( await page.locator( '.aod-cod__form' ).count() === 0, 'La fiche produit a été quittée (pas de double envoi possible)' );
 	check( ! /\/(cart|checkout|commande|panier)/.test( page.url() ), 'Aucune redirection vers un tunnel WooCommerce', page.url() );
+	check( /\/boutique\/?(\?|$)/.test( page.url() ), 'La redirection post-commande mène bien à la Boutique', page.url() );
 
 	// ────────────────────────── 6. La commande existe VRAIMENT, en base ───
 	// C'est le cœur du test : le navigateur a dit « merci », mais seul HPOS fait foi.

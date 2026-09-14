@@ -47,6 +47,9 @@ class AOD_COD_Pages {
 		add_shortcode( 'aod_home', array( $this, 'render_home' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'assets' ) );
 		add_filter( 'wp_nav_menu_objects', array( $this, 'translate_menu_labels' ), 10 );
+		// Bandeau « Merci, commande enregistrée » : la fiche produit redirige ici
+		// après une commande COD réussie (cf. showSuccess() dans aod-cod-form.js).
+		add_action( 'wp_footer', array( $this, 'render_thankyou_banner' ) );
 
 		// Accueil et Contact rendent leur PROPRE titre (le nom de la boutique dans le
 		// héro, « Nous contacter » sur la page Contact). Si le thème affiche en plus le
@@ -155,6 +158,83 @@ class AOD_COD_Pages {
 				return __( 'Contact', 'aod-cod-form' );
 		}
 		return '';
+	}
+
+	/**
+	 * Coquille + script de lecture du bandeau de remerciement, imprimés
+	 * UNIQUEMENT sur la Boutique.
+	 *
+	 * Le contenu (titre, n° de commande, sous-titre — déjà dans la langue de
+	 * l'acheteur, cf. `AOD_COD.i18n` côté fiche produit) est déposé par
+	 * `showSuccess()` (aod-cod-form.js) dans `sessionStorage` juste avant la
+	 * redirection vers cette page, PUIS lu et effacé ici, au premier rendu.
+	 * Aucun état serveur : un rechargement de la Boutique n'affiche rien.
+	 *
+	 * Imprimé en JS inline plutôt que via un fichier enregistré : ce bandeau
+	 * n'a besoin d'aucune dépendance (pas de jQuery, pas de AOD_COD/AOD_CART,
+	 * qui ne sont localisés que sur la fiche produit / que si le panier COD
+	 * est actif) — le coupler à l'un des deux le ferait dépendre d'un toggle
+	 * qui n'a rien à voir avec lui.
+	 */
+	public function render_thankyou_banner() {
+		if ( ! function_exists( 'is_shop' ) || ! is_shop() ) {
+			return;
+		}
+		?>
+		<div id="aod-cod-thankyou" class="aod-cod-thankyou" role="status" aria-live="polite" hidden>
+			<div class="aod-cod-thankyou__ic" aria-hidden="true">✓</div>
+			<div class="aod-cod-thankyou__body">
+				<p class="aod-cod-thankyou__title"></p>
+				<p class="aod-cod-thankyou__order"></p>
+				<p class="aod-cod-thankyou__sub"></p>
+			</div>
+			<button type="button" class="aod-cod-thankyou__close" aria-label="<?php esc_attr_e( 'Fermer', 'aod-cod-form' ); ?>">
+				<?php echo AOD_COD_Icon::svg( 'close', array( 'size' => 16 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- SVG d'un catalogue fermé, jamais d'une saisie (cf. AOD_COD_Icon). ?>
+			</button>
+		</div>
+		<script>
+		( function () {
+			// Silence volontaire : sessionStorage.getItem/JSON.parse peuvent lever
+			// (navigation privée, stockage plein, valeur corrompue). La commande est
+			// déjà enregistrée — au pire le bandeau reste caché, jamais bloquant.
+			try {
+				var raw = window.sessionStorage.getItem( 'aod_cod_thankyou' );
+				if ( ! raw ) { return; }
+				window.sessionStorage.removeItem( 'aod_cod_thankyou' );
+				var data = JSON.parse( raw );
+				var el = document.getElementById( 'aod-cod-thankyou' );
+				if ( ! el || ! data ) { return; }
+				var setOrRemove = function ( sel, val ) {
+					var node = el.querySelector( sel );
+					if ( val ) { node.textContent = val; } else { node.parentNode.removeChild( node ); }
+				};
+				setOrRemove( '.aod-cod-thankyou__title', data.title || '' );
+				setOrRemove( '.aod-cod-thankyou__order', data.order || '' );
+				setOrRemove( '.aod-cod-thankyou__sub', data.sub || '' );
+
+				// Le bandeau flotte SOUS l'en-tête du thème, jamais dessus : mesuré,
+				// un en-tête mobile pleine largeur (logo + burger + icônes) se
+				// retrouvait recouvert par le coin haut par défaut (16px/8px), quel
+				// que soit le thème déposé dans library/themes/ (§4 du template).
+				// `header`/`#masthead` couvre les thèmes classiques visés (Astra,
+				// GeneratePress, Neve, Blocksy, Kadence) ; à défaut, repli sur 8px.
+				var header = document.querySelector( '#masthead' ) || document.querySelector( 'header' );
+				var top    = 8;
+				if ( header ) {
+					var r = header.getBoundingClientRect();
+					if ( r.bottom > top ) { top = r.bottom + 8; }
+				}
+				el.style.top = top + 'px';
+
+				el.hidden = false;
+				var closeBtn = el.querySelector( '.aod-cod-thankyou__close' );
+				if ( closeBtn ) {
+					closeBtn.addEventListener( 'click', function () { el.hidden = true; } );
+				}
+			} catch ( e ) {}
+		} )();
+		</script>
+		<?php
 	}
 
 	/**

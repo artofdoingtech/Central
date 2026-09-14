@@ -195,7 +195,14 @@ function aod_test_pcs_census() {
 			// et son `remove_description_tab()` sont supprimés, l'onglet natif
 			// « Description » du cœur Woo (qui échappe lui-même son contenu, sans
 			// dérogation dans CE fichier) reprend sa place à côté de « Avis ».
-			'n'        => 192,
+			//
+			// 192 → 193 le 2026-09-14 (bandeau de remerciement post-commande,
+			// class-aod-cod-pages.php, `render_thankyou_banner()`). ⬆️ UNE de plus :
+			// le bouton de fermeture du bandeau imprime `AOD_COD_Icon::svg( 'close', … )`
+			// — EXACTEMENT le même appel, sur le même catalogue FERMÉ d'icônes, que
+			// celui déjà dérogé du panneau panier (`class-aod-cod-cart.php:318`,
+			// `aria-label="Fermer le panier"`) ; aucune saisie n'atteint ce SVG.
+			'n'        => 193,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '

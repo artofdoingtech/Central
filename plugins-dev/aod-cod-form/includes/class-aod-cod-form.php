@@ -219,6 +219,9 @@ class AOD_COD_Form {
 		wp_localize_script( 'aod-cod-form', 'AOD_COD', array(
 			'ajax_url'  => admin_url( 'admin-ajax.php' ),
 			'nonce'     => wp_create_nonce( 'aod_cod_nonce' ),
+			// Cible de la redirection post-commande (Boutique) — cf. showSuccess()
+			// dans aod-cod-form.js et AOD_COD_Pages::render_thankyou_banner().
+			'shop_url'  => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : '',
 			'wilayas'   => $wilayas,
 			'currency'  => get_woocommerce_currency_symbol(),
 			'free_shipping' => array(

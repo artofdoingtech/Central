@@ -160,8 +160,8 @@ AOD_Test::group( 'Binders 32.5 — R4 : les catch muets publics sont recensés, 
 // Exemptions déclarées AVEC leur raison. Une nouvelle entrée exige sa raison ici.
 $aod_ib_exemptions = array(
 	'aod-cod-form.js'    => array(
-		'attendus' => 3,
-		'raison'   => 'Turnstile.reset (jeton frais redemandé au prochain rendu) · gtag (le marketing ne casse jamais le chemin d’achat, cf. Phase 14) · flexslider (repli : clic simulé sur la navigation native)',
+		'attendus' => 4,
+		'raison'   => 'Turnstile.reset (jeton frais redemandé au prochain rendu) · gtag (le marketing ne casse jamais le chemin d’achat, cf. Phase 14) · flexslider (repli : clic simulé sur la navigation native) · sessionStorage.setItem (2026-09-14, redirection post-commande vers la Boutique) : en navigation privée ou stockage plein, écrire lève — la commande est déjà créée et la redirection a lieu quoi qu’il arrive (hors du try), seul le bandeau de remerciement manquerait alors à l’arrivée, jamais bloquant.',
 	),
 	'aod-cod-contact.js' => array(
 		'attendus' => 0,

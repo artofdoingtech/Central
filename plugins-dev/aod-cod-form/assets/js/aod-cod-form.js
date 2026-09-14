@@ -578,9 +578,11 @@
 				$msg.addClass( 'is-error' ).text( m );
 			}
 
-			// Remplace le formulaire par un panneau de remerciement (pas de redirection
-			// vers la page WooCommerce « commande reçue » : ce template n'expose aucun
-			// tunnel panier/checkout).
+			// Ne reste plus EN PLACE : redirige vers la Boutique, où le message de
+			// remerciement s'affiche en bandeau (demande owner, 2026-09-14). Toujours
+			// pas de redirection vers la page WooCommerce « commande reçue » — ce
+			// template n'expose aucun tunnel panier/checkout, la cible est la Boutique
+			// du socle (cf. AOD_COD_Pages::render_thankyou_banner()).
 			function showSuccess( data ) {
 				// Conversion publicitaire : le tunnel WooCommerce « commande reçue »
 				// n'étant pas utilisé, c'est ici (et non sur woocommerce_thankyou) que
@@ -591,6 +593,23 @@
 				var title = data.message || i.success_title || 'Merci !';
 				var order = data.order_id ? ( ( i.order_label || 'Commande N°' ) + ' ' + data.order_id ) : '';
 				var sub   = i.success_sub || '';
+
+				// Chemin normal : la Boutique existe toujours sur ce socle (§5 du
+				// template). Le message traverse la navigation par sessionStorage
+				// (même onglet, lu puis effacé une fois par AOD_COD_Pages) ; le court
+				// délai laisse partir les appels de fireConversion() ci-dessus avant
+				// de quitter la page — certains SDK de pixel envoient en différé.
+				if ( AOD_COD.shop_url ) {
+					try {
+						sessionStorage.setItem( 'aod_cod_thankyou', JSON.stringify( { title: title, order: order, sub: sub } ) );
+					} catch ( e ) {}
+					setTimeout( function () {
+						window.location.href = AOD_COD.shop_url;
+					}, 250 );
+					return;
+				}
+
+				// Repli (shop_url absent) : ancien panneau affiché en place.
 				var $done = $(
 					'<div class="aod-cod__done" role="status" aria-live="polite">' +
 						'<div class="aod-cod__done-ic" aria-hidden="true">✓</div>' +

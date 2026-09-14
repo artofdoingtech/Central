@@ -464,3 +464,105 @@ body a.aod-loop-cta.aod-loop-cta {
 	height: 1px;
 	overflow: hidden;
 }
+
+/* ── Bandeau « Merci, commande enregistrée » (Boutique, après redirection) ──
+   Coin haut, côté fin de ligne (inset-inline-end : à droite en FR, à gauche en
+   AR/RTL, sans règle dédoublée). Fond OPAQUE, contrairement au panneau
+   `.aod-cod__done` de la fiche produit (fond très pâle) : ici il flotte
+   au-dessus d'une grille produits dont on ne maîtrise pas la couleur. */
+.aod-cod-thankyou {
+	position: fixed;
+	top: 16px;
+	inset-inline-end: 16px;
+	z-index: 9999;
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	width: min(380px, calc(100vw - 32px));
+	padding: 16px;
+	background: #fff;
+	border: 1px solid #d9d9d9;
+	border-inline-start: 3px solid #15803d;
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+	animation: aod-thankyou-in 0.35s ease;
+}
+.aod-cod-thankyou[hidden] {
+	display: none;
+}
+.aod-cod-thankyou__ic {
+	flex-shrink: 0;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 16px;
+	line-height: 1;
+	color: #fff;
+	background: #15803d;
+	border-radius: 50%;
+}
+.aod-cod-thankyou__body {
+	min-width: 0;
+	flex: 1;
+}
+.aod-cod-thankyou__title {
+	margin: 0 0 4px;
+	font-size: 0.95em;
+	font-weight: 700;
+	color: #14532d;
+}
+.aod-cod-thankyou__order {
+	margin: 0 0 2px;
+	font-size: 0.9em;
+	font-weight: 600;
+	color: #15803d;
+}
+.aod-cod-thankyou__sub {
+	margin: 0;
+	font-size: 0.85em;
+	color: #4b5563;
+}
+.aod-cod-thankyou__close {
+	flex-shrink: 0;
+	width: 26px;
+	height: 26px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #6b7280;
+	border-radius: 50%;
+	cursor: pointer;
+}
+.aod-cod-thankyou__close:hover,
+.aod-cod-thankyou__close:focus-visible {
+	background: rgba(0, 0, 0, 0.06);
+	color: #1a1a1a;
+}
+@keyframes aod-thankyou-in {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+@media (max-width: 480px) {
+	.aod-cod-thankyou {
+		top: 8px;
+		inset-inline-end: 8px;
+		inset-inline-start: 8px;
+		width: auto;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.aod-cod-thankyou {
+		animation: none;
+	}
+}
