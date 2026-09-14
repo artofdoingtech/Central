@@ -827,6 +827,23 @@ html[dir="rtl"] .aod-cod__optselect{
 	}
 }
 
+/* ---- Mobile : catégorie + titre + prix AU-DESSUS de la galerie (2026-09-14,
+ * demande owner : « c'est beaucoup mieux cohérent et joli ») ----
+ * Le groupe est physiquement déplacé par `initMobileProductHeader()`
+ * (aod-cod-form.js) dans un `<div class="aod-mobile-product-header">`, posé
+ * en tout premier enfant de `div.product` — CSS seul ne peut pas faire
+ * apparaître ces trois éléments avant la galerie sans faire remonter TOUT
+ * `div.summary` (description courte, méta, formulaire compris), qui doit
+ * rester APRÈS elle. Cette feuille ne fait que MISE EN FORME du résultat :
+ * la décision de déplacer ou non est entièrement côté JS (viewport ≤ 921px,
+ * même point de rupture qu'Astra).
+ * `margin-bottom` seul : les trois éléments gardent leurs styles natifs
+ * (Astra pour `.single-product-category`, cœur Woo pour le titre et le prix)
+ * — aucune raison d'en réécrire l'apparence, seule la POSITION change. */
+.aod-mobile-product-header {
+	margin-bottom: 12px;
+}
+
 /* ---- Miniatures de la galerie en colonne, sur le côté (2026-09-13, demande
  * owner) ----
  * Par défaut (Woo + Astra), les miniatures s'affichent en GRILLE HORIZONTALE

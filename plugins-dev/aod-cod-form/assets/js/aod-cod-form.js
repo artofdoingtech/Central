@@ -670,6 +670,7 @@
 		// images du produit. La galerie est unique sur la page : on initialise une
 		// seule fois, hors de la boucle des formulaires.
 		initGalleryNav();
+		initMobileProductHeader();
 	} );
 
 	// Pilote la galerie WooCommerce (flexslider) : direction ('prev'/'next') ou
@@ -709,5 +710,100 @@
 		$next.on( 'click', function ( e ) { e.preventDefault(); goToSlide( $gallery, 'next' ); } );
 
 		$gallery.append( $prev, $next );
+	}
+
+	// Catégorie + titre + prix AU-DESSUS de la galerie, sur mobile seulement
+	// (2026-09-14, demande owner : « c'est beaucoup mieux cohérent et joli »).
+	//
+	// 🚨 Ces trois éléments vivent DANS `div.summary` (cœur Woo), qui est un
+	// SIBLING de la galerie, après elle dans le DOM — CSS seul ne peut pas les
+	// faire apparaître avant un sibling précédent sans faire remonter TOUT
+	// `div.summary` (description courte, méta, formulaire compris), ce qui
+	// n'est pas ce qui est demandé. On les DÉPLACE donc réellement, comme le
+	// panneau d'aperçu du panier (aod-cart.js) ou l'ancien volet de
+	// description (revenu dans son onglet depuis) — jamais un `innerHTML`, qui
+	// romprait les gestionnaires déjà posés sur ces nœuds.
+	//
+	// MÊME point de rupture que le passage en 100%/empilé d'Astra (921px,
+	// woocommerce-layout-grid.min.css) : en dessous, on est déjà dans le cas
+	// empilé que ce déplacement vise ; au-dessus, la galerie et le résumé
+	// sont côte à côte et rien ne doit bouger.
+	//
+	// Réversible : un marqueur (commentaire DOM, invisible) retient la place
+	// exacte d'origine, pour remettre chaque groupe à sa place si le viewport
+	// repasse en desktop (rotation d'écran, redimensionnement d'une fenêtre de
+	// bureau) — jamais recréé au petit bonheur.
+	var $mobileHeaderGroup  = null;
+	var mobileHeaderMarker  = null;
+	// La pastille « Promo ! » (`.ast-onsale-card`) est un enfant de
+	// `div.product`, PAS de la galerie (mesuré, même constat que le
+	// commentaire de `.is-previewing` dans aod-cart.css) — `position:absolute`
+	// la place donc par rapport au coin de `div.product`, PAS de l'image.
+	// Tant que le groupe titre/prix était le tout premier contenu de
+	// `div.product`, ça ne se voyait pas (la pastille tombait dans son coin,
+	// au-dessus de la galerie). Une fois le groupe déplacé EN PREMIER par la
+	// règle ci-dessus, le coin de `div.product` remonte au-dessus du groupe —
+	// et la pastille se retrouve à cheval sur le texte du titre (mesuré au
+	// navigateur, pas deviné). Elle rejoint donc la galerie elle-même
+	// (`position:relative`, cf. woocommerce-grid.min.css), qui reste, elle,
+	// à sa place : la pastille retombe sur le coin de l'IMAGE, où elle a
+	// toujours eu sa place visuelle.
+	var $mobileBadge       = null;
+	var mobileBadgeMarker  = null;
+	var mobileHeaderMedia  = window.matchMedia ? window.matchMedia( '(max-width: 921px)' ) : null;
+
+	function applyMobileProductHeader( isMobile ) {
+		var $product = $( 'div.product' ).first();
+		if ( ! $product.length ) { return; }
+		if ( isMobile ) {
+			if ( $mobileHeaderGroup ) { return; } // déjà déplacé.
+			var $summary = $product.find( '> div.summary' );
+			var $group   = $summary.find( '> .single-product-category, > .product_title, > .price' );
+			if ( ! $group.length ) { return; } // structure inattendue (thème/tabs exotiques) : on ne force rien.
+			mobileHeaderMarker = document.createComment( 'aod-mobile-header' );
+			$group.first()[ 0 ].parentNode.insertBefore( mobileHeaderMarker, $group.first()[ 0 ] );
+			$mobileHeaderGroup = $( '<div class="aod-mobile-product-header"></div>' ).append( $group );
+			$product.prepend( $mobileHeaderGroup );
+
+			var $gallery = $product.find( '> .woocommerce-product-gallery' );
+			var $badge   = $product.find( '> .onsale, > .ast-onsale-card' );
+			if ( $gallery.length && $badge.length ) {
+				mobileBadgeMarker = document.createComment( 'aod-mobile-badge' );
+				$badge[ 0 ].parentNode.insertBefore( mobileBadgeMarker, $badge[ 0 ] );
+				$gallery.prepend( $badge );
+				$mobileBadge = $badge;
+			}
+		} else {
+			if ( ! $mobileHeaderGroup ) { return; } // rien à défaire.
+			if ( mobileHeaderMarker && mobileHeaderMarker.parentNode ) {
+				$mobileHeaderGroup.children().each( function () {
+					mobileHeaderMarker.parentNode.insertBefore( this, mobileHeaderMarker );
+				} );
+				mobileHeaderMarker.parentNode.removeChild( mobileHeaderMarker );
+			}
+			$mobileHeaderGroup.remove();
+			$mobileHeaderGroup = null;
+			mobileHeaderMarker = null;
+
+			if ( $mobileBadge && mobileBadgeMarker && mobileBadgeMarker.parentNode ) {
+				mobileBadgeMarker.parentNode.insertBefore( $mobileBadge[ 0 ], mobileBadgeMarker );
+				mobileBadgeMarker.parentNode.removeChild( mobileBadgeMarker );
+			}
+			$mobileBadge      = null;
+			mobileBadgeMarker = null;
+		}
+	}
+
+	function initMobileProductHeader() {
+		if ( ! mobileHeaderMedia ) { return; } // navigateur trop ancien : reste empilé dans l'ordre natif.
+		applyMobileProductHeader( mobileHeaderMedia.matches );
+		if ( mobileHeaderMedia.__aodBound ) { return; } // écouteur déjà posé (formulaires multiples sur la page).
+		mobileHeaderMedia.__aodBound = true;
+		var onChange = function ( e ) { applyMobileProductHeader( e.matches ); };
+		if ( mobileHeaderMedia.addEventListener ) {
+			mobileHeaderMedia.addEventListener( 'change', onChange );
+		} else if ( mobileHeaderMedia.addListener ) {
+			mobileHeaderMedia.addListener( onChange ); // Safari < 14.
+		}
 	}
 } )( jQuery );
