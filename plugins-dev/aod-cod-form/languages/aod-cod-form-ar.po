@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AOD COD Form 1.19.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/aod-cod-form\n"
-"POT-Creation-Date: 2026-09-14T21:24:28+00:00\n"
+"POT-Creation-Date: 2026-09-15T11:24:15+00:00\n"
 "PO-Revision-Date: 2026-07-07T12:00:00+00:00\n"
 "Last-Translator: Art Of Doing\n"
 "Language-Team: Arabic\n"
@@ -576,89 +576,89 @@ msgstr "الكمية غير متوفرة في المخزون."
 msgid "Envoi en cours…"
 msgstr "جاري الإرسال…"
 
-#: includes/class-aod-cod-contact.php:60 includes/class-aod-cod-contact.php:197
+#: includes/class-aod-cod-contact.php:60 includes/class-aod-cod-contact.php:202
 #: includes/class-aod-cod-form.php:256 includes/class-aod-cod-form.php:1325
 msgid "Une erreur est survenue. Veuillez réessayer."
 msgstr "حدث خطأ. يرجى المحاولة مرة أخرى."
 
-#: includes/class-aod-cod-contact.php:123
+#: includes/class-aod-cod-contact.php:128
 msgid "Nous contacter"
 msgstr "تواصل معنا"
 
-#: includes/class-aod-cod-contact.php:125
+#: includes/class-aod-cod-contact.php:130
 msgid ""
 "Une question sur un produit, une commande ou une livraison ? Écrivez-nous, "
 "nous répondons rapidement."
 msgstr "سؤال حول منتج أو طلب أو توصيل؟ راسلنا، نرد عليك بسرعة."
 
-#: includes/class-aod-cod-contact.php:146 includes/class-aod-cod-form.php:1202
+#: includes/class-aod-cod-contact.php:151 includes/class-aod-cod-form.php:1202
 msgid "Nom complet"
 msgstr "الاسم الكامل"
 
-#: includes/class-aod-cod-contact.php:151
+#: includes/class-aod-cod-contact.php:156
 msgid "E-mail"
 msgstr "البريد الإلكتروني"
 
-#: includes/class-aod-cod-contact.php:156
+#: includes/class-aod-cod-contact.php:161
 msgid "Téléphone (facultatif)"
 msgstr "الهاتف (اختياري)"
 
-#: includes/class-aod-cod-contact.php:161
+#: includes/class-aod-cod-contact.php:166
 #: includes/class-aod-cod-landing.php:193
 msgid "Message"
 msgstr "الرسالة"
 
-#: includes/class-aod-cod-contact.php:170
+#: includes/class-aod-cod-contact.php:175
 msgid "Ne pas remplir"
 msgstr "لا تملأ هذا الحقل"
 
-#: includes/class-aod-cod-contact.php:177
+#: includes/class-aod-cod-contact.php:182
 msgid "Envoyer le message"
 msgstr "إرسال الرسالة"
 
-#: includes/class-aod-cod-contact.php:224
+#: includes/class-aod-cod-contact.php:229
 msgid "Trop de messages envoyés depuis votre connexion. Réessayez plus tard."
 msgstr "تم إرسال عدد كبير من الرسائل من اتصالك. يرجى المحاولة لاحقًا."
 
-#: includes/class-aod-cod-contact.php:238 includes/class-aod-cod-form.php:1358
+#: includes/class-aod-cod-contact.php:243 includes/class-aod-cod-form.php:1358
 msgid "Vérification anti-robot échouée. Rechargez la page et réessayez."
 msgstr "فشل التحقّق من أنك لست روبوتًا. أعد تحميل الصفحة وحاول مجدّدًا."
 
-#: includes/class-aod-cod-contact.php:253
+#: includes/class-aod-cod-contact.php:258
 msgid "Veuillez indiquer votre nom."
 msgstr "يرجى إدخال اسمك."
 
-#: includes/class-aod-cod-contact.php:256
+#: includes/class-aod-cod-contact.php:261
 msgid "Veuillez indiquer un e-mail valide."
 msgstr "يرجى إدخال بريد إلكتروني صالح."
 
-#: includes/class-aod-cod-contact.php:259
+#: includes/class-aod-cod-contact.php:264
 msgid "Veuillez écrire votre message."
 msgstr "يرجى كتابة رسالتك."
 
 #. translators: %s: nom du visiteur
-#: includes/class-aod-cod-contact.php:272
+#: includes/class-aod-cod-contact.php:277
 #, php-format
 msgid "Message de %s depuis le site"
 msgstr "رسالة من %s عبر الموقع"
 
-#: includes/class-aod-cod-contact.php:275
+#: includes/class-aod-cod-contact.php:280
 msgid "Nom :"
 msgstr "الاسم:"
 
-#: includes/class-aod-cod-contact.php:276
+#: includes/class-aod-cod-contact.php:281
 msgid "E-mail :"
 msgstr "البريد الإلكتروني:"
 
-#: includes/class-aod-cod-contact.php:279
+#: includes/class-aod-cod-contact.php:284
 msgid "Téléphone :"
 msgstr "الهاتف:"
 
-#: includes/class-aod-cod-contact.php:295
+#: includes/class-aod-cod-contact.php:300
 msgid "L’envoi a échoué. Réessayez ou écrivez-nous directement par e-mail."
 msgstr "فشل الإرسال. أعد المحاولة أو راسلنا مباشرة عبر البريد الإلكتروني."
 
-#: includes/class-aod-cod-contact.php:301
+#: includes/class-aod-cod-contact.php:306
 msgid ""
 "Merci ! Votre message a bien été envoyé, nous vous répondrons rapidement."
 msgstr "شكرًا لك! تم إرسال رسالتك بنجاح، وسنرد عليك قريبًا."
@@ -700,6 +700,48 @@ msgid ""
 "Formulaire COD : indiquez un ID de produit, ou placez le widget sur une page "
 "produit."
 msgstr "استمارة COD: أدخل معرّف منتج، أو ضع الودجت في صفحة منتج."
+
+#: includes/class-aod-cod-footer.php:117
+msgid "Facebook"
+msgstr "فيسبوك"
+
+#: includes/class-aod-cod-footer.php:118
+msgid "Instagram"
+msgstr "إنستغرام"
+
+#: includes/class-aod-cod-footer.php:119
+msgid "TikTok"
+msgstr "تيك توك"
+
+#: includes/class-aod-cod-footer.php:120
+msgid "Snapchat"
+msgstr "سناب شات"
+
+#: includes/class-aod-cod-footer.php:124
+msgid "WhatsApp"
+msgstr "واتساب"
+
+#: includes/class-aod-cod-footer.php:157
+msgid "Navigation"
+msgstr "التنقل"
+
+#: includes/class-aod-cod-footer.php:158
+msgid "Navigation du pied de page"
+msgstr "التنقل في التذييل"
+
+#: includes/class-aod-cod-footer.php:173
+msgid "Coordonnées"
+msgstr "معلومات التواصل"
+
+#: includes/class-aod-cod-footer.php:196
+msgid "Voir sur la carte"
+msgstr "عرض على الخريطة"
+
+#. translators: %s = année en cours.
+#: includes/class-aod-cod-footer.php:211
+#, php-format
+msgid "Copyright © %s — Développé par"
+msgstr "جميع الحقوق محفوظة © %s — تطوير"
 
 #: includes/class-aod-cod-form.php:231 includes/class-aod-cod-form.php:1211
 msgid "Choisir une wilaya"

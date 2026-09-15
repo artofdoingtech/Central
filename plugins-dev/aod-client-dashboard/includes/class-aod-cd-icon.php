@@ -110,6 +110,16 @@ class AOD_CD_Icon {
 			'snapchat'   => 'snapchat-logo',
 			'meta'       => 'meta-logo',
 			'google'     => 'google-logo',
+			// Copiées pour le jumeau public (`AOD_COD_Icon`, R6 de
+			// test-panier-peau.php) — réseaux sociaux du pied de page, sans usage
+			// dans /gestion à ce jour : `meta-logo` couvre déjà Facebook en carte
+			// de régie (Pixels & Tracking), mais le pied de page distingue les
+			// DEUX réseaux (URLs de profil différentes), d'où des logos séparés.
+			'facebook'   => 'facebook-logo',
+			'instagram'  => 'instagram-logo',
+			// En-tête du panneau « Réseaux sociaux & contact » de Mon compte —
+			// jamais copiée côté public, aucun usage là-bas.
+			'share'      => 'share-network',
 			// Régie « Conversions » : pas une marque, une notion. Le substitut
 			// précédent était un « $ » — dans une boutique en dinars.
 			'conversion' => 'currency-circle-dollar',
@@ -126,6 +136,9 @@ class AOD_CD_Icon {
 			'download'   => 'arrow-line-down',
 			'user'       => 'user',
 			'phone'      => 'phone',
+			// Copiée pour le jumeau public (`AOD_COD_Icon`, R6 de test-panier-peau.php
+			// exige l'originale ici) — coordonnées de contact (Contact, pied de page).
+			'email'      => 'envelope',
 			'trash'      => 'trash',
 			'refresh'    => 'arrows-clockwise',
 			'edit'       => 'pencil-simple',

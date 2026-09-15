@@ -148,6 +148,9 @@ add_action( 'plugins_loaded', function () {
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-no-tunnel.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-pages.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-contact.php';
+	// Barre réseaux sociaux + contact du pied de page — APRÈS Contact, dont elle
+	// lit AOD_COD_Contact::store_details() (adresse/e-mail, même source).
+	require_once AOD_COD_PATH . 'includes/class-aod-cod-footer.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-landing.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-cod-desc-video.php';
 	require_once AOD_COD_PATH . 'includes/class-aod-shipping.php';
@@ -176,6 +179,9 @@ add_action( 'plugins_loaded', function () {
 	AOD_COD_Pages::instance();
 	// Page Contact : coordonnées + formulaire bilingue.
 	AOD_COD_Contact::instance();
+	// Barre réseaux sociaux + contact du pied de page — inerte tant que rien
+	// n'est configuré dans /gestion → Mon compte (aucun rendu du tout).
+	AOD_COD_Footer::instance();
 	// Page de vente (landing) par produit : remplace le gabarit de la fiche produit
 	// quand l'interrupteur est ON. Sinon, ne touche à rien.
 	AOD_COD_Landing::instance();

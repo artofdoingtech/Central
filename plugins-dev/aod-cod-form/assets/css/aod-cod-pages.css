@@ -356,9 +356,22 @@ body a.aod-loop-cta.aod-loop-cta {
 	opacity: 0.8;
 }
 
+/*
+ * SVG Phosphor depuis le 2026-09-15 (retour owner) — remplace l'emoji 💵/🚚/📞,
+ * rendu par la police du système et donc jamais le même visage sur deux
+ * appareils. `display:inline-flex` centre le tracé dans le span : un `<svg>`
+ * garde un léger décalage de ligne de base en `inline` simple, invisible avec
+ * un emoji (glyphe texte) mais visible ici.
+ * `color` hérite du texte environnant (`fill="currentColor"` dans le SVG,
+ * jamais une couleur écrite en dur) — même règle 1 qu'en tête de ce fichier.
+ */
 .aod-home__ico {
-	font-size: 1.9rem;
+	display: inline-flex;
+	justify-content: center;
 	line-height: 1;
+}
+.aod-home__ico svg {
+	display: block;
 }
 
 @media (min-width: 700px) {
@@ -404,9 +417,12 @@ body a.aod-loop-cta.aod-loop-cta {
 	gap: 0.6rem;
 }
 
+/* SVG Phosphor depuis le 2026-09-15 (remplace 📍/✉️, cf. `.aod-home__ico`
+   plus haut pour la raison). `li` est déjà flex + `align-items:center` :
+   aucun centrage supplémentaire à poser ici. */
 .aod-contact__ico {
 	flex: 0 0 auto;
-	font-size: 1.15rem;
+	display: flex;
 }
 
 /* Le formulaire réutilise les champs du formulaire COD (.aod-cod) : mêmes styles,
@@ -565,4 +581,169 @@ body a.aod-loop-cta.aod-loop-cta {
 	.aod-cod-thankyou {
 		animation: none;
 	}
+}
+
+/* ───────────────────────────────────────────────────────── Pied de page ─── */
+/*
+ * `AOD_COD_Footer` (2026-09-15/16, retour owner — deuxième passe : la
+ * première, une simple barre après `</footer>`, ne correspondait « pas du
+ * tout » au style attendu). Structure calquée sur un pied de page déjà livré
+ * sur un clone client (marque+réseaux / navigation / coordonnées, puis un
+ * bandeau de copyright séparé) — généralisée ici, sans donnée client en dur.
+ *
+ * RÈGLE 1 en tête de ce fichier : aucune couleur de marque, y compris pour des
+ * logos de réseaux sociaux qui EN ont une (bleu Facebook, dégradé Instagram…) :
+ * `currentColor` partout, la teinte vient du texte environnant, jamais du
+ * réseau. RÈGLE 2 : propriétés logiques uniquement — grid/flex suivent `dir`
+ * automatiquement, aucune règle RTL séparée à écrire ici.
+ */
+.aod-footer {
+	margin-block-start: clamp(2rem, 6vw, 3.5rem);
+	border-block-start: 1px solid rgba(128, 128, 128, 0.18);
+	background: rgba(128, 128, 128, 0.04);
+}
+.aod-footer__top {
+	max-width: 1200px;
+	margin-inline: auto;
+	padding: clamp(2rem, 5vw, 3rem) 1rem;
+	display: grid;
+	gap: 2rem;
+	align-items: start;
+}
+@media (min-width: 700px) {
+	.aod-footer__top {
+		grid-template-columns: 1.2fr 1fr 1.3fr;
+		gap: 2.5rem;
+	}
+}
+.aod-footer__brand {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+.aod-footer__brand img {
+	max-height: 48px;
+	width: auto;
+}
+.aod-footer__sitename {
+	font-weight: 700;
+	font-size: 1.1rem;
+}
+.aod-footer__tagline {
+	margin: 0;
+	font-size: 0.85rem;
+	opacity: 0.75;
+}
+.aod-footer__social {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+	margin-block-start: 0.4rem;
+}
+.aod-footer__social-link {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	flex-shrink: 0;
+	border: 1px solid rgba(128, 128, 128, 0.3);
+	border-radius: 999px;
+	color: inherit;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+.aod-footer__social-link:hover,
+.aod-footer__social-link:focus-visible {
+	background: rgba(0, 0, 0, 0.85);
+	color: #fff;
+}
+.aod-footer__social-link:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+.aod-footer__heading {
+	margin: 0 0 0.85rem;
+	font-size: 0.92rem;
+	font-weight: 700;
+}
+.aod-footer__links,
+.aod-footer__contact {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.aod-footer__links a {
+	font-size: 0.9rem;
+	color: inherit;
+	text-decoration: none;
+	opacity: 0.85;
+}
+.aod-footer__links a:hover,
+.aod-footer__links a:focus-visible {
+	opacity: 1;
+	text-decoration: underline;
+}
+.aod-footer__contact li {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.55rem;
+}
+.aod-footer__ico {
+	display: flex;
+	flex-shrink: 0;
+	/* Recale l'icône sur la première ligne du texte voisin : un SVG n'a pas la
+	   métrique de police qui caserait naturellement un glyphe texte. */
+	margin-block-start: 0.15rem;
+	opacity: 0.7;
+}
+.aod-footer__contact a,
+.aod-footer__contact span:not(.aod-footer__ico) {
+	font-size: 0.88rem;
+	line-height: 1.5;
+	color: inherit;
+	opacity: 0.85;
+}
+.aod-footer__contact a {
+	text-decoration: none;
+}
+.aod-footer__contact a:hover,
+.aod-footer__contact a:focus-visible {
+	opacity: 1;
+	text-decoration: underline;
+}
+/* Pleine largeur : `.aod-footer` reste borné par la goutière latérale posée
+   sur `.ast-container` en tête de ce fichier — annulée ici par le même
+   calcul que `.aod-home__reassure`-adjacent (100vw + marge négative), qui
+   s'annule contre n'importe quelle marge posée par les ancêtres. */
+.aod-footer__bottom {
+	width: 100vw;
+	margin-inline: calc(50% - 50vw);
+	border-block-start: 1px solid rgba(128, 128, 128, 0.18);
+	background: rgba(128, 128, 128, 0.08);
+	padding-block: 1rem;
+	padding-inline: 1rem;
+}
+.aod-footer__credit {
+	margin: 0;
+	text-align: center;
+	font-size: 0.82rem;
+	opacity: 0.75;
+}
+.aod-footer__credit a {
+	color: inherit;
+}
+
+/* Pied de page PAR DÉFAUT d'Astra (une simple ligne « Copyright © {année}
+   {site} | Propulsé par Thème WordPress Astra ») — masqué, remplacé par
+   `.aod-footer` ci-dessus. Un seul pied de page rendu, jamais les deux
+   empilés. `!important` nécessaire : Astra pose
+   `.site-below-footer-wrap[data-section="section-below-footer-builder"]
+   {display:grid}` (spécificité 0-2-0) — supérieure à `.site-below-footer-wrap`
+   seul (0-1-0) ici, quel que soit l'ordre d'impression des feuilles. Inerte
+   sur tout thème qui ne pose pas cette classe (non-Astra). */
+.site-below-footer-wrap {
+	display: none !important;
 }

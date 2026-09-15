@@ -162,6 +162,7 @@ else
   echo "    thème actif non-Astra : réglage largeur ignoré (propre à Astra)."
 fi
 
+
 echo "==> 6. Config WooCommerce (DZD / Algérie)"
 wp option update woocommerce_currency "DZD" || true
 wp option update woocommerce_default_country "DZ" || true

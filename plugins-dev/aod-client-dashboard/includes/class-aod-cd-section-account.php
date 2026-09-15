@@ -49,6 +49,7 @@ class AOD_CD_Section_Account {
 	private function __construct() {
 		add_action( 'wp_ajax_aod_cd_save_account', array( $this, 'ajax_save_account' ) );
 		add_action( 'wp_ajax_aod_cd_reset_shop', array( $this, 'ajax_reset_shop' ) );
+		add_action( 'wp_ajax_aod_cd_save_social_links', array( $this, 'ajax_save_social_links' ) );
 	}
 
 	public function render() {
@@ -110,12 +111,95 @@ class AOD_CD_Section_Account {
 				<span class="aod-cd-form-msg"></span>
 			</div>
 		</form>
+
+		<?php $this->render_social_links(); ?>
+
 		<?php
 		// Zone de danger : réinitialisation complète de la boutique. Réservée aux
 		// profils pouvant gérer WooCommerce (gérant + admin) ; les autres ne la voient pas.
 		if ( current_user_can( 'manage_woocommerce' ) ) {
 			$this->render_reset_zone();
 		}
+	}
+
+	/**
+	 * Réseaux sociaux + numéros de contact affichés en pied de page côté public
+	 * (`AOD_COD_Footer`, plugin aod-cod-form — retour owner, 2026-09-15).
+	 *
+	 * Formulaire à PART (pas de panneau dans celui du profil) : `ajax_save_account()`
+	 * écrit sur le compte WordPress du gérant, cette méta est un réglage de
+	 * BOUTIQUE — mélanger les deux dans un seul POST aurait rendu chaque
+	 * enregistrement solidaire de l'autre sans raison.
+	 *
+	 * @return array{facebook:string,instagram:string,tiktok:string,snapchat:string,whatsapp:string,phone:string,maps:string}
+	 */
+	public static function social_links() {
+		$saved = get_option( 'aod_cod_social_links', array() );
+		return wp_parse_args( (array) $saved, array(
+			'facebook'  => '',
+			'instagram' => '',
+			'tiktok'    => '',
+			'snapchat'  => '',
+			'whatsapp'  => '',
+			'phone'     => '',
+			'maps'      => '',
+		) );
+	}
+
+	protected function render_social_links() {
+		$s = self::social_links();
+		?>
+		<form class="aod-cd-form aod-cd-settings-form" data-action="aod_cd_save_social_links">
+			<div class="aod-cd-panel">
+				<div class="aod-cd-panel__head">
+					<span class="aod-cd-panel__ic" aria-hidden="true"><?php echo AOD_CD_Icon::svg( 'share', array( 'size' => 20 ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
+					<span class="aod-cd-panel__name"><?php esc_html_e( 'Réseaux sociaux & contact (pied de page)', 'aod-client-dashboard' ); ?></span>
+				</div>
+				<div class="aod-cd-panel__body">
+					<p class="aod-cd-help"><?php esc_html_e( 'Chaque icône n’apparaît dans le pied de page du site que si son champ est rempli. Laissez vide pour la masquer.', 'aod-client-dashboard' ); ?></p>
+					<div class="aod-cd-row2">
+						<label class="aod-cd-field">
+							<span class="aod-cd-label"><?php esc_html_e( 'Facebook (lien de la page)', 'aod-client-dashboard' ); ?></span>
+							<input type="url" name="facebook" placeholder="https://facebook.com/…" value="<?php echo esc_attr( $s['facebook'] ); ?>">
+						</label>
+						<label class="aod-cd-field">
+							<span class="aod-cd-label"><?php esc_html_e( 'Instagram (lien du profil)', 'aod-client-dashboard' ); ?></span>
+							<input type="url" name="instagram" placeholder="https://instagram.com/…" value="<?php echo esc_attr( $s['instagram'] ); ?>">
+						</label>
+					</div>
+					<div class="aod-cd-row2">
+						<label class="aod-cd-field">
+							<span class="aod-cd-label"><?php esc_html_e( 'TikTok (lien du profil)', 'aod-client-dashboard' ); ?></span>
+							<input type="url" name="tiktok" placeholder="https://tiktok.com/@…" value="<?php echo esc_attr( $s['tiktok'] ); ?>">
+						</label>
+						<label class="aod-cd-field">
+							<span class="aod-cd-label"><?php esc_html_e( 'Snapchat (lien du profil)', 'aod-client-dashboard' ); ?></span>
+							<input type="url" name="snapchat" placeholder="https://snapchat.com/add/…" value="<?php echo esc_attr( $s['snapchat'] ); ?>">
+						</label>
+					</div>
+					<div class="aod-cd-row2">
+						<label class="aod-cd-field">
+							<span class="aod-cd-label"><?php esc_html_e( 'WhatsApp (numéro public, avec indicatif)', 'aod-client-dashboard' ); ?></span>
+							<input type="tel" name="whatsapp" placeholder="+213…" value="<?php echo esc_attr( $s['whatsapp'] ); ?>">
+							<span class="aod-cd-help"><?php esc_html_e( 'Peut être différent du numéro de notification de la section WhatsApp.', 'aod-client-dashboard' ); ?></span>
+						</label>
+						<label class="aod-cd-field">
+							<span class="aod-cd-label"><?php esc_html_e( 'Téléphone (numéro public)', 'aod-client-dashboard' ); ?></span>
+							<input type="tel" name="phone" placeholder="+213…" value="<?php echo esc_attr( $s['phone'] ); ?>">
+						</label>
+					</div>
+					<label class="aod-cd-field">
+						<span class="aod-cd-label"><?php esc_html_e( 'Lien Google Maps (bouton « Voir sur la carte »)', 'aod-client-dashboard' ); ?></span>
+						<input type="url" name="maps" placeholder="https://www.google.com/maps?q=…" value="<?php echo esc_attr( $s['maps'] ); ?>">
+					</label>
+				</div>
+			</div>
+			<div class="aod-cd-form-foot aod-cd-savebar">
+				<button type="submit" class="aod-cd-btn aod-cd-btn-primary"><?php esc_html_e( 'Enregistrer', 'aod-client-dashboard' ); ?></button>
+				<span class="aod-cd-form-msg"></span>
+			</div>
+		</form>
+		<?php
 	}
 
 	/**
@@ -207,6 +291,47 @@ class AOD_CD_Section_Account {
 		}
 
 		wp_send_json_success( array( 'message' => __( 'Compte mis à jour.', 'aod-client-dashboard' ) ) );
+	}
+
+	/**
+	 * Enregistre les liens de réseaux sociaux + contacts publics du pied de page.
+	 *
+	 * Mêmes capacités que `ajax_save_account()` : réglage de boutique, pas
+	 * d'usage confirmateur (D12, cf. l'en-tête de ce fichier).
+	 */
+	public function ajax_save_social_links() {
+		check_ajax_referer( 'aod_cd', 'nonce' );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'aod-client-dashboard' ) ), 403 );
+		}
+
+		// `maps` n'est pas un réseau social mais suit exactement la même
+		// validation (URL, refus explicite plutôt qu'un enregistrement muet) —
+		// regroupé ici pour ne pas dupliquer la boucle.
+		$urls = array();
+		foreach ( array( 'facebook', 'instagram', 'tiktok', 'snapchat', 'maps' ) as $key ) {
+			$raw = isset( $_POST[ $key ] ) ? esc_url_raw( wp_unslash( $_POST[ $key ] ) ) : '';
+			// `esc_url_raw()` d'une chaîne non vide mais invalide (schéma manquant,
+			// etc.) rend '' : autant refuser explicitement qu'enregistrer un champ
+			// que le gérant croit rempli et qui n'apparaîtra jamais en pied de page.
+			if ( isset( $_POST[ $key ] ) && '' !== trim( (string) wp_unslash( $_POST[ $key ] ) ) && '' === $raw ) {
+				wp_send_json_error( array(
+					/* translators: %s = nom du réseau social (Facebook, Instagram…) ou « maps ». */
+					'message' => sprintf( __( 'Lien %s invalide.', 'aod-client-dashboard' ), ucfirst( $key ) ),
+				), 400 );
+			}
+			$urls[ $key ] = $raw;
+		}
+
+		$phones = array();
+		foreach ( array( 'whatsapp', 'phone' ) as $key ) {
+			// Même sanitisation que le numéro de notification de la section
+			// WhatsApp (`ajax_save_whatsapp()`) : chiffres et « + » uniquement.
+			$phones[ $key ] = isset( $_POST[ $key ] ) ? preg_replace( '/[^\d+]/', '', wp_unslash( $_POST[ $key ] ) ) : '';
+		}
+
+		update_option( 'aod_cod_social_links', array_merge( $urls, $phones ) );
+		wp_send_json_success( array( 'message' => __( 'Réseaux sociaux & contact enregistrés.', 'aod-client-dashboard' ) ) );
 	}
 
 	/* ============================================================

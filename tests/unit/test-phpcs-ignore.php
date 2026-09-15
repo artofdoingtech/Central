@@ -213,7 +213,32 @@ function aod_test_pcs_census() {
 			// commande ») dérogent donc pour la MÊME raison que `AOD_CD_Dashboard::pill()`
 			// plus haut dans ce census : le sniff ne sait pas lire à travers un
 			// retour de fonction déjà passé par `esc_*()`.
-			'n'        => 195,
+			//
+			// 195 → 200 le 2026-09-15 (icônes Phosphor de l'Accueil et de Contact,
+			// retour owner : remplacent 💵/🚚/📞/📍/✉️). CINQ de plus : chaque appel
+			// à `AOD_COD_Icon::svg()` imprime un SVG déjà échappé en interne
+			// (`esc_attr()` sur les classes, jamais de saisie dans le tracé — même
+			// catalogue FERMÉ que le badge ci-dessus) — 3 dans
+			// `AOD_COD_Pages::render_home()`, 2 dans `AOD_COD_Contact::render()`.
+			//
+			// 200 → 205 le 2026-09-15, plus tard le même jour (première version de
+			// la barre réseaux sociaux + contact du pied de page, retour owner).
+			// CINQ de plus, MÊME raison que ci-dessus (icône d'un catalogue FERMÉ,
+			// déjà échappée) : 4 dans `AOD_COD_Footer::render()` (réseaux,
+			// téléphone, e-mail, adresse) et 1 dans
+			// `AOD_CD_Section_Account::render_social_links()` (icône d'en-tête du
+			// panneau, même patron que `Profil`/`Sécurité` juste au-dessus dans ce
+			// même fichier).
+			//
+			// 205 → 206 le 2026-09-16 (deuxième passe du pied de page, retour
+			// owner : « pas du tout le style voulu » — refonte complète en
+			// pied de page à 3 colonnes + bandeau de copyright séparé, cf.
+			// `class-aod-cod-footer.php`). UNE de plus, nette : le fichier passe
+			// de 4 à 5 icônes (réseaux, téléphone, adresse, e-mail, lien carte —
+			// le lien « Voir sur la carte » est nouveau), MÊME raison que
+			// ci-dessus ; le panneau `/gestion` gagne un champ (lien Maps) mais
+			// AUCUNE icône de plus (pas d'icône d'en-tête supplémentaire).
+			'n'        => 206,
 			'securite' => true,
 			'quoi'     => 'Sortie non échappée (XSS). 130 relues à la main (97 le 2026-07-19, 33 en 18.3) + la 131ᵉ : '
 				. 'l’annotation NUE de section-products.php:500, resserrée sur ce sniff le 2026-07-21. '

@@ -192,6 +192,11 @@ function aod_test_perm_contrat() {
 			'famille' => 'manager',
 			'pourquoi' => "ARBITRÉ (2026-07-21) : « le gérant gère les mots de passe ». Le confirmateur n'a pas de section « Mon compte » et son mot de passe se change depuis Équipe. 🚨 La garde paraît inutile si l'on ne lit QUE le handler (borné à \$user->ID) : elle est la seconde moitié d'une décision prise dans le routeur. Déjà prise pour un oubli une fois. NE PAS la desserrer — cf. ARCHITECTURE.md §6, ROADMAP D12.",
 		),
+		'save_social_links' => array(
+			'caps'    => array( 'manage_woocommerce' ),
+			'famille' => 'manager',
+			'pourquoi' => "MÊME ARBITRAGE que save_account (2026-09-15) : réseaux sociaux + contact du pied de page rendus par `AOD_CD_Section_Account`, même section « Mon compte » réservée au gérant, même capacité — un confirmateur n'a pas plus à changer le lien Facebook de la boutique qu'à changer le mot de passe du compte.",
+		),
 
 		/* --- Gardes déléguées (cf. GARDES_PARTAGEES) --------------------------- */
 		'save_member'      => array( 'caps' => array( 'manage_woocommerce' ), 'famille' => 'deleguee' ),

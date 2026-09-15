@@ -57,9 +57,30 @@ class AOD_COD_Icon {
 			// Modes de livraison + réassurance du formulaire COD (Phase 38.3).
 			// Ils remplacent 🏠 🏢 🔒 : un emoji est rendu par l'OS, donc trois
 			// acheteurs sur trois systèmes ne voyaient pas le même formulaire.
-			'home'  => 'house',
-			'desk'  => 'storefront',
-			'lock'  => 'lock',
+			'home'    => 'house',
+			'desk'    => 'storefront',
+			'lock'    => 'lock',
+			// Réassurance de l'Accueil + coordonnées de Contact (2026-09-15,
+			// retour owner) : remplacent 💵 🚚 📞 📍 ✉️ — même raison que ci-dessus,
+			// un emoji n'est pas le même visage sur deux systèmes. Chantier
+			// « accent public » de docs/ICONES-ET-CHARTE-GESTION.md §6.3, ouvert.
+			'money'   => 'money',
+			'truck'   => 'truck',
+			'phone'   => 'phone',
+			'pin'     => 'map-pin',
+			'email'   => 'envelope',
+			// Pied de page — réseaux sociaux & contact (2026-09-15, retour owner) :
+			// [aod_cod_social_links], AOD_COD_Footer. Un seul par réseau, jamais de
+			// choix de couleur (rule 1 de aod-cod-pages.css) — le monogramme suffit
+			// à identifier la marque, `currentColor` comme tout le reste de ce
+			// catalogue.
+			'facebook'  => 'facebook-logo',
+			'instagram' => 'instagram-logo',
+			'tiktok'    => 'tiktok-logo',
+			'snapchat'  => 'snapchat-logo',
+			'whatsapp'  => 'whatsapp-logo',
+			// Lien « Voir sur la carte » du pied de page.
+			'maps'      => 'map-trifold',
 		);
 	}
 

@@ -10,7 +10,19 @@ Icônes du **panier COD public**. Rendues par `AOD_COD_Icon`
 - **Licence** : MIT (copie dans `LICENSE`).
 - **Copiés depuis** : `plugins-dev/aod-client-dashboard/assets/icons/`
   (récupérés sur l'amont le 2026-07-19), le 2026-07-23. `house`, `storefront` et
-  `lock` ajoutés le 2026-07-23 (38.3), même provenance.
+  `lock` ajoutés le 2026-07-23 (38.3), même provenance. `money`, `truck`, `phone`,
+  `map-pin`, `envelope` ajoutés le 2026-09-15 (retour owner — réassurance de
+  l'Accueil + coordonnées de Contact, remplacent 💵 🚚 📞 📍 ✉️), même provenance ;
+  `envelope` n'existait pas encore côté `/gestion`, copié là aussi le même jour
+  (cf. `docs/ICONES-ET-CHARTE-GESTION.md` §6.3bis — **RÈGLE** : toute icône
+  ajoutée côté public, ici comme sur tout futur clone, est une icône Phosphor).
+  `facebook-logo`, `instagram-logo`, `map-trifold` ajoutés le 2026-09-16
+  (`AOD_COD_Footer`, pied de page à 3 colonnes) ; `tiktok-logo`, `snapchat-logo`,
+  `whatsapp-logo` existaient déjà côté `/gestion` (Pixels & Tracking/WhatsApp),
+  simplement copiés ici. `facebook-logo`/`instagram-logo` n'existaient pas
+  encore côté `/gestion` (seul `meta-logo` y couvrait Facebook, pour une carte
+  de régie — un réseau différent du lien de profil affiché ici), copiés là
+  aussi le même jour.
 
 Les fichiers sont **copiés tels quels**, sans retouche. Les attributs de
 présentation (`class`, `width`, `height`, `aria-hidden`) sont **reconstruits au
@@ -54,3 +66,14 @@ dérive en silence.
 | `home` | `house` | `regular` | Mode de livraison « À domicile » du formulaire COD (20 px) |
 | `desk` | `storefront` | `regular` | Mode de livraison « Stop-desk » du formulaire COD (20 px) |
 | `lock` | `lock` | `regular` | Ligne de réassurance « paiement à la livraison » (14 px) |
+| `money` | `money` | `regular` | Réassurance Accueil « Paiement à la livraison » (30 px) |
+| `truck` | `truck` | `regular` | Réassurance Accueil « Livraison dans les 58 wilayas » (30 px) |
+| `phone` | `phone` | `regular` | Réassurance Accueil « Commande en 1 minute » (30 px) |
+| `pin` | `map-pin` | `regular` | Adresse de la page Contact (20 px), colonne Coordonnées du pied de page (18 px) |
+| `email` | `envelope` | `regular` | E-mail de la page Contact (20 px), colonne Coordonnées du pied de page (18 px) |
+| `facebook` | `facebook-logo` | `regular` | Réseau social du pied de page (18 px) |
+| `instagram` | `instagram-logo` | `regular` | Réseau social du pied de page (18 px) |
+| `tiktok` | `tiktok-logo` | `regular` | Réseau social du pied de page (18 px) |
+| `snapchat` | `snapchat-logo` | `regular` | Réseau social du pied de page (18 px) |
+| `whatsapp` | `whatsapp-logo` | `regular` | Réseau social du pied de page (18 px, lien `wa.me`) |
+| `maps` | `map-trifold` | `regular` | Lien « Voir sur la carte » du pied de page (18 px) |

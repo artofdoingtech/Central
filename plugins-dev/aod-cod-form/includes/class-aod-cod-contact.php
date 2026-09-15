@@ -70,7 +70,7 @@ class AOD_COD_Contact {
 	 *
 	 * @return string
 	 */
-	protected function recipient() {
+	public static function recipient() {
 		$to = get_option( 'woocommerce_email_from_address' );
 		if ( ! $to || ! is_email( $to ) ) {
 			$to = get_option( 'admin_email' );
@@ -81,9 +81,14 @@ class AOD_COD_Contact {
 	/**
 	 * Coordonnées de la boutique, telles que le gérant les a saisies.
 	 *
+	 * `public static` (2026-09-15) : `AOD_COD_Footer` en a besoin pour le pied
+	 * de page, sur TOUTES les pages — même donnée que la page Contact, une
+	 * seule source (`woocommerce_store_*`), jamais deux lectures qui pourraient
+	 * diverger.
+	 *
 	 * @return array{address:string,email:string}
 	 */
-	protected function store_details() {
+	public static function store_details() {
 		$parts = array_filter( array(
 			(string) get_option( 'woocommerce_store_address' ),
 			(string) get_option( 'woocommerce_store_address_2' ),
@@ -92,7 +97,7 @@ class AOD_COD_Contact {
 
 		return array(
 			'address' => implode( ', ', $parts ),
-			'email'   => $this->recipient(),
+			'email'   => self::recipient(),
 		);
 	}
 
@@ -112,7 +117,7 @@ class AOD_COD_Contact {
 			AOD_COD_Turnstile::instance()->enqueue_script();
 		}
 
-		$store = $this->store_details();
+		$store = self::store_details();
 
 		ob_start();
 		?>
@@ -127,13 +132,13 @@ class AOD_COD_Contact {
 				<ul class="aod-contact__list">
 					<?php if ( $store['address'] ) : ?>
 						<li>
-							<span class="aod-contact__ico" aria-hidden="true">📍</span>
+							<span class="aod-contact__ico" aria-hidden="true"><?php echo AOD_COD_Icon::svg( 'pin', array( 'size' => 20 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue FERMÉ (AOD_COD_Icon), jamais une saisie. ?></span>
 							<span><?php echo esc_html( $store['address'] ); ?></span>
 						</li>
 					<?php endif; ?>
 					<?php if ( $store['email'] ) : ?>
 						<li>
-							<span class="aod-contact__ico" aria-hidden="true">✉️</span>
+							<span class="aod-contact__ico" aria-hidden="true"><?php echo AOD_COD_Icon::svg( 'email', array( 'size' => 20 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue FERMÉ (AOD_COD_Icon), jamais une saisie. ?></span>
 							<a href="mailto:<?php echo esc_attr( $store['email'] ); ?>"><?php echo esc_html( $store['email'] ); ?></a>
 						</li>
 					<?php endif; ?>
@@ -263,7 +268,7 @@ class AOD_COD_Contact {
 		}
 
 		// --- Envoi ---
-		$to = $this->recipient();
+		$to = self::recipient();
 		if ( ! $to || ! is_email( $to ) ) {
 			wp_send_json_error( array( 'message' => $neutral ), 500 );
 		}

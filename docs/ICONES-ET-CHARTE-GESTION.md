@@ -7,11 +7,18 @@
 > **nettoyage CSS** (§10), et l'**accent vert appliqué** (§9 — `#00A651`, choisi
 > sur mesure : les verts foncés de club sont indiscernables du vert sémantique
 > `--cd-ok`).
-> Périmètre : **l'espace gérant `/gestion` uniquement**. La partie publique
-> (Accueil / Boutique / Contact / page produit / page de vente) **ne change pas**
-> — décision explicite de l'owner. Cf. §8 pour ce que cela implique.
+> Périmètre d'origine : **l'espace gérant `/gestion` uniquement**. La partie
+> publique (Accueil / Boutique / Contact / page produit / page de vente)
+> **ne changeait pas** — décision explicite de l'owner, à la date de cette
+> phase.
 >
-> À lire avant toute retouche des icônes ou des couleurs du tableau de bord.
+> 🔁 **§6.3 est OBSOLÈTE depuis le 2026-09-15** — l'owner a rouvert le
+> « chantier accent public » qu'elle annonçait « ouvert et non planifié » :
+> voir §6.3bis pour l'état actuel et la RÈGLE qui s'applique désormais à
+> **tout** icône ajouté côté public, sur ce clone et sur tous les suivants.
+>
+> À lire avant toute retouche des icônes ou des couleurs du tableau de bord —
+> et désormais avant toute icône côté public aussi (§6.3bis).
 > Compléte [`UX-GESTION-REFONTE.md`](UX-GESTION-REFONTE.md) (design system Phase 5),
 > qui reste la référence des composants ; ce document ne traite que **les icônes**
 > et **la dérivation de la charte**.
@@ -463,20 +470,80 @@ Un maillot du MOB n'est pas vert intégralement : c'est du vert et du noir dans 
 proportions choisies, et c'est ce **rapport** qui fait l'identité. Tout peindre en
 vert ne rendrait pas l'interface plus MOB — ça la rendrait moins dessinée.
 
-### 6.3 La partie publique reste intacte
+### 6.3 La partie publique reste intacte — ⚠️ OBSOLÈTE, cf. §6.3bis
 
-Décision de l'owner. `aod-cod-pages.css`, `aod-landing.css`, `aod-cod-form.css` et
-tous les emojis de la couche acheteur (héro, réassurance, blocs de landing) ne sont
-pas touchés.
+Décision de l'owner, **à la date de cette phase** (2026-07-20). `aod-cod-pages.css`,
+`aod-landing.css`, `aod-cod-form.css` et tous les emojis de la couche acheteur
+(héro, réassurance, blocs de landing) n'étaient pas touchés.
 
-⚠️ **Conséquence à assumer, écrite ici pour qu'elle ne surprenne personne plus
-tard :** après ce chantier, `/gestion` portera la charte du client et **la boutique
-que voient les acheteurs n'aura pas bougé d'un pixel**. Le formulaire COD restera
-sur son vert Shopify `#008060` écrit en dur (`aod-cod-form.css:8`), qui n'aura
-aucun rapport avec l'accent choisi.
+⚠️ **Conséquence assumée alors :** après ce chantier, `/gestion` portait la charte
+du client et **la boutique que voient les acheteurs n'avait pas bougé d'un pixel**.
+Le formulaire COD restait sur son vert Shopify `#008060` écrit en dur
+(`aod-cod-form.css:8`), sans rapport avec l'accent choisi. **Ceci reste vrai** — la
+COULEUR de la partie publique n'a toujours pas de chantier planifié (cf.
+[`ROADMAP-AMELIORATIONS.md`](ROADMAP-AMELIORATIONS.md)). Ce qui a changé, c'est le
+JEU d'icônes lui-même : voir §6.3bis.
 
-Ce n'est pas un oubli, c'est un périmètre. Le chantier « accent public » reste
-ouvert et non planifié — cf. [`ROADMAP-AMELIORATIONS.md`](ROADMAP-AMELIORATIONS.md).
+### 6.3bis Les icônes côté public sont Phosphor depuis le 2026-09-15
+
+**Retour owner explicite** (2026-09-15) : le « chantier accent public » que §6.3
+annonçait « ouvert et non planifié » s'ouvre, mais **par les icônes, pas par la
+couleur** — celle-ci reste hors périmètre (§6.3 ci-dessus).
+
+**Ce qui est livré** : `AOD_COD_Icon` (`aod-cod-form/includes/class-aod-cod-icon.php`,
+déjà là depuis la Phase 37.2 pour le panier COD — ce n'est pas un nouveau système,
+c'est son périmètre qui s'élargit) rend désormais aussi :
+- les 3 icônes de réassurance de l'Accueil (`AOD_COD_Pages::render_home()`) —
+  remplacent 💵 🚚 📞 par `money` / `truck` / `phone` ;
+- les 2 icônes de coordonnées de la page Contact (`AOD_COD_Contact::render()`) —
+  remplacent 📍 ✉️ par `pin` (= `map-pin`) / `email` (= `envelope`).
+
+`envelope` n'existait dans aucun des deux catalogues avant cette date : copié
+dans **les deux** plugins (`AOD_CD_Icon` en gagne l'entrée `email` même si
+`/gestion` ne l'utilise encore nulle part) — sinon R6 de `test-panier-peau.php`
+(originale absente de `/gestion`) et le contrôle « fichier orphelin » de
+`test-icones.php` rougissent tous les deux, chacun pour sa propre raison.
+
+> 🚨 **LA RÈGLE, pour ce clone et pour TOUS LES SUIVANTS — à ne jamais
+> redemander :** toute icône ajoutée où que ce soit sur le site, `/gestion`
+> **ou public**, est une icône **Phosphor**, rendue par `AOD_CD_Icon` (`/gestion`)
+> ou son jumeau `AOD_COD_Icon` (public) — **jamais** un emoji, jamais une police
+> d'icônes tierce (Font Awesome, Dashicons…), jamais un caractère Unicode nu.
+> Un emoji n'a pas le même visage sur deux systèmes d'exploitation ; un SVG
+> Phosphor, si — c'est tout le sujet des §1-2 de ce document, et il vaut
+> maintenant sur les DEUX couches, pas seulement `/gestion`.
+>
+> **Comment ajouter une icône PUBLIQUE** — même procédure que
+> `aod-client-dashboard/assets/icons/README.md` (« Ajouter une icône »), avec un
+> jumelage en plus : récupérer le fichier sur l'hôte
+> (`npm pack @phosphor-icons/core@2.1.1`, même version que l'existant — vérifier
+> par `diff` qu'un fichier déjà présent dans les deux plugins n'a pas dérivé),
+> le copier dans `aod-cod-form/assets/icons/<graisse>/`, le déclarer dans
+> `AOD_COD_Icon::catalog()`. **S'il n'existe pas encore dans `/gestion`**,
+> l'y copier aussi et le déclarer dans `AOD_CD_Icon::catalog()` (même sans usage
+> immédiat côté `/gestion`) — c'est ce que R6 exige : le jeu public est un
+> SOUS-ENSEMBLE du jeu `/gestion`, jamais l'inverse. `bash tests/run.sh` referme
+> la boucle (`test-icones.php`, `test-panier-peau.php` R6).
+>
+> La couleur, elle, ne bouge pas : `fill="currentColor"` comme partout ailleurs
+> dans ce document (§6.1-6.2) — le texte environnant pilote la teinte, jamais une
+> valeur écrite en dur dans le fichier SVG.
+
+**🔁 2026-09-16 — le pied de page, exemple le plus complet à ce jour.** Le
+premier jet (une simple barre imprimée en `wp_footer`, sous le pied de page
+par défaut d'Astra) a été rejeté par l'owner sur le style ET sur la position.
+`AOD_COD_Footer` (`aod-cod-form/includes/class-aod-cod-footer.php`) est
+devenu un pied de page à 3 colonnes (marque + réseaux sociaux / navigation /
+coordonnées) suivi d'un bandeau de copyright séparé, injecté via le hook
+Astra `astra_footer_before` (repli sur `wp_footer` si un autre thème
+classique est actif) — le pied de page natif d'Astra est masqué en CSS
+(`.site-below-footer-wrap`, aod-cod-pages.css), jamais empilé avec.
+Six icônes de plus dans ce même mouvement : `facebook`/`instagram`/`tiktok`/
+`snapchat`/`whatsapp` (réseaux sociaux) et `maps` (= `map-trifold`, lien
+« Voir sur la carte »). Réglages dans /gestion → Mon compte → « Réseaux
+sociaux & contact » (option `aod_cod_social_links`) — chaque icône
+n'apparaît que si son champ est rempli, même principe que le reste de ce
+document.
 
 ### 6.4 L'exception assumée : les cartes de régie portent leur couleur de marque (Phase 41)
 

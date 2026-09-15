@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AOD Client Dashboard 0.18.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/aod-client-"
 "dashboard\n"
-"POT-Creation-Date: 2026-09-14T21:24:41+00:00\n"
+"POT-Creation-Date: 2026-09-15T11:24:40+00:00\n"
 "PO-Revision-Date: 2026-07-07T12:00:00+00:00\n"
 "Last-Translator: Art Of Doing\n"
 "Language-Team: Arabic\n"
@@ -69,8 +69,9 @@ msgstr "وصول المدير"
 #: includes/class-aod-cd-section-abandoned.php:723
 #: includes/class-aod-cd-section-abandoned.php:753
 #: includes/class-aod-cd-section-abandoned.php:869
-#: includes/class-aod-cd-section-account.php:162
-#: includes/class-aod-cd-section-account.php:225
+#: includes/class-aod-cd-section-account.php:246
+#: includes/class-aod-cd-section-account.php:305
+#: includes/class-aod-cd-section-account.php:350
 #: includes/class-aod-cd-section-finance.php:762
 #: includes/class-aod-cd-section-finance.php:1313
 #: includes/class-aod-cd-section-finance.php:1373
@@ -157,13 +158,13 @@ msgid "requis"
 msgstr "مطلوب"
 
 #: includes/class-aod-cd-account.php:94
-#: includes/class-aod-cd-section-account.php:77
+#: includes/class-aod-cd-section-account.php:78
 #: includes/class-aod-cd-section-team.php:249
 msgid "Nom affiché"
 msgstr "الاسم الظاهر"
 
 #: includes/class-aod-cd-account.php:98
-#: includes/class-aod-cd-section-account.php:82
+#: includes/class-aod-cd-section-account.php:83
 msgid "Adresse e-mail"
 msgstr "البريد الإلكتروني"
 
@@ -231,7 +232,7 @@ msgid "Cet identifiant existe déjà."
 msgstr "اسم المستخدم هذا موجود بالفعل."
 
 #: includes/class-aod-cd-account.php:174
-#: includes/class-aod-cd-section-account.php:178
+#: includes/class-aod-cd-section-account.php:262
 msgid "Adresse e-mail invalide."
 msgstr "بريد إلكتروني غير صالح."
 
@@ -357,7 +358,7 @@ msgid "Équipe"
 msgstr "الفريق"
 
 #: includes/class-aod-cd-dashboard.php:59
-#: includes/class-aod-cd-section-account.php:58
+#: includes/class-aod-cd-section-account.php:59
 msgid "Mon compte"
 msgstr "حسابي"
 
@@ -770,7 +771,7 @@ msgid "Insérer"
 msgstr "إدراج"
 
 #: includes/class-aod-cd-dashboard.php:421
-#: includes/class-aod-cd-section-account.php:101
+#: includes/class-aod-cd-section-account.php:102
 msgid "Confirmer"
 msgstr "تأكيد"
 
@@ -1178,37 +1179,38 @@ msgid ""
 "composer au téléphone, puis à confirmer."
 msgstr "طلب مُنشأ من سلة مهجورة (بدون منتج) — تُحدَّد المنتجات عبر الهاتف ثم يُؤكَّد."
 
-#: includes/class-aod-cd-section-account.php:59
+#: includes/class-aod-cd-section-account.php:60
 msgid "Votre profil et votre mot de passe."
 msgstr "ملفك الشخصي وكلمة مرورك."
 
-#: includes/class-aod-cd-section-account.php:67
+#: includes/class-aod-cd-section-account.php:68
 msgid "Profil"
 msgstr "الملف الشخصي"
 
-#: includes/class-aod-cd-section-account.php:72
+#: includes/class-aod-cd-section-account.php:73
 #: includes/class-aod-cd-section-team.php:244
 msgid "Identifiant de connexion"
 msgstr "اسم تسجيل الدخول"
 
-#: includes/class-aod-cd-section-account.php:74
+#: includes/class-aod-cd-section-account.php:75
 #: includes/class-aod-cd-section-team.php:246
 msgid "L’identifiant ne peut pas être modifié."
 msgstr "لا يمكن تعديل اسم المستخدم."
 
-#: includes/class-aod-cd-section-account.php:91
+#: includes/class-aod-cd-section-account.php:92
 msgid "Sécurité"
 msgstr "الأمان"
 
-#: includes/class-aod-cd-section-account.php:94
+#: includes/class-aod-cd-section-account.php:95
 msgid "Laissez ces deux champs vides pour conserver le mot de passe actuel."
 msgstr "اترك هذين الحقلين فارغين للاحتفاظ بكلمة المرور الحالية."
 
-#: includes/class-aod-cd-section-account.php:97
+#: includes/class-aod-cd-section-account.php:98
 msgid "Nouveau mot de passe"
 msgstr "كلمة مرور جديدة"
 
-#: includes/class-aod-cd-section-account.php:109
+#: includes/class-aod-cd-section-account.php:110
+#: includes/class-aod-cd-section-account.php:198
 #: includes/class-aod-cd-section-landing.php:217
 #: includes/class-aod-cd-section-orders.php:3325
 #: includes/class-aod-cd-section-products.php:275
@@ -1220,11 +1222,54 @@ msgstr "كلمة مرور جديدة"
 msgid "Enregistrer"
 msgstr "حفظ"
 
-#: includes/class-aod-cd-section-account.php:131
+#: includes/class-aod-cd-section-account.php:156
+msgid "Réseaux sociaux & contact (pied de page)"
+msgstr "الشبكات الاجتماعية والتواصل (تذييل الصفحة)"
+
+#: includes/class-aod-cd-section-account.php:159
+msgid ""
+"Chaque icône n’apparaît dans le pied de page du site que si son champ est "
+"rempli. Laissez vide pour la masquer."
+msgstr ""
+"لا تظهر كل أيقونة في تذييل الموقع إلا إذا تم ملء حقلها. اتركه فارغًا لإخفائها."
+
+#: includes/class-aod-cd-section-account.php:162
+msgid "Facebook (lien de la page)"
+msgstr "فيسبوك (رابط الصفحة)"
+
+#: includes/class-aod-cd-section-account.php:166
+msgid "Instagram (lien du profil)"
+msgstr "إنستغرام (رابط الحساب)"
+
+#: includes/class-aod-cd-section-account.php:172
+msgid "TikTok (lien du profil)"
+msgstr "تيك توك (رابط الحساب)"
+
+#: includes/class-aod-cd-section-account.php:176
+msgid "Snapchat (lien du profil)"
+msgstr "سناب شات (رابط الحساب)"
+
+#: includes/class-aod-cd-section-account.php:182
+msgid "WhatsApp (numéro public, avec indicatif)"
+msgstr "واتساب (الرقم العام، مع رمز البلد)"
+
+#: includes/class-aod-cd-section-account.php:184
+msgid "Peut être différent du numéro de notification de la section WhatsApp."
+msgstr "يمكن أن يكون مختلفًا عن رقم إشعارات قسم واتساب."
+
+#: includes/class-aod-cd-section-account.php:187
+msgid "Téléphone (numéro public)"
+msgstr "الهاتف (الرقم العام)"
+
+#: includes/class-aod-cd-section-account.php:192
+msgid "Lien Google Maps (bouton « Voir sur la carte »)"
+msgstr "رابط خرائط Google (زر «عرض على الخريطة»)"
+
+#: includes/class-aod-cd-section-account.php:215
 msgid "Zone de danger"
 msgstr "منطقة خطرة"
 
-#: includes/class-aod-cd-section-account.php:132
+#: includes/class-aod-cd-section-account.php:216
 msgid ""
 "Réinitialiser la boutique supprime définitivement TOUS les produits (avec "
 "leurs photos) et TOUTES les commandes, puis remet le compteur des numéros de "
@@ -1235,40 +1280,50 @@ msgstr ""
 "تعيد عدّاد أرقام الطلبات إلى ‎#1. لا تتأثر الصفحات ولا الإعدادات ولا حسابك. "
 "هذا الإجراء لا يمكن التراجع عنه."
 
-#: includes/class-aod-cd-section-account.php:136
+#: includes/class-aod-cd-section-account.php:220
 msgid "Pour confirmer, recopiez exactement la phrase ci-dessous :"
 msgstr "للتأكيد، انسخ العبارة التالية حرفيًا:"
 
-#: includes/class-aod-cd-section-account.php:141
+#: includes/class-aod-cd-section-account.php:225
 msgid "Réinitialiser la boutique"
 msgstr "إعادة تهيئة المتجر"
 
-#: includes/class-aod-cd-section-account.php:159
+#: includes/class-aod-cd-section-account.php:243
 msgid "Session expirée, reconnectez-vous."
 msgstr "انتهت الجلسة، يرجى إعادة تسجيل الدخول."
 
-#: includes/class-aod-cd-section-account.php:182
+#: includes/class-aod-cd-section-account.php:266
 msgid "Cette adresse e-mail est déjà utilisée par un autre compte."
 msgstr "هذا البريد الإلكتروني مستخدم بالفعل من قبل حساب آخر."
 
-#: includes/class-aod-cd-section-account.php:189
+#: includes/class-aod-cd-section-account.php:273
 msgid "Les deux mots de passe ne correspondent pas."
 msgstr "كلمتا المرور غير متطابقتين."
 
-#: includes/class-aod-cd-section-account.php:192
+#: includes/class-aod-cd-section-account.php:276
 msgid "Le mot de passe doit faire au moins 8 caractères."
 msgstr "يجب أن تتكوّن كلمة المرور من 8 أحرف على الأقل."
 
-#: includes/class-aod-cd-section-account.php:209
+#: includes/class-aod-cd-section-account.php:293
 msgid "Compte mis à jour."
 msgstr "تم تحديث الحساب."
 
-#: includes/class-aod-cd-section-account.php:230
+#. translators: %s = nom du réseau social (Facebook, Instagram…) ou « maps ».
+#: includes/class-aod-cd-section-account.php:320
+#, php-format
+msgid "Lien %s invalide."
+msgstr "رابط %s غير صالح."
+
+#: includes/class-aod-cd-section-account.php:334
+msgid "Réseaux sociaux & contact enregistrés."
+msgstr "تم حفظ الشبكات الاجتماعية والتواصل."
+
+#: includes/class-aod-cd-section-account.php:355
 msgid "La phrase de confirmation ne correspond pas. Réinitialisation annulée."
 msgstr "عبارة التأكيد غير مطابقة. تم إلغاء إعادة التهيئة."
 
 #. translators: 1: nb produits, 2: nb images, 3: nb commandes.
-#: includes/class-aod-cd-section-account.php:258
+#: includes/class-aod-cd-section-account.php:383
 #, php-format
 msgid ""
 "Boutique réinitialisée : %1$d produit(s), %2$d image(s) et %3$d commande(s) "
@@ -1278,7 +1333,7 @@ msgstr ""
 "التالي الرقم ‎#1."
 
 #. translators: %d: nb de prospects (leads) supprimés.
-#: includes/class-aod-cd-section-account.php:266
+#: includes/class-aod-cd-section-account.php:391
 #, php-format
 msgid "%d prospect(s) du formulaire également supprimés."
 msgstr "تم أيضًا حذف %d عميل محتمل من النموذج."

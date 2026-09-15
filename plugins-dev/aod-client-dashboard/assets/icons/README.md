@@ -35,11 +35,21 @@ fichiers vivent dans le dépôt.
 
 | Dossier | Fichiers | Usage |
 |---|---|---|
-| `regular/` | 57 | Toutes les icônes du catalogue |
+| `regular/` | 61 | Toutes les icônes du catalogue |
 | `fill/` | 14 | Uniquement les entrées de la sidebar — **état actif** de la navigation : les 12 sections du menu, plus `storefront` (le lien « voir la boutique ») et `rocket-launch` (la Page de vente, routable mais masquée) |
 
 L'état actif de la nav se joue sur la **graisse** (`regular` → `fill`) et non sur
 la couleur : un signal qui tient quel que soit l'accent choisi par le client.
+
+> ⚠️ `envelope.svg` (nom d'usage `email`), `facebook-logo.svg` (`facebook`) et
+> `instagram-logo.svg` (`instagram`) sont présents ici sans usage dans
+> `/gestion` à ce jour (2026-09-15/16) — copiés uniquement pour satisfaire R6
+> de `test-panier-peau.php`, qui exige que toute icône du jumeau public
+> (`aod-cod-form/assets/icons/`, où elles servent la page Contact et le pied
+> de page) existe ICI en original. `share-network.svg` (`share`), lui, EST
+> utilisé — en-tête du panneau « Réseaux sociaux & contact » de Mon compte.
+> Cf. `aod-cod-form/assets/icons/README.md` et
+> `docs/ICONES-ET-CHARTE-GESTION.md` §6.3bis.
 
 ## Ajouter une icône
 

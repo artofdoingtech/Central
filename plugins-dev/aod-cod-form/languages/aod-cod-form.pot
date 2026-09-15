@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-14T21:24:28+00:00\n"
+"POT-Creation-Date: 2026-09-15T11:24:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: aod-cod-form\n"
@@ -568,90 +568,90 @@ msgid "Envoi en cours…"
 msgstr ""
 
 #: includes/class-aod-cod-contact.php:60
-#: includes/class-aod-cod-contact.php:197
+#: includes/class-aod-cod-contact.php:202
 #: includes/class-aod-cod-form.php:256
 #: includes/class-aod-cod-form.php:1325
 msgid "Une erreur est survenue. Veuillez réessayer."
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:123
+#: includes/class-aod-cod-contact.php:128
 msgid "Nous contacter"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:125
+#: includes/class-aod-cod-contact.php:130
 msgid "Une question sur un produit, une commande ou une livraison ? Écrivez-nous, nous répondons rapidement."
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:146
+#: includes/class-aod-cod-contact.php:151
 #: includes/class-aod-cod-form.php:1202
 msgid "Nom complet"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:151
+#: includes/class-aod-cod-contact.php:156
 msgid "E-mail"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:156
+#: includes/class-aod-cod-contact.php:161
 msgid "Téléphone (facultatif)"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:161
+#: includes/class-aod-cod-contact.php:166
 #: includes/class-aod-cod-landing.php:193
 msgid "Message"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:170
+#: includes/class-aod-cod-contact.php:175
 msgid "Ne pas remplir"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:177
+#: includes/class-aod-cod-contact.php:182
 msgid "Envoyer le message"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:224
+#: includes/class-aod-cod-contact.php:229
 msgid "Trop de messages envoyés depuis votre connexion. Réessayez plus tard."
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:238
+#: includes/class-aod-cod-contact.php:243
 #: includes/class-aod-cod-form.php:1358
 msgid "Vérification anti-robot échouée. Rechargez la page et réessayez."
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:253
+#: includes/class-aod-cod-contact.php:258
 msgid "Veuillez indiquer votre nom."
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:256
+#: includes/class-aod-cod-contact.php:261
 msgid "Veuillez indiquer un e-mail valide."
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:259
+#: includes/class-aod-cod-contact.php:264
 msgid "Veuillez écrire votre message."
 msgstr ""
 
 #. translators: %s: nom du visiteur
-#: includes/class-aod-cod-contact.php:272
+#: includes/class-aod-cod-contact.php:277
 #, php-format
 msgid "Message de %s depuis le site"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:275
+#: includes/class-aod-cod-contact.php:280
 msgid "Nom :"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:276
+#: includes/class-aod-cod-contact.php:281
 msgid "E-mail :"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:279
+#: includes/class-aod-cod-contact.php:284
 msgid "Téléphone :"
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:295
+#: includes/class-aod-cod-contact.php:300
 msgid "L’envoi a échoué. Réessayez ou écrivez-nous directement par e-mail."
 msgstr ""
 
-#: includes/class-aod-cod-contact.php:301
+#: includes/class-aod-cod-contact.php:306
 msgid "Merci ! Votre message a bien été envoyé, nous vous répondrons rapidement."
 msgstr ""
 
@@ -692,6 +692,48 @@ msgstr ""
 
 #: includes/class-aod-cod-elementor-widget.php:66
 msgid "Formulaire COD : indiquez un ID de produit, ou placez le widget sur une page produit."
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:117
+msgid "Facebook"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:118
+msgid "Instagram"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:119
+msgid "TikTok"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:120
+msgid "Snapchat"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:124
+msgid "WhatsApp"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:157
+msgid "Navigation"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:158
+msgid "Navigation du pied de page"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:173
+msgid "Coordonnées"
+msgstr ""
+
+#: includes/class-aod-cod-footer.php:196
+msgid "Voir sur la carte"
+msgstr ""
+
+#. translators: %s = année en cours.
+#: includes/class-aod-cod-footer.php:211
+#, php-format
+msgid "Copyright © %s — Développé par"
 msgstr ""
 
 #: includes/class-aod-cod-form.php:231

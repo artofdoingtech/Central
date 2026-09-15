@@ -415,17 +415,17 @@ class AOD_COD_Pages {
 			<?php // ── Réassurance : les 3 promesses qui font acheter en COD. ── ?>
 			<section class="aod-home__reassure">
 				<div class="aod-home__promise">
-					<span class="aod-home__ico" aria-hidden="true">💵</span>
+					<span class="aod-home__ico" aria-hidden="true"><?php echo AOD_COD_Icon::svg( 'money', array( 'size' => 30 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue FERMÉ (AOD_COD_Icon), jamais une saisie. ?></span>
 					<h3><?php esc_html_e( 'Paiement à la livraison', 'aod-cod-form' ); ?></h3>
 					<p><?php esc_html_e( 'Vous payez en espèces à la réception. Aucun versement à l’avance, aucune carte bancaire.', 'aod-cod-form' ); ?></p>
 				</div>
 				<div class="aod-home__promise">
-					<span class="aod-home__ico" aria-hidden="true">🚚</span>
+					<span class="aod-home__ico" aria-hidden="true"><?php echo AOD_COD_Icon::svg( 'truck', array( 'size' => 30 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue FERMÉ (AOD_COD_Icon), jamais une saisie. ?></span>
 					<h3><?php esc_html_e( 'Livraison dans les 58 wilayas', 'aod-cod-form' ); ?></h3>
 					<p><?php esc_html_e( 'À domicile ou en point de retrait, partout en Algérie.', 'aod-cod-form' ); ?></p>
 				</div>
 				<div class="aod-home__promise">
-					<span class="aod-home__ico" aria-hidden="true">📞</span>
+					<span class="aod-home__ico" aria-hidden="true"><?php echo AOD_COD_Icon::svg( 'phone', array( 'size' => 30 ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- catalogue FERMÉ (AOD_COD_Icon), jamais une saisie. ?></span>
 					<h3><?php esc_html_e( 'Commande en 1 minute', 'aod-cod-form' ); ?></h3>
 					<p><?php esc_html_e( 'Ni panier ni création de compte : votre nom, votre téléphone, et c’est commandé.', 'aod-cod-form' ); ?></p>
 				</div>

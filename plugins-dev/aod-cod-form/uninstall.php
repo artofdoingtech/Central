@@ -51,6 +51,11 @@ $aod_cod_cleanup = static function () use ( $aod_cod_drop_leads ) {
 		// POSSÉDÉE ici : c'est le comportement public de CE plugin qu'elle pilote
 		// — même logique, en sens inverse, que `aod_seq_order_counter`.
 		'aod_cod_cart',
+		// Réseaux sociaux + contact du pied de page (2026-09-15). Même logique
+		// que `aod_cod_cart` juste au-dessus : écrite par /gestion (dashboard,
+		// `AOD_CD_Section_Account::ajax_save_social_links()`), possédée ici —
+		// c'est `AOD_COD_Footer` (ce plugin) qui la rend au public.
+		'aod_cod_social_links',
 	);
 	foreach ( $options as $opt ) {
 		delete_option( $opt );
