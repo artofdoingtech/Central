@@ -1,0 +1,1124 @@
+/**
+ * Panier COD public — peau du panier (Phase 37).
+ *
+ * Chargée UNIQUEMENT si le gérant a activé le panier. Transitions à propriétés
+ * NOMMÉES (jamais `all` — cliquet statique 18.1) ; `prefers-reduced-motion`
+ * honoré (Phase 19 : le mouvement part, l'acquittement reste).
+ *
+ * 🚨 DEUX RÈGLES QUI ONT COÛTÉ UN BOUTON ILLISIBLE (contraste mesuré 1,05:1) :
+ *
+ * 1. **Le panier ne porte JAMAIS une classe du thème** (`button`, `wp-element-*`…).
+ *    Astra imprime son CSS de boutons en `<style>` inline, donc APRÈS nos
+ *    feuilles : à spécificité égale il gagne, et son fond de marque écrase le
+ *    nôtre. D'où le réarmement `.aod-cart__drawer button` / `.aod-cart__box
+ *    button` en (0,1,1) — il bat `button` (0,0,1) ET `.button` (0,1,0) quel que
+ *    soit l'ordre des feuilles.
+ * 2. **Aucun fond actionnable n'est `transparent`.** Un fond transparent fait
+ *    dépendre le contraste de ce qu'il y a derrière, donc du thème du clone.
+ *
+ * Les tokens `--ac-*` recopient EXACTEMENT ceux du formulaire COD (`--sh-*`,
+ * aod-cod-form.css). La duplication est assumée : cette feuille se charge sur
+ * toute la boutique quand celle du formulaire ne se charge que sur la fiche
+ * produit. Le cliquet `tests/unit/test-panier-peau.php` compare les deux et
+ * rougit si elles divergent — la dérive est bruyante, pas silencieuse.
+ */
+
+:root {
+	--ac-ink: #1a1a1a;
+	--ac-ink-2: #616161;
+	--ac-muted: #8a8a8a;
+	--ac-line: #e1e3e5;
+	--ac-line-soft: #f0f0f1;
+	--ac-surface: #ffffff;
+	--ac-surface-sub: #f6f6f7;
+	--ac-accent: #008060;
+	--ac-accent-dark: #006e52;
+	--ac-accent-wash: #f0faf6;
+	--ac-danger: #d72c0d;
+	--ac-r-sm: 6px;
+	--ac-r-md: 8px;
+	--ac-r-lg: 12px;
+	/* Surimpression des cartes (2026-09-08, demande owner) : blanc à 10 %
+	 * d'opacité, en jeton plutôt qu'en littéral (porté de Template-Full). */
+	--ac-quick-bg: rgba(255, 255, 255, .1);
+}
+
+/* `display:flex` écraserait le `display:none` que l'attribut `hidden` donne
+ * par défaut : sans ces règles, le drawer « caché » resterait affiché ET
+ * intercepterait les clics de toute la colonne droite. Trouvé par le témoin
+ * 35.3 — pas par la relecture. */
+.aod-cart__fab[hidden],
+.aod-cart__overlay[hidden],
+.aod-cart__drawer[hidden],
+.aod-cart__box[hidden] {
+	display: none;
+}
+
+/* ---- Réarmement défensif : le thème s'arrête ici ----
+ *
+ * Une classe À NOUS sur chaque bouton, jamais un sélecteur d'ancêtre. La
+ * première version écrivait `.aod-cart__drawer button` (0,1,1) : ça battait
+ * bien le thème, mais aussi **nos propres règles de composant** (0,1,0) — et
+ * « Commander » est ressorti sans fond. Vu à l'écran, pas à la relecture.
+ *
+ * Ici tout le monde est à (0,1,0) — sauf `.aod-cart__qty button` (0,1,1), qui
+ * a son homologue exact plus bas. Les règles de composant viennent APRÈS dans
+ * la feuille : à spécificité égale, elles gagnent. Et (0,1,0) bat le `button`
+ * nu (0,0,1) du thème quel que soit l'ordre des feuilles — la seule prise
+ * qu'Astra avait, `.button` (0,1,0), a disparu de notre markup. */
+.aod-cart__close,
+.aod-cart__order,
+.aod-cart__remove,
+.aod-cart__qty button {
+	-webkit-appearance: none;
+	appearance: none;
+	box-sizing: border-box;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	font: inherit;
+	line-height: 1;
+	text-transform: none;
+	letter-spacing: normal;
+	cursor: pointer;
+}
+
+/* ---- Icônes du catalogue (37.2) ----
+ * Mêmes SVG Phosphor que la sidebar de `/gestion`, rendus par `AOD_COD_Icon`.
+ * `currentColor` : l'icône suit la couleur de son bouton, jamais l'inverse —
+ * c'est ce qui permet au même fichier de servir sur fond vert et sur fond blanc.
+ * `display:block` : sans lui, un SVG est en ligne et traîne l'espace de la
+ * ligne de base, ce qui décentre le glyphe dans un bouton carré. */
+.aod-i {
+	display: block;
+	flex: 0 0 auto;
+	fill: currentColor;
+}
+
+/* ---- Bouton flottant ---- */
+
+.aod-cart__fab {
+	position: fixed;
+	inset-block-end: 18px;
+	inset-inline-end: 18px;
+	z-index: 9998;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--ac-accent);
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, .18);
+	transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
+}
+.aod-cart__fab:hover { background: var(--ac-accent-dark); transform: scale(1.05); }
+.aod-cart__fab:focus-visible { outline: 2px solid var(--ac-ink); outline-offset: 3px; }
+
+/* Encre neutre, jamais rouge : un panier qui se remplit est une bonne
+ * nouvelle, pas une alerte. Le rouge ne dit qu'une chose ici — indisponible. */
+.aod-cart__badge {
+	position: absolute;
+	inset-block-start: -4px;
+	inset-inline-end: -4px;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	border-radius: 9999px;
+	background: var(--ac-ink);
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+	box-shadow: 0 0 0 2px var(--ac-surface);
+}
+
+/* ---- Panneau ---- */
+
+.aod-cart__overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9998;
+	background: rgba(0, 0, 0, .5);
+}
+
+.aod-cart__drawer {
+	position: fixed;
+	inset-block: 0;
+	inset-inline-end: 0;
+	z-index: 9999;
+	display: flex;
+	flex-direction: column;
+	width: min(92vw, 420px);
+	background: var(--ac-surface);
+	color: var(--ac-ink);
+	box-shadow: 0 0 40px rgba(0, 0, 0, .20);
+}
+body.aod-cart-open { overflow: hidden; }
+
+.aod-cart__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 16px;
+	border-bottom: 1px solid var(--ac-line);
+}
+.aod-cart__title {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--ac-ink);
+}
+
+.aod-cart__close {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: var(--ac-r-md);
+	background: none;
+	color: var(--ac-ink-2);
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+/* 🚨 `:focus` est OBLIGATOIRE ici, pas seulement `:focus-visible`. Le thème
+ * porte un `button:focus{background:…}` en (0,1,1), qui bat notre (0,1,0) : à
+ * l'ouverture du panneau le focus part sur ce bouton, et il ressortait en
+ * rectangle bleu de marque. Mesuré, pas deviné. Nos états sont en (0,2,0). */
+.aod-cart__close:hover,
+.aod-cart__close:focus { background: var(--ac-surface-sub); color: var(--ac-ink); }
+.aod-cart__close:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+
+.aod-cart__list {
+	flex: 1;
+	overflow-y: auto;
+	padding: 4px 16px;
+}
+/* ---- Plafond de lignes atteint / dépassé (D35) ----
+   UN seul habillage pour les DEUX producteurs : le bandeau du tiroir (refus
+   qu'on vient d'opposer, posé par `open( note )`) et la ligne peinte par
+   `paintInto()` quand le serveur a écrêté. Deux peaux pour un même message
+   diraient au lecteur qu'il s'agit de deux choses. */
+.aod-cart__cap {
+	margin: 0 0 12px;
+	padding: 10px 12px;
+	border: 1px solid var(--ac-line);
+	border-inline-start: 3px solid var(--ac-danger);
+	border-radius: var(--ac-r-sm);
+	background: var(--ac-surface-sub);
+	color: var(--ac-ink);
+	font-size: 13px;
+	line-height: 1.45;
+}
+
+.aod-cart__empty {
+	margin: 0;
+	padding: 32px 0;
+	color: var(--ac-ink-2);
+	text-align: center;
+	font-size: 14px;
+}
+
+/* ---- Ligne de panier (panneau ET bloc — même composant) ----
+ * DEUX colonnes, pas cinq : la grille à 5 colonnes écrasait le nom jusqu'à
+ * « Bas… » dès 390 px. Cette structure tient sans média-query et se met en
+ * miroir toute seule en RTL. */
+
+.aod-cart__line {
+	display: grid;
+	grid-template-columns: 56px 1fr;
+	gap: 12px;
+	align-items: start;
+	padding: 12px 0;
+	border-bottom: 1px solid var(--ac-line-soft);
+}
+.aod-cart__line:last-child { border-bottom: 0; }
+.aod-cart__line.is-dead { opacity: .55; }
+
+.aod-cart__img {
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-surface-sub);
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .04);
+	display: block;
+}
+
+.aod-cart__body { min-width: 0; }
+
+.aod-cart__top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+/* Deux lignes, jamais une ellipse : en arabe, une troncature ronge le DÉBUT
+ * d'un nom latin (« …rban Flex ») et rend le produit méconnaissable. */
+.aod-cart__name {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--ac-ink);
+}
+.aod-cart__opts {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: var(--ac-ink-2);
+}
+.aod-cart__dead {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--ac-danger);
+}
+
+.aod-cart__bottom {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: 10px;
+}
+
+/* Pilule : un contrôle qu'on manipule au pouce doit dire « bouton » avant
+ * d'être lu. 36 px de haut, cibles de 36×36. */
+.aod-cart__qty {
+	display: inline-flex;
+	align-items: center;
+	height: 36px;
+	border: 1px solid var(--ac-line);
+	border-radius: 9999px;
+	background: var(--ac-surface-sub);
+	overflow: hidden;
+}
+.aod-cart__qty button {
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	color: var(--ac-ink);
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-cart__qty button:hover,
+.aod-cart__qty button:focus { background: var(--ac-line); color: var(--ac-ink); }
+.aod-cart__qty button:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: -2px; }
+.aod-cart__qtyval {
+	min-width: 28px;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	color: var(--ac-ink);
+}
+
+.aod-cart__linetotal {
+	font-size: 14px;
+	font-weight: 700;
+	white-space: nowrap;
+	color: var(--ac-ink);
+}
+
+.aod-cart__remove {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	margin-block-start: -4px;
+	margin-inline-end: -6px;
+	border-radius: var(--ac-r-sm);
+	background: none;
+	/* Encre secondaire et non `--ac-muted` : mesuré à 3,45:1, le gris atténué
+	 * ne tenait le seuil que si on classait cette icône en contenu NON textuel.
+	 * L'ambiguïté ne vaut pas le gain visuel — #616161 donne 5,92:1. */
+	color: var(--ac-ink-2);
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-cart__remove:hover,
+.aod-cart__remove:focus { background: var(--ac-surface-sub); color: var(--ac-danger); }
+.aod-cart__remove:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+
+/* ---- Pied du panneau ---- */
+
+.aod-cart__foot {
+	padding: 14px 16px 16px;
+	border-top: 1px solid var(--ac-line);
+	background: var(--ac-surface);
+}
+.aod-cart__totalrow {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 14px;
+	color: var(--ac-ink-2);
+}
+.aod-cart__totalrow strong {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--ac-ink);
+}
+.aod-cart__note {
+	margin: 6px 0 12px;
+	font-size: 12px;
+	line-height: 1.45;
+	color: var(--ac-ink-2);
+}
+
+.aod-cart__order {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 48px;
+	padding: 14px 16px;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-accent);
+	color: #fff;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: background-color .15s ease, opacity .15s ease;
+}
+.aod-cart__order:hover,
+.aod-cart__order:focus { background: var(--ac-accent-dark); color: #fff; }
+.aod-cart__order:focus-visible { outline: 2px solid var(--ac-ink); outline-offset: 2px; }
+.aod-cart__order[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* ---- Surimpression « Ajouter au panier » sur les cartes produit ----
+ * Pilule BLANCHE et non bande sombre translucide : ce template vend aussi
+ * bien des baskets sur fond jaune que des parfums sur fond noir, et la bande
+ * sombre devenait illisible sur les photos sombres. */
+
+.aod-cart__qwrap { position: relative; display: block; }
+
+/* Groupe empilé : « Ajouter au panier » PUIS « Commander » (2026-09-08, demande
+ * owner).
+ *
+ * 🚨 DEUX EMPLACEMENTS SELON L'APPAREIL (2026-09-08, demande owner) — décidé par
+ * le JS à la construction (`initQuickAdd`, `(hover: none)`), jamais par une media
+ * query CSS :
+ *   · souris (`hover: hover`) — le groupe reste nesté dans `.aod-cart__qwrap` et
+ *     flotte SUR l'image, révélé au survol (voir plus bas) ;
+ *   · tactile (`hover: none`) — le groupe est un enfant DIRECT de la carte,
+ *     APRÈS `.astra-shop-summary-wrap` (donc après le prix).
+ * Ce bloc ne porte que ce que les DEUX emplacements partagent. */
+.aod-cart__quickgrp {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	transition: opacity .18s ease;
+}
+/* ---- Emplacement SOURIS : surimpression sur l'image ---- */
+.aod-cart__qwrap .aod-cart__quickgrp {
+	position: absolute;
+	inset-inline: 0;
+	inset-block-end: 10px;
+	z-index: 2;
+}
+/* ---- Emplacement TACTILE : bloc statique, sous le prix ----
+ * ⛔ Marge et écart réduits (2026-09-08, demande owner). */
+li.product > .aod-cart__quickgrp,
+.aod-cart__sugcard > .aod-cart__quickgrp {
+	margin-block-start: 8px;
+	gap: 4px;
+}
+/*
+ * ⚠️ Le groupe porte la POSITION ; chaque bouton garde SA peau dans SON PROPRE
+ * bloc `{ … }` — R3 de `test-panier-peau.php` lit le sélecteur `quickadd`
+ * ISOLÉ (jamais combiné par une virgule) pour vérifier qu'il déclare un fond
+ * explicite ; un bloc combiné le rendrait introuvable.
+ *
+ * ⛔ PLEINE LARGEUR (demande owner) : chaque bouton égale la largeur de son
+ * groupe, donc de la carte.
+ * 🎨 Blanc transparent, opacité 10 % (demande owner, ajustée deux fois — 70 %
+ * puis 10 %), au lieu de 94 %.
+ * ⛔ Coins DROITS par défaut (demande owner) — nécessaire à la souris : les
+ * boutons touchent les deux bords de l'IMAGE.
+ * 🎨 Coins ARRONDIS au doigt (demande owner, 2026-09-08) — le groupe ne touche
+ * plus l'image mais la carte, sous un texte : l'arrondi y est attendu. */
+.aod-cart__quickadd {
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 0;
+	background: var(--ac-quick-bg);
+	color: var(--ac-ink);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	cursor: pointer;
+	box-shadow: none;
+	transition: background-color .18s ease, color .18s ease;
+}
+/* Même peau que « Ajouter » : une paire, pas deux boutons étrangers. */
+.aod-cart__quickorder {
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 0;
+	background: var(--ac-quick-bg);
+	color: var(--ac-ink);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	cursor: pointer;
+	box-shadow: none;
+	transition: background-color .18s ease, color .18s ease;
+}
+/* 🎨 COULEUR + PADDING RÉDUIT au doigt (2026-09-08, demande owner) — le blanc
+ * à 10 % devenait quasi invisible sous le prix (fond blanc de la carte). Fond
+ * plein `--ac-accent`. `display:flex` + centrage : nécessaire pour que le
+ * texte reste centré si un plancher de hauteur s'ajoute plus tard. */
+li.product > .aod-cart__quickgrp .aod-cart__quickadd,
+li.product > .aod-cart__quickgrp .aod-cart__quickorder,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickadd,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickorder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-accent);
+	color: #fff;
+	box-shadow: none;
+}
+li.product > .aod-cart__quickgrp .aod-cart__quickadd:hover,
+li.product > .aod-cart__quickgrp .aod-cart__quickorder:hover,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickadd:hover,
+.aod-cart__sugcard > .aod-cart__quickgrp .aod-cart__quickorder:hover {
+	background: var(--ac-accent-dark);
+	color: #fff;
+}
+.aod-cart__quickadd:hover,
+.aod-cart__quickorder:hover { background: var(--ac-accent); color: #fff; }
+.aod-cart__quickadd:focus-visible,
+.aod-cart__quickorder:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+.aod-cart__quickadd.is-added,
+.aod-cart__quickadd.is-added:hover {
+	background: var(--ac-accent-wash);
+	color: var(--ac-accent-dark);
+}
+
+/* Le survol n'existe qu'à la souris : au tactile le groupe est PERMANENT
+ * (mobile d'abord — l'apparition au survol est la variante desktop). */
+@media (hover: hover) {
+	.aod-cart__qwrap .aod-cart__quickgrp { opacity: 0; pointer-events: none; }
+	li.product:hover .aod-cart__quickgrp,
+	.aod-cart__sugcard:hover .aod-cart__quickgrp,
+	.aod-cart__qwrap:hover .aod-cart__quickgrp,
+	.aod-cart__quickgrp:focus-within { opacity: 1; pointer-events: auto; }
+}
+
+/* ---- Bouton natif WooCommerce des grilles, retiré (2026-09-08, demande owner) ----
+ * `.aod-loop-cta` (posé par `AOD_COD_No_Tunnel::loop_cta_args`) est un TROISIÈME
+ * « Commander » sous le prix, en plus des deux boutons de `.aod-cart__quickgrp`
+ * sur l'image — panier actif, ils couvrent déjà « Ajouter au panier » et
+ * « Commander ». Porté de Template-Full.
+ * ⛔ Cette feuille n'est chargée QUE si `AOD_COD_Form::cart_enabled()` : la
+ * règle ne s'applique jamais sur un clone au panier éteint, où `.aod-loop-cta`
+ * reste le seul contrôle d'achat de la grille.
+ * ⚠️ SPÉCIFICITÉ (0,2,2) : un simple `.aod-loop-cta` (0,1,0) perd contre le CSS
+ * inline d'Astra (`.woocommerce-js a.button`, (0,2,1)) — mesuré, le bouton
+ * restait affiché. */
+body a.aod-loop-cta.aod-loop-cta { display: none; }
+
+/* ---- Panneau de variantes INLINE dans la carte (refonte 2026-09-10) ----
+ * Remplace la fenêtre flottante (tiroir bas puis boîte centrée, Phases 35-37,
+ * retirées) : le choix s'ouvre DANS la carte de la grille, sous les infos
+ * produit — jamais un composant à part, jamais de fenêtre.
+ *
+ * Technique d'expansion : `grid-template-rows: 0fr → 1fr` sur le conteneur
+ * externe, pas une hauteur mesurée en JS — le panneau s'ouvre juste, quelle
+ * que soit la longueur du texte (une traduction AR plus longue, une section
+ * de plus) sans qu'aucun script n'ait à la mesurer. `.aod-cart__inline-clip`
+ * est la seule cellule de la grille et porte le SEUL `overflow:hidden` : sans
+ * lui, `0fr` ne clippe rien et le contenu déborderait pendant la transition. */
+.aod-cart__inline {
+	display: grid;
+	grid-template-rows: 0fr;
+	margin-block-start: 10px;
+	transition: grid-template-rows .32s cubic-bezier(.4, 0, .2, 1);
+}
+.aod-cart__inline.is-open { grid-template-rows: 1fr; }
+.aod-cart__inline-clip { overflow: hidden; min-height: 0; }
+.aod-cart__inline-body {
+	padding-block-start: 14px;
+	border-block-start: 1px solid var(--ac-line-soft);
+	opacity: 0;
+	transform: translateY(-6px);
+	transition: opacity .24s ease .05s, transform .24s ease .05s;
+}
+.aod-cart__inline.is-open .aod-cart__inline-body { opacity: 1; transform: translateY(0); }
+.aod-cart__inline-load {
+	margin: 0;
+	padding: 8px 0;
+	color: var(--ac-ink-2);
+	font-size: 12.5px;
+	text-align: center;
+}
+
+.aod-cart__inline-foot {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 4px;
+}
+.aod-cart__inline-add {
+	position: relative;
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	padding: 12px 16px;
+	border: 0;
+	border-radius: var(--ac-r-md);
+	background: var(--ac-accent);
+	color: #fff;
+	font-size: 13.5px;
+	font-weight: 600;
+	letter-spacing: .01em;
+	cursor: pointer;
+	transition: background-color .18s ease, transform .12s ease;
+}
+.aod-cart__inline-add:hover,
+.aod-cart__inline-add:focus { background: var(--ac-accent-dark); }
+.aod-cart__inline-add:focus-visible { outline: 2px solid var(--ac-accent-dark); outline-offset: 2px; }
+.aod-cart__inline-add:active { transform: scale(.98); }
+/* État « chargement » : le libellé s'efface, un anneau prend sa place — le
+ * bouton garde sa taille (l'anneau est en position absolue, pas en flux). */
+.aod-cart__inline-add.is-loading .aod-cart__inline-add-label { opacity: 0; }
+.aod-cart__inline-add.is-loading { cursor: default; }
+.aod-cart__inline-add.is-loading::after {
+	content: "";
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, .4);
+	border-block-start-color: #fff;
+	animation: aod-cart-spin .6s linear infinite;
+}
+.aod-cart__inline-add.is-added { background: var(--ac-accent-dark); cursor: default; pointer-events: none; }
+@keyframes aod-cart-spin { to { transform: rotate(360deg); } }
+
+.aod-cart__inline-msg {
+	margin: 8px 0 0;
+	min-height: 1.2em;
+	font-size: 12.5px;
+	font-weight: 500;
+	color: var(--ac-danger);
+}
+.aod-cart__inline-msg:empty { min-height: 0; }
+/* Confirmation discrète, sous le bouton — pas une bannière : « Article ajouté
+ * au panier. », déjà traduite FR/AR (même chaîne que `added_short`, la variante
+ * courte du LIBELLÉ du bouton). */
+.aod-cart__inline-ok {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin: 10px 0 0;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--ac-accent-dark);
+	animation: aod-cart-fadein .2s ease;
+}
+.aod-cart__inline-ok .aod-i { width: 15px; height: 15px; flex: 0 0 auto; }
+@keyframes aod-cart-fadein { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---- Bloc de gestion sur la page du formulaire ----
+ * Même largeur, même bordure, même rayon que `.aod-cod` : les deux cartes
+ * doivent se lire comme une pile, pas comme deux blocs étrangers. */
+
+.aod-cart__box {
+	box-sizing: border-box;
+	max-width: 560px;
+	margin: 24px 0 -8px;
+	padding: 16px;
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-lg);
+	background: var(--ac-surface);
+	color: var(--ac-ink);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+}
+.aod-cart__box-title {
+	margin: 0 0 4px;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--ac-ink);
+}
+.aod-cart__box .aod-cart__list { padding: 0; }
+.aod-cart__box .aod-cart__totalrow {
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--ac-line);
+}
+.aod-cart__box .aod-cart__note { margin: 6px 0 0; }
+
+/* ---- Panier + formulaire côte à côte, sur colonne assez large (2026-09-10,
+ * demande owner) ----
+ * `.aod-cart__checkout` (posé par `ensureBox()`) regroupe les deux cartes —
+ * empilées par défaut (mobile ET tablette), côte à côte à partir d'un
+ * viewport assez large.
+ *
+ * ⚠️ REVIREMENT (même jour) : la première version utilisait une REQUÊTE DE
+ * CONTENEUR (`container-type` posé sur `.aod-cart__checkout` lui-même) plutôt
+ * qu'un point de rupture viewport — parce que la colonne qui contient tout ça
+ * (`.summary.entry-summary` sur Astra) empile galerie+résumé sous 922 px puis
+ * les met côte à côte au-delà (cf. le commentaire en tête de `.aod-cod`,
+ * aod-cod-form.css), donc sa largeur réelle ne suit pas le viewport de façon
+ * monotone. L'idée tenait en théorie ; **mesurée par l'owner, elle est restée
+ * empilée après un simple rechargement** — sans navigateur ici pour
+ * diagnostiquer si la cause est un seuil trop haut ou un défaut de support de
+ * `@container`, mieux vaut revenir à un point de rupture VIEWPORT classique :
+ * la même technique que `.aod-cod` (922 px) juste au-dessus dans ce fichier,
+ * déjà éprouvée sur ce gabarit précis. 1024 px, un cran au-dessus du
+ * basculement galerie/résumé d'Astra, pour laisser le résumé déjà élargi
+ * avant d'y ajouter une seconde colonne.
+ * ⚠️ Seuil ENCORE estimé, pas mesuré (toujours aucun navigateur disponible
+ * ici) — à confirmer en responsive sur le clone, cf. TEMPLATE.md §5. */
+/* ---- REVIREMENT (2026-09-13, retour owner : « les 3 sections doivent avoir
+ * la même largeur ») ----
+ * Le passage en grille est désormais posé sur `body.aod-cart-checkout`, pas
+ * sur `.aod-cart__checkout` seul. Raison : cette coquille existe sur TOUTE
+ * fiche produit dès que `.aod-cod` y est présent (`ensureBox()` la crée au
+ * chargement, panier vide ou non — cf. `renderBox()`), et une grille CSS
+ * réserve la largeur de SES DEUX colonnes explicites même quand une seule
+ * contient un élément visible : panier vide, `.aod-cart__box` est
+ * `display:none` (retiré de la grille), mais la 2ᵉ colonne (`minmax(240px,
+ * 300px)`) restait un couloir mort à droite du formulaire, qui n'occupait
+ * plus alors que `1fr` au lieu de toute la largeur. En ne grillant QUE l'état
+ * où le panier est réellement affiché (`body.aod-cart-checkout`, posée par
+ * `renderBox()` exactement dans ce cas), le formulaire retrouve son rendu
+ * normal (`.aod-cod`, aod-cod-form.css) le reste du temps.
+ *
+ * Largeur : les deux colonnes sont désormais des `1fr` STRICTEMENT ÉGALES,
+ * sans plafond ni centrage.
+ * ⚠️ Ce `1fr 1fr` de base n'est PLUS JOUÉ TEL QUEL depuis les revirements du
+ * 2026-09-13/14 plus bas dans ce fichier (« navigation simple » et
+ * « validation ») : chacun des deux états RÉELS de cet écran pose sa PROPRE
+ * valeur, plus spécifique — une seule colonne en navigation simple
+ * (`.aod-cart__box` y est masqué), `minmax(…) minmax(…)` en validation. Cette
+ * valeur de base reste ici comme FILET (un état futur qui oublierait de fixer
+ * la sienne retombe sur deux colonnes égales, pas sur une grille cassée), pas
+ * comme le rendu qu'un visiteur voit réellement.
+ * `margin` et `gap` : 0,5 cm demandés par l'owner, appliqués aux deux (marge
+ * extérieure du bloc SUR SES QUATRE CÔTÉS — pas seulement au-dessus — ET
+ * espace entre panier et formulaire) pour une seule et même unité de rythme,
+ * plutôt qu'un `24px` et un `0,5cm` arbitrairement différents côte à côte.
+ * ⚠️ REVIREMENT (même jour) : la première version ne posait que
+ * `margin-block-start` — retour owner, la marge devait entourer le bloc, pas
+ * seulement le séparer de ce qui précède. */
+@media (min-width: 1024px) {
+	body.aod-cart-checkout .aod-cart__checkout {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		align-items: start;
+		gap: 0.5cm;
+		margin: 0.5cm;
+	}
+	/* Les deux cartes perdent leurs marges/plafonds pensés pour un empilement
+	 * pleine largeur : en grille, c'est la colonne qui donne la largeur — une
+	 * marge `auto` centrerait la carte AU LIEU de la faire remplir sa colonne.
+	 * `order` place le formulaire à GAUCHE, le panier à DROITE quel que soit
+	 * l'ordre du DOM (le panier reste avant le formulaire dans la source, pour
+	 * l'empilement mobile — cf. `ensureBox()`). */
+	body.aod-cart-checkout .aod-cart__checkout .aod-cod {
+		order: 1;
+		margin: 0;
+		max-width: none;
+	}
+	body.aod-cart-checkout .aod-cart__checkout .aod-cart__box {
+		order: 2;
+		margin: 0;
+		max-width: none;
+	}
+}
+/* ---- REVIREMENT (2026-09-14, retour owner : « la galerie est très petite
+ * par rapport à la section de droite ») ----
+ * Ce bloc posait ICI, sur TOUT `body.aod-cart-checkout` (donc aussi en simple
+ * navigation, panier non vide), une galerie à 32% contre 64% pour la colonne
+ * résumé — pensé pour un écran où celle-ci portait DEUX cartes de même
+ * largeur côte à côte (panier + formulaire, cf. le commentaire au-dessus). Ce
+ * partage n'a plus d'objet : en navigation simple, `.aod-cart__box` est
+ * désormais masqué (règle plus bas, « le rappel disparaît ») et la colonne
+ * résumé ne porte plus qu'UNE carte, pas deux — la garder à 64% écrasait la
+ * galerie à 32% pour rien, exactement le défaut signalé.
+ * La règle générale de `aod-cod-form.css` (48%/48%, même point de rupture)
+ * gouverne maintenant ce cas — retirer ce bloc-ci suffit à la laisser
+ * gagner ; aucune règle à ajouter ici. La colonne résumé qui porte
+ * VRAIMENT deux cartes (validation, panier + formulaire) a sa propre
+ * largeur, posée par ailleurs (`body.aod-cart-review div.product div.summary`,
+ * plus bas), pas ici. */
+
+/* ---- REVIREMENT (2026-09-13, retour owner) : la fiche du produit-hôte NE
+ * S'EFFACE PLUS derrière le panier ----
+ * La règle du 2026-09-09 masquait galerie/titre/prix/note/méta/description dès
+ * que `.aod-cart__box` était visible — et `renderBox()` la pose au chargement
+ * de TOUTE page produit portant un `.aod-cod` dès que le panier a ≥ 1 ligne,
+ * pas seulement quand on y atterrit via « Commander ». Un acheteur qui avait
+ * déjà 2 articles au panier et cliquait un 3ᵉ produit SANS RAPPORT depuis la
+ * grille voyait donc CE produit-là privé de ses propres photos et de sa
+ * description — la page qu'il venait de choisir de consulter s'affichait nue.
+ * Le principe retenu : une fiche produit dit toujours la vérité sur ELLE-MÊME
+ * (« voici cet article, ses photos, sa description ») ; le panier dit toujours
+ * la vérité sur LUI-MÊME (« voici ce que contient votre commande ») — deux
+ * sections distinctes et correctement libellées, jamais une qui efface l'autre
+ * pour paraître cohérente. `.aod-cart__box` garde son propre titre
+ * (« Votre panier ») et ses propres lignes/vignettes : rien n'empêche qu'il
+ * coexiste avec la fiche complète du produit affiché.
+ * `body.aod-cart-checkout` reste posée par `renderBox()` (elle sert encore au
+ * bloc juste en dessous, sur le sélecteur de variantes) ; elle ne masque plus
+ * rien du produit lui-même. */
+
+/* ---- Mode « validation » : plus que le panier (total) et le formulaire
+ * (2026-09-13, retour owner : « quand on valide un panier, n'afficher que le
+ * formulaire de commande et le prix total du panier ») ----
+ * `body.aod-cart-review` est posée par `aod-cart.js` UNIQUEMENT quand cette
+ * page a été atteinte via un clic sur « Commander » (marqueur d'URL consommé
+ * puis retiré, jamais une simple visite) — le REVIREMENT juste au-dessus reste
+ * donc vrai pour tout le reste de la navigation : une fiche visitée
+ * normalement continue de montrer ses propres photos et sa description,
+ * panier vide ou non. Cet écran-ci n'est plus une fiche produit qu'on
+ * consulte, c'est l'écran de validation d'une commande : plus rien à y
+ * regarder que le prix et le formulaire.
+ *
+ * Deux niveaux, MÊME PRINCIPE : `:not()` plutôt qu'une liste de sélecteurs
+ * Woo/thème à tenir à jour (mesuré au navigateur, `div.product` a pour
+ * enfants directs la pastille Promo, la galerie, `div.summary` et les
+ * onglets `.woocommerce-tabs` — un thème ou une extension tierce pouvant en
+ * ajouter d'autres, ex. avis/upsells) :
+ * - dans `div.product`, TOUT est masqué SAUF `div.summary` (donc galerie,
+ *   pastille Promo, onglets « Informations complémentaires »/« Avis »…) ;
+ * - dans le résumé, TOUT est masqué SAUF `.aod-cart__checkout` (panier +
+ *   formulaire) — titre, prix, description courte, méta, sélecteur de
+ *   variantes (déjà masqué plus haut).
+ * `.aod-cart__suggest` (« Complétez votre commande ») est un cas à part : il
+ * vit hors de `div.product` (posé sur `woocommerce_after_single_product`,
+ * donc plus bas dans la page) et se masque donc par son propre sélecteur. */
+body.aod-cart-review div.product > *:not(div.summary) {
+	display: none !important;
+}
+body.aod-cart-review div.product div.summary > *:not(.aod-cart__checkout) {
+	display: none !important;
+}
+body.aod-cart-review .aod-cart__suggest {
+	display: none !important;
+}
+@media (min-width: 1024px) {
+	/* Plus de galerie à équilibrer (32%/64% juste au-dessus) : le résumé
+	 * reprend toute la largeur pour sa grille panier+formulaire. */
+	body.aod-cart-review div.product div.summary {
+		width: 100% !important;
+	}
+	/* Le panier n'est plus qu'un total à côté du formulaire : il n'a plus
+	 * besoin de peser AUTANT que lui dans la grille (l'équilibre `1fr 1fr` du
+	 * commentaire du 2026-09-13 juste au-dessus visait TROIS sections de même
+	 * largeur — il n'y en a plus que deux ici). Même spécificité que la règle
+	 * qu'elle corrige (`body.aod-cart-checkout .aod-cart__checkout`) : elle
+	 * gagne par ORDRE DANS LA FEUILLE, posée après elle — pas de `!important`
+	 * nécessaire sur cette seule propriété. */
+	body.aod-cart-review .aod-cart__checkout {
+		grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+	}
+}
+/* Panier réduit au total (+ la note qui le qualifie, « livraison calculée à la
+ * commande ») : la liste des lignes (vignettes, quantités, retrait) et le
+ * titre « Votre panier » n'ont plus leur place sur un écran qui ne dit plus
+ * que « voici ce que ça coûte » et « où l'envoyer ». Éditer le panier reste
+ * possible via le tiroir flottant, laissé intact. */
+body.aod-cart-review .aod-cart__box-title,
+body.aod-cart-review .aod-cart__list {
+	display: none !important;
+}
+
+/* ---- Navigation simple (panier non vide, PAS de validation) : « Ajouter au
+ * panier », jamais le formulaire de commande (2026-09-13, retour owner) ----
+ * ⚠️ DEUXIÈME REVIREMENT sur la règle du 2026-09-10 (ci-dessous, gardée pour
+ * mémoire dans l'historique de ce fichier jusqu'ici) : elle masquait le
+ * sélecteur de variantes ET « Ajouter au panier » dès `body.aod-cart-checkout`
+ * — donc aussi bien en simple navigation qu'en validation — au motif que
+ * `handle_submit()` lit `window.aodCart.items()` dès que le panier a des
+ * lignes, ce qui rendait CE panneau muet pendant que « Confirmer la commande »
+ * restait affiché à côté de lui. C'était vrai tant que les deux blocs
+ * coexistaient à l'écran.
+ *
+ * Ce n'est plus le cas : en simple navigation (cet écran-ci), c'est
+ * DÉSORMAIS le formulaire de commande qui s'efface (règle suivante) — il ne
+ * reste que ce panneau et son bouton, dont le clic ajoute EXACTEMENT ce qui y
+ * est choisi. Le sélecteur redevient donc pilote de quelque chose de réel : le
+ * panneau moot du 2026-09-10 ne visait que la coexistence avec « Confirmer »,
+ * qui a disparu de cet écran.
+ *
+ * `body.aod-cart-review` (validation, cf. plus haut) reste, lui, le cas où
+ * « Confirmer la commande » redevient visible et lit le panier — remettre le
+ * sélecteur devant lui y recréerait EXACTEMENT le mensonge de 2026-09-10 :
+ * masqué SEULEMENT là. */
+body.aod-cart-review #aod-options,
+body.aod-cart-review .aod-cod__config-msg,
+body.aod-cart-review .aod-cod__addcart {
+	display: none !important;
+}
+/* Tout le reste du formulaire (nom, téléphone, wilaya/commune, livraison,
+ * adresse, récapitulatif, Turnstile, « Confirmer la commande ») s'efface en
+ * simple navigation — `:not()` plutôt qu'une liste de champs à tenir à jour,
+ * pour rester vrai même si le formulaire gagne un champ demain. `.aod-cod__msg`
+ * reste EXCLU : c'est la même ligne qui porte le retour du clic sur « Ajouter
+ * au panier » (succès/erreur, cf. `aod-cod-form.js`) — la masquer rendrait ce
+ * clic muet. `.aod-cod__hp` (honeypot) reste EXCLU par indifférence : déjà
+ * invisible pour un humain par sa propre feuille, jamais par celle-ci. */
+body.aod-cart-checkout:not(.aod-cart-review) .aod-cod__form > *:not(#aod-options):not(.aod-cod__config-msg):not(.aod-cod__addcart):not(.aod-cod__msg):not(.aod-cod__hp) {
+	display: none !important;
+}
+/* ---- Même écran (simple navigation) : le rappel « Votre panier » disparaît
+ * aussi (2026-09-13, retour owner : « on peut l'afficher à partir de l'icône
+ * panier, donc c'est une redondance ») ----
+ * Le tiroir flottant (`#aod-cart-fab`, jamais masqué par cette page) reste LE
+ * moyen de consulter le panier pendant qu'on regarde un produit — cette carte
+ * répétait la même information juste à côté de la galerie. Elle reste, elle,
+ * INTACTE sur l'écran de validation (`body.aod-cart-review`) : celui-là NE
+ * répète rien, c'est le seul endroit qui affiche le prix total. */
+body.aod-cart-checkout:not(.aod-cart-review) .aod-cart__box {
+	display: none !important;
+}
+@media (min-width: 1024px) {
+	/* `display:none` retire déjà `.aod-cart__box` de la grille (une case
+	 * `display:none` ne réserve aucune piste) — mais les DEUX colonnes
+	 * explicites de `1fr 1fr` (règle du 2026-09-13 plus haut) restent, elles,
+	 * posées : sans cette redéfinition, la carte panier disparaît en laissant
+	 * un couloir vide à sa place, exactement le défaut du 2026-09-13 (plus
+	 * haut, panier VRAIMENT vide) rejoué ici pour une autre raison. Une seule
+	 * colonne : `.aod-cod` (options + « Ajouter au panier ») en prend toute
+	 * la largeur. */
+	body.aod-cart-checkout:not(.aod-cart-review) .aod-cart__checkout {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ---- La règle qui rendait à la colonne résumé les 48% de la galerie
+ * masquée (2026-09-10) a été retirée le 2026-09-13 avec le revirement
+ * ci-dessus : la galerie redevenant visible, la colonne résumé reprend sa
+ * largeur normale (`div.summary{float:right;width:48%}`, cœur Woo) — la
+ * forcer à 100% la ferait à nouveau chevaucher une galerie qui, elle, est
+ * bien réaffichée. */
+
+/* ---- « Complétez votre commande » ---- */
+
+.aod-cart__suggest {
+	max-width: 1080px;
+	margin: 32px auto 40px;
+	padding: 0 16px;
+}
+.aod-cart__suggest-title {
+	margin: 0 0 16px;
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+	color: var(--ac-ink);
+}
+.aod-cart__suggrid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+}
+@media (min-width: 768px) {
+	.aod-cart__suggrid { grid-template-columns: repeat(4, 1fr); }
+}
+.aod-cart__sugcard {
+	overflow: hidden;
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-lg);
+	background: var(--ac-surface);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+	transition: box-shadow .18s ease, transform .18s ease;
+}
+.aod-cart__sugcard:hover {
+	box-shadow: 0 4px 16px rgba(0, 0, 0, .10);
+	transform: translateY(-2px);
+}
+.aod-cart__suglink {
+	display: block;
+	color: inherit;
+	text-decoration: none;
+}
+.aod-cart__sugimg {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+}
+.aod-cart__sugtitle {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	padding: 12px 12px 2px;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--ac-ink);
+}
+.aod-cart__sugprice {
+	display: block;
+	padding: 2px 12px 12px;
+	font-size: 13px;
+	color: var(--ac-ink-2);
+}
+
+/* ---- Aperçu image + description depuis « Votre panier » (2026-09-13) ----
+ * Un clic sur la vignette d'une ligne (bloc de la page formulaire OU tiroir
+ * flottant — `aod-cart.js`, `bindPreview()`) bascule le contenu de la galerie
+ * de la fiche courante sur la photo + description de CET article, panneau
+ * ajouté PAR-DESSUS le contenu natif de la galerie plutôt qu'à sa place :
+ * `visibility:hidden` (pas `display:none`) sur les enfants natifs pour que la
+ * galerie garde sa hauteur — l'aperçu, en position absolue, la comble
+ * exactement — et pour ne JAMAIS détruire les nœuds d'origine (zoom du cœur
+ * Woo lié à eux au chargement, cf. le commentaire du JS).
+ * `.is-previewing` se pose sur `div.product` (l'ancêtre), pas sur la galerie
+ * elle-même — mesuré au navigateur : le ruban « Promo ! »
+ * (`.onsale`/`.ast-onsale-card`) est un enfant de `div.product`, pas de la
+ * galerie (déjà signalé plus haut dans ce fichier), et restait affiché
+ * PAR-DESSUS l'aperçu tant que l'état ne portait que sur la galerie. */
+.woocommerce-product-gallery {
+	position: relative;
+}
+.product.is-previewing .onsale,
+.product.is-previewing .ast-onsale-card {
+	visibility: hidden;
+}
+.product.is-previewing .woocommerce-product-gallery > *:not(.aod-cart__preview) {
+	visibility: hidden;
+}
+/* Un SEUL interrupteur pour la visibilité du panneau : `.is-previewing` sur
+ * l'ancêtre (posée/retirée par `showPreview()`/le bouton de fermeture, JS) —
+ * jamais l'attribut `hidden` en plus, qui a fait rester le panneau invisible
+ * malgré la classe posée (mesuré au navigateur, cf. le commentaire du JS). */
+.aod-cart__preview {
+	display: none;
+	position: absolute;
+	inset: 0;
+	flex-direction: column;
+	gap: 8px;
+	padding: 0.5cm;
+	background: var(--ac-surface);
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-lg);
+	overflow-y: auto;
+	box-sizing: border-box;
+}
+.product.is-previewing .aod-cart__preview {
+	display: flex;
+}
+.aod-cart__preview-close {
+	align-self: flex-end;
+	flex: 0 0 auto;
+	padding: 6px 12px;
+	border: 1px solid var(--ac-line);
+	border-radius: var(--ac-r-sm);
+	background: var(--ac-surface-sub);
+	color: var(--ac-ink-2);
+	font-size: 13px;
+	line-height: 1.3;
+	cursor: pointer;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-cart__preview-close:hover,
+.aod-cart__preview-close:focus { background: var(--ac-line-soft); color: var(--ac-ink); }
+.aod-cart__preview-close:focus-visible { outline: 2px solid var(--ac-accent); outline-offset: 2px; }
+.aod-cart__preview-img {
+	flex: 0 0 auto;
+	max-width: 100%;
+	max-height: 55%;
+	margin: 0 auto;
+	object-fit: contain;
+}
+.aod-cart__preview-img[hidden] { display: none; }
+.aod-cart__preview-title {
+	flex: 0 0 auto;
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--ac-ink);
+	text-align: center;
+}
+.aod-cart__preview-desc {
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--ac-ink-2);
+}
+/* La vignette devient un vrai bouton (curseur + anneau de focus) — visible
+ * dans les deux vues (`role`/`tabindex` posés par `paintInto()`, JS) : la
+ * feuille se contente de l'habiller, jamais de décider où le geste agit. */
+.aod-cart__img[role="button"] {
+	cursor: pointer;
+}
+.aod-cart__img[role="button"]:focus-visible {
+	outline: 2px solid var(--ac-accent);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.aod-cart__fab,
+	.aod-cart__close,
+	.aod-cart__qty button,
+	.aod-cart__remove,
+	.aod-cart__order,
+	.aod-cart__quickgrp,
+	.aod-cart__quickadd,
+	.aod-cart__quickorder,
+	.aod-cart__sugcard,
+	.aod-cart__inline,
+	.aod-cart__inline-body,
+	.aod-cart__inline-add {
+		transition: none;
+	}
+	.aod-cart__fab:hover { transform: none; }
+	/* Décor, pas du positionnement (piège Phase 19) : neutraliser est sûr. */
+	.aod-cart__sugcard:hover { transform: none; }
+	.aod-cart__inline-add:active { transform: none; }
+	/* Panneau inline (2026-09-10) : l'expansion part, l'acquittement reste —
+	 * le panneau s'ouvre directement dans son état final. */
+	.aod-cart__inline-add.is-loading::after,
+	.aod-cart__inline-ok { animation: none; }
+}

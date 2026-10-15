@@ -1,0 +1,34 @@
+.aodg-wrap .aodg-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 20px 24px;
+	margin: 16px 0;
+	max-width: 640px;
+}
+.aodg-wrap .aodg-badge {
+	display: inline-block;
+	color: #fff;
+	font-weight: 600;
+	padding: 4px 12px;
+	border-radius: 999px;
+	font-size: 13px;
+}
+.aodg-wrap .aodg-table {
+	margin-top: 12px;
+}
+.aodg-wrap .aodg-table th {
+	width: 160px;
+	text-align: left;
+}
+.aodg-wrap .aodg-deps {
+	margin: 8px 0 0;
+	padding: 0;
+	list-style: none;
+}
+.aodg-wrap .aodg-deps li {
+	padding: 4px 0;
+}
+.aodg-wrap textarea[name="aodg_key"] {
+	font-family: Consolas, Monaco, monospace;
+}

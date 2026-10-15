@@ -1,0 +1,114 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: AOD Gestion — Licence 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"X-Domain: aod-gestion-license\n"
+
+msgid "Licence AOD Gestion"
+msgstr "ترخيص AOD Gestion"
+
+msgid "Action non autorisée."
+msgstr "إجراء غير مسموح به."
+
+msgid "Veuillez saisir une clé de licence."
+msgstr "الرجاء إدخال مفتاح الترخيص."
+
+msgid "Licence activée avec succès."
+msgstr "تم تفعيل الترخيص بنجاح."
+
+msgid "Licence retirée de ce site."
+msgstr "تمت إزالة الترخيص من هذا الموقع."
+
+msgid "Format de clé invalide."
+msgstr "صيغة المفتاح غير صالحة."
+
+msgid "Signature invalide : cette clé n’a pas été émise pour cette extension."
+msgstr "توقيع غير صالح: لم يُصدر هذا المفتاح لهذه الإضافة."
+
+msgid "Contenu de la clé illisible."
+msgstr "محتوى المفتاح غير قابل للقراءة."
+
+msgid "Cette clé est liée au domaine « %s » et ne correspond pas à ce site."
+msgstr "هذا المفتاح مرتبط بالنطاق « %s » ولا يطابق هذا الموقع."
+
+msgid "Aucune licence"
+msgstr "لا يوجد ترخيص"
+
+msgid "Licence invalide"
+msgstr "ترخيص غير صالح"
+
+msgid "Licence expirée"
+msgstr "انتهت صلاحية الترخيص"
+
+msgid "Expire bientôt"
+msgstr "ستنتهي صلاحيته قريبًا"
+
+msgid "Licence active"
+msgstr "ترخيص فعّال"
+
+msgid "Client"
+msgstr "العميل"
+
+msgid "Domaine"
+msgstr "النطاق"
+
+msgid "Émise le"
+msgstr "تاريخ الإصدار"
+
+msgid "Expire le"
+msgstr "تاريخ الانتهاء"
+
+msgid "Jours restants"
+msgstr "الأيام المتبقية"
+
+msgid "Activer une clé"
+msgstr "تفعيل مفتاح"
+
+msgid "Activer"
+msgstr "تفعيل"
+
+msgid "Retirer la licence de ce site ?"
+msgstr "إزالة الترخيص من هذا الموقع؟"
+
+msgid "Retirer la licence"
+msgstr "إزالة الترخيص"
+
+msgid "État des extensions liées"
+msgstr "حالة الإضافات المرتبطة"
+
+msgid "Espace de gestion indisponible"
+msgstr "مساحة الإدارة غير متاحة"
+
+msgid "Activer la licence"
+msgstr "تفعيل الترخيص"
+
+msgid "Licence requise"
+msgstr "الترخيص مطلوب"
+
+msgid "La licence de cette extension a expiré. Contactez votre fournisseur pour la renouveler."
+msgstr "انتهت صلاحية ترخيص هذه الإضافة. تواصل مع مورّدك لتجديده."
+
+msgid "La clé de licence enregistrée n’est pas valide pour ce site."
+msgstr "مفتاح الترخيص المسجَّل غير صالح لهذا الموقع."
+
+msgid "Aucune licence active. Activez votre clé de licence pour utiliser l’espace de gestion."
+msgstr "لا يوجد ترخيص فعّال. فعّل مفتاح الترخيص لاستخدام مساحة الإدارة."
+
+msgid "la licence a expiré. L’espace /gestion est désormais bloqué."
+msgstr "انتهت صلاحية الترخيص. أصبحت مساحة /gestion محظورة الآن."
+
+msgid "Renouveler"
+msgstr "تجديد"
+
+msgid "la clé de licence enregistrée n’est pas valide pour ce site."
+msgstr "مفتاح الترخيص المسجَّل غير صالح لهذا الموقع."
+
+msgid "Vérifier"
+msgstr "تحقّق"
+
+msgid "la licence expire dans %d jour(s)."
+msgstr "تنتهي صلاحية الترخيص خلال %d يوم/أيام."

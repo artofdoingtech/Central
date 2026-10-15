@@ -1,0 +1,982 @@
+/* AOD COD Form — style « checkout Shopify » (RTL-aware)
+   Neutres + labels flottants + bouton sombre, dans l'esprit du checkout Shopify. */
+.aod-cod {
+	--sh-text: #1a1a1a;
+	--sh-text-2: #616161;
+	--sh-muted: #8a8a8a;
+	--sh-line: #d9d9d9;
+	--sh-line-strong: #1a1a1a;
+	--sh-bg: #ffffff;
+	--sh-bg-sub: #f6f6f7;
+	--sh-accent: #008060;     /* vert Shopify : focus / sélection / bouton */
+	--sh-accent-dark: #006e52;/* survol du bouton */
+	--sh-accent-wash: #f0faf6;/* fond très pâle des états choisis (jumeau de --ac-accent-wash) */
+	--sh-green: #008060;      /* vert Shopify (validations) */
+	--sh-error: #d72c0d;
+	--sh-radius: 8px;
+	--sh-radius-sm: 6px;
+
+	/* `auto` en latéral, et ce n'est pas cosmétique : entre 601 et 921 px, Astra
+	   empile la galerie et le résumé, la colonne passe à ~728 px et le
+	   formulaire, plafonné à 560, restait collé au bord en laissant 168 px de
+	   vide à sa droite. Sans effet en 2 colonnes (la colonne y fait 552 px). */
+	margin: 24px auto;
+	padding: 24px;
+	border: 1px solid #e1e3e5;
+	border-radius: 12px;
+	background: var(--sh-bg);
+	max-width: 560px;
+	color: var(--sh-text);
+	box-sizing: border-box;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Desktop 2 colonnes (Astra passe galerie + résumé côte à côte à partir de 922 px).
+   Le `margin: auto` ci-dessus CENTRE le formulaire dans sa colonne : sur un écran
+   large, où l'owner a élargi le conteneur (CHECKLIST-THEME-CHILD C9), la colonne
+   résumé s'étire et le formulaire, plafonné à 560, se met à FLOTTER au milieu — il
+   ne s'aligne plus sous le titre/prix du produit (alignés au début), ce qui donne
+   une carte qui « pend » dans le vide. On l'ancre donc au DÉBUT de la colonne et on
+   le laisse remplir jusqu'à 640 px (au-delà, les champs deviennent trop longs à
+   lire). Logique (`margin-inline`) → correct en RTL sans règle miroir.
+   ⚠️ On ne touche PAS l'intervalle 601-921 px (Astra empile) : la centrage `auto`
+   y reste voulu (cf. le commentaire de `.aod-cod` ci-dessus). */
+@media (min-width: 922px) {
+	.aod-cod {
+		margin-block: 24px;
+		margin-inline: 0 auto;
+		max-width: 640px;
+	}
+}
+
+/* Titre */
+.aod-cod__title {
+	margin: 0 0 18px;
+	font-size: 1.25em;
+	font-weight: 600;
+	line-height: 1.3;
+	letter-spacing: -.01em;
+	color: var(--sh-text);
+}
+
+/* Anti-spam : champ honeypot. Sorti de l'écran (et non display:none, que certains
+   bots détectent) — invisible pour l'humain, présent dans le DOM pour les bots. */
+.aod-cod__hp {
+	position: absolute !important;
+	left: -9999px !important;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* ---- Champs ---- */
+.aod-cod__field { margin-bottom: 14px; }
+
+/* Libellés de section (variantes, mode de livraison) : titre au-dessus */
+.aod-cod__field:not(.aod-cod__float) > label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 500;
+	font-size: .92em;
+	color: var(--sh-text);
+}
+.aod-cod__field > label span { color: var(--sh-error); }
+
+.aod-cod__form input[type="text"],
+.aod-cod__form input[type="tel"],
+.aod-cod__form input[type="number"],
+.aod-cod__form select {
+	width: 100%;
+	padding: 12px 13px;
+	border: 1px solid var(--sh-muted);
+	border-radius: var(--sh-radius-sm);
+	font-size: 1em;
+	line-height: 1.4;
+	box-sizing: border-box;
+	background: #fff;
+	color: var(--sh-text);
+	transition: border-color .12s, box-shadow .12s;
+	-webkit-appearance: none;
+	appearance: none;
+}
+.aod-cod__form input:hover,
+.aod-cod__form select:hover { border-color: #616161; }
+
+/* Focus « Shopify » : bordure verte doublée d'un anneau fin */
+.aod-cod__form input:focus,
+.aod-cod__form select:focus {
+	outline: none;
+	border-color: var(--sh-accent);
+	box-shadow: 0 0 0 1px var(--sh-accent);
+}
+.aod-cod__form input::placeholder { color: transparent; } /* labels flottants */
+
+/* Flèche personnalisée pour les selects */
+.aod-cod__form select {
+	min-height: 52px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a8a8a' d='M6 8 0 2 1.4.6 6 5.2 10.6.6 12 2z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 13px center;
+	padding-right: 38px;
+}
+.rtl .aod-cod__form select {
+	background-position: left 13px center;
+	padding-right: 13px;
+	padding-left: 38px;
+}
+.aod-cod__form select:disabled { background-color: var(--sh-bg-sub); color: #9ca3af; cursor: not-allowed; }
+
+/* ---- Labels flottants (signature Shopify) ---- */
+.aod-cod__float { position: relative; }
+.aod-cod__float > input,
+.aod-cod__float > select {
+	height: 56px;
+	padding-top: 24px;
+	padding-bottom: 6px;
+	line-height: 1.2;
+}
+.aod-cod__float > label {
+	position: absolute;
+	inset-inline-start: 14px;
+	/* Repos : centré verticalement (robuste quelle que soit la hauteur de
+	   glyphes, ex. arabe) — pas de chevauchement avec la valeur saisie. */
+	top: 50%;
+	transform: translateY(-50%);
+	margin: 0;
+	font-size: 1em;
+	line-height: 1;
+	font-weight: 400;
+	color: var(--sh-text-2);
+	background: transparent;
+	pointer-events: none;
+	transition: top .12s ease, transform .12s ease, font-size .12s ease, color .12s ease;
+	max-width: calc(100% - 40px);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+/* État « flottant » : focus, champ rempli, ou select (toujours).
+   Épinglé en haut (line-height:1) avec une marge nette sous le label, le
+   texte/la sélection occupant le bas du champ (padding-top:24px). */
+.aod-cod__float > input:focus + label,
+.aod-cod__float > input:not(:placeholder-shown) + label,
+.aod-cod__float--sel > select + label {
+	top: 9px;
+	transform: translateY(0);
+	font-size: .72em;
+	color: var(--sh-text-2);
+}
+
+/* ---- Quantité : stepper − / + ---- */
+.aod-cod__stepper {
+	display: inline-flex;
+	align-items: stretch;
+	border: 1px solid var(--sh-muted);
+	border-radius: var(--sh-radius-sm);
+	overflow: hidden;
+	background: #fff;
+	transition: border-color .12s, box-shadow .12s;
+}
+.aod-cod__stepper:focus-within {
+	border-color: var(--sh-accent);
+	box-shadow: 0 0 0 1px var(--sh-accent);
+}
+.aod-cod__step {
+	flex: 0 0 auto;
+	width: 46px;
+	border: 0;
+	background: var(--sh-bg-sub);
+	color: var(--sh-text);
+	font-size: 1.35em;
+	line-height: 1;
+	font-weight: 500;
+	cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
+	transition: background .12s, color .12s;
+	user-select: none;
+}
+.aod-cod__step:hover { background: var(--sh-accent); color: #fff; }
+.aod-cod__step:active { background: var(--sh-accent-dark); color: #fff; }
+.aod-cod__step:focus-visible { outline: 2px solid var(--sh-accent); outline-offset: -2px; }
+/* L'input du stepper : pas de bordure propre (le conteneur la porte), centré,
+   sans les flèches natives. On surcharge le style générique des number. */
+.aod-cod__stepper input[type="number"] {
+	width: 64px;
+	border: 0;
+	border-inline: 1px solid var(--sh-line);
+	border-radius: 0;
+	text-align: center;
+	padding: 12px 4px;
+	font-weight: 600;
+	-moz-appearance: textfield;
+}
+.aod-cod__stepper input[type="number"]:focus { box-shadow: none; border-color: var(--sh-line); }
+.aod-cod__stepper input[type="number"]::-webkit-outer-spin-button,
+.aod-cod__stepper input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Wilaya / Commune : pleine largeur, l'un sous l'autre (noms longs AR) */
+.aod-cod__row { display: block; }
+.aod-cod__row .aod-cod__field { width: 100%; }
+
+/* ---- Mode de livraison : lignes de sélection style Shopify ---- */
+.aod-cod__radios { display: flex; flex-direction: row; gap: 0; border: 1px solid var(--sh-line); border-radius: var(--sh-radius-sm); overflow: hidden; }
+.aod-cod__radio { cursor: pointer; margin: 0; flex: 1 1 0; min-width: 0; }
+.aod-cod__radio + .aod-cod__radio .aod-cod__radio-card { border-inline-start: 1px solid var(--sh-line); }
+.aod-cod__radio input { position: absolute; opacity: 0; width: 0; height: 0; }
+.aod-cod__radio-card {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 12px;
+	height: 100%;
+	background: #fff;
+	transition: background .12s;
+}
+/* Très petits écrans : on repasse les deux modes l'un sous l'autre. */
+@media (max-width: 360px) {
+	.aod-cod__radios { flex-direction: column; }
+	.aod-cod__radio + .aod-cod__radio .aod-cod__radio-card { border-inline-start: 0; border-top: 1px solid var(--sh-line); }
+}
+/* Pastille radio dessinée (à gauche) */
+.aod-cod__radio-card::before {
+	content: "";
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 1px solid var(--sh-muted);
+	background: #fff;
+	transition: border-color .12s, box-shadow .12s;
+}
+/* Icône du mode de livraison. Elle a remplacé 🏠 / 🏢 en 38.3 : un emoji est
+   dessiné par l'OS, donc l'acheteur Android, l'acheteur iOS et l'acheteur
+   Windows ne voyaient pas le même formulaire — et aucun ne voyait celui qu'on
+   avait dessiné. Elle suit l'état choisi, comme la pastille radio. */
+.aod-cod__radio-icon { display: flex; align-items: center; flex: 0 0 auto; color: var(--sh-muted); transition: color .12s; }
+.aod-cod__radio input:checked + .aod-cod__radio-card .aod-cod__radio-icon { color: var(--sh-accent); }
+.aod-cod__radio-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.aod-cod__radio-title { font-weight: 500; font-size: .95em; color: var(--sh-text); line-height: 1.25; }
+/* ⚠️ Plus de `margin-inline-start:auto` : dans un conteneur en COLONNE, cette
+   marge automatique poussait le prix sur l'axe transversal — il se retrouvait
+   collé au bord droit, sous un titre qui, lui, commençait à gauche. Le prix est
+   une seconde ligne du même bloc, il s'aligne comme le titre. */
+.aod-cod__radio-price { font-size: .88em; font-weight: 600; color: var(--sh-text); }
+.aod-cod__radio-price:empty::before { content: "—"; color: var(--sh-muted); font-weight: 400; }
+
+.aod-cod__radio input:checked + .aod-cod__radio-card { background: var(--sh-bg-sub); }
+.aod-cod__radio input:checked + .aod-cod__radio-card::before {
+	border-color: var(--sh-accent);
+	box-shadow: inset 0 0 0 4px var(--sh-accent);
+}
+.aod-cod__radio input:focus-visible + .aod-cod__radio-card::before {
+	box-shadow: 0 0 0 2px rgba(0, 128, 96, .25);
+}
+
+/* ---- Récapitulatif ---- */
+.aod-cod__summary {
+	margin: 20px 0;
+	padding: 16px 0 0;
+	border-top: 1px solid var(--sh-line);
+}
+.aod-cod__summary > div {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 12px;
+	padding: 5px 0;
+	font-size: .95em;
+	color: var(--sh-text-2);
+}
+.aod-cod__summary > div strong { color: var(--sh-text); font-weight: 500; }
+.aod-cod__grand {
+	margin-top: 8px;
+	padding-top: 12px !important;
+	border-top: 1px solid var(--sh-line);
+	font-size: 1em !important;
+	color: var(--sh-text) !important;
+}
+.aod-cod__grand > span { font-weight: 500; }
+.aod-cod__grand strong { font-size: 1.35em; font-weight: 600 !important; color: var(--sh-text) !important; }
+
+/* ---- Bouton « Confirmer » (Pay-now Shopify : sombre, pleine largeur) ---- */
+/* Scopé par `.aod-cod` (0,2,0 — et 0,3,0 sur les états) : le formulaire COD
+   s'habille LUI-MÊME, il ne délègue rien au thème. Un thème qui porte
+   `.woocommerce button:hover` (0,2,1) battrait un `.aod-cod__submit:hover`
+   (0,2,0) ; le préfixe met nos règles hors d'atteinte sans un seul
+   `!important`. C'est ce scope qui a permis de retirer celui qui portait la
+   couleur du texte. */
+.aod-cod .aod-cod__submit {
+	-webkit-appearance: none;
+	appearance: none;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	min-height: 48px;
+	padding: 16px;
+	font-size: 1.02em;
+	font-weight: 600;
+	line-height: 1.2;
+	border: none;
+	border-radius: var(--sh-radius);
+	background: var(--sh-accent);
+	color: #fff;
+	cursor: pointer;
+	transition: background-color .12s ease, transform .05s ease, opacity .12s ease;
+}
+/* `:focus` AUTANT que `:hover` : un thème porte `button:focus{background}` en
+   (0,1,1), qui bat une règle de composant non scopée — le bouton reprenait
+   alors la couleur du thème au seul moment où il a le focus, donc juste avant
+   d'être activé au clavier. Leçon de la 37.1, appliquée ici. */
+.aod-cod .aod-cod__submit:hover,
+.aod-cod .aod-cod__submit:focus { background: var(--sh-accent-dark); color: #fff; }
+.aod-cod .aod-cod__submit:focus-visible { outline: 2px solid var(--sh-accent); outline-offset: 2px; }
+.aod-cod .aod-cod__submit:active { transform: translateY(1px); }
+.aod-cod .aod-cod__submit[disabled] { opacity: .55; cursor: not-allowed; }
+/* ⚠️ PAS de surcharge `prefers-reduced-motion` ici : elle vit en FIN de fichier,
+   avec toutes les autres (raison écrite là-bas). Elle a été réalignée sur le
+   scope `.aod-cod` en même temps que ces règles — sans quoi cette base en
+   (0,3,0) aurait battu une surcharge restée en (0,2,0), et le creux d'appui
+   aurait survécu au mouvement réduit SANS que rien ne le signale. */
+
+/* ---- Bouton « Ajouter au panier » (panier COD) : secondaire, pleine largeur ---- */
+/* Le sélecteur `.button` a disparu du markup ET d'ici : le porter revenait à
+   inviter les règles de boutons du thème, dont le CSS dynamique est imprimé
+   APRÈS nos feuilles. Fond BLANC explicite et non `transparent` — mesuré, un
+   fond transparent fait dépendre le contraste de ce qu'il y a derrière.
+   Vert #008060 sur blanc = 4,93:1 (AA tenu). */
+.aod-cod__addcart {
+	-webkit-appearance: none;
+	appearance: none;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	min-height: 48px;
+	margin-top: 10px;
+	padding: 14px 16px;
+	font-size: 1em;
+	font-weight: 600;
+	line-height: 1.2;
+	border: 1.5px solid var(--sh-accent);
+	border-radius: var(--sh-radius);
+	background: var(--sh-bg);
+	color: var(--sh-accent);
+	cursor: pointer;
+	transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+.aod-cod__addcart:hover,
+.aod-cod__addcart:focus-visible {
+	background: var(--sh-accent);
+	color: #fff;
+}
+.aod-cod__addcart:focus-visible {
+	outline: 2px solid var(--sh-accent);
+	outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+	.aod-cod__addcart { transition: none; }
+}
+
+/* ---- Icônes vectorielles du formulaire (catalogue fermé AOD_COD_Icon) ----
+   Même classe `.aod-i` que le panier : `currentColor` + dimensions posées à
+   l'impression, jamais lues du fichier source. */
+.aod-cod .aod-i { display: block; flex: 0 0 auto; fill: currentColor; }
+
+/* ---- Réassurance ---- */
+.aod-cod__reassure {
+	display: flex;
+	/* `flex-start` et non `center` : la phrase tient sur deux lignes en mobile,
+	   et un cadenas centré verticalement se retrouvait au milieu du paragraphe,
+	   à côté de rien. Il s'aligne sur la PREMIÈRE ligne, comme une puce. */
+	align-items: flex-start;
+	justify-content: center;
+	gap: 6px;
+	margin: 14px 0 0;
+	text-align: center;
+	font-size: .82em;
+	color: var(--sh-text-2);
+	line-height: 1.5;
+}
+.aod-cod__reassure-ic { color: var(--sh-green); margin-top: 2px; }
+
+/* ---- Messages ---- */
+.aod-cod__msg { margin: 12px 0 0; text-align: center; font-weight: 500; font-size: .92em; }
+.aod-cod__msg:empty { margin: 0; }
+.aod-cod__msg.is-error {
+	color: var(--sh-error);
+	background: #fff1f0;
+	border: 1px solid #f8c9c4;
+	border-radius: var(--sh-radius-sm);
+	padding: 11px 13px;
+}
+.aod-cod__msg.is-success {
+	color: var(--sh-green);
+	background: #f0faf6;
+	border: 1px solid #b9e3d4;
+	border-radius: var(--sh-radius-sm);
+	padding: 11px 13px;
+}
+
+/* ---- Panneau de remerciement (après commande validée) ---- */
+.aod-cod__done {
+	text-align: center;
+	padding: 28px 20px;
+	background: #f0faf6;
+	border: 1px solid #b9e3d4;
+	border-radius: var(--sh-radius);
+	animation: aod-done-in .35s ease;
+}
+.aod-cod__done-ic {
+	width: 56px;
+	height: 56px;
+	margin: 0 auto 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 30px;
+	line-height: 1;
+	color: #fff;
+	background: var(--sh-green);
+	border-radius: 50%;
+}
+.aod-cod__done-title { margin: 0 0 6px; font-size: 1.15em; font-weight: 700; color: #14784f; }
+.aod-cod__done-order { margin: 0 0 4px; font-weight: 600; color: var(--sh-green); }
+.aod-cod__done-sub { margin: 0; color: #4b5563; font-size: .95em; }
+@keyframes aod-done-in {
+	from { opacity: 0; transform: translateY(8px); }
+	to   { opacity: 1; transform: none; }
+}
+
+/* ---- Incitation livraison gratuite ---- */
+.aod-cod__free-hint {
+	margin: 10px 0 0;
+	padding: 9px 12px;
+	text-align: center;
+	font-size: .85em;
+	font-weight: 500;
+	color: var(--sh-green);
+	background: #f0faf6;
+	border: 1px solid #b9e3d4;
+	border-radius: var(--sh-radius-sm);
+}
+.aod-cod__free-hint[hidden] { display: none; }
+
+/* Repère d'arrivée depuis la grille (2026-08-02) — MÊME peau que l'incitation
+   au seuil de gratuité juste au-dessus : les deux sont des phrases de conduite,
+   pas des alertes. Aucune surface nouvelle, aucun jeton nouveau. */
+.aod-cod__pickhint {
+	margin: 0 0 12px;
+	padding: 9px 12px;
+	text-align: center;
+	font-size: .85em;
+	font-weight: 500;
+	color: var(--sh-green);
+	background: #f0faf6;
+	border: 1px solid #b9e3d4;
+	border-radius: var(--sh-radius-sm);
+}
+.aod-cod__pickhint[hidden] { display: none; }
+/* Respiration sous le bord haut quand le NAVIGATEUR saute à l'ancre — il le
+   fait avant que le JS ne s'exécute, et le JS, lui, sait en plus déduire un
+   en-tête collant (cf. aod-cod-form.js). Sans cette marge, la phrase naissait
+   rognée par le haut de l'écran : mesuré. */
+#aod-options { scroll-margin-block-start: 24px; }
+.aod-cod__radio-price s { opacity: .55; font-weight: 400; margin-inline-end: 4px; }
+
+/* RTL : WordPress ajoute la classe .rtl au <body> pour l'arabe */
+.rtl .aod-cod__summary > div { flex-direction: row-reverse; }
+
+@media (max-width: 480px) {
+	/* 16 px : le désempilement de la 38.1 a rendu au contenu 47 px par côté, ce
+	   qui permet de resserrer aussi la marge propre du formulaire sans tasser
+	   quoi que ce soit. */
+	.aod-cod { padding: 16px; }
+}
+
+/* ---- Arguments de vente ---- */
+.aod-cod__points{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:6px}
+.aod-cod__points li{position:relative;padding-inline-start:26px;font-size:14px;color:var(--sh-text)}
+.aod-cod__points li::before{content:"✓";position:absolute;inset-inline-start:0;color:var(--sh-green);font-weight:700}
+
+/* ---- Contenu d'un pack assortiment ---- */
+.aod-cod__pack{background:var(--sh-bg-sub);border:1px solid #e1e3e5;border-radius:var(--sh-radius-sm);padding:12px 14px;margin:0 0 16px}
+.aod-cod__pack-label{display:block;font-size:12.5px;font-weight:600;color:var(--sh-text-2);margin-bottom:5px}
+.aod-cod__pack-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.aod-cod__pack-list li{font-size:14px;color:var(--sh-text)}
+.aod-cod__pack-qty{font-weight:600;color:var(--sh-text)}
+
+/* ---- Cartes d'offres (1 produit, 2 produits…) ---- */
+.aod-cod__offers{display:flex;flex-direction:column;gap:7px;margin:0 0 14px}
+/* La carte est un conteneur : en-tête cliquable + panneau de variantes imbriqué. */
+.aod-cod__offer-card{
+	position:relative;
+	border:1.5px solid var(--sh-line);border-radius:var(--sh-radius-sm);background:#fff;
+	transition:border-color .12s,box-shadow .12s;overflow:hidden;
+}
+.aod-cod__offer-card:hover{border-color:var(--sh-line-strong)}
+.aod-cod__offer-card.is-selected{border-color:var(--sh-accent);box-shadow:0 0 0 1px var(--sh-accent)}
+/* Différenciation des offres : liseré couleur à gauche (survit à l'état sélectionné). */
+.aod-cod__offer-card::before{
+	content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+	background:var(--aod-c,transparent);z-index:1;pointer-events:none;
+}
+.rtl .aod-cod__offer-card::before{left:auto;right:0}
+/* En-tête cliquable de la carte (rangée titre / prix / coche). */
+.aod-cod__offer-head{
+	display:flex;align-items:center;gap:9px;margin:0;padding:8px 12px;cursor:pointer;
+}
+.aod-cod__offer-card.is-selected .aod-cod__offer-head{background:var(--sh-bg-sub)}
+.aod-cod__offer-card input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.aod-cod__offer-body{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.aod-cod__offer-title{font-size:13.5px;font-weight:700;color:var(--aod-c,var(--sh-text))}
+.aod-cod__offer-badge{
+	align-self:flex-start;font-size:10.5px;font-weight:700;color:#fff;background:var(--sh-green,#16a34a);
+	border-radius:999px;padding:1px 7px;
+}
+.aod-cod__offer-price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.aod-cod__offer-now{font-size:14px;font-weight:700;color:var(--sh-accent)}
+.aod-cod__offer-old{font-size:12px;color:var(--sh-text-2)}
+/* Pastille « cochée » à droite de l'en-tête. */
+.aod-cod__offer-check{
+	flex-shrink:0;width:18px;height:18px;border-radius:50%;border:2px solid var(--sh-line-strong);
+	background:#fff;position:relative;
+	/* Propriétés NOMMÉES : `transition:.12s` nu vaut `all`, donc animerait aussi
+	   le layout. Seuls la bordure et le fond changent à l'état sélectionné. */
+	transition:border-color .12s,background-color .12s;
+}
+.aod-cod__offer-card.is-selected .aod-cod__offer-check{border-color:var(--sh-accent);background:var(--sh-accent)}
+.aod-cod__offer-card.is-selected .aod-cod__offer-check::after{
+	content:"";position:absolute;inset:0;margin:auto;width:5px;height:9px;
+	border:solid #fff;border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg);
+}
+
+/* ---- SOLO : aucune offre configurée, donc aucun choix à présenter (38.1) ----
+ * Le gérant n'a défini aucun lot : il ne reste que « 1 produit ». On rendait
+ * pourtant tout l'appareillage du choix — carte encadrée, liseré de couleur
+ * censé distinguer cette offre de ses voisines inexistantes, coche verte
+ * indécochable — et, à l'intérieur, un bloc « Article » qui n'affiche même pas
+ * son titre quand il est seul.
+ *
+ * 🚨 Ce n'est pas qu'une affaire de goût : MESURÉ au navigateur sur 390 px, cet
+ * empilement mangeait 67 px de CHAQUE côté (34 % de l'écran) pour encadrer une
+ * décision qui n'existe pas. Les pastilles de variantes tombaient à 258 px.
+ *
+ * ⚠️ On retire la PEAU, jamais les NŒUDS : `aod-cod-form.js` lit `data-qty` /
+ * `data-price` sur la carte et itère `.aod-cod__unit` pour composer une
+ * sélection par article. Le contrat DOM est inchangé.
+ * ------------------------------------------------------------------------- */
+.aod-cod__offers--solo { gap: 0; margin-bottom: 16px; }
+.aod-cod__offers--solo .aod-cod__offer-card {
+	border: 0;
+	border-radius: 0;
+	background: none;
+	overflow: visible;
+}
+/* Le liseré de différenciation : plus rien à différencier. */
+.aod-cod__offers--solo .aod-cod__offer-card::before { content: none; }
+.aod-cod__offers--solo .aod-cod__offer-card:hover { border-color: transparent; }
+.aod-cod__offers--solo .aod-cod__offer-card.is-selected { box-shadow: none; }
+/* L'en-tête ne porte plus que le prix — il informe, il ne propose plus. */
+.aod-cod__offers--solo .aod-cod__offer-head,
+.aod-cod__offers--solo .aod-cod__offer-card.is-selected .aod-cod__offer-head {
+	padding: 0 0 14px;
+	background: none;
+	cursor: default;
+}
+.aod-cod__offers--solo .aod-cod__offer-now { font-size: 1.45em; letter-spacing: -.01em; }
+.aod-cod__offers--solo .aod-cod__offer-panel { padding: 0; border-top: 0; }
+
+/* (La règle jumelle `.aod-cod__unit--solo` vit plus bas, juste après
+   `.aod-cod__unit` — raison écrite là-bas.) */
+
+/* ---- Panneau de variantes, déplié À L'INTÉRIEUR de la carte sélectionnée ---- */
+.aod-cod__offer-panel{padding:10px 12px;border-top:1px solid var(--sh-line)}
+.aod-cod__offer-panel[hidden]{display:none}
+.aod-cod__unit{
+	border:1px solid var(--sh-line);border-radius:var(--sh-radius-sm);
+	/* Différenciation des articles : bordure de départ épaisse et colorée. */
+	border-inline-start:3px solid var(--aod-c,var(--sh-line));
+	background:#fff;padding:10px 12px;margin:0 0 8px;
+}
+.aod-cod__unit:last-child{margin-bottom:0}
+/* Article unique : le bloc n'a même pas de titre (le PHP ne le rend qu'à partir
+   de 2 unités) — c'est un cadre autour de rien, à liseré coloré censé le
+   distinguer de frères qui n'existent pas.
+   🚨 CETTE RÈGLE DOIT RESTER APRÈS `.aod-cod__unit`. Les deux sélecteurs sont
+   en (0,1,0) : à spécificité égale, c'est l'ordre du fichier qui tranche.
+   Placée plus haut — avec le reste du bloc SOLO, où elle avait sa place
+   logique — elle perdait, et le bloc gardait ses 12 px de marge et ses 3 px de
+   liseré. Mesuré, pas relu : le désempilement paraissait fait, il ne l'était
+   qu'à moitié. On ne compense PAS en montant la spécificité, ça déplacerait
+   simplement le même piège d'un cran. */
+.aod-cod__unit--solo{
+	border:0;
+	border-inline-start:0;
+	border-radius:0;
+	background:none;
+	padding:0;
+	margin:0;
+}
+.aod-cod__unit-head{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--aod-c,var(--sh-text));margin:0 0 9px}
+/* Pastille de couleur de l'article devant son libellé. */
+.aod-cod__unit-head::before{content:"";flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--aod-c,var(--sh-text))}
+.aod-cod__unit .aod-cod__optsec:last-child{margin-bottom:0}
+
+/* ---- Sections d'options (Taille, Couleur, Pointure…) — style Shopify ---- */
+.aod-cod__optsec{margin-bottom:16px}
+/* 🚨 `label.aod-cod__optlabel` et non `.aod-cod__optlabel` seul. Plus haut dans
+   CE MÊME fichier, `.aod-cod__field:not(.aod-cod__float) > label` pèse (0,2,1) —
+   `:not()` ne compte pas pour rien, il ajoute la spécificité de ce qu'il
+   contient. Un simple `.aod-cod__optlabel` (0,1,0) perdait : le libellé restait
+   `display:block`, donc ni `gap` ni `margin-inline-start:auto` n'avaient d'effet
+   et l'écho de sélection se collait à l'astérisque (« Pointure *41 »).
+   On égalise à (0,2,1) et on gagne par l'ordre du fichier. La leçon de la
+   Phase 37 vaut aussi contre ses PROPRES règles, pas seulement contre le thème. */
+.aod-cod__optsec > label.aod-cod__optlabel{
+	display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;
+	font-size:13px;font-weight:600;color:var(--sh-text);margin:0 0 8px;
+}
+.aod-cod__optlabel span{color:var(--sh-error)}
+/* Écho de la valeur choisie, à côté du libellé (« Pointure * 41 »). Rempli par
+   le JS depuis le texte AFFICHÉ de la pastille, donc juste dans les deux
+   langues sans une seule chaîne traduisible de plus. */
+.aod-cod__optpick{
+	font-style:normal;font-weight:500;font-size:12.5px;color:var(--sh-text-2);
+	margin-inline-start:auto;text-align:end;
+}
+.aod-cod__optpick:empty{display:none}
+
+/* ---- Sélecteur déroulant d'une section (mode "dropdown", 2026-09-10) ----
+ * Jusqu'ici un <select> natif SANS AUCUNE règle — ni ici, ni nulle part
+ * ailleurs dans ce fichier. Même famille visuelle que les pastilles : bordure
+ * fine, même rayon, chevron en SVG (`currentColor`) plutôt que le triangle du
+ * système — qui varie d'un navigateur/OS à l'autre et ne suit ni la charte ni
+ * le RTL. */
+.aod-cod__optselect{
+	display:block;width:100%;box-sizing:border-box;min-height:44px;
+	padding:10px 40px 10px 14px;
+	border:1px solid var(--sh-line);border-radius:var(--sh-radius-sm);
+	background-color:#fff;
+	background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23616161' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5 10 12.5 15 7.5'/%3E%3C/svg%3E");
+	background-repeat:no-repeat;background-position:right 12px center;background-size:14px;
+	appearance:none;-webkit-appearance:none;
+	font:inherit;font-size:13px;font-weight:500;color:var(--sh-text);
+	cursor:pointer;transition:border-color .12s,box-shadow .12s;
+}
+/* Le chevron suit le sens de lecture : à droite en français, à gauche en
+ * arabe. Même sélecteur physique que le reste du plugin (cf. aod-landing.css). */
+html[dir="rtl"] .aod-cod__optselect{
+	background-position:left 12px center;padding:10px 14px 10px 40px;
+}
+.aod-cod__optselect:hover{border-color:var(--sh-line-strong)}
+.aod-cod__optselect:focus-visible{
+	outline:2px solid var(--sh-accent);outline-offset:2px;border-color:var(--sh-accent);
+}
+.aod-cod__optselect option:disabled{color:var(--sh-muted)}
+
+/* 🚨 GRILLE, et non plus `flex-wrap`. En flex, six pointures se tassaient à
+   gauche et la septième partait seule à la ligne : un ruban irrégulier qui se
+   lisait comme un défaut d'affichage. Une grille à colonnes égales range les
+   valeurs en matrice — et donne le même rendu quel que soit leur nombre. */
+.aod-cod__opts{
+	display:grid;
+	grid-template-columns:repeat(auto-fill,minmax(62px,1fr));
+	gap:8px;
+}
+/* Valeurs porteuses d'une pastille de couleur ou d'un nom long : maille plus
+   large, sinon « Bleu marine » se coupe. */
+.aod-cod__optsec.has-media .aod-cod__opts{grid-template-columns:repeat(auto-fill,minmax(116px,1fr))}
+/* Vignettes photo : la maille suit la vignette (52 px) plus son cadre.
+   ⚠️ APRÈS `.has-media` à dessein — les deux sélecteurs sont en (0,3,0), donc
+   c'est l'ordre du fichier qui tranche, et une section à photos porte les DEUX
+   classes. */
+.aod-cod__optsec.is-visual .aod-cod__opts{grid-template-columns:repeat(auto-fill,minmax(86px,1fr))}
+
+/* La case radio reste accessible mais invisible (la carte fait le rendu). */
+.aod-cod__opt{position:relative;display:flex;margin:0;cursor:pointer}
+.aod-cod__opt input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.aod-cod__opt-card{
+	display:flex;align-items:center;justify-content:center;gap:5px;
+	/* La pastille remplit sa cellule de grille : c'est ce qui aligne les
+	   colonnes au pixel au lieu de les faire dépendre de la longueur du texte. */
+	width:100%;box-sizing:border-box;
+	/* 44 px : cible tactile. Le template est mobile-first et l'ancienne valeur
+	   (32 px) obligeait à viser. Padding élargi (2026-09-10, demande owner,
+	   refonte « premium ») : plus d'air autour du texte, même bordure fine et
+	   même rayon — aucune couleur ne bouge (les tests de contraste AA restent
+	   valables tels quels). */
+	min-height:44px;padding:8px 13px;
+	border:1px solid var(--sh-line);border-radius:var(--sh-radius-sm);background:#fff;
+	font-size:13px;font-weight:500;color:var(--sh-text);text-align:center;
+	/* Survol, coché et focus ne changent que bordure / ombre / fond. */
+	transition:border-color .12s,box-shadow .12s,background-color .12s;
+}
+/* `:focus-within` autant que `:hover` : au clavier, c'est la radio cachée qui
+   prend le focus, et le survol seul laisserait la navigation clavier muette. */
+.aod-cod__opt:hover .aod-cod__opt-card,
+.aod-cod__opt:focus-within .aod-cod__opt-card{border-color:var(--sh-line-strong)}
+/* État choisi : anneau INTÉRIEUR. Un `box-shadow` extérieur débordait sur la
+   cellule voisine maintenant que les pastilles sont serrées en grille. */
+.aod-cod__opt input:checked + .aod-cod__opt-card{
+	border-color:var(--sh-accent);
+	box-shadow:inset 0 0 0 1px var(--sh-accent);
+	background:var(--sh-accent-wash);
+	font-weight:600;
+}
+.aod-cod__opt input:focus-visible + .aod-cod__opt-card{
+	outline:2px solid var(--sh-accent);outline-offset:2px;
+}
+.aod-cod__opt-name{line-height:1.25;min-width:0;overflow-wrap:anywhere}
+/* Le supplément passe SOUS le nom : inline, il faisait exploser la largeur
+   d'une seule pastille et cassait l'alignement de toute la grille. */
+.aod-cod__opt-plus{font-size:11px;color:var(--sh-accent);font-weight:700;line-height:1}
+.aod-cod__opt--visual .aod-cod__opt-card,
+.aod-cod__optsec:not(.has-media) .aod-cod__opt-card{flex-direction:column;gap:3px}
+/* Valeurs « avec photo » : pastille verticale (vignette + nom). */
+.aod-cod__opt--visual .aod-cod__opt-card{gap:6px;padding:8px 6px}
+.aod-cod__opt-thumb{
+	width:52px;height:52px;border-radius:6px;background-size:cover;background-position:center;
+	border:1px solid var(--sh-line);flex:0 0 auto;
+}
+/* Pastille de couleur prédéfinie (pas de photo) : on affiche la vraie couleur.
+   Le double anneau (blanc à l'intérieur, gris à l'extérieur) garde le point
+   visible aussi bien sur un blanc pur que sur un noir pur. */
+.aod-cod__opt-thumb--color{box-shadow:inset 0 0 0 2px #fff;border-color:rgba(0,0,0,.28)}
+/* Couleur sans photo : carte compacte en ligne (point rond + nom),
+   au lieu de la grande vignette verticale des valeurs avec photo. */
+.aod-cod__opt--color .aod-cod__opt-card{flex-direction:row;justify-content:flex-start;padding:6px 10px;gap:8px;text-align:start}
+.aod-cod__opt--color .aod-cod__opt-thumb{width:20px;height:20px;border-radius:50%}
+
+/* ---- 40.4 — Variante en rupture de stock : grisée, non sélectionnable ---- */
+/* La radio est `disabled` (garde serveur en plus) : elle ne peut pas être cochée,
+   donc l'état « sélectionné » ne s'applique jamais. On dégrise + on barre le nom,
+   et le badge « Rupture de stock » reste à pleine couleur (contraste AA). */
+.aod-cod__opt--rupture{cursor:not-allowed}
+.aod-cod__opt--rupture .aod-cod__opt-card{
+	background:var(--sh-bg-sub);border-style:dashed;border-color:var(--sh-line);
+}
+.aod-cod__opt--rupture:hover .aod-cod__opt-card,
+.aod-cod__opt--rupture:focus-within .aod-cod__opt-card{border-color:var(--sh-line)}
+.aod-cod__opt--rupture .aod-cod__opt-thumb{opacity:.45}
+.aod-cod__opt--rupture .aod-cod__opt-name{color:var(--sh-muted);text-decoration:line-through}
+.aod-cod__opt-rupture{
+	font-size:10px;font-weight:700;line-height:1.1;color:var(--sh-error);
+	text-transform:uppercase;letter-spacing:.02em;
+}
+
+/* ---- Message d'erreur de configuration (variante manquante) ---- */
+.aod-cod__config-msg{margin:8px 0 12px;font-size:12.5px;color:var(--sh-error);min-height:0}
+.aod-cod__config-msg:empty{display:none}
+
+/* ---- Flèches de navigation ‹ › superposées sur la galerie produit ---- */
+.woocommerce-product-gallery .aod-gallery-nav{
+	position:absolute;top:50%;transform:translateY(-50%);z-index:99;
+	display:flex;align-items:center;justify-content:center;
+	width:40px;height:40px;padding:0;margin:0;
+	border:1px solid rgba(0,0,0,.08);border-radius:50%;
+	background:rgba(255,255,255,.9);color:#1a1a1a;
+	font-size:24px;line-height:1;cursor:pointer;
+	box-shadow:0 1px 4px rgba(0,0,0,.18);
+	transition:background .12s, transform .05s, box-shadow .12s;
+	-webkit-appearance:none;appearance:none;
+}
+.woocommerce-product-gallery .aod-gallery-nav:hover{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.woocommerce-product-gallery .aod-gallery-nav:active{transform:translateY(-50%) scale(.94)}
+.woocommerce-product-gallery .aod-gallery-nav:focus-visible{outline:2px solid var(--sh-accent,#008060);outline-offset:2px}
+.woocommerce-product-gallery .aod-gallery-nav--prev{left:12px}
+.woocommerce-product-gallery .aod-gallery-nav--next{right:12px}
+/* RTL : on inverse les positions pour garder ‹ = précédent côté logique. */
+.rtl .woocommerce-product-gallery .aod-gallery-nav--prev{left:auto;right:12px}
+.rtl .woocommerce-product-gallery .aod-gallery-nav--next{right:auto;left:12px}
+
+/* ---- Galerie et colonne d'infos à largeur ÉGALE (2026-09-14, demande owner :
+ * « pour que ce soit joli ») ----
+ * Mesuré au navigateur : Astra pose sa propre variante dynamique (réglage
+ * « largeur du contenu » du Personnalisateur, `<style>` injecté, pas les 48%/
+ * 48% du fichier statique `woocommerce-layout-grid.min.css`) —
+ * `.ast-woocommerce-container div.product div.images{width:50%}` contre
+ * `div.summary{width:46%}`, dès 922px. Résultat mesuré sur ce clone :
+ * 701px de galerie contre 645px de colonne résumé — visiblement asymétrique,
+ * pas un arrondi de sous-pixel.
+ * On restaure un partage ÉGAL, au même point de rupture qu'Astra (922px, sous
+ * lequel son propre `max-width:921px` empile déjà les deux en 100% — rien à
+ * corriger en dessous). `48%` plutôt que `50%` : c'est la valeur du fichier
+ * STATIQUE d'Astra (`woocommerce-layout-grid.min.css`, cf. plus haut dans ce
+ * fichier) — elle laisse le même espace de 4% entre les deux colonnes que le
+ * rendu actuel, déjà correct visuellement, au lieu d'un `50%/50%` qui les
+ * ferait se toucher.
+ * `!important` DÉLIBÉRÉ : la règle dynamique d'Astra n'a PAS besoin d'une
+ * spécificité mesurée pour la battre — elle n'est elle-même pas `!important` —
+ * mais un réglage de largeur de contenu changé plus tard dans le
+ * Personnalisateur ne doit pas pouvoir rouvrir l'asymétrie en silence. */
+@media (min-width: 922px) {
+	div.product div.images,
+	div.product div.summary {
+		width: 48% !important;
+	}
+}
+
+/* ---- Mobile : catégorie + titre + prix AU-DESSUS de la galerie (2026-09-14,
+ * demande owner : « c'est beaucoup mieux cohérent et joli ») ----
+ * Le groupe est physiquement déplacé par `initMobileProductHeader()`
+ * (aod-cod-form.js) dans un `<div class="aod-mobile-product-header">`, posé
+ * en tout premier enfant de `div.product` — CSS seul ne peut pas faire
+ * apparaître ces trois éléments avant la galerie sans faire remonter TOUT
+ * `div.summary` (description courte, méta, formulaire compris), qui doit
+ * rester APRÈS elle. Cette feuille ne fait que MISE EN FORME du résultat :
+ * la décision de déplacer ou non est entièrement côté JS (viewport ≤ 921px,
+ * même point de rupture qu'Astra).
+ * `margin-bottom` seul : les trois éléments gardent leurs styles natifs
+ * (Astra pour `.single-product-category`, cœur Woo pour le titre et le prix)
+ * — aucune raison d'en réécrire l'apparence, seule la POSITION change. */
+.aod-mobile-product-header {
+	margin-bottom: 12px;
+}
+
+/* ---- Miniatures de la galerie en colonne, sur le côté (2026-09-13, demande
+ * owner) ----
+ * Par défaut (Woo + Astra), les miniatures s'affichent en GRILLE HORIZONTALE
+ * sous la grande photo (`.flex-control-thumbs li{float:left;width:25%}`,
+ * woocommerce-grid.min.css) — demande owner : les vouloir en colonne.
+ *
+ * `:has(.flex-control-thumbs)` : n'active la grille QUE si des miniatures
+ * existent réellement. Un produit à UNE SEULE photo n'a pas de
+ * `.flex-control-thumbs` du tout (pas de flexslider) — sans cette garde, la
+ * colonne qu'on leur réserve resterait un couloir vide à côté de l'image,
+ * même piège que la grille panier+formulaire (cf. aod-cart.css, « couloir
+ * mort »).
+ *
+ * CSS GRID, pas flex : `grid-template-areas` place la colonne miniatures et
+ * la grande photo indépendamment de leur ORDRE dans le DOM — qui varie déjà
+ * selon que le produit a 1 ou plusieurs photos.
+ * `grid-template-columns` suit NATIVEMENT le sens de lecture : Grid place la
+ * 1ʳᵉ colonne à l'INLINE-START — donc à DROITE en arabe, sans règle miroir —
+ * contrairement à `left`/`right`, qui resteraient sur le même côté physique.
+ *
+ * Sous 600px (mobile), on garde l'empilement d'origine : une colonne de
+ * miniatures serrerait une photo déjà étroite — MOBILE D'ABORD (§ TEMPLATE.md). */
+@media (min-width: 600px) {
+	.woocommerce-product-gallery:has(.flex-control-thumbs) {
+		display: grid;
+		grid-template-columns: 80px 1fr;
+		grid-template-areas: "thumbs viewport";
+		gap: 12px;
+		align-items: start;
+	}
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-control-nav.flex-control-thumbs {
+		grid-area: thumbs;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		max-height: 600px;
+		overflow-x: hidden;
+		/* `!important` : le cœur Woo pose `overflow:hidden` (donc aussi
+		   overflow-y) sur ce même `<ol>` à une spécificité (0,4,2) plus haute
+		   que la nôtre (0,4,0) — sans lui, la liste resterait tronquée sans
+		   pouvoir défiler au-delà de 600px. */
+		overflow-y: auto !important;
+	}
+	/* Réarme le `float:left; width:25%` du cœur Woo (grille horizontale) : en
+	   colonne, chaque miniature remplit la largeur de SA colonne à elle. */
+	/* `!important` DÉLIBÉRÉ sur les trois : la règle cœur (`.woocommerce-js
+	   div.product div.images .flex-control-thumbs li` + la variante
+	   `--columns-N`, woocommerce-grid.min.css) pèse (0,4,3) — plus que notre
+	   (0,3,1), `:has()` comptant comme une seule classe. Mesuré, pas deviné :
+	   sans `!important`, `width:25%;float:left` d'Astra gagnait et les
+	   miniatures restaient en grille horizontale malgré cette règle. */
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-control-thumbs li {
+		width: 100% !important;
+		float: none !important;
+		margin: 0 !important;
+	}
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-control-thumbs li img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .flex-viewport {
+		grid-area: viewport;
+		/* `min-width:0` : sans lui, un enfant `flex`/`grid` par défaut ne
+		   rétrécit jamais sous sa largeur INTRINSÈQUE (celle de l'image) —
+		   la colonne « viewport » aurait poussé la grille plus large que le
+		   conteneur au lieu de laisser l'image se réduire avec lui. */
+		min-width: 0;
+	}
+	/* Les flèches ‹ › (position:absolute, cf. plus haut) sont ancrées au
+	   conteneur ENTIER (galerie + colonne miniatures), pas à la seule image :
+	   sans ce recalage, « précédent » (`inset-inline-start`) flotterait
+	   au-dessus des miniatures au lieu du bord de la photo. `80px` (colonne) +
+	   12px (gap de la grille) + 12px (creux d'origine de la flèche) — un SEUL
+	   calc plutôt que left+right/RTL séparés : `inset-inline-start` vaut déjà
+	   `left` en FR et `right` en AR, exactement le côté où vit la colonne
+	   miniatures dans les deux sens de lecture. « suivant » n'a pas besoin de
+	   ce recalage : son bord (`inset-inline-end`) reste celui de l'image, la
+	   colonne miniatures étant de l'autre côté. */
+	.woocommerce-product-gallery:has(.flex-control-thumbs) .aod-gallery-nav--prev {
+		inset-inline-start: calc(80px + 12px + 12px);
+	}
+}
+
+/* ---- REVIREMENT (2026-09-13, même jour) : la description longue est
+ * repartie dans son onglet natif « Description », à côté de « Avis » (retour
+ * owner) — le plafond de hauteur de la galerie et le volet dépliable
+ * (`.aod-cod__gallery-desc*`) qui vivaient ici n'ont plus d'objet et ont été
+ * retirés avec `render_gallery_description()` (class-aod-cod-form.php). */
+
+/* ---- Mouvement réduit (ROADMAP Phase 19, étape 19.1) --------------------- *
+ * `prefers-reduced-motion` est un réglage SYSTÈME, souvent posé pour un trouble
+ * vestibulaire ou une sensibilité migraineuse. `/gestion` l'honorait depuis la
+ * Phase 16 ; le côté ACHETEUR, lui, ne l'honorait pas du tout — l'inverse de la
+ * priorité du template.
+ *
+ * 🚨 EN FIN DE FICHIER, ET CE N'EST PAS COSMÉTIQUE. Une surcharge placée avant
+ * les règles qu'elle annule perd la cascade SANS RIEN SIGNALER : l'écran reste
+ * identique pour qui n'a pas activé le réglage, donc personne ne le voit. C'est
+ * le défaut que la Phase 16 a dû corriger dans `dashboard.css`.
+ *
+ * 🚨 ON NE NEUTRALISE PAS `transform` EN BLOC. Sur les 10 `transform` de ce
+ * plugin, 6 sont du POSITIONNEMENT (centrage d'un label flottant, d'une flèche
+ * de galerie, glyphe de la coche). Un `transform:none` global ne calmerait pas
+ * l'interface : il DÉPLACERAIT ces éléments. On ne retire que le déplacement,
+ * et l'acquittement non-moteur (fond, couleur, opacité) reste — c'est lui qui
+ * dit à l'acheteur que son geste a été reçu.
+ * ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+	/* Le label flottant CHANGE DE PLACE (top + transform) : on garde le
+	   changement, on retire le trajet. La taille et la couleur continuent de
+	   transitionner — ce n'est pas du mouvement. */
+	.aod-cod__float > label {
+		transition: font-size .12s ease, color .12s ease;
+	}
+
+	/* Creux d'appui du bouton de commande : pur décalage, `none` est correct ici.
+	   🚨 Scopé `.aod-cod` (0,3,0) depuis la 37.3, comme la règle qu'il annule :
+	   une media query n'ajoute AUCUNE spécificité, donc une surcharge restée en
+	   (0,2,0) aurait perdu contre la base scopée — le mouvement serait resté,
+	   visible seulement de qui a activé le réglage, c'est-à-dire de personne
+	   pendant la revue. */
+	.aod-cod .aod-cod__submit { transition: none; }
+	.aod-cod .aod-cod__submit:active { transform: none; }
+
+	/* Entrée du panneau de remerciement. `animation:none` rend l'état FINAL des
+	   keyframes (opacity 1), donc le panneau s'affiche — simplement, d'un coup. */
+	.aod-cod__done { animation: none; }
+
+	/* 🚨 CAS MIXTE — `translateY(-50%)` CENTRE la flèche, `scale(.94)` est l'appui.
+	   `transform:none` ici décentrerait le bouton de la moitié de sa hauteur : on
+	   retombe sur le centrage, pas sur rien. */
+	.woocommerce-product-gallery .aod-gallery-nav:active {
+		transform: translateY(-50%);
+	}
+}

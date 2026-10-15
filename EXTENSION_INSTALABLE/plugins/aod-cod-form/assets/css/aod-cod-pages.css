@@ -1,0 +1,568 @@
+/**
+ * Pages publiques : Accueil + Contact.
+ *
+ * Trois règles de conduite, parce que ce fichier part dans TOUS les clones :
+ *
+ *  1. AUCUNE couleur de marque. Rien qui ressemble à un choix esthétique de client.
+ *     On n'utilise que `currentColor`, des gris neutres transparents (donc lisibles
+ *     sur fond clair comme sombre) et les styles de bouton du thème (`.button`).
+ *     L'habillage appartient au thème déposé par l'owner, pas à ce fichier.
+ *
+ *  2. PROPRIÉTÉS LOGIQUES uniquement (`margin-inline`, `padding-inline`, `start`/`end`),
+ *     jamais `left`/`right`. Le site bascule en RTL dès que le visiteur passe en
+ *     arabe : une seule marge en `left` et la page se déchire.
+ *
+ *  3. MOBILE D'ABORD. Le trafic DZ est mobile ; le desktop est l'exception, décrite
+ *     dans les media queries.
+ */
+
+/* ───────────────────────────────────────── Marge extérieure du site ──────── */
+
+/* Goutière latérale de TOUT le site (2026-09-13, demande owner) : header, pied
+ * de page, Accueil, Boutique, Contact et fiches produit — ce fichier est le
+ * SEUL du plugin chargé sans condition sur toute page publique (cf. le
+ * commentaire de AOD_COD_Pages::assets()), donc le seul endroit qui touche
+ * vraiment « tout le site » plutôt qu'une seule page.
+ *
+ * Astra pose `padding-left:20px;padding-right:20px` sur `.ast-container` /
+ * `.ast-container-fluid` (main.min.css, cœur du thème, hors media query — donc
+ * la même valeur à toutes les tailles d'écran) : mesuré au navigateur, pas
+ * deviné. `padding-inline` (règle 2 ci-dessus) plutôt que `padding-left/right` :
+ * en RTL, `left`/`right` resteraient sur le même CÔTÉ physique au lieu de
+ * suivre le sens de lecture.
+ * `!important` DÉLIBÉRÉ, même raison que les autres overrides Astra du
+ * template (cf. aod-cart.css) : l'ordre d'impression entre le CSS du thème et
+ * celui d'un plugin n'est pas garanti d'avance.
+ *
+ * 🚨 `max-width: none` AUSSI, et c'est le vrai sujet du retour owner
+ * (« je rafraîchis, rien n'a changé, la marge est toujours grande ») : le
+ * `padding` de 20 px ci-dessus est minuscule et INVISIBLE à côté du plafond
+ * `.ast-container{max-width:1640px}` (`site-content-width` = 1600, réglé par
+ * `setup.sh`, cf. CHECKLIST-THEME-CHILD.md §C9) — sur un écran large, c'est LUI
+ * qui crée le grand vide sur les côtés, pas le padding : mesuré, 140 px de
+ * chaque côté à 1920 px, 460 px à 2560 px. Sans le lever, le padding ne change
+ * strictement rien au-delà de 1640 px de large — exactement ce qui a été vu.
+ * Avec `max-width:none`, le conteneur remplit tout le viewport et le SEUL
+ * espace latéral qui reste est le padding de 0,5 cm réglé ci-dessous, à
+ * n'importe quelle largeur d'écran. `.ast-woo-shop-archive .site-content >
+ * .ast-container` (règle plus spécifique à la Boutique) est couverte par le
+ * même `!important` : la spécificité ne joue plus de rôle face à lui. */
+.ast-container,
+.ast-container-fluid {
+	max-width: none !important;
+	padding-inline: 0.5cm !important;
+}
+
+/* ─────────────────────────────────────────────────────────── Accueil ─────── */
+
+.aod-home__hero {
+	text-align: center;
+	padding-block: clamp(2.5rem, 8vw, 5rem);
+	padding-inline: 1rem;
+}
+
+.aod-home__title {
+	margin: 0;
+	font-size: clamp(1.9rem, 6vw, 3.25rem);
+	line-height: 1.15;
+}
+
+.aod-home__tagline {
+	margin-block: 0.75rem 0;
+	margin-inline: auto;
+	max-width: 42ch;
+	font-size: clamp(1rem, 2.5vw, 1.2rem);
+	opacity: 0.75;
+}
+
+.aod-home__cta {
+	margin-block-start: 1.75rem;
+	text-align: center;
+}
+
+/* 🚨 CE BLOC LAISSAIT LE THÈME HABILLER LE BOUTON via la classe `button` — et
+ * c'était le bug (2026-09-08) : Astra imprime son CSS en `<style>` inline
+ * (`.woocommerce-js a.button`, (0,2,1)), qui bat un simple `.aod-home__btn`
+ * (0,1,0). Résultat mesuré : bouton BLEU (`#046BD2`, la couleur Astra), coin
+ * à 4px — jamais choisi par personne. Porté de Template-Full (Phase 50, où
+ * la classe `button` avait déjà été retirée du markup) : `class="aod-home__btn
+ * button"` → `class="aod-home__btn"` dans `class-aod-cod-pages.php`, et cette
+ * feuille reprend la main sur la couleur.
+ * 🎨 Vert FIXE, demande owner explicite (même vert que le prix et les boutons
+ * rapides des cartes, ailleurs dans ce fichier).
+ * ⛔ Arrondi : demande owner. La zone tactile reste à 44 px.
+ * ⛔ Posé en propriétés personnalisées SUR LE SÉLECTEUR (porté de
+ * Template-Full) : `var(--x)` n'est pas un littéral, même si Template-Full-Design
+ * n'a pas encore le cliquet `test-couleurs-publiques.php`/
+ * `test-surfaces-publiques.php` qui l'exigerait — même patron, par cohérence. */
+.aod-home__btn {
+	--aod-home-btn-fg: #008060;
+	--aod-home-btn-fg-dark: #006e52;
+	--aod-home-btn-ink: #fff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	padding-block: 0.75rem;
+	padding-inline: 1.75rem;
+	border: 1.5px solid var(--aod-home-btn-fg);
+	border-radius: 8px;
+	background: var(--aod-home-btn-fg);
+	color: var(--aod-home-btn-ink);
+	font-weight: 600;
+	text-decoration: none;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-home__btn:hover,
+.aod-home__btn:focus {
+	background: var(--aod-home-btn-fg-dark);
+	border-color: var(--aod-home-btn-fg-dark);
+	color: var(--aod-home-btn-ink);
+}
+.aod-home__btn:focus-visible {
+	outline: 2px solid var(--aod-home-btn-fg-dark);
+	outline-offset: 2px;
+}
+/* 🚨 Un soulignement blanc traversait le texte, mesuré et identifié :
+ * `.ast-single-post .entry-content a, …` (0,2,1) — un ancêtre porte
+ * `.entry-content`, même sur cette page. `(0,2,0)` ne suffisait pas (mesuré :
+ * toujours souligné) ; le triplet passe à (0,3,1), qui l'emporte par le
+ * calcul. */
+a.aod-home__btn.aod-home__btn.aod-home__btn {
+	text-decoration: none;
+}
+
+/* ─────────────────────────────────────────────────── Le prix affiché ─────── */
+/*
+ * Prix des cartes produit (Boutique/Accueil/produits liés) — demande owner
+ * (2026-09-08) : une couleur, une taille plus grande, « stylé ».
+ * ⚠️ Ce clone n'a pas encore les jetons `--aod-a-text`/`--aod-fs-*` (portés de
+ * Template-Full, Phase 50/51) : chaque `var()` porte donc un REPLI explicite —
+ * `#008060`, le même accent que `--ac-accent` plus haut dans ce dépôt — pour
+ * que la règle marche dès aujourd'hui, et se mette à jour d'elle-même le jour
+ * où ces jetons seront portés ici aussi.
+ * ⚠️ Scopé à `li.product` (la grille), jamais au résumé de la fiche produit.
+ *
+ * 🚨 SPÉCIFICITÉ (0,5,1..2), mesurée : Astra imprime en CSS inline
+ * `.woocommerce-js ul.products li.product .price, .woocommerce-page
+ * ul.products li.product .price` — (0,4,2). Un simple `li.product .price`
+ * (0,2,1) perdait (la taille restait celle d'Astra). Le triplet `.product.product`
+ * + `.price.price.price` porte le total à (0,5,x), qui l'emporte par le calcul. */
+body li.product.product .price.price.price {
+	display: block;
+	margin-block: 2px 0;
+	font-size: var(--aod-fs-lg, 18px);
+}
+body li.product.product .price.price.price ins {
+	color: var(--aod-a-text, #008060);
+	font-weight: 700;
+	text-decoration: none;
+}
+body li.product.product .price.price.price del {
+	color: rgba(0, 0, 0, .45);
+	font-size: var(--aod-fs-sm, 14px);
+}
+
+/* ⚠️ MARGE VERTICALE RESSERRÉE (2026-09-08, demande owner) — mêmes marges
+ * Astra en `em`, même découplage en px fixes, même triplet de spécificité. */
+body li.product.product .ast-woo-product-category.ast-woo-product-category.ast-woo-product-category {
+	margin-block-end: 2px;
+}
+body li.product.product h2.woocommerce-loop-product__title.woocommerce-loop-product__title.woocommerce-loop-product__title {
+	margin-block-end: 2px;
+}
+
+/* ── Le bouton « Commander » des grilles ── */
+/*
+ * Demande owner (2026-09-10) : panier COD désactivé (comportement par défaut,
+ * cf. `AOD_COD_Form::cart_enabled()`), la carte produit et le bouton
+ * « Commander » doivent avoir le même aspect en mobile et en desktop.
+ *
+ * 🚨 CE QUI SEMBLAIT ÊTRE LE DÉFAUT NE L'ÉTAIT QU'À MOITIÉ (2026-09-10) — un
+ * premier correctif fixait le padding du bouton (15px/30px, sans media query :
+ * Astra le réduit par palier, 14px/28px ≤921px puis 12px/24px ≤544px). Mesuré
+ * ensuite (getBoundingClientRect) : le bouton faisait bien DÉJÀ 148px de large
+ * des deux côtés — le padding n'était jamais le problème visible.
+ * 🔴 LE VRAI COUPABLE : `.aod-loop-cta` reste `display:inline-block`, donc de
+ * largeur FIXE, posé dans une colonne de grille dont la largeur, elle, change
+ * énormément (2 colonnes étroites en mobile vs colonnes bien plus larges en
+ * desktop). Un bouton de 148px REMPLIT presque une colonne mobile étroite
+ * mais flotte, minuscule et calé à gauche, dans une colonne desktop large —
+ * même bouton, mais un rapport bouton/carte totalement différent selon
+ * l'écran. C'est CE rapport que l'œil compare, pas les pixels du bouton seul.
+ * On l'aligne sur le patron déjà choisi pour le panier COD actif
+ * (`.aod-cart__quickadd`/`.aod-cart__quickorder`, `aod-cart.css`) : bouton en
+ * BLOC, largeur 100% de la carte, à toutes les tailles d'écran — le rapport
+ * bouton/carte reste alors constant, lui.
+ *
+ * 🚨 SPÉCIFICITÉ (0,2,1) chez Astra (`.woocommerce-js a.button`, même valeur
+ * dans la règle de base ET dans les deux media queries de padding) : le
+ * doublement de classe porte notre règle à (0,2,2), qui l'emporte par le
+ * calcul plutôt que par l'ordre de chargement — même patron que `aod-cart.css`
+ * (bouton masqué) et que `.price.price.price` plus haut dans ce fichier.
+ * ⚠️ Scopé à `.aod-loop-cta` (Boutique/Accueil/produits liés) : n'existe plus
+ * sur la fiche produit elle-même (formulaire COD, règle 3 de TEMPLATE.md), et
+ * le panier COD actif (`aod-cart.css`) gère déjà ce bouton à sa façon (cette
+ * règle est donc invisible tant que le panier est actif). */
+body a.aod-loop-cta.aod-loop-cta {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	/* 🎨 Coins arrondis + hauteur réduite (demande owner, 2026-09-10) : Astra
+	 * livre ce bouton en coins presque droits (2px) et haut de 46px (padding
+	 * 15px). Même arrondi que `.aod-home__btn` plus haut dans ce fichier —
+	 * une seule valeur de coin sur tout le visible public. */
+	border-radius: 8px;
+	padding: 10px 16px;
+	font-size: 16px;
+	line-height: 1em;
+	text-align: center;
+	/* 🎨 Vert FIXE (demande owner explicite, 2026-09-10) — même vert que le prix
+	 * et `.aod-home__btn` plus haut dans ce fichier, PAS la couleur d'accent du
+	 * thème (`--ast-global-color-0`, réglable dans le Personnalisateur). Défaut
+	 * de repli : c'est CETTE valeur qui s'applique au tactile (toujours visible,
+	 * cf. plus bas) — le blanc translucide, lui, est réservé à la surimpression
+	 * sur l'image (`.aod-loop-qwrap`, en bas de ce bloc), où il se lirait sur du
+	 * blanc uni sinon. */
+	background: #008060;
+	color: #fff;
+}
+
+/* ---- Révélé au survol, en desktop seulement (demande owner, 2026-09-10) ----
+ * Même philosophie que `.aod-cart__quickgrp` (panier COD actif, `aod-cart.css`,
+ * ligne 539 : « le survol n'existe qu'à la souris : au tactile le groupe est
+ * PERMANENT — mobile d'abord, l'apparition au survol est la variante desktop »).
+ * ⚠️ `opacity`/`pointer-events`, jamais `display:none` : le lien reste
+ * atteignable au clavier — `:focus-within` sur `li.product` le révèle dès que
+ * le Tab l'atteint, avant même le clic.
+ * `(hover: hover)` exclut le tactile : sans lui, un mobile qui ne déclenche
+ * jamais `:hover` perdrait le SEUL bouton d'achat de la grille.
+ * ⚠️ Cette règle s'applique QUE le bouton ait été déplacé sur l'image
+ * (`.aod-loop-qwrap`, ci-dessous) OU non : c'est le filet de secours si
+ * `aod-cod-pages.js` n'a pas tourné (JS désactivé) — le bouton reste alors
+ * sous le prix, mais révélé au survol plutôt que jamais visible. */
+@media (hover: hover) {
+	body a.aod-loop-cta.aod-loop-cta {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity .18s ease;
+	}
+	li.product:hover a.aod-loop-cta.aod-loop-cta,
+	li.product:focus-within a.aod-loop-cta.aod-loop-cta {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+/* ---- Surimpression sur l'image (demande owner, 2026-09-10) ----
+ * « Le bouton Commander ne doit pas s'afficher sous la carte produit, il doit
+ * l'afficher SUR la carte, comme quand on active le panier. » `aod-cod-pages.js`
+ * (souris uniquement, même signal `(hover: hover)` que ci-dessus) déplace le
+ * bouton dans un nouveau conteneur `.aod-loop-qwrap`, FRÈRE du lien-image —
+ * jamais dedans, deux `<a>` imbriqués sont invalides (cf. le fichier JS).
+ *
+ * `.aod-loop-qwrap` ne contient QUE ce lien-image + notre bouton
+ * (`position:absolute`, retiré du flux) : sa hauteur colle donc à celle de
+ * l'image SEULE, jamais à celle de la carte entière — c'est ce qui ancre le
+ * bouton en bas de la PHOTO plutôt qu'en bas du prix ou du titre.
+ * ⚠️ `position:relative` posé ICI, sur `.aod-loop-qwrap`, jamais sur
+ * `.astra-shop-thumbnail-wrap` : ce dernier porte déjà le badge Promo et
+ * l'icône propre d'Astra, tous deux ancrés sur `li.product` (qui est déjà
+ * `position:relative` chez Astra) — le rendre positionné à SON TOUR changerait
+ * leur référentiel et les déplacerait. Notre bouton, lui, n'existe que DANS
+ * `.aod-loop-qwrap` : aucun risque de ricochet sur ce qui y vivait déjà.
+ * Bord à bord, coins DROITS (demande owner, 2026-09-10 — revient sur l'essai
+ * précédent en pilule à 10px des bords) : même parti pris que `aod-cart.css`
+ * pour sa variante souris (« les boutons touchent les deux bords de l'image »)
+ * — nécessaire ici aussi, un seul bouton au lieu d'un groupe n'y change rien.
+ * `border-radius:0` explicite ci-dessous : la règle de base (8px, plus haut)
+ * a une spécificité MOINDRE (0,2,2 contre 0,3,1 ici, `.aod-loop-qwrap` en
+ * plus) donc perd de toute façon — mais un lecteur qui ne recalcule pas la
+ * spécificité doit voir le 0 écrit, pas le déduire. */
+.aod-loop-qwrap {
+	position: relative;
+	display: block;
+}
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta {
+	position: absolute;
+	/* 🚨 `width:auto` EXPLICITE : la règle de base plus haut pose `width:100%`
+	 * pour le bloc pleine largeur (tactile/repli). En position absolue, ce
+	 * `100%` se recalcule sur `.aod-loop-qwrap` (335px, ici) et IGNORE
+	 * `inset-inline` — mesuré : le bouton débordait de 10px à droite au lieu
+	 * de laisser 10px de marge des deux côtés. `auto` laisse les deux insets
+	 * calculer la largeur eux-mêmes. */
+	width: auto;
+	inset-inline: 0;
+	inset-block-end: 10px;
+	border-radius: 0;
+	z-index: 2;
+	/* 🎨 Blanc translucide 30% par défaut, vert plein au survol DU BOUTON
+	 * (demande owner, 2026-09-10) — distinct du survol DE LA CARTE plus haut
+	 * (qui ne fait que le RÉVÉLER, opacity 0→1) : ici c'est sa propre couleur
+	 * qui change une fois qu'il est déjà visible et que le curseur est dessus.
+	 * Encre sombre sur le blanc translucide (illisible en blanc sur blanc,
+	 * cf. `.aod-cart__quickadd`/`--ac-quick-bg` + `--ac-ink`, même parti pris) ;
+	 * blanc sur le vert au survol (même vert que la règle de base ci-dessus). */
+	background: rgba(255, 255, 255, .3);
+	color: #1a1a1a;
+	transition: background-color .15s ease, color .15s ease;
+}
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta:hover,
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta:focus-visible {
+	background: #008060;
+	color: #fff;
+}
+.aod-loop-qwrap a.aod-loop-cta.aod-loop-cta:focus-visible {
+	outline: 2px solid #008060;
+	outline-offset: 2px;
+}
+
+.aod-home__section {
+	padding-block: clamp(1.5rem, 5vw, 3rem);
+}
+
+.aod-home__h2 {
+	margin-block: 0 1.25rem;
+	text-align: center;
+	font-size: clamp(1.35rem, 4vw, 2rem);
+}
+
+/* ── Réassurance ── */
+
+.aod-home__reassure {
+	display: grid;
+	gap: 1.5rem;
+	padding-block: clamp(2rem, 6vw, 3.5rem);
+	padding-inline: 1rem;
+	/* Gris neutre translucide : se pose aussi bien sur un thème clair que sombre,
+	   sans jamais imposer une teinte. */
+	background: rgba(128, 128, 128, 0.07);
+	border-radius: 12px;
+}
+
+.aod-home__promise {
+	text-align: center;
+}
+
+.aod-home__promise h3 {
+	margin-block: 0.6rem 0.35rem;
+	font-size: 1.05rem;
+}
+
+.aod-home__promise p {
+	margin: 0;
+	font-size: 0.95rem;
+	line-height: 1.55;
+	opacity: 0.8;
+}
+
+.aod-home__ico {
+	font-size: 1.9rem;
+	line-height: 1;
+}
+
+@media (min-width: 700px) {
+	.aod-home__reassure {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+	}
+}
+
+/* ─────────────────────────────────────────────────────────── Contact ─────── */
+
+.aod-contact {
+	display: grid;
+	gap: clamp(1.75rem, 5vw, 3rem);
+	padding-block: clamp(1rem, 4vw, 2rem);
+}
+
+/* Le titre de l'Accueil est centré (c'est une vitrine) ; celui du Contact ne doit
+   pas l'être — il coiffe un bloc de texte aligné au bord. `start`, pas `left` : en
+   arabe, le bord de départ est à droite. */
+.aod-contact__details .aod-home__h2 {
+	text-align: start;
+}
+
+.aod-contact__intro {
+	margin-block: 0 1.25rem;
+	max-width: 55ch;
+	line-height: 1.6;
+	opacity: 0.85;
+}
+
+.aod-contact__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 0.75rem;
+}
+
+.aod-contact__list li {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.aod-contact__ico {
+	flex: 0 0 auto;
+	font-size: 1.15rem;
+}
+
+/* Le formulaire réutilise les champs du formulaire COD (.aod-cod) : mêmes styles,
+   même comportement RTL. On ne fait que le poser dans la grille. */
+.aod-contact__form {
+	max-width: 640px;
+}
+
+.aod-contact__form textarea {
+	width: 100%;
+	resize: vertical;
+}
+
+/* Deux colonnes en desktop : coordonnées à gauche (ou à droite en arabe — c'est la
+   grille logique qui s'en charge, aucune règle à écrire), formulaire en face. */
+@media (min-width: 900px) {
+	.aod-contact {
+		grid-template-columns: 1fr 1.15fr;
+		align-items: start;
+		gap: 3.5rem;
+	}
+}
+
+/* ── Message de retour du formulaire ── */
+
+.aod-cod__msg.is-ok,
+.aod-cod__msg.is-error {
+	margin-block-start: 0.85rem;
+	padding: 0.75rem 1rem;
+	border-radius: 8px;
+	border-inline-start: 3px solid currentColor;
+	font-weight: 600;
+}
+
+/* Vert / rouge : ce ne sont pas des couleurs de marque mais du SENS (succès, échec).
+   Un client qui change d'accent ne doit pas voir son message d'erreur virer au vert.
+   Teintes sombres et saturées : elles gardent un contraste AA sur fond clair comme
+   sur fond sombre translucide. */
+.aod-cod__msg.is-ok {
+	color: #15803d;
+	background: rgba(21, 128, 61, 0.08);
+}
+
+.aod-cod__msg.is-error {
+	color: #b91c1c;
+	background: rgba(185, 28, 28, 0.08);
+}
+
+/* Honeypot : hors écran plutôt que `display:none`. Certains robots ignorent les
+   champs masqués en display — ils ne se feraient plus prendre. */
+.aod-cod__hp {
+	position: absolute;
+	inset-inline-start: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* ── Bandeau « Merci, commande enregistrée » (Boutique, après redirection) ──
+   Coin haut, côté fin de ligne (inset-inline-end : à droite en FR, à gauche en
+   AR/RTL, sans règle dédoublée). Fond OPAQUE, contrairement au panneau
+   `.aod-cod__done` de la fiche produit (fond très pâle) : ici il flotte
+   au-dessus d'une grille produits dont on ne maîtrise pas la couleur. */
+.aod-cod-thankyou {
+	position: fixed;
+	top: 16px;
+	inset-inline-end: 16px;
+	z-index: 9999;
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	width: min(380px, calc(100vw - 32px));
+	padding: 16px;
+	background: #fff;
+	border: 1px solid #d9d9d9;
+	border-inline-start: 3px solid #15803d;
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+	animation: aod-thankyou-in 0.35s ease;
+}
+.aod-cod-thankyou[hidden] {
+	display: none;
+}
+.aod-cod-thankyou__ic {
+	flex-shrink: 0;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 16px;
+	line-height: 1;
+	color: #fff;
+	background: #15803d;
+	border-radius: 50%;
+}
+.aod-cod-thankyou__body {
+	min-width: 0;
+	flex: 1;
+}
+.aod-cod-thankyou__title {
+	margin: 0 0 4px;
+	font-size: 0.95em;
+	font-weight: 700;
+	color: #14532d;
+}
+.aod-cod-thankyou__order {
+	margin: 0 0 2px;
+	font-size: 0.9em;
+	font-weight: 600;
+	color: #15803d;
+}
+.aod-cod-thankyou__sub {
+	margin: 0;
+	font-size: 0.85em;
+	color: #4b5563;
+}
+.aod-cod-thankyou__close {
+	flex-shrink: 0;
+	width: 26px;
+	height: 26px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #6b7280;
+	border-radius: 50%;
+	cursor: pointer;
+}
+.aod-cod-thankyou__close:hover,
+.aod-cod-thankyou__close:focus-visible {
+	background: rgba(0, 0, 0, 0.06);
+	color: #1a1a1a;
+}
+@keyframes aod-thankyou-in {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+@media (max-width: 480px) {
+	.aod-cod-thankyou {
+		top: 8px;
+		inset-inline-end: 8px;
+		inset-inline-start: 8px;
+		width: auto;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.aod-cod-thankyou {
+		animation: none;
+	}
+}
